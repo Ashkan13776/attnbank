@@ -692,7 +692,7 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
         ax.axhline(1.0, color=style.INK["primary"], linewidth=1.0, zorder=4)
         ax.annotate("top-$k$ baseline", (0.02, 1.0), xycoords=("axes fraction", "data"),
                     xytext=(0, 3), textcoords="offset points", va="bottom",
-                    fontsize=6.8, color=style.INK["secondary"], zorder=6)
+                    fontsize=7.5, color=style.INK["secondary"], zorder=6)
         style.log2_ticks(ax, "x", 2, 8, every=2)
         ax.set_xlabel("budget $k$ (keys kept per query)")
         if panel_i == 0:
@@ -704,11 +704,11 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
         bl = pv.get("blocktopk64", {})
         style.note(ax, f"value top-$k$ beats top-$k$ on\n"
                        f"{100 * vt.get('better_than_topk_frac', float('nan')):.0f}% of "
-                       f"{vt.get('n_pairs', 0):,} (head, $k$) pairs,\n"
-                       f"median ratio {vt.get('median_error_ratio', float('nan')):.2f}\n"
-                       f"block top-$k$ (64), not shown:\n"
-                       f"median ratio {bl.get('median_error_ratio', float('nan')):.1f}",
-                   loc="upper left")
+                       f"{vt.get('n_pairs', 0):,} pairs; ratio "
+                       f"{vt.get('median_error_ratio', float('nan')):.2f}\n"
+                       f"block top-$k$ (64), not shown: "
+                       f"{bl.get('median_error_ratio', float('nan')):.1f}",
+                   loc="upper left", size=7.5)
     # one shared y window over all three panels (medians only -- the IQR bands are
     # allowed to run off, which is what the band note says) and room on the right of
     # the last panel for its end labels
@@ -716,9 +716,9 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
         ax.set_ylim(lo / 1.35, hi * 1.35)
         ax.set_xlim(2 ** 1.7, 2 ** 8.3)
         style.log_ticks_plain(ax, "y")
-    axes[-1].set_xlim(2 ** 1.7, 2 ** 10.4)
+    axes[-1].set_xlim(2 ** 1.7, 2 ** 10.8)
     for kx, my, lab in ends:
-        style.direct_label(axes[-1], kx, my, lab, size=6.8)
+        style.direct_label(axes[-1], kx, my, lab, size=7.5)
     paths.append(str(C.save_fig(fig, "fig_value_aware_selection")))
 
     # --- secondary view: the raw error curves ----------------------------------------
@@ -751,11 +751,11 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
         fin = [v for v in fin if np.isfinite(v)]
         if fin:
             style.note(ax, f"top-$k$ needs {np.median(fin):.1f}$\\times$ the\n"
-                           f"value oracle's budget\nfor the same error",
-                       loc="lower left", size=6.5)
-    axes[-1].set_xlim(right=2 ** 11.4)
+                           f"value oracle's budget",
+                       loc="lower left", size=7.5)
+    axes[-1].set_xlim(right=2 ** 11.9)
     for kx, my, lab in _declutter(raw_ends, axes[-1]):
-        style.direct_label(axes[-1], kx, my, lab, size=6.5)
+        style.direct_label(axes[-1], kx, my, lab, size=7.5)
     paths.append(str(C.save_fig(fig, "fig_selection_raw_error")))
     return paths
 

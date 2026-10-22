@@ -509,19 +509,19 @@ def make_figure(rec_r, rec_c, summary) -> list[str]:
         ends.append((rs[-1], ys[-1], SOURCE.get(src, src)))
     ax.set_xscale("log", base=2); ax.set_yscale("log")
     style.log2_ticks(ax, "x", 3, 12, every=3)
-    ax.set_xlim(2 ** 2.6, 2 ** 15.4)
+    ax.set_xlim(2 ** 2.6, 2 ** 16.0)
     ax.set_ylim(top=ax.get_ylim()[1] * 4.5)        # headroom for the fit annotation
-    style.label_ends(ax, ends, size=6.5)
+    style.label_ends(ax, ends, size=7.5)
     ax.set_xlabel("number of random features $r$")
     ax.set_ylabel(r"s.d. of $\widehat y-y$ over seeds"
                   "\n" r"(RMS over heads, units of $y$)")
     style.panel(ax, "a", r"variance rate, $\mathrm{s.d.}\propto r^{\beta}$")
-    lines = [r"fitted $\beta$, $r\geq$" + f"{R_FIT_MIN} (theory $-1/2$)"]
+    lines = [r"fitted $\beta$ (theory $-1/2$)"]
     for src in srcs:
         f = summary["fits"][f"{src}|{var}|c={FIT_REGIME_C}"]["sd_slope_asymptotic"]
         lines.append(f"{SHORT.get(src, src)}  {f['slope']:+.3f} "
                      f"[{f['ci95'][0]:+.3f}, {f['ci95'][1]:+.3f}]")
-    style.note(ax, "\n".join(lines), loc="upper right", size=6.2)
+    style.note(ax, "\n".join(lines), loc="upper right", size=7.5)
 
     # --- (b) bias ------------------------------------------------------------------
     ax = axes[1]
@@ -543,24 +543,23 @@ def make_figure(rec_r, rec_c, summary) -> list[str]:
         ends.append((rb[-1], ys[-1], SOURCE.get(src, src)))
     ax.set_xscale("log", base=2); ax.set_yscale("log")
     style.log2_ticks(ax, "x", 3, 12, every=3)
-    ax.set_xlim(2 ** 2.6, 2 ** 15.4)
+    ax.set_xlim(2 ** 2.6, 2 ** 16.0)
     ax.set_ylim(top=ax.get_ylim()[1] * 9.0)        # headroom for the fit annotation
-    style.label_ends(ax, ends, size=6.5)
+    style.label_ends(ax, ends, size=7.5)
     ax.set_xlabel("number of random features $r$")
     ax.set_ylabel(r"$|$bias$|$ of $\widehat y$ over seeds"
                   "\n" r"(RMS over heads, units of $y$)")
     style.panel(ax, "b", r"bias rate, $|$bias$|\propto r^{\alpha}$")
-    lines = [r"fitted $\alpha$, $r\geq$" + f"{R_FIT_MIN} (theory $-1$)"]
+    lines = [r"fitted $\alpha$ (theory $-1$)"]
     for src in srcs:
         f = summary["fits"][f"{src}|{var}|c={FIT_REGIME_C}"]["bias_slope_asymptotic"]
         if np.isfinite(_num(f.get("slope"))):
             lines.append(f"{SHORT.get(src, src)}  {f['slope']:+.3f} "
                          f"[{f['ci95'][0]:+.3f}, {f['ci95'][1]:+.3f}]")
     if unresolved:
-        lines += ["", "not drawn: on the Gaussian control the",
-                  "bias stays under the Monte-Carlo floor",
-                  "at every $r$ -- bounded, not measured"]
-    style.note(ax, "\n".join(lines), loc="upper right", size=6.2)
+        lines += ["", "not drawn: Gaussian control,",
+                  "bias under its Monte-Carlo floor"]
+    style.note(ax, "\n".join(lines), loc="upper right", size=7.5)
 
     # --- (c) the crossover with restriction ------------------------------------------
     # The top-k IQR band reaches 1e-8 once the logits are sharp enough for a k=130
@@ -600,14 +599,14 @@ def make_figure(rec_r, rec_c, summary) -> list[str]:
         ax.annotate(f"restriction wins\nfrom $c$={c_x:g}", (c_x, 0.52),
                     xycoords=("data", "axes fraction"), xytext=(4, 0),
                     textcoords="offset points", va="center", ha="left",
-                    fontsize=6.5, color=style.INK["secondary"],
+                    fontsize=7.5, color=style.INK["secondary"],
                     path_effects=[pe.withStroke(linewidth=2.2,
                                                 foreground=style.INK["surface"])])
     ax.axvline(1.0, color=style.INK["muted"], linewidth=0.7, zorder=0)
     ax.annotate("$c=1$: the model", (1.0, 0.02),
                 xycoords=("data", "axes fraction"), xytext=(-3, 0),
                 textcoords="offset points", rotation=90, va="bottom", ha="center",
-                fontsize=6.5, color=style.INK["secondary"],
+                fontsize=7.5, color=style.INK["secondary"],
                 path_effects=[pe.withStroke(linewidth=2.2,
                                             foreground=style.INK["surface"])])
     style.log2_ticks(ax, "x", -3, 1, every=1)
@@ -615,9 +614,9 @@ def make_figure(rec_r, rec_c, summary) -> list[str]:
     ax.set_xlabel(r"logit scale $c$ ($q$ and $k$; logits $\propto c^2$)")
     ax.set_ylabel(r"relative output error $\|y-\widehat y\|/\|y\|$")
     style.panel(ax, "c", f"large-logit regime, $r$={C_R}")
-    style.label_ends(ax, ends, size=6.5)
-    style.note(ax, "median and IQR over heads,\nlayers and passages",
-               loc="upper left", size=6.2)
+    style.label_ends(ax, ends, size=7.5)
+    style.note(ax, "median, IQR band over heads",
+               loc="upper left", size=7.5)
     return [str(C.save_fig(fig, "fig_rff_bias_variance"))]
 
 
