@@ -423,7 +423,7 @@ def make_figures(summary) -> list[str]:
     ax.axvline(ridge, color=style.INK["muted"], linewidth=0.7, zorder=0)
     ax.annotate(f"ridge point\n{ridge:.0f} FLOP/byte", (ridge, 0.02),
                 xycoords=("data", "axes fraction"), xytext=(-4, 0),
-                textcoords="offset points", ha="right", va="bottom", fontsize=6.3,
+                textcoords="offset points", ha="right", va="bottom", fontsize=7.5,
                 color=style.INK["secondary"])
     marks = {"prefill": "o", "decode": "s"}
     for i, mech in enumerate(MECHS):
@@ -442,16 +442,18 @@ def make_figures(summary) -> list[str]:
     style.panel(ax, "a", "measured roofline")
     style.direct_label(ax, 4e3, pk_f / 1e12,
                        f"roof: {pk_f / 1e12:.0f} TFLOP/s, {pk_b / 1e9:.0f} GB/s",
-                       dx=-4, dy=7, ha="right", va="bottom", size=6.3)
+                       dx=-4, dy=7, ha="right", va="bottom", size=7.5)
     pf, dc = summary["sdpa"]["prefill_large_n"], summary["sdpa"]["decode"]
-    style.note(ax, "circles prefill, squares decode\n\n"
+    # the free area in this panel is the triangle above the roof line, so the note is
+    # wrapped short: each line has to clear the diagonal at its own height
+    style.note(ax, "circles prefill, squares decode\n"
                    f"sdpa decode reaches "
-                   f"{100 * dc['frac_of_bandwidth_roof']['median']:.0f}% of the\n"
-                   f"bandwidth roof (median, $n$={dc['n']});\n"
-                   f"sdpa prefill at $n\\geq$2048 reaches\n"
-                   f"{100 * pf['frac_of_flops_roof']['median']:.0f}% of the "
-                   f"arithmetic roof ($n$={pf['n_points']})",
-               loc="upper left", size=6.3)
+                   f"{100 * dc['frac_of_bandwidth_roof']['median']:.0f}%\n"
+                   f"of the bandwidth roof\n"
+                   f"sdpa prefill at $n\\geq$2048\n"
+                   f"reaches {100 * pf['frac_of_flops_roof']['median']:.0f}% of the\n"
+                   f"arithmetic roof",
+               loc="upper left", size=7.5)
 
     # --- (b) why some decode points sit above the DRAM roof -------------------------
     ax = axes[1]
@@ -466,7 +468,7 @@ def make_figures(summary) -> list[str]:
     ax.axvline(l2 / 1e6, color=style.INK["muted"], linewidth=0.7, zorder=0)
     ax.annotate(f"L2 = {l2 / 1e6:.0f} MB", (l2 / 1e6, 0.985),
                 xycoords=("data", "axes fraction"), xytext=(3, 0),
-                textcoords="offset points", ha="left", va="top", fontsize=6.3,
+                textcoords="offset points", ha="left", va="top", fontsize=7.5,
                 color=style.INK["secondary"])
     ax.set_xscale("log"); ax.set_yscale("log")
     ax.set_ylim(0.3, 2.4)
@@ -475,17 +477,15 @@ def make_figures(summary) -> list[str]:
     ax.set_ylabel("achieved bandwidth $\\div$ measured\nDRAM roof (dimensionless)")
     style.panel(ax, "b", "decode is bandwidth-bound")
     dr = summary["sdpa"]["decode_dram_resident"]
-    style.note(ax, "sdpa only; flash and split-$k$ are\n"
-                   "reference implementations and\ncarry no roofline claim\n\n"
-                   "left of the line K and V fit in L2, so\nthose points are not "
-                   "DRAM-bound\nand may exceed the roof; right of it\n"
-                   f"sdpa sits at {dr['min_frac']:.2f}-{dr['max_frac']:.2f} "
+    style.note(ax, "sdpa only; left of the line K and V\n"
+                   "fit in L2, so the roof need not hold\n"
+                   f"right of it: {dr['min_frac']:.2f}-{dr['max_frac']:.2f} "
                    f"of the roof ($n$={dr['n_points']})",
-               loc="lower right", size=6.3)
+               loc="lower right", size=7.5)
 
     handles = [plt_mark(style.series(i), PRETTY_MECH[m]) for i, m in enumerate(MECHS)]
     fig.legend(handles=handles, labels=[h.get_label() for h in handles],
-               loc="outside lower center", ncol=3, frameon=False, fontsize=7,
+               loc="outside lower center", ncol=3, frameon=False, fontsize=7.5,
                handlelength=1.0, columnspacing=1.8, borderaxespad=0.1)
     paths.append(str(C.save_fig(fig, "fig_roofline")))
 
@@ -512,17 +512,17 @@ def make_figures(summary) -> list[str]:
     for i, r in enumerate(tbl):
         ax.plot([tbl[-1]["bytes_per_token"] / 1.6, r["bytes_per_token"]],
                 [ypos[i]] * 2, color=style.INK["grid"], linewidth=0.8, zorder=1)
-    ax.set_yticks(ypos, labels, fontsize=6.3)
+    ax.set_yticks(ypos, labels, fontsize=7.5)
     ax.set_xscale("log")
     ax.set_xlim(left=tbl[-1]["bytes_per_token"] / 1.6)
     ax.set_xlabel("bytes per token per layer, all heads\n"
                   f"(the KV cache; $H$={HEADS}, $d$={D}, $d_v$={DV})")
     style.panel(ax, "a", "KV-cache footprint")
     ax.grid(axis="y", visible=False)
-    ax.legend(loc="lower right", fontsize=6.3, labelspacing=0.3, borderpad=0.25,
-              title="stored precision", title_fontsize=6.3)
+    ax.legend(loc="lower right", fontsize=7.5, labelspacing=0.3, borderpad=0.25,
+              title="stored precision", title_fontsize=7.5)
     style.note(ax, f"baseline MHA at 16 bits:\n{base:,.0f} bytes per token",
-               loc="upper left", size=6.3)
+               loc="upper left", size=7.5)
 
     # --- (b) intensity against traffic: MLA is not on the same curve ---------------
     ax = axes[1]
@@ -538,9 +538,9 @@ def make_figures(summary) -> list[str]:
                     markeredgecolor=style.INK["surface"], markeredgewidth=0.7,
                     zorder=3)
     ax.axhline(ridge, color=style.INK["primary"], linewidth=1.0, zorder=4)
-    ax.annotate(f"device ridge point, {ridge:.0f} FLOP/byte", (0.97, ridge),
+    ax.annotate(f"ridge point, {ridge:.0f} FLOP/byte", (0.97, ridge),
                 xycoords=("axes fraction", "data"), xytext=(0, -4),
-                textcoords="offset points", ha="right", va="top", fontsize=6.3,
+                textcoords="offset points", ha="right", va="top", fontsize=7.5,
                 color=style.INK["secondary"])
     ax.set_xscale("log"); ax.set_yscale("log")
     ax.set_ylim(bottom=ax.get_ylim()[0] / 60)     # room for the note under the data
@@ -551,20 +551,17 @@ def make_figures(summary) -> list[str]:
     share = [r for r in tbl if _family(r["variant"]) != "MLA"]
     style.direct_label(ax, min(r["bytes_per_token"] for r in mla),
                        max(r["intensity_decode"] for r in mla), "MLA (diamonds)",
-                       dx=7, dy=0, ha="left", va="center", size=6.5)
+                       dx=7, dy=0, ha="left", va="center", size=7.5)
     style.direct_label(ax, max(r["bytes_per_token"] for r in share),
                        min(r["intensity_decode"] for r in share),
                        "MHA, GQA, MQA",
-                       dx=-5, dy=9, ha="right", va="bottom", size=6.5)
+                       dx=-5, dy=9, ha="right", va="bottom", size=7.5)
     flop_x = (mla[0]["flops_decode"] / summary["cache_intensity"]
               ["baseline_MHA16"]["flops_decode"])
-    style.note(ax, "MHA, GQA and MQA lie on one line:\n"
-                   "they only move fewer bytes.\n\n"
-                   f"MLA leaves it because it also does\n{flop_x:.0f}$\\times$ "
-                   "more decode arithmetic -- the\nlatent up-projection folded into\n"
-                   "the attention. Its intensity is not\n"
-                   "comparable with the others'.",
-               loc="lower left", size=6.3)
+    style.note(ax, "MHA, GQA, MQA: fewer bytes only\n\n"
+                   f"MLA also does {flop_x:.0f}$\\times$ more decode\n"
+                   "arithmetic, so its intensity is not\ncomparable",
+               loc="lower left", size=7.5)
     paths.append(str(C.save_fig(fig, "fig_bytes_per_token")))
     return paths
 

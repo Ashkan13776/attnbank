@@ -315,14 +315,12 @@ def make_figure(recs, summary) -> list[str]:
     # the five curves end within half a decade of each other, so end labels would have
     # to be displaced further than the gaps they describe; a legend in the empty
     # upper-left is the honest choice here
-    ax.legend(loc="upper left", fontsize=6.3, labelspacing=0.35, borderpad=0.2)
+    ax.legend(loc="upper left", fontsize=7.5, labelspacing=0.35, borderpad=0.2)
     dc = summary["decomposition_check"]
-    style.note(ax, "GPT-2 and Qwen pooled; band is the\n"
-                   "IQR over heads, layers, passages.\n"
-                   "The two dashed terms sum to the\n"
-                   f"solid 'both' curve to "
-                   f"{dc['max_residual_over_y']:.0e} of " r"$\|y\|$.",
-               loc="lower left", size=6.3)
+    style.note(ax, "real models pooled; band is IQR\n"
+                   "dashed + dotted sum to 'both'\n"
+                   f"to {dc['max_residual_over_y']:.0e} of " r"$\|y\|$",
+               loc="lower left", size=7.5)
 
     # --- (b) the claim: keys cost more than values at the same bit width ------------
     ax = axes[1]
@@ -349,15 +347,15 @@ def make_figure(recs, summary) -> list[str]:
     ax.set_ylabel("key-only error $\\div$ value-only error\n"
                   "at the same bit width (dimensionless)")
     style.panel(ax, "b", "keys are the sensitive side")
-    style.label_ends(ax, ends, size=6.3)
+    style.label_ends(ax, ends, size=7.5)
     worse = summary["key_vs_value"][SOURCE_ORDER[0]]["4"]
-    style.note(ax, "paired per (layer, head, passage);\nband is the IQR of the ratio\n\n"
-                   f"at 4 bits, keys are worse on\n"
-                   f"{100 * worse['key_worse_frac']:.0f}% of "
-                   f"{worse['n_pairs']} GPT-2 pairs\n\n"
+    style.note(ax, "band: IQR of the paired ratio\n\n"
+                   f"at 4 bits keys worse on "
+                   f"{100 * worse['key_worse_frac']:.0f}%\n"
+                   f"of {worse['n_pairs']} GPT-2 pairs\n\n"
                    f"pooled median ratio "
                    f"{summary['falsifier']['key_value_error_ratio_median']:.2f}",
-               loc="upper left", size=6.3)
+               loc="upper left", size=7.5)
 
     # --- (c) how tight is the tanh bound? -------------------------------------------
     # The old panel scattered TV against the bound on log-log axes, where every point
@@ -393,14 +391,12 @@ def make_figure(recs, summary) -> list[str]:
     style.panel(ax, "c", "tightness of the TV bound")
     t = summary["tanh_bound"]
     style.note(ax, f"{t['violations_tanh_delta_over_2']} violations in "
-                   f"{t['tightness_tanh_delta']['n']:,} cells\n"
-                   f"({t['n_query_rows']:,} query rows)\n\n"
-                   f"pooled median {t['tightness_tanh_delta']['median']:.2f} "
+                   f"{t['tightness_tanh_delta']['n']:,} cells\n\n"
+                   f"median {t['tightness_tanh_delta']['median']:.2f} "
                    f"for $\\tanh(\\delta/2)$,\n"
-                   f"{t['tightness_tanh_osc']['median']:.2f} for the sharp form: the\n"
-                   f"bound is valid but loose by $\\sim$4$\\times$",
-               loc="upper left", size=6.3)
-    ax.legend(loc="lower right", fontsize=6.3, labelspacing=0.35, borderpad=0.2)
+                   f"{t['tightness_tanh_osc']['median']:.2f} for the sharp form",
+               loc="upper left", size=7.5)
+    ax.legend(loc="lower right", fontsize=7.5, labelspacing=0.35, borderpad=0.2)
     return [str(C.save_fig(fig, "fig_kv_quantization"))]
 
 

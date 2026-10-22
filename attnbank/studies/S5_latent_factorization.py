@@ -273,7 +273,7 @@ def analyse(recs) -> dict:
 SOURCE = {"gpt2/wikitext103": "GPT-2 small", "qwen2.5-0.5b/wikitext103": "Qwen2.5-0.5B",
           "synthetic": "Gaussian control"}
 SOURCE_ORDER = ("gpt2/wikitext103", "qwen2.5-0.5b/wikitext103", "synthetic")
-PRETTY = {"svd_oracle": "SVD oracle (signed)", "nmf_oracle": "NMF oracle (nonneg.)",
+PRETTY = {"svd_oracle": "SVD oracle", "nmf_oracle": "NMF oracle",
           "latent_stochastic": "latent stochastic", "clustered": "clustered",
           "nystrom": "Nyström"}
 #: the figure's method -> slot map.  Slots (0, 3, 4, 5, 6) are the only five-subset of
@@ -343,18 +343,14 @@ def make_figure(recs, summary) -> list[str]:
     ax.set_ylabel(r"$\|P-\widehat P\|_F\,/\,\|P\|_F$"
                   "\n(median over heads, dimensionless)")
     style.panel(ax, "a", SOURCE[src0])
-    style.label_ends(ax, ends, size=6.3)
+    style.label_ends(ax, ends, size=7.5)
     rt = summary["r_to_reach_tv_target"]["by_source"][src0]
-    style.note(ax, "shaded: the gap between the signed and\n"
-                   "the nonnegative oracle\n\n"
-                   f"to reach TV = {summary['r_to_reach_tv_target']['target']:g} the SVD "
-                   f"oracle needs $r$={rt['svd_oracle']:.0f};\n"
-                   f"the NMF oracle never does below "
-                   f"$r$={rt['nmf_oracle']:.0f},\nwhere it is exact anyway\n\n"
-                   f"$r$={', '.join(str(e) for e in excluded)} is omitted: $P$ is "
-                   f"{sub[0]['n']}$\\times${sub[0]['m']}, so\nthere every method "
-                   f"reconstructs it exactly",
-               loc="lower left", size=6.3)
+    style.note(ax, "shaded: signed vs. nonneg.\n"
+                   f"TV = {summary['r_to_reach_tv_target']['target']:g}: SVD at "
+                   f"$r$={rt['svd_oracle']:.0f},\n"
+                   f"NMF never below $r$={rt['nmf_oracle']:.0f}\n"
+                   f"$r$={', '.join(str(e) for e in excluded)} omitted: exact there",
+               loc="lower left", size=7.5)
 
     # --- (b)/(c) the penalty as a ratio, in each metric ------------------------------
     for pan, (letter, block, title, ylab) in enumerate((
@@ -382,14 +378,13 @@ def make_figure(recs, summary) -> list[str]:
         ax.set_xlabel("latent dimension $r$")
         ax.set_ylabel(ylab)
         style.panel(ax, letter, title)
-        style.label_ends(ax, ends, size=6.3)
+        style.label_ends(ax, ends, size=7.5)
         meds = {src: block.get(src, {}).get("median_ratio", float("nan"))
                 for src in SOURCE_ORDER}
         txt = ["median over $r$:"] + [f"  {SOURCE[s]}  {meds[s]:.2f}" for s in SOURCE_ORDER]
         if letter == "c":
-            txt += ["", "TV is not the objective either",
-                    "oracle minimises, so a ratio below 1", "is not a contradiction"]
-        style.note(ax, "\n".join(txt), loc="upper left", size=6.3)
+            txt += ["", "TV is not either oracle's", "objective"]
+        style.note(ax, "\n".join(txt), loc="upper left", size=7.5)
     return [str(C.save_fig(fig, "fig_latent_factorization"))]
 
 

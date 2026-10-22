@@ -19,6 +19,12 @@ Rules (from the dataviz method; do not override per figure):
     never ``series()``.
   * One y-axis per panel. Never twin axes.
   * Lines 1.4pt, markers >= 4pt, recessive grid, no top/right spines.
+  * No text in a figure is set below 7.5pt -- the legend/tick size -- and that includes
+    in-panel notes and direct labels.  At the 6.5in text width these render 1:1, so a
+    6.5pt note is 6.5pt in print.  When a note will not fit at 7.5pt, cut words: the
+    long-form explanation is in the caption (``sections/tables/cap_fig_*.tex``), which
+    renders directly beneath the figure, so a note only has to carry the number and
+    its name.  7.0pt is the absolute floor, for a panel where trimming has run out.
   * >= 2 series need a legend; <= 4 series should also be direct-labelled.
   * Panel titles are ONE short line set by ``panel()`` and never repeat the axis label;
     the panel's statistic goes inside the axes via ``note()``.  A two-line title on a
@@ -191,24 +197,28 @@ def panel(ax, letter: str, title: str = "") -> None:
 
 
 def note(ax, text: str, loc: str = "upper left", pad: float = 0.03,
-         color: str | None = None, size: float = 7.0) -> None:
+         color: str | None = None, size: float = 7.5,
+         ypad: float | None = None) -> None:
     """An in-axes annotation, in ink, for the statistic a panel is making.
 
     ``loc`` is one of the four corners; the text is placed in axes coordinates so it
     cannot leave the panel, which is what a title does when it is too long.
+    ``ypad`` overrides the vertical inset alone, for the case where the horizontal
+    corner is the only free one and the note has to clear a legend above it.
     """
     import matplotlib.patheffects as pe
     va = "top" if "upper" in loc else ("center" if "center" in loc else "bottom")
     ha = "left" if "left" in loc else "right"
+    vpad = pad if ypad is None else ypad
     x = pad if ha == "left" else 1 - pad
-    y = {"top": 1 - pad, "center": 0.5, "bottom": pad}[va]
+    y = {"top": 1 - vpad, "center": 0.5, "bottom": vpad}[va]
     t = ax.text(x, y, text, transform=ax.transAxes, va=va, ha=ha, fontsize=size,
                 color=color or INK["secondary"], linespacing=1.35, zorder=5)
     t.set_path_effects([pe.withStroke(linewidth=2.2, foreground=INK["surface"])])
     return t
 
 
-def direct_label(ax, x, y, text, color=None, dx=3, dy=0, size: float = 7.0,
+def direct_label(ax, x, y, text, color=None, dx=3, dy=0, size: float = 7.5,
                  ha: str = "left", va: str = "center", halo: bool = True):
     """Label a series at its end point; text in ink, never the series color.
 
@@ -224,7 +234,7 @@ def direct_label(ax, x, y, text, color=None, dx=3, dy=0, size: float = 7.0,
     return t
 
 
-def label_ends(ax, ends, size: float = 6.8, min_gap_frac: float = 0.055, dx: float = 3):
+def label_ends(ax, ends, size: float = 7.5, min_gap_frac: float = 0.055, dx: float = 3):
     """Direct-label a set of series at their end points, pushed apart so none collide.
 
     ``ends`` is ``[(x, y, text)]`` in data coordinates.  Two curves that converge --

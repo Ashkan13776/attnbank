@@ -404,12 +404,11 @@ def make_figure(summary) -> list[str]:  # noqa: C901
     ax.set_xlabel("stored key--value pairs $N$")
     ax.set_ylabel("recall accuracy (fraction of\nqueries answered correctly)")
     style.panel(ax, "a", "recall against load")
-    style.label_ends(ax, ends, size=6.5, min_gap_frac=0.075)
-    style.note(ax, "median and IQR over the\n"
-                   f"{len(ds)} state sizes and all seeds\n\n"
-                   "the linear and decay RNNs\ncoincide at every $N$; the\n"
-                   "former is drawn wider so\nboth stay visible",
-               loc="center right", size=6.3)
+    style.label_ends(ax, ends, size=7.5, min_gap_frac=0.075)
+    style.note(ax, f"median, IQR over {len(ds)} state sizes\n"
+                   "linear and decay coincide\n"
+                   "(linear drawn wider)",
+               loc="center right", size=7.5)
 
     # --- (b) does the state size matter at all? -------------------------------------
     # State size is an ORDERED variable, so it takes the sequential ramp, not
@@ -429,15 +428,16 @@ def make_figure(summary) -> list[str]:  # noqa: C901
     ax.set_xlabel("stored key--value pairs $N$")
     ax.set_ylabel("recall accuracy (fraction of\nqueries answered correctly)")
     style.panel(ax, "b", f"{PRETTY[meth]}, by state size")
-    ax.legend(loc="upper right", fontsize=6.3, title="state $S=d_\\varphi\\times d_v$",
-              title_fontsize=6.3, labelspacing=0.3, borderpad=0.25)
+    ax.legend(loc="upper right", fontsize=7.5, title="state $S=d_\\varphi\\times d_v$",
+              title_fontsize=7.5, labelspacing=0.3, borderpad=0.25)
     cr = summary["collapse_ratio"]
-    style.note(ax, f"the curves do not\nseparate: a "
-                   f"{max(shown) // min(shown)}$\\times$ larger\nstate buys no extra\n"
-                   f"associations here\n\n$N/S$ at collapse:\n"
-                   f"median {cr['median']:g}, IQR\n{cr['q1']:g} to "
-                   f"{cr['q3']:g} ($n$={cr['n']})",
-               loc="center right", size=6.3)
+    # the legend fills the upper right, the curves the lower left: the note is
+    # bottom-anchored well above the x axis so it clears both
+    style.note(ax, f"curves do not separate:\n"
+                   f"{max(shown) // min(shown)}$\\times$ larger state buys\n"
+                   f"no extra associations\n"
+                   f"$N/S$ at collapse {cr['median']:g}",
+               loc="lower right", size=7.5, ypad=0.28)
 
     # --- (c) the collapse point against the bound -----------------------------------
     ax = axes[2]
@@ -453,19 +453,18 @@ def make_figure(summary) -> list[str]:  # noqa: C901
         ends.append((xs[-1], ys[-1], PRETTY[meth]))
     ax.plot(ds, ds, color=style.INK["primary"], linewidth=1.0, zorder=1)
     style.direct_label(ax, ds[-1], ds[-1], r"the bound $N=d_\varphi$", dx=4,
-                       ha="left", va="center", size=6.5)
+                       ha="left", va="center", size=7.5)
     ax.set_xscale("log", base=2); ax.set_yscale("log", base=2)
     style.log2_ticks(ax, "x", 3, 8, every=1)
     style.log2_ticks(ax, "y", 1, 9, every=2)
-    ax.set_xlim(2 ** 2.7, 2 ** 10.4)
+    ax.set_xlim(2 ** 2.7, 2 ** 10.9)
     ax.set_xlabel(r"state rank $d_\varphi$" f"  ($d_v$={DV})")
     ax.set_ylabel("$N$ at which median recall\nfirst falls below 0.5")
     style.panel(ax, "c", "the bound is not attained")
-    style.label_ends(ax, ends, size=6.5, min_gap_frac=0.07)
-    style.note(ax, "the collapse is flat in the\nstate rank while the bound\n"
-                   f"rises {ds[-1] // ds[0]}$\\times$: finite state\n"
-                   "is an upper bound here, not a\nprediction of capacity",
-               loc="center right", size=6.3)
+    style.label_ends(ax, ends, size=7.5, min_gap_frac=0.07)
+    style.note(ax, "collapse flat in $d_\\varphi$;\n"
+                   f"bound rises {ds[-1] // ds[0]}$\\times$",
+               loc="center right", size=7.5)
     return [str(C.save_fig(fig, "fig_finite_state_recall"))]
 
 

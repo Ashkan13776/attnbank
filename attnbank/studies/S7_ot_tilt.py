@@ -306,17 +306,18 @@ def make_figure(recs, summary) -> list[str]:
     ax.set_xscale("log", base=2); ax.set_yscale("log")
     style.log2_ticks(ax, "x", 0, 7, every=2)
     ax.set_xlim(2 ** -0.4, 2 ** 9.8)
+    ax.set_ylim(top=ax.get_ylim()[1] * 60)   # headroom so the legend clears the curves
     ax.set_xlabel("Sinkhorn iterations")
     ax.set_ylabel(r"marginal error $\max_j|\Gamma^{\!\top}\mathbf{1}-\bar\mu|$"
                   "\n(median over heads, dimensionless)")
     style.panel(ax, "a", "convergence to the marginals")
     ti = summary["tilt_identity"]
-    ax.legend(loc="upper right", fontsize=6.3, labelspacing=0.3, borderpad=0.25,
+    ax.legend(loc="upper right", fontsize=7.5, labelspacing=0.3, borderpad=0.25,
               handlelength=1.2)
-    style.note(ax, "band: IQR over heads,\nlayers and passages\n\n"
-                   "the tilt identity is exact at\nevery iteration: residual\n"
+    style.note(ax, "band: IQR over heads\n"
+                   "tilt identity exact: residual\n"
                    f"{ti['max_residual']:.0f} over {ti['n_checks']:,} checks",
-               loc="lower left", size=6.2)
+               loc="lower left", size=7.5)
 
     # --- (b) what the potential is correlated with ----------------------------------
     ax = axes[1]
@@ -331,7 +332,7 @@ def make_figure(recs, summary) -> list[str]:
                 markeredgecolor=style.INK["surface"], markeredgewidth=1.0, zorder=5)
     ax.axvline(0, color=style.INK["muted"], linewidth=0.7, zorder=0)
     ax.set_xlim(-1.05, 1.05)
-    ax.set_ylim(0, 1.17)
+    ax.set_ylim(0, 1.30)
     ax.set_xlabel(r"Spearman $\rho$ of the key potential $f_j$"
                   "\n" r"against the column quantity (per head)")
     ax.set_ylabel(f"fraction of the {len(conv)} converged\n(head, layer, passage) slices")
@@ -339,13 +340,13 @@ def make_figure(recs, summary) -> list[str]:
     pot = summary["potential"]
     cm = pot["rho_vs_softmax_column_mass"]
     kn = pot["rho_vs_key_norm"]
-    style.note(ax, "median (dot), IQR in brackets:\n"
+    style.note(ax, "median (dot), IQR:\n"
                    f"column mass {cm['median']:+.2f} "
                    f"[{cm['q1']:+.2f}, {cm['q3']:+.2f}]\n"
                    f"key norm {kn['median']:+.2f} "
                    f"[{kn['q1']:+.2f}, {kn['q3']:+.2f}]",
-               loc="upper right", size=6.2)
-    ax.legend(loc="lower right", fontsize=6.3, labelspacing=0.3, borderpad=0.25)
+               loc="upper right", size=7.5)
+    ax.legend(loc="lower right", fontsize=7.5, labelspacing=0.3, borderpad=0.25)
 
     # --- (c) how far OT moves the operator -------------------------------------------
     ax = axes[2]
@@ -354,7 +355,7 @@ def make_figure(recs, summary) -> list[str]:
     ends = []
     for i, (key, lab) in enumerate((("tv_vs_softmax", "vs. softmax"),
                                     ("tv_vs_tempered_softmax",
-                                     r"vs. softmax at the same $\epsilon$"))):
+                                     "vs. tempered softmax"))):
         med = [tab[str(e)][key]["median"] for e in eps]
         ax.plot(eps, med, "-o", color=style.series(i), markersize=3.0, label=lab)
         ax.fill_between(eps, [tab[str(e)][key]["q1"] for e in eps],
@@ -369,13 +370,16 @@ def make_figure(recs, summary) -> list[str]:
     ax.set_xlabel(r"entropic regularisation $\epsilon$")
     ax.set_ylabel(r"$\mathrm{TV}(\pi,\pi^{\rm OT})$ at convergence"
                   "\n(median over heads, dimensionless)")
-    style.panel(ax, "c", "how far OT moves the operator")
-    style.label_ends(ax, ends, size=6.3)
-    style.note(ax, "the gap between the curves\nis the tilt alone: the lower\n"
-                   "one divides out the temperature\n"
-                   "that $\\epsilon$ also applies, and at\n"
-                   "$\\epsilon$=1 the two coincide by\ndefinition",
-               loc="upper right", size=6.2)
+    style.panel(ax, "c", r"how far OT moves $\pi$")
+    # the two end labels are set by hand: on one line the lower one runs past the
+    # figure's right edge, which would scale the whole figure -- and its type -- down
+    (x0, y0, l0), (x1, y1, _) = ends
+    style.direct_label(ax, x0, y0, l0, dx=4, size=7.5)
+    style.direct_label(ax, x1, y1, "vs. tempered\nsoftmax", dx=3, dy=6,
+                       ha="left", va="bottom", size=7.5)
+    style.note(ax, "the gap is the tilt alone;\n"
+                   "the curves coincide at $\\epsilon$=1",
+               loc="upper right", size=7.5)
     return [str(C.save_fig(fig, "fig_ot_tilt"))]
 
 

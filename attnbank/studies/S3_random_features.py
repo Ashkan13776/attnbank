@@ -519,8 +519,8 @@ def make_figure(rec_r, rec_c, summary) -> list[str]:
     lines = [r"fitted $\beta$ (theory $-1/2$)"]
     for src in srcs:
         f = summary["fits"][f"{src}|{var}|c={FIT_REGIME_C}"]["sd_slope_asymptotic"]
-        lines.append(f"{SHORT.get(src, src)}  {f['slope']:+.3f} "
-                     f"[{f['ci95'][0]:+.3f}, {f['ci95'][1]:+.3f}]")
+        # the 95% CIs are in tab:rff-exponents; at 7.5pt they do not fit the panel
+        lines.append(f"{SHORT.get(src, src)}  {f['slope']:+.3f}")
     style.note(ax, "\n".join(lines), loc="upper right", size=7.5)
 
     # --- (b) bias ------------------------------------------------------------------
@@ -554,11 +554,10 @@ def make_figure(rec_r, rec_c, summary) -> list[str]:
     for src in srcs:
         f = summary["fits"][f"{src}|{var}|c={FIT_REGIME_C}"]["bias_slope_asymptotic"]
         if np.isfinite(_num(f.get("slope"))):
-            lines.append(f"{SHORT.get(src, src)}  {f['slope']:+.3f} "
-                         f"[{f['ci95'][0]:+.3f}, {f['ci95'][1]:+.3f}]")
+            lines.append(f"{SHORT.get(src, src)}  {f['slope']:+.3f}")
     if unresolved:
-        lines += ["", "not drawn: Gaussian control,",
-                  "bias under its Monte-Carlo floor"]
+        lines += ["", "Gaussian control not", "drawn: bias under its",
+                  "Monte-Carlo floor"]
     style.note(ax, "\n".join(lines), loc="upper right", size=7.5)
 
     # --- (c) the crossover with restriction ------------------------------------------
