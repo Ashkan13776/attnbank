@@ -62,6 +62,17 @@ def _repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
+def _project_root() -> Path:
+    """The Python project directory (the one holding pyproject.toml).
+
+    Derived from this file's location rather than hardcoded. It was spelled as the
+    literal "attnbank" until the project moved to lib/, at which point the literal
+    silently created a stray directory at the repository root -- which then shadowed
+    the installed package, because it shared the package's name.
+    """
+    return Path(__file__).resolve().parents[2]
+
+
 def git_commit(short: bool = False) -> str:
     """The commit the results were produced at, or ``"unknown"``. Read-only."""
     try:
@@ -248,7 +259,7 @@ class SweepContext:
 
 def _sweep_cache_dir() -> Path:
     env = os.environ.get("ATTNBANK_CACHE")
-    root = Path(env).expanduser() if env else _repo_root() / "attnbank" / ".cache"
+    root = Path(env).expanduser() if env else _project_root() / ".cache"
     return root / "sweeps"
 
 
@@ -451,7 +462,7 @@ def _short(job: Mapping, n: int = 76) -> str:
 
 def results_dir() -> Path:
     env = os.environ.get("ATTNBANK_RESULTS")
-    return Path(env).expanduser() if env else _repo_root() / "attnbank" / "results"
+    return Path(env).expanduser() if env else _project_root() / "results"
 
 
 def save_results(name: str, records: Sequence[Mapping], meta: Mapping | None = None,

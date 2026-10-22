@@ -110,7 +110,7 @@ HEIGHTS = {"column": 2.3, "full": 2.6, "full-3": 2.9, "full-tall": 4.6,
 seq_cmap = LinearSegmentedColormap.from_list("ab_seq", SEQ_BLUE)
 div_cmap = LinearSegmentedColormap.from_list("ab_div", DIVERGING)
 
-FIG_DIR = Path(__file__).resolve().parents[2] / "figures"
+FIG_DIR = Path(__file__).resolve().parents[3] / "figures"   # repo-root figures/
 
 
 def series(i: int) -> str:
