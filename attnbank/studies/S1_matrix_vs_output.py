@@ -415,11 +415,11 @@ def make_figure(recs, summary) -> list[str]:
             ax.axvspan(b0, b1, color=style.INK["primary"], alpha=0.09, zorder=0,
                        linewidth=0)
             import matplotlib.patheffects as pe
-            ax.annotate(f"{sp['ratio_p95_p05']:.0f}$\\times$ spread in output error\n"
-                        f"at matched $\\|P-\\widehat P\\|_F$ ($n$={sp['n']})",
+            ax.annotate(f"{sp['ratio_p95_p05']:.0f}$\\times$ output-error spread\n"
+                        f"in the shaded band",
                         xy=(np.sqrt(b0 * b1), 0.99), xycoords=("data", "axes fraction"),
                         xytext=(0, -1), textcoords="offset points",
-                        ha="center", va="top", fontsize=6.5,
+                        ha="center", va="top", fontsize=7.5,
                         color=style.INK["secondary"], zorder=6,
                         path_effects=[pe.withStroke(linewidth=2.2,
                                                     foreground=style.INK["surface"])])
@@ -431,8 +431,8 @@ def make_figure(recs, summary) -> list[str]:
         style.note(ax, f"pooled $\\rho$ {pooled:.2f}\n"
                        f"within mechanism {within:.2f}\n"
                        f"within one decade {np.median(dec):.2f}\n"
-                       f"{100 * inv:.0f}% of cross-mechanism\npairs misordered",
-                   loc="lower right")
+                       f"cross-mechanism inversions {100 * inv:.0f}%",
+                   loc="lower right", size=7.5)
         ax.set_xlabel(lab)
         style.panel(ax, letter, title)
     axes[0].set_ylabel(r"output error $\|Y-\widehat Y\|_F$")
@@ -459,21 +459,19 @@ def make_figure(recs, summary) -> list[str]:
     style.identity_line(ax, linewidth=0.8)
     style.direct_label(ax, lim[1] / 50, lim[1] / 50,
                        r"identity when $\widehat V=V$", dx=-4, dy=7, ha="right",
-                       va="bottom", size=6.5)
+                       va="bottom", size=7.5)
     ax.set_xlabel(r"$\|(P-\widehat P)V\|_F$")
     style.panel(ax, "c", "value-weighted norm")
     md = ident["by_mechanism"]
     worst = max((md[m]["median_relative_difference"] for m in compressing), default=0.0)
     wmax = max((md[m]["max_relative_difference"] for m in compressing), default=0.0)
     n_pres = len({r["mechanism"] for r in rows}) - len(compressing)
-    style.note(ax, f"grey: {n_pres} value-preserving mechanisms.\n"
-                   f"For these the norm $\\equiv$ the output error,\n"
-                   f"so $\\rho$ = 1.00 is arithmetic, not evidence.\n\n"
-                   f"colour: {', '.join(compressing)}, the only\n"
-                   f"mechanism here that compresses $V$ --\n"
-                   f"departure from the identity\n"
-                   f"median {100 * worst:.0f}%, max {100 * wmax:.0f}%.",
-               loc="lower right")
+    style.note(ax, f"grey: {n_pres} value-preserving\n"
+                   f"mechanisms; $\\rho$ = 1.00 is\n"
+                   f"arithmetic, not evidence\n\n"
+                   f"colour: {', '.join(compressing)} compresses $V$\n"
+                   f"departure median {100 * worst:.0f}%, max {100 * wmax:.0f}%",
+               loc="lower right", size=7.5)
 
     handles = [plt_line(style.method_color(m), m) for m in HIGHLIGHT]
     handles += [plt_line(style.INK["muted"], "other mechanisms")]

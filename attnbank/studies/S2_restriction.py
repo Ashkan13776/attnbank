@@ -608,11 +608,11 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
         ax.fill_between(ks, [x["q1"] for x in g], [x["q3"] for x in g],
                         color=style.series(i), alpha=0.16, linewidth=0)
         style.direct_label(ax, ks[-1], g[-1]["median"], SOURCE.get(src, src),
-                           size=6.8, dy=(0 if src == "synthetic" else
+                           size=7.5, dy=(0 if src == "synthetic" else
                                          (5 if src.startswith("gpt2") else -5)))
     ax.set_xscale("log", base=2); ax.set_yscale("log")
     style.log2_ticks(ax, "x", 0, 9, every=2)
-    ax.set_xlim(right=2 ** 11.6)                 # room for the end labels
+    ax.set_xlim(right=2 ** 12.2)                 # room for the end labels
     ax.set_xlabel("budget $k$ (keys kept per query)")
     ax.set_ylabel(r"omitted mass $\varepsilon_q$ (dimensionless)")
     style.panel(ax, "a", "omitted mass vs. budget")
@@ -620,11 +620,11 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
     k_ref = sorted(sp, key=int)[0]
     # spread_at_k is computed on the two real models only; the Gaussian control is
     # excluded there, so the note must not claim it is included
-    style.note(ax, "band: IQR over heads, layers\nand passages\n\n"
-                   f"on the two real models, at $k$={k_ref}\nthe middle 90% of the "
-                   f"{sp[k_ref]['n']} heads\nspans {sp[k_ref]['p05']:.1e} to "
-                   f"{sp[k_ref]['p95']:.2f}: a uniform\nbudget cannot be right for all",
-               loc="lower left")
+    style.note(ax, "band: IQR over heads\n\n"
+                   f"real models, $k$={k_ref}: middle 90%\n"
+                   f"of {sp[k_ref]['n']} heads spans "
+                   f"{sp[k_ref]['p05']:.1e} to {sp[k_ref]['p95']:.2f}",
+               loc="lower left", size=7.5)
 
     # The predicted and measured magnitudes span sixty decades because eps_q underflows
     # once a head is sharply peaked; plotting that range turns the identity into a
@@ -647,14 +647,11 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
     ax.set_ylabel(r"measured $\|y-\widehat y\|$")
     style.panel(ax, "b", "the restriction identity")
     idn = summary["identity"]
-    style.note(ax, f"$\\max_q$ residual $/\\,\\|y\\|$ = "
+    style.note(ax, f"max residual $/\\,\\|y\\|$ "
                    f"{idn['max_residual_over_y']:.1e}\n"
-                   f"median {idn['median_residual_over_y']:.1e} "
-                   f"over {idn['n_rows']:,} queries\n"
-                   f"(float64; tolerance {idn['tolerance']:.0e})\n\n"
-                   f"{below:,} further points have\n$\\varepsilon_q$ below "
-                   f"{floor:.0e} and fall\nleft of the panel",
-               loc="lower right")
+                   f"median {idn['median_residual_over_y']:.1e} (float64)\n\n"
+                   f"{below:,} points clipped at {floor:.0e}",
+               loc="lower right", size=7.5)
     paths.append(str(C.save_fig(fig, "fig_omitted_mass")))
 
     # --- fig_value_aware_selection --------------------------------------------------
