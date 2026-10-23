@@ -48,32 +48,55 @@ icons — is what everyone else already has and is the thing to avoid.
 
 ## Token contract
 
-Agent 1 owns `docs/stylesheets/tokens.css` and may change any **value** below.
-Nobody may invent a token outside it, and nobody else may edit that file.
-Everyone consumes these names:
+Agent 1 owns `docs/stylesheets/tokens.css`. Nobody else edits it, and nobody
+declares a raw colour, face, size or duration anywhere else.
+
+These tokens **exist today** and are referenced across the other eleven
+stylesheets. Agent 1 may change any **value**; agent 1 may **not rename** any of
+them, because a rename means editing nine other agents' files at once:
 
 ```
---ab-ink            --ab-ink-soft       --ab-ink-muted      --ab-ink-faint
---ab-surface        --ab-surface-sunk   --ab-rule           --ab-rule-soft
---ab-accent         --ab-accent-soft
---ab-cat-exact      --ab-cat-interaction --ab-cat-restrict  --ab-cat-compress
---ab-cat-factorize  --ab-cat-coupling    --ab-cat-recurrent
---ab-font-display   --ab-font-body      --ab-font-mono
---ab-step--1 … --ab-step-5              (type scale)
---ab-space-1 … --ab-space-8             (spacing scale)
---ab-radius         --ab-rule-width     --ab-motion-fast    --ab-motion-slow
+--ab-serif  --ab-mono                           faces (system stacks; no webfont fetch)
+--ab-plate  --ab-sunk                           surfaces
+--ab-rule   --ab-rule-soft  --ab-faint          rules and recessive ink
+--c-exact --c-interaction --c-restrict --c-compress
+--c-factorize --c-coupling --c-recurrent        the seven category hues
+--hl                                            the current category's hue, set by [data-cat]
 ```
 
-**Category hues come from `attnbank/plotting/style.py` `CATEGORICAL` and may not
-be changed.** A category is the same colour on this site, in every figure of the
-monograph, and in the paper's taxonomy figure. That consistency is earned; do
-not spend it.
+The site is thin on tokens, which is part of why it reads as unconsidered:
+there is no type scale, no spacing scale, no named ink levels, no motion
+durations, and no accent that is not a category hue. **Agent 1 adds them**, in
+`tokens.css`, under the `--ab-` prefix, and reports the list so the other nine
+can adopt it. Suggested shape, not a mandate:
+
+```
+--ab-ink  --ab-ink-soft  --ab-ink-muted         text, three levels
+--ab-accent  --ab-accent-soft                   one accent, distinct from the seven hues
+--ab-display                                    a display face, if the identity wants one
+--ab-step--1 … --ab-step-5                      type scale
+--ab-space-1 … --ab-space-8                     spacing scale
+--ab-radius  --ab-rule-width
+--ab-motion-fast  --ab-motion-slow  --ab-ease
+```
+
+Until agent 1 publishes those, build with what exists and with Material's own
+`--md-*` tokens; do not hardcode. If you need a token that is not there, ask
+agent 1 through the coordinator rather than inventing one locally.
+
+**Category hues are `attnbank.plotting.style.CATEGORICAL` verbatim and may not
+be changed in hue.** A category is the same colour on this site, in every figure
+of the monograph, and in the paper's taxonomy figure. That consistency is
+earned; do not spend it. The dark-theme block lifts them for the dark ground —
+same hue, same order — and that is the only licence.
 
 Colour carries meaning only through category and state. It is never decoration,
-and category hues never sit behind text — several fail contrast as a text
-colour. Rules, ticks, and underlines.
+and category hues never sit behind text or become text: the amber and the green
+clear 4.5:1 on neither ground. Rules, ticks, and underlines.
 
----
+**Themes.** Material stamps `data-md-color-scheme` on `<html>` server-side, so
+`:root` and `[data-md-color-scheme="slate"]` are the complete set of states —
+there is no unstamped case to guard against here. Define every colour in both.
 
 ## Non-negotiable
 
