@@ -483,6 +483,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../methods/softmax/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dense softmax attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../methods/flash/" class="md-nav__link">
         
   
@@ -490,7 +518,7 @@
   <span class="md-ellipsis">
     
   
-    flash
+    FlashAttention
   
 
     
@@ -518,35 +546,7 @@
   <span class="md-ellipsis">
     
   
-    lowprec
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/softmax/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    softmax
+    Low-precision attention
   
 
     
@@ -574,7 +574,7 @@
   <span class="md-ellipsis">
     
   
-    splitk
+    Split-K / Flash-Decoding
   
 
     
@@ -671,7 +671,7 @@
   <span class="md-ellipsis">
     
   
-    cosformer
+    cosFormer
   
 
     
@@ -699,7 +699,7 @@
   <span class="md-ellipsis">
     
   
-    linear_elu
+    Linear transformer
   
 
     
@@ -727,7 +727,7 @@
   <span class="md-ellipsis">
     
   
-    nystrom
+    Nystromformer
   
 
     
@@ -755,7 +755,7 @@
   <span class="md-ellipsis">
     
   
-    performer
+    Performer / FAVOR+
   
 
     
@@ -783,7 +783,7 @@
   <span class="md-ellipsis">
     
   
-    trigrff
+    Random Fourier features for attention
   
 
     
@@ -875,34 +875,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../methods/blocktopk/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    blocktopk
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../methods/lsh_sample/" class="md-nav__link">
         
   
@@ -910,35 +882,7 @@
   <span class="md-ellipsis">
     
   
-    lsh_sample
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/sink_window/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    sink_window
+    LSH importance sampling
   
 
     
@@ -966,7 +910,7 @@
   <span class="md-ellipsis">
     
   
-    topk
+    Oracle top-k restriction
   
 
     
@@ -994,7 +938,35 @@
   <span class="md-ellipsis">
     
   
-    value_topk (oracle)
+    Output-aware selection (oracle)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/blocktopk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quest-style page / block selection
   
 
     
@@ -1022,7 +994,35 @@
   <span class="md-ellipsis">
     
   
-    window
+    Sliding-window (banded) attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/sink_window/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StreamingLLM
   
 
     
@@ -1118,62 +1118,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../methods/evict_h2o/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    evict_h2o
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/evict_snapkv/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    evict_snapkv
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../methods/gqa/" class="md-nav__link">
         
   
@@ -1181,7 +1125,7 @@
   <span class="md-ellipsis">
     
   
-    gqa
+    Grouped-query attention
   
 
     
@@ -1202,14 +1146,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../methods/linformer/" class="md-nav__link">
+      <a href="../../methods/evict_h2o/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    linformer
+    H2O
   
 
     
@@ -1237,63 +1181,7 @@
   <span class="md-ellipsis">
     
   
-    lowrank_kv
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/merge_kv/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    merge_kv
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/mla/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    mla
+    Hidden-dimension low rank
   
 
     
@@ -1321,7 +1209,119 @@
   <span class="md-ellipsis">
     
   
-    quantkv
+    KV-cache quantization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/linformer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linformer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/mla/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-head latent attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/evict_snapkv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SnapKV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/merge_kv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Token merging
   
 
     
@@ -1416,7 +1416,7 @@
   <span class="md-ellipsis">
     
   
-    clustered
+    Clustered attention
   
 
     
@@ -1444,7 +1444,7 @@
   <span class="md-ellipsis">
     
   
-    latent_stochastic
+    Latent stochastic factorization
   
 
     
@@ -1472,7 +1472,7 @@
   <span class="md-ellipsis">
     
   
-    nmf_oracle (oracle)
+    Nonnegative rank bound (oracle)
   
 
     
@@ -1500,7 +1500,7 @@
   <span class="md-ellipsis">
     
   
-    svd_oracle (oracle)
+    Signed rank bound (oracle)
   
 
     
@@ -1591,7 +1591,7 @@
   <span class="md-ellipsis">
     
   
-    lowrank_ot
+    LOTFormer-style factored coupling
   
 
     
@@ -1619,7 +1619,7 @@
   <span class="md-ellipsis">
     
   
-    sinkhorn
+    Sinkhorn / entropic-OT attention
   
 
     
@@ -1712,7 +1712,7 @@
   <span class="md-ellipsis">
     
   
-    decay_rnn
+    Decayed linear recurrence
   
 
     
@@ -1740,7 +1740,7 @@
   <span class="md-ellipsis">
     
   
-    delta_rnn
+    DeltaNet
   
 
     
@@ -1768,7 +1768,7 @@
   <span class="md-ellipsis">
     
   
-    linear_rnn
+    Linear attention as a recurrence
   
 
     
@@ -3935,7 +3935,7 @@ spellings <code>q=</code>, <code>k=</code>, <code>v=</code> are still accepted a
 
         <p>Base class for every method in the bank.</p>
 <p>A subclass declares what it is through class attributes and implements one method,
-:meth:<code>_forward</code>.  Everything else -- validation, the causal guard, the registry
+<code>_forward</code>.  Everything else -- validation, the causal guard, the registry
 entry, the conformance suite -- follows from the declaration.</p>
 
 
@@ -4092,7 +4092,7 @@ commitment, not documentation.</p>
             <td>
               <div class="doc-md-description">
                 <p>mask so that query <code>i</code> sees keys <code>0 .. i + (n - m)</code>. Raises
-:class:<code>~attnbank.errors.CausalNotSupportedError</code> -- which names the
+<code>attnbank.errors.CausalNotSupportedError</code> -- which names the
 methods that do support it -- when the method declares otherwise.</p>
               </div>
             </td>
@@ -4111,7 +4111,7 @@ methods that do support it -- when the method declares otherwise.</p>
               <div class="doc-md-description">
                 <p>also materialise <code>pi_hat</code> on the original <code>n</code> positions. Costs
 <code>O(m n)</code> memory, so it is off by default; the conformance suite and
-:func:<code>attnbank.compare</code> turn it on.</p>
+<code>attnbank.compare</code> turn it on.</p>
               </div>
             </td>
             <td>
@@ -4269,9 +4269,9 @@ methods that do support it -- when the method declares otherwise.</p>
 
         <p>Config under which this method provably reduces to dense softmax, or <code>None</code>.</p>
 <p>The conformance suite builds <code>cls(**limit_config())</code> and requires the output and
-the weights to match :class:<code>SoftmaxAttention</code>. <code>None</code> means no exact limit
-exists; the method must then supply :meth:<code>convergence_configs</code>, unless its
-<code>objective</code> is :attr:<code>Objective.MODIFY</code>, in which case it does not target
+the weights to match <code>SoftmaxAttention</code>. <code>None</code> means no exact limit
+exists; the method must then supply <code>convergence_configs</code>, unless its
+<code>objective</code> is <code>Objective.MODIFY</code>, in which case it does not target
 softmax at all and neither anchor applies.</p>
 
 
@@ -4565,7 +4565,7 @@ contract depends on them.</p>
     <div class="doc doc-contents ">
 
         <p>Verify <code>y == weights @ (v_hat or value)</code> and return the max deviation.</p>
-<p>Delegates to :func:<code>attnbank.conformance.check_invariant</code>; see there for the
+<p>Delegates to <code>attnbank.conformance.check_invariant</code>; see there for the
 tolerances and the exception raised on failure.</p>
 
 
@@ -4795,7 +4795,7 @@ is a different operator and fidelity is not its goal.</p>
     <div class="doc doc-contents ">
 
         <p>Validate the <code>[B, H, n, d]</code> convention, naming the argument that is wrong.</p>
-<p>Raises :class:<code>~attnbank.errors.ShapeError</code> with the offending argument, what was
+<p>Raises <code>attnbank.errors.ShapeError</code> with the offending argument, what was
 expected and what arrived -- never a bare broadcasting failure from deep inside a
 method.</p>
 
@@ -5696,7 +5696,7 @@ same method agree bit for bit and why studies reproduce (DESIGN.md Sec. 4).</p>
 <p>Five groups of building blocks, each the single home of one recurring behaviour:</p>
 <p><code>attnbank.components.masking</code>
     the causal convention, visibility masks, log-space softmax, renormalisation
-    (re-exported from :mod:<code>attnbank.core</code>, which is where new methods usually find them).
+    (re-exported from <code>attnbank.core</code>, which is where new methods usually find them).
 <code>attnbank.components.online_softmax</code>
     the state / merge / readout monoid of <code>prop:exact-monoid</code>, shared by <code>flash</code>
     (one pass over key blocks) and <code>splitk</code> (two-level reduction).
@@ -7033,7 +7033,7 @@ are accounted for.</p>
 <p><strong>Alignment.</strong> <code>is_causal=True</code> masks with the diagonal aligned at the <em>top left</em>. The
 library's convention (DESIGN.md Sec. 2) aligns the last query with the last key, so
 query <code>i</code> sees <code>0 .. i + (n - m)</code>. Those agree only when <code>m == n</code>. The helper
-always passes an explicit boolean mask built by :func:<code>attnbank.causal_mask</code>, so decode
+always passes an explicit boolean mask built by <code>attnbank.causal_mask</code>, so decode
 (<code>m &lt; n</code>) is correct rather than accidentally right.</p>
 <p><strong>Kernel choice.</strong> <code>sdpa_kernel=</code> pins the sub-backend -- <code>"flash"</code>,
 <code>"mem_efficient"</code>, <code>"math"</code>, or <code>None</code> to let torch choose. Pinning matters for a

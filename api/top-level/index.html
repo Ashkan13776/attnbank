@@ -483,6 +483,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../methods/softmax/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dense softmax attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../methods/flash/" class="md-nav__link">
         
   
@@ -490,7 +518,7 @@
   <span class="md-ellipsis">
     
   
-    flash
+    FlashAttention
   
 
     
@@ -518,35 +546,7 @@
   <span class="md-ellipsis">
     
   
-    lowprec
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/softmax/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    softmax
+    Low-precision attention
   
 
     
@@ -574,7 +574,7 @@
   <span class="md-ellipsis">
     
   
-    splitk
+    Split-K / Flash-Decoding
   
 
     
@@ -671,7 +671,7 @@
   <span class="md-ellipsis">
     
   
-    cosformer
+    cosFormer
   
 
     
@@ -699,7 +699,7 @@
   <span class="md-ellipsis">
     
   
-    linear_elu
+    Linear transformer
   
 
     
@@ -727,7 +727,7 @@
   <span class="md-ellipsis">
     
   
-    nystrom
+    Nystromformer
   
 
     
@@ -755,7 +755,7 @@
   <span class="md-ellipsis">
     
   
-    performer
+    Performer / FAVOR+
   
 
     
@@ -783,7 +783,7 @@
   <span class="md-ellipsis">
     
   
-    trigrff
+    Random Fourier features for attention
   
 
     
@@ -875,34 +875,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../methods/blocktopk/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    blocktopk
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../methods/lsh_sample/" class="md-nav__link">
         
   
@@ -910,35 +882,7 @@
   <span class="md-ellipsis">
     
   
-    lsh_sample
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/sink_window/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    sink_window
+    LSH importance sampling
   
 
     
@@ -966,7 +910,7 @@
   <span class="md-ellipsis">
     
   
-    topk
+    Oracle top-k restriction
   
 
     
@@ -994,7 +938,35 @@
   <span class="md-ellipsis">
     
   
-    value_topk (oracle)
+    Output-aware selection (oracle)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/blocktopk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quest-style page / block selection
   
 
     
@@ -1022,7 +994,35 @@
   <span class="md-ellipsis">
     
   
-    window
+    Sliding-window (banded) attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/sink_window/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StreamingLLM
   
 
     
@@ -1118,62 +1118,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../methods/evict_h2o/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    evict_h2o
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/evict_snapkv/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    evict_snapkv
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../methods/gqa/" class="md-nav__link">
         
   
@@ -1181,7 +1125,7 @@
   <span class="md-ellipsis">
     
   
-    gqa
+    Grouped-query attention
   
 
     
@@ -1202,14 +1146,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../methods/linformer/" class="md-nav__link">
+      <a href="../../methods/evict_h2o/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    linformer
+    H2O
   
 
     
@@ -1237,63 +1181,7 @@
   <span class="md-ellipsis">
     
   
-    lowrank_kv
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/merge_kv/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    merge_kv
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/mla/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    mla
+    Hidden-dimension low rank
   
 
     
@@ -1321,7 +1209,119 @@
   <span class="md-ellipsis">
     
   
-    quantkv
+    KV-cache quantization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/linformer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linformer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/mla/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-head latent attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/evict_snapkv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SnapKV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/merge_kv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Token merging
   
 
     
@@ -1416,7 +1416,7 @@
   <span class="md-ellipsis">
     
   
-    clustered
+    Clustered attention
   
 
     
@@ -1444,7 +1444,7 @@
   <span class="md-ellipsis">
     
   
-    latent_stochastic
+    Latent stochastic factorization
   
 
     
@@ -1472,7 +1472,7 @@
   <span class="md-ellipsis">
     
   
-    nmf_oracle (oracle)
+    Nonnegative rank bound (oracle)
   
 
     
@@ -1500,7 +1500,7 @@
   <span class="md-ellipsis">
     
   
-    svd_oracle (oracle)
+    Signed rank bound (oracle)
   
 
     
@@ -1591,7 +1591,7 @@
   <span class="md-ellipsis">
     
   
-    lowrank_ot
+    LOTFormer-style factored coupling
   
 
     
@@ -1619,7 +1619,7 @@
   <span class="md-ellipsis">
     
   
-    sinkhorn
+    Sinkhorn / entropic-OT attention
   
 
     
@@ -1712,7 +1712,7 @@
   <span class="md-ellipsis">
     
   
-    decay_rnn
+    Decayed linear recurrence
   
 
     
@@ -1740,7 +1740,7 @@
   <span class="md-ellipsis">
     
   
-    delta_rnn
+    DeltaNet
   
 
     
@@ -1768,7 +1768,7 @@
   <span class="md-ellipsis">
     
   
-    linear_rnn
+    Linear attention as a recurrence
   
 
     
@@ -3476,9 +3476,9 @@ ab.compare([&quot;softmax&quot;, &quot;topk&quot;], q, k, v)
 ab.list_methods()                       # a readable table
 ab.describe(&quot;topk&quot;)                     # one method, in detail
 </code></pre></div>
-<p>Registration is a decorator: <code>@register</code> on an :class:<code>~attnbank.AttentionMethod</code>
-subclass puts it in the bank, and from then on it appears in :func:<code>available</code>,
-:func:<code>list_methods</code>, :func:<code>method_table</code> and -- the part that matters -- in the
+<p>Registration is a decorator: <code>@register</code> on an <code>attnbank.AttentionMethod</code>
+subclass puts it in the bank, and from then on it appears in <code>available</code>,
+<code>list_methods</code>, <code>method_table</code> and -- the part that matters -- in the
 conformance suite, which is parametrized over the registry.</p>
 
 
@@ -3544,7 +3544,7 @@ conformance suite, which is parametrized over the registry.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>a registry key; see :func:<code>available</code>.</p>
+                <p>a registry key; see <code>available</code>.</p>
               </div>
             </td>
             <td>
@@ -3626,7 +3626,7 @@ familiar <code>attend("topk", q, k, v, ...)</code> is unchanged.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>passed to :func:<code>build</code>. Because the tensors are positional, <code>k=64</code> means
+                <p>passed to <code>build</code>. Because the tensors are positional, <code>k=64</code> means
 the method's budget, not the key tensor.</p>
               </div>
             </td>
@@ -3653,7 +3653,7 @@ the method's budget, not the key tensor.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p><code>y</code>, of shape <code>[B, H, m, dv]</code>. Use :func:<code>build</code> when you also want
+                <p><code>y</code>, of shape <code>[B, H, m, dv]</code>. Use <code>build</code> when you also want
 <code>weights</code>, <code>v_hat</code> or <code>extras</code>.</p>
               </div>
             </td>
@@ -3786,8 +3786,8 @@ the method's budget, not the key tensor.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>a registry key; see :func:<code>available</code>. An unknown name raises
-:class:<code>~attnbank.errors.UnknownMethodError</code> with near matches.</p>
+                <p>a registry key; see <code>available</code>. An unknown name raises
+<code>attnbank.errors.UnknownMethodError</code> with near matches.</p>
               </div>
             </td>
             <td>
@@ -4351,7 +4351,7 @@ deliberately comparing against something else.</p>
             <td>
               <div class="doc-md-description">
                 <p>one of <code>exact, interaction, restrict, compress, factorize, coupling,
-recurrent</code> (see :func:<code>categories</code>).</p>
+recurrent</code> (see <code>categories</code>).</p>
               </div>
             </td>
             <td>
@@ -4470,7 +4470,7 @@ recurrent</code> (see :func:<code>categories</code>).</p>
     <div class="doc doc-contents ">
 
         <p>A readable table of the bank, grouped by category.</p>
-<p>The return value is a :class:<code>~attnbank.info.MethodTable</code>: a <code>list</code> of row dicts
+<p>The return value is a <code>attnbank.info.MethodTable</code>: a <code>list</code> of row dicts
 that renders as a table when printed, so it is equally good at the REPL and in a
 script.</p>
 
@@ -4495,7 +4495,7 @@ script.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>as in :func:<code>available</code>.</p>
+                <p>as in <code>available</code>.</p>
               </div>
             </td>
             <td>
@@ -4511,7 +4511,7 @@ script.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>as in :func:<code>available</code>.</p>
+                <p>as in <code>available</code>.</p>
               </div>
             </td>
             <td>
@@ -4649,7 +4649,7 @@ masking.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Everything one method declares, as a printable :class:<code>~attnbank.info.MethodInfo</code>.</p>
+        <p>Everything one method declares, as a printable <code>attnbank.info.MethodInfo</code>.</p>
 
 
 <p><span class="doc-section-title">Examples:</span></p>
@@ -4766,7 +4766,7 @@ masking.</p>
         <p>One machine-readable row per method -- the paper's Appendix C table.</p>
 <p>Columns: <code>name, category, objective, causal, expresses_weights, row_stochastic,
 head_independent, trainable, paper_section, limit_config, n_convergence_configs,
-references</code>.  Stable and JSON-friendly; use :func:<code>list_methods</code> when a human is
+references</code>.  Stable and JSON-friendly; use <code>list_methods</code> when a human is
 reading.</p>
 
 
@@ -5228,7 +5228,7 @@ the right answer for most of the bank, and it is stated rather than implied.</p>
 
 
 
-        <p>Context manager form of :func:<code>set_default_backend</code>.</p>
+        <p>Context manager form of <code>set_default_backend</code>.</p>
 
 
 <p><span class="doc-section-title">Examples:</span></p>
@@ -5363,7 +5363,7 @@ the right answer for most of the bank, and it is stated rather than implied.</p>
 
 
 
-        <p>A <code>list</code> of :class:<code>BackendInfo</code> that prints as a report.</p>
+        <p>A <code>list</code> of <code>BackendInfo</code> that prints as a report.</p>
 
 
 <p><span class="doc-section-title">Examples:</span></p>
@@ -5769,11 +5769,11 @@ published number.</p>
   is installed, otherwise <code>reference</code>. Falling back from the <em>default</em> is quiet,
   because the default is a preference, not an instruction.</li>
 <li><code>requested</code> is not declared by the method -- raise
-  :class:<code>BackendNotSupportedError</code> listing what it does declare. An explicit
+  <code>BackendNotSupportedError</code> listing what it does declare. An explicit
   request is an instruction; silently doing something else would make a benchmark
   meaningless.</li>
 <li><code>requested</code> is declared but not installed here -- warn with
-  :class:<code>BackendFallbackWarning</code> and use <code>reference</code>. Announced, never silent.</li>
+  <code>BackendFallbackWarning</code> and use <code>reference</code>. Announced, never silent.</li>
 </ul>
 
 
@@ -5931,10 +5931,10 @@ published number.</p>
         <p>Discoverability: readable descriptions of what is in the bank.</p>
 <p>Two objects, both of which print themselves:</p>
 <ul>
-<li>:class:<code>MethodInfo</code> -- everything one method declares, in a block you can read.
-  Reached through :func:<code>attnbank.describe</code> or <code>AttentionMethod.describe()</code>.</li>
-<li>:class:<code>MethodTable</code> -- a list of rows that renders as a table grouped by category.
-  Reached through :func:<code>attnbank.list_methods</code>.</li>
+<li><code>MethodInfo</code> -- everything one method declares, in a block you can read.
+  Reached through <code>attnbank.describe</code> or <code>AttentionMethod.describe()</code>.</li>
+<li><code>MethodTable</code> -- a list of rows that renders as a table grouped by category.
+  Reached through <code>attnbank.list_methods</code>.</li>
 </ul>
 <p>Both keep their machine-readable form: <code>MethodInfo.to_dict()</code> and <code>MethodTable</code>
 itself (a <code>list</code> of <code>dict</code>) are JSON-serialisable, so nothing here is only pretty.</p>

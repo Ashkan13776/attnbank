@@ -483,6 +483,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../methods/softmax/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dense softmax attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../methods/flash/" class="md-nav__link">
         
   
@@ -490,7 +518,7 @@
   <span class="md-ellipsis">
     
   
-    flash
+    FlashAttention
   
 
     
@@ -518,35 +546,7 @@
   <span class="md-ellipsis">
     
   
-    lowprec
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/softmax/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    softmax
+    Low-precision attention
   
 
     
@@ -574,7 +574,7 @@
   <span class="md-ellipsis">
     
   
-    splitk
+    Split-K / Flash-Decoding
   
 
     
@@ -671,7 +671,7 @@
   <span class="md-ellipsis">
     
   
-    cosformer
+    cosFormer
   
 
     
@@ -699,7 +699,7 @@
   <span class="md-ellipsis">
     
   
-    linear_elu
+    Linear transformer
   
 
     
@@ -727,7 +727,7 @@
   <span class="md-ellipsis">
     
   
-    nystrom
+    Nystromformer
   
 
     
@@ -755,7 +755,7 @@
   <span class="md-ellipsis">
     
   
-    performer
+    Performer / FAVOR+
   
 
     
@@ -783,7 +783,7 @@
   <span class="md-ellipsis">
     
   
-    trigrff
+    Random Fourier features for attention
   
 
     
@@ -875,34 +875,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../methods/blocktopk/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    blocktopk
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../methods/lsh_sample/" class="md-nav__link">
         
   
@@ -910,35 +882,7 @@
   <span class="md-ellipsis">
     
   
-    lsh_sample
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/sink_window/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    sink_window
+    LSH importance sampling
   
 
     
@@ -966,7 +910,7 @@
   <span class="md-ellipsis">
     
   
-    topk
+    Oracle top-k restriction
   
 
     
@@ -994,7 +938,35 @@
   <span class="md-ellipsis">
     
   
-    value_topk (oracle)
+    Output-aware selection (oracle)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/blocktopk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quest-style page / block selection
   
 
     
@@ -1022,7 +994,35 @@
   <span class="md-ellipsis">
     
   
-    window
+    Sliding-window (banded) attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/sink_window/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StreamingLLM
   
 
     
@@ -1118,62 +1118,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../methods/evict_h2o/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    evict_h2o
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/evict_snapkv/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    evict_snapkv
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../methods/gqa/" class="md-nav__link">
         
   
@@ -1181,7 +1125,7 @@
   <span class="md-ellipsis">
     
   
-    gqa
+    Grouped-query attention
   
 
     
@@ -1202,14 +1146,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../methods/linformer/" class="md-nav__link">
+      <a href="../../methods/evict_h2o/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    linformer
+    H2O
   
 
     
@@ -1237,63 +1181,7 @@
   <span class="md-ellipsis">
     
   
-    lowrank_kv
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/merge_kv/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    merge_kv
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../methods/mla/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    mla
+    Hidden-dimension low rank
   
 
     
@@ -1321,7 +1209,119 @@
   <span class="md-ellipsis">
     
   
-    quantkv
+    KV-cache quantization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/linformer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linformer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/mla/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-head latent attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/evict_snapkv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SnapKV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../methods/merge_kv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Token merging
   
 
     
@@ -1416,7 +1416,7 @@
   <span class="md-ellipsis">
     
   
-    clustered
+    Clustered attention
   
 
     
@@ -1444,7 +1444,7 @@
   <span class="md-ellipsis">
     
   
-    latent_stochastic
+    Latent stochastic factorization
   
 
     
@@ -1472,7 +1472,7 @@
   <span class="md-ellipsis">
     
   
-    nmf_oracle (oracle)
+    Nonnegative rank bound (oracle)
   
 
     
@@ -1500,7 +1500,7 @@
   <span class="md-ellipsis">
     
   
-    svd_oracle (oracle)
+    Signed rank bound (oracle)
   
 
     
@@ -1591,7 +1591,7 @@
   <span class="md-ellipsis">
     
   
-    lowrank_ot
+    LOTFormer-style factored coupling
   
 
     
@@ -1619,7 +1619,7 @@
   <span class="md-ellipsis">
     
   
-    sinkhorn
+    Sinkhorn / entropic-OT attention
   
 
     
@@ -1712,7 +1712,7 @@
   <span class="md-ellipsis">
     
   
-    decay_rnn
+    Decayed linear recurrence
   
 
     
@@ -1740,7 +1740,7 @@
   <span class="md-ellipsis">
     
   
-    delta_rnn
+    DeltaNet
   
 
     
@@ -1768,7 +1768,7 @@
   <span class="md-ellipsis">
     
   
-    linear_rnn
+    Linear attention as a recurrence
   
 
     
@@ -2855,11 +2855,11 @@
 CI over the whole registry in float32 and float64.  This module exposes the same checks
 at runtime, so the guarantee is available to anyone building on top of <code>attnbank</code>:</p>
 <ul>
-<li>:func:<code>check_invariant</code> -- one output, one number, an exception if it is too large.</li>
-<li>:func:<code>check_conformance</code> -- one method, a printable report over the checks that can
+<li><code>check_invariant</code> -- one output, one number, an exception if it is too large.</li>
+<li><code>check_conformance</code> -- one method, a printable report over the checks that can
   be run quickly; the full eleven-point suite lives in <code>tests/test_conformance.py</code>.</li>
 </ul>
-<p>Why it matters: :mod:<code>attnbank.metrics</code> splits output error into a <em>distributional</em>
+<p>Why it matters: <code>attnbank.metrics</code> splits output error into a <em>distributional</em>
 term <code>(pi - pi_hat) v</code> and a <em>value</em> term <code>pi_hat (v - v_hat)</code>.  That split is
 meaningless unless a method's reported weights and values actually reproduce its
 output.  Invariant W is what makes the decomposition a measurement rather than a
@@ -2970,7 +2970,7 @@ approximate.</p>
 
 
 
-        <p>The result of :func:<code>check_conformance</code>: a list of :class:<code>Check</code>, printable.</p>
+        <p>The result of <code>check_conformance</code>: a list of <code>Check</code>, printable.</p>
 
 
 
@@ -3030,7 +3030,7 @@ approximate.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Raise :class:<code>~attnbank.errors.ConformanceError</code> if anything failed.</p>
+        <p>Raise <code>attnbank.errors.ConformanceError</code> if anything failed.</p>
 
 
             <details class="mkdocstrings-source">
@@ -3108,7 +3108,7 @@ approximate.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>an :class:<code>~attnbank.AttentionOutput</code> produced with <code>return_weights=True</code>.</p>
+                <p>an <code>attnbank.AttentionOutput</code> produced with <code>return_weights=True</code>.</p>
               </div>
             </td>
             <td>
@@ -3397,7 +3397,7 @@ independence, Monte-Carlo convergence and the bibliography check -- is
             </td>
             <td>
               <div class="doc-md-description">
-                <p>passed to :func:<code>attnbank.build</code>.</p>
+                <p>passed to <code>attnbank.build</code>.</p>
               </div>
             </td>
             <td>

@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://Ashkan13776.github.io/attnbank/methods/lowrank_kv/">
       
       
-        <link rel="prev" href="../linformer/">
+        <link rel="prev" href="../evict_h2o/">
       
       
-        <link rel="next" href="../merge_kv/">
+        <link rel="next" href="../quantkv/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>lowrank_kv - attnbank</title>
+        <title>Hidden-dimension low rank - attnbank</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#lowrank_kv" class="md-skip">
+        <a href="#hidden-dimension-low-rank" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              lowrank_kv
+              Hidden-dimension low rank
             
           </span>
         </div>
@@ -485,6 +485,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../softmax/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dense softmax attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../flash/" class="md-nav__link">
         
   
@@ -492,7 +520,7 @@
   <span class="md-ellipsis">
     
   
-    flash
+    FlashAttention
   
 
     
@@ -520,35 +548,7 @@
   <span class="md-ellipsis">
     
   
-    lowprec
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../softmax/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    softmax
+    Low-precision attention
   
 
     
@@ -576,7 +576,7 @@
   <span class="md-ellipsis">
     
   
-    splitk
+    Split-K / Flash-Decoding
   
 
     
@@ -673,7 +673,7 @@
   <span class="md-ellipsis">
     
   
-    cosformer
+    cosFormer
   
 
     
@@ -701,7 +701,7 @@
   <span class="md-ellipsis">
     
   
-    linear_elu
+    Linear transformer
   
 
     
@@ -729,7 +729,7 @@
   <span class="md-ellipsis">
     
   
-    nystrom
+    Nystromformer
   
 
     
@@ -757,7 +757,7 @@
   <span class="md-ellipsis">
     
   
-    performer
+    Performer / FAVOR+
   
 
     
@@ -785,7 +785,7 @@
   <span class="md-ellipsis">
     
   
-    trigrff
+    Random Fourier features for attention
   
 
     
@@ -877,34 +877,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../blocktopk/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    blocktopk
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../lsh_sample/" class="md-nav__link">
         
   
@@ -912,35 +884,7 @@
   <span class="md-ellipsis">
     
   
-    lsh_sample
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../sink_window/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    sink_window
+    LSH importance sampling
   
 
     
@@ -968,7 +912,7 @@
   <span class="md-ellipsis">
     
   
-    topk
+    Oracle top-k restriction
   
 
     
@@ -996,7 +940,35 @@
   <span class="md-ellipsis">
     
   
-    value_topk (oracle)
+    Output-aware selection (oracle)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../blocktopk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quest-style page / block selection
   
 
     
@@ -1024,7 +996,35 @@
   <span class="md-ellipsis">
     
   
-    window
+    Sliding-window (banded) attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sink_window/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StreamingLLM
   
 
     
@@ -1122,62 +1122,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../evict_h2o/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    evict_h2o
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../evict_snapkv/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    evict_snapkv
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../gqa/" class="md-nav__link">
         
   
@@ -1185,7 +1129,7 @@
   <span class="md-ellipsis">
     
   
-    gqa
+    Grouped-query attention
   
 
     
@@ -1206,14 +1150,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../linformer/" class="md-nav__link">
+      <a href="../evict_h2o/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    linformer
+    H2O
   
 
     
@@ -1250,7 +1194,7 @@
   <span class="md-ellipsis">
     
   
-    lowrank_kv
+    Hidden-dimension low rank
   
 
     
@@ -1268,7 +1212,7 @@
   <span class="md-ellipsis">
     
   
-    lowrank_kv
+    Hidden-dimension low rank
   
 
     
@@ -1419,14 +1363,42 @@
   
   
     <li class="md-nav__item">
-      <a href="../merge_kv/" class="md-nav__link">
+      <a href="../quantkv/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    merge_kv
+    KV-cache quantization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../linformer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linformer
   
 
     
@@ -1454,7 +1426,7 @@
   <span class="md-ellipsis">
     
   
-    mla
+    Multi-head latent attention
   
 
     
@@ -1475,14 +1447,42 @@
   
   
     <li class="md-nav__item">
-      <a href="../quantkv/" class="md-nav__link">
+      <a href="../evict_snapkv/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    quantkv
+    SnapKV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../merge_kv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Token merging
   
 
     
@@ -1577,7 +1577,7 @@
   <span class="md-ellipsis">
     
   
-    clustered
+    Clustered attention
   
 
     
@@ -1605,7 +1605,7 @@
   <span class="md-ellipsis">
     
   
-    latent_stochastic
+    Latent stochastic factorization
   
 
     
@@ -1633,7 +1633,7 @@
   <span class="md-ellipsis">
     
   
-    nmf_oracle (oracle)
+    Nonnegative rank bound (oracle)
   
 
     
@@ -1661,7 +1661,7 @@
   <span class="md-ellipsis">
     
   
-    svd_oracle (oracle)
+    Signed rank bound (oracle)
   
 
     
@@ -1752,7 +1752,7 @@
   <span class="md-ellipsis">
     
   
-    lowrank_ot
+    LOTFormer-style factored coupling
   
 
     
@@ -1780,7 +1780,7 @@
   <span class="md-ellipsis">
     
   
-    sinkhorn
+    Sinkhorn / entropic-OT attention
   
 
     
@@ -1873,7 +1873,7 @@
   <span class="md-ellipsis">
     
   
-    decay_rnn
+    Decayed linear recurrence
   
 
     
@@ -1901,7 +1901,7 @@
   <span class="md-ellipsis">
     
   
-    delta_rnn
+    DeltaNet
   
 
     
@@ -1929,7 +1929,7 @@
   <span class="md-ellipsis">
     
   
-    linear_rnn
+    Linear attention as a recurrence
   
 
     
@@ -2874,7 +2874,9 @@
   
 
 
-<h1 id="lowrank_kv"><code>lowrank_kv</code><a class="headerlink" href="#lowrank_kv" title="Permanent link">&para;</a></h1>
+<h1 id="hidden-dimension-low-rank">Hidden-dimension low rank<a class="headerlink" href="#hidden-dimension-low-rank" title="Permanent link">&para;</a></h1>
+<p class="tx-regkey"><code>lowrank_kv</code> &middot; <code>ab.build("lowrank_kv")</code></p>
+
 <p><strong>Hidden-dimension low rank: truncated SVD of the key and value channel matrices.</strong></p>
 <dl>
 <dt>category</dt>

@@ -181,18 +181,22 @@ rather than skipping it.
 FOOTER = r"""
 ## Reading the columns
 
-**`weights`** — can the method name its measure $\widehat\pi_q$ on the *original* $n$
-positions? A `—` means it genuinely cannot, and the method is then excluded from the
-error-decomposition studies **by declaration, not by accident**. See
-[the invariant](invariant.md).
+**`declares`** is three fixed slots, in this order, and a letter
+<span class="tx-struck">struck through</span> is the method declaring *no* — which on
+this page is never an omission and always a claim.
 
-**`stochastic`** — are those weights nonnegative and summing to one? `nystrom`,
-`linformer` and the unnormalised recurrences say no, and say it in an attribute rather
-than in a footnote.
+**<span class="tx-dec">w</span>, weights** — can the method name its measure
+$\widehat\pi_q$ on the *original* $n$ positions? A struck-through `w` means it
+genuinely cannot, and the method is then excluded from the error-decomposition studies
+**by declaration, not by accident**. See [the invariant](invariant.md).
 
-**`causal`** — a `—` is a statement about the operator. Sinkhorn normalises across
-queries; there is no causal version of that, and asking for one raises an error that
-says so.
+**<span class="tx-dec">s</span>, row-stochastic** — are those weights nonnegative and
+summing to one? `nystrom`, `linformer` and the unnormalised recurrences say no, and
+say it in an attribute rather than in a footnote.
+
+**<span class="tx-dec">c</span>, causal** — a struck-through `c` is a statement about
+the operator. Sinkhorn normalises across queries; there is no causal version of that,
+and asking for one raises an error that says so.
 
 **`backends`** — the execution paths this method claims are equal to the reference.
 Most of the bank is `reference` only, which is the correct answer for an operator that
@@ -215,8 +219,43 @@ without computing what the optimal selection would have been.
 """
 
 
-def flag(value: bool) -> str:
-    return "yes" if value else "—"
+#: The three declaration booleans, as the ``declares`` column renders them: a letter,
+#: and what that letter is saying either way. One column instead of three is what lets
+#: the table fit the page it is on; the slots are *fixed*, so a row that declares
+#: nothing still shows three letters and a reader scanning down the column is reading
+#: positions, not looking things up.
+#: ``letter -> (registry field, what the letter says, what the struck letter says)``
+DECLARES = {
+    "c": ("causal", "causal", "not causal"),
+    "w": ("expresses_weights",
+          "names its weights on the original positions",
+          "cannot name its weights on the original positions"),
+    "s": ("row_stochastic", "row-stochastic", "not row-stochastic"),
+}
+
+
+def declares(row: dict) -> str:
+    """The three booleans of one method as three glyphs, in a fixed order."""
+    out = []
+    for letter, (field, yes, no) in DECLARES.items():
+        on = row[field]
+        out.append(f'<abbr class="tx-dec"{"" if on else " data-no"} '
+                   f'title="{yes if on else no}">{letter}</abbr>')
+    return "".join(out)
+
+
+#: The key, set in the same glyphs as the column so the two read as one thing. It sits
+#: immediately above the table rather than in "Reading the columns" below it: a legend
+#: a reader has to scroll to find is a legend that has not been written.
+LEGEND = (
+    '<p class="tx-legend" markdown="1">**`declares`** &mdash; '
+    '<abbr class="tx-dec" title="causal">c</abbr>&#8201;causal, '
+    '<abbr class="tx-dec" title="names its weights on the original positions">w'
+    '</abbr>&#8201;names its weights on the original positions, '
+    '<abbr class="tx-dec" title="row-stochastic">s</abbr>&#8201;row-stochastic. '
+    'A letter <span class="tx-struck">struck through</span> is the method '
+    'declaring it does <em>not</em>.</p>'
+)
 
 
 #: ASCII maths as it is written in the registry, mapped to the same hand-set HTML the
@@ -300,21 +339,22 @@ def table(oracles: tuple) -> list[str]:
         "content as the branches above, flattened — regenerated from "
         "`ab.list_methods()`, and the view that works whatever your browser is "
         "doing.\n",
+        LEGEND + "\n",
         "<div class=\"tx-all-wrap\" markdown=\"1\">\n",
-        "| method | what it is | category | objective | causal | weights | stochastic | backends |",
-        "|---|---|---|---|---|---|---|---|",
+        "| method | what it is | category | objective | declares | backends |",
+        "|---|---|---|---|---|---|",
     ]
     for cat in order:
         for r in ab.list_methods(cat):
             name = (f"[`{r['name']}`](methods/{r['name']}.md)"
                     + (" **(oracle)**" if r["name"] in oracles else ""))
-            # the sentence sits second, next to the name: on a narrow page the
-            # declaration columns are what scrolls out of sight, not the prose
+            # the sentence sits second, next to the name; the three booleans are one
+            # column, not three, because three headers of their own were what pushed
+            # the table past the width of the page it is on
             out.append(
                 f"| {name} | {r['summary']} | "
                 f"<span data-cat=\"{cat}\">`{cat}`</span> | "
-                f"{r['objective']} | {flag(r['causal'])} | "
-                f"{flag(r['expresses_weights'])} | {flag(r['row_stochastic'])} | "
+                f"{r['objective']} | {declares(r)} | "
                 f"{', '.join(r['backends'])} |")
     out.append("\n</div>\n")
     return out

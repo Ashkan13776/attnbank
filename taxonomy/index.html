@@ -653,6 +653,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../methods/softmax/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dense softmax attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../methods/flash/" class="md-nav__link">
         
   
@@ -660,7 +688,7 @@
   <span class="md-ellipsis">
     
   
-    flash
+    FlashAttention
   
 
     
@@ -688,35 +716,7 @@
   <span class="md-ellipsis">
     
   
-    lowprec
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../methods/softmax/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    softmax
+    Low-precision attention
   
 
     
@@ -744,7 +744,7 @@
   <span class="md-ellipsis">
     
   
-    splitk
+    Split-K / Flash-Decoding
   
 
     
@@ -841,7 +841,7 @@
   <span class="md-ellipsis">
     
   
-    cosformer
+    cosFormer
   
 
     
@@ -869,7 +869,7 @@
   <span class="md-ellipsis">
     
   
-    linear_elu
+    Linear transformer
   
 
     
@@ -897,7 +897,7 @@
   <span class="md-ellipsis">
     
   
-    nystrom
+    Nystromformer
   
 
     
@@ -925,7 +925,7 @@
   <span class="md-ellipsis">
     
   
-    performer
+    Performer / FAVOR+
   
 
     
@@ -953,7 +953,7 @@
   <span class="md-ellipsis">
     
   
-    trigrff
+    Random Fourier features for attention
   
 
     
@@ -1045,34 +1045,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../methods/blocktopk/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    blocktopk
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../methods/lsh_sample/" class="md-nav__link">
         
   
@@ -1080,35 +1052,7 @@
   <span class="md-ellipsis">
     
   
-    lsh_sample
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../methods/sink_window/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    sink_window
+    LSH importance sampling
   
 
     
@@ -1136,7 +1080,7 @@
   <span class="md-ellipsis">
     
   
-    topk
+    Oracle top-k restriction
   
 
     
@@ -1164,7 +1108,35 @@
   <span class="md-ellipsis">
     
   
-    value_topk (oracle)
+    Output-aware selection (oracle)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../methods/blocktopk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quest-style page / block selection
   
 
     
@@ -1192,7 +1164,35 @@
   <span class="md-ellipsis">
     
   
-    window
+    Sliding-window (banded) attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../methods/sink_window/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StreamingLLM
   
 
     
@@ -1288,62 +1288,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../methods/evict_h2o/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    evict_h2o
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../methods/evict_snapkv/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    evict_snapkv
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../methods/gqa/" class="md-nav__link">
         
   
@@ -1351,7 +1295,7 @@
   <span class="md-ellipsis">
     
   
-    gqa
+    Grouped-query attention
   
 
     
@@ -1372,14 +1316,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../methods/linformer/" class="md-nav__link">
+      <a href="../methods/evict_h2o/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    linformer
+    H2O
   
 
     
@@ -1407,63 +1351,7 @@
   <span class="md-ellipsis">
     
   
-    lowrank_kv
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../methods/merge_kv/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    merge_kv
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../methods/mla/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    mla
+    Hidden-dimension low rank
   
 
     
@@ -1491,7 +1379,119 @@
   <span class="md-ellipsis">
     
   
-    quantkv
+    KV-cache quantization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../methods/linformer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linformer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../methods/mla/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-head latent attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../methods/evict_snapkv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SnapKV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../methods/merge_kv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Token merging
   
 
     
@@ -1586,7 +1586,7 @@
   <span class="md-ellipsis">
     
   
-    clustered
+    Clustered attention
   
 
     
@@ -1614,7 +1614,7 @@
   <span class="md-ellipsis">
     
   
-    latent_stochastic
+    Latent stochastic factorization
   
 
     
@@ -1642,7 +1642,7 @@
   <span class="md-ellipsis">
     
   
-    nmf_oracle (oracle)
+    Nonnegative rank bound (oracle)
   
 
     
@@ -1670,7 +1670,7 @@
   <span class="md-ellipsis">
     
   
-    svd_oracle (oracle)
+    Signed rank bound (oracle)
   
 
     
@@ -1761,7 +1761,7 @@
   <span class="md-ellipsis">
     
   
-    lowrank_ot
+    LOTFormer-style factored coupling
   
 
     
@@ -1789,7 +1789,7 @@
   <span class="md-ellipsis">
     
   
-    sinkhorn
+    Sinkhorn / entropic-OT attention
   
 
     
@@ -1882,7 +1882,7 @@
   <span class="md-ellipsis">
     
   
-    decay_rnn
+    Decayed linear recurrence
   
 
     
@@ -1910,7 +1910,7 @@
   <span class="md-ellipsis">
     
   
-    delta_rnn
+    DeltaNet
   
 
     
@@ -1938,7 +1938,7 @@
   <span class="md-ellipsis">
     
   
-    linear_rnn
+    Linear attention as a recurrence
   
 
     
@@ -3086,6 +3086,7 @@ correctness anchor, a <code>modify</code> method is exempt and the suite <em>ass
 rather than skipping it.</p>
 <h2 id="every-method-in-one-table">Every method, in one table<a class="headerlink" href="#every-method-in-one-table" title="Permanent link">&para;</a></h2>
 <p>All 32 of them, grouped by the object they change. This is the same content as the branches above, flattened — regenerated from <code>ab.list_methods()</code>, and the view that works whatever your browser is doing.</p>
+<p class="tx-legend"><strong><code>declares</code></strong> &mdash; <abbr class="tx-dec" title="causal">c</abbr>&#8201;causal, <abbr class="tx-dec" title="names its weights on the original positions">w</abbr>&#8201;names its weights on the original positions, <abbr class="tx-dec" title="row-stochastic">s</abbr>&#8201;row-stochastic. A letter <span class="tx-struck">struck through</span> is the method declaring it does <em>not</em>.</p>
 <div class="tx-all-wrap">
 <table>
 <thead>
@@ -3094,9 +3095,7 @@ rather than skipping it.</p>
 <th>what it is</th>
 <th>category</th>
 <th>objective</th>
-<th>causal</th>
-<th>weights</th>
-<th>stochastic</th>
+<th>declares</th>
 <th>backends</th>
 </tr>
 </thead>
@@ -3106,9 +3105,7 @@ rather than skipping it.</p>
 <td>Single-pass left fold of the online-softmax monoid over key blocks.</td>
 <td><span data-cat="exact"><code>exact</code></span></td>
 <td>accelerate</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference, sdpa</td>
 </tr>
 <tr>
@@ -3116,9 +3113,7 @@ rather than skipping it.</p>
 <td>Quantize--dequantize <code>q, k, v</code> (and optionally <code>P</code>) inside the kernel.</td>
 <td><span data-cat="exact"><code>exact</code></span></td>
 <td>approximate</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3126,9 +3121,7 @@ rather than skipping it.</p>
 <td>Dense softmax attention (Vaswani et al., 2017); the reference operator.</td>
 <td><span data-cat="exact"><code>exact</code></span></td>
 <td>accelerate</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference, sdpa, flash_attn</td>
 </tr>
 <tr>
@@ -3136,9 +3129,7 @@ rather than skipping it.</p>
 <td>Two-level reduction: per-chunk states, then one merge.</td>
 <td><span data-cat="exact"><code>exact</code></span></td>
 <td>accelerate</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3146,9 +3137,7 @@ rather than skipping it.</p>
 <td><code>relu</code> features times <code>cos(pi (i - j) / 2M)</code>.</td>
 <td><span data-cat="interaction"><code>interaction</code></span></td>
 <td>modify</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3156,9 +3145,7 @@ rather than skipping it.</p>
 <td><code>phi(u) = elu(u) + 1</code>, normalized separable attention.</td>
 <td><span data-cat="interaction"><code>interaction</code></span></td>
 <td>modify</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3166,9 +3153,7 @@ rather than skipping it.</p>
 <td>Landmark Nystrom factorization of the softmax matrix; signed weights.</td>
 <td><span data-cat="interaction"><code>interaction</code></span></td>
 <td>approximate</td>
-<td>—</td>
-<td>yes</td>
-<td>—</td>
+<td><abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3176,9 +3161,7 @@ rather than skipping it.</p>
 <td>FAVOR+ positive random features, optionally orthogonal.</td>
 <td><span data-cat="interaction"><code>interaction</code></span></td>
 <td>approximate</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3186,9 +3169,7 @@ rather than skipping it.</p>
 <td>Rahimi--Recht trigonometric random features; signed, unnormalized measure.</td>
 <td><span data-cat="interaction"><code>interaction</code></span></td>
 <td>approximate</td>
-<td>yes</td>
-<td>yes</td>
-<td>—</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3196,9 +3177,7 @@ rather than skipping it.</p>
 <td>Page-level selection by an upper bound on the page's scores.</td>
 <td><span data-cat="restrict"><code>restrict</code></span></td>
 <td>approximate</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3206,9 +3185,7 @@ rather than skipping it.</p>
 <td>Self-normalized importance sampling over a score-monotone proposal.</td>
 <td><span data-cat="restrict"><code>restrict</code></span></td>
 <td>approximate</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3216,9 +3193,7 @@ rather than skipping it.</p>
 <td><code>s</code> initial sinks plus a left window of width <code>w</code>.</td>
 <td><span data-cat="restrict"><code>restrict</code></span></td>
 <td>approximate</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3226,9 +3201,7 @@ rather than skipping it.</p>
 <td>Exact top-k selection on the true scores (an oracle for proxy selectors).</td>
 <td><span data-cat="restrict"><code>restrict</code></span></td>
 <td>approximate</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3236,9 +3209,7 @@ rather than skipping it.</p>
 <td>Greedy (or exhaustive) output-aware support selection. Oracle.</td>
 <td><span data-cat="restrict"><code>restrict</code></span></td>
 <td>approximate</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3246,9 +3217,7 @@ rather than skipping it.</p>
 <td>Left sliding window of width <code>w</code>, always including the diagonal.</td>
 <td><span data-cat="restrict"><code>restrict</code></span></td>
 <td>approximate</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3256,9 +3225,7 @@ rather than skipping it.</p>
 <td>Online heavy-hitter eviction with a protected recent window.</td>
 <td><span data-cat="compress"><code>compress</code></span></td>
 <td>approximate</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3266,9 +3233,7 @@ rather than skipping it.</p>
 <td>Observation-window scoring with pooled, budgeted selection.</td>
 <td><span data-cat="compress"><code>compress</code></span></td>
 <td>approximate</td>
-<td>—</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3276,9 +3241,7 @@ rather than skipping it.</p>
 <td>Mean-pool K and V within groups of query heads.</td>
 <td><span data-cat="compress"><code>compress</code></span></td>
 <td>modify</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference, sdpa</td>
 </tr>
 <tr>
@@ -3286,9 +3249,7 @@ rather than skipping it.</p>
 <td>Random (or identity) sequence-axis projections of K and V.</td>
 <td><span data-cat="compress"><code>compress</code></span></td>
 <td>approximate</td>
-<td>—</td>
-<td>yes</td>
-<td>—</td>
+<td><abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3296,9 +3257,7 @@ rather than skipping it.</p>
 <td>Truncated SVD of the key and/or value channel matrices.</td>
 <td><span data-cat="compress"><code>compress</code></span></td>
 <td>approximate</td>
-<td>—</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3306,9 +3265,7 @@ rather than skipping it.</p>
 <td>Cluster keys and values, merge with proportional (pushforward) mass.</td>
 <td><span data-cat="compress"><code>compress</code></span></td>
 <td>approximate</td>
-<td>—</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3316,9 +3273,7 @@ rather than skipping it.</p>
 <td>Joint low-rank KV latent shared by all heads.</td>
 <td><span data-cat="compress"><code>compress</code></span></td>
 <td>modify</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference, sdpa</td>
 </tr>
 <tr>
@@ -3326,9 +3281,7 @@ rather than skipping it.</p>
 <td>Uniform affine quantization of the key and value caches.</td>
 <td><span data-cat="compress"><code>compress</code></span></td>
 <td>approximate</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3336,9 +3289,7 @@ rather than skipping it.</p>
 <td>One attention row per query centroid, shared within the cluster.</td>
 <td><span data-cat="factorize"><code>factorize</code></span></td>
 <td>approximate</td>
-<td>—</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3346,9 +3297,7 @@ rather than skipping it.</p>
 <td>pi_hat = A B with both factors row-stochastic (two-hop attention).</td>
 <td><span data-cat="factorize"><code>factorize</code></span></td>
 <td>modify</td>
-<td>—</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3356,9 +3305,7 @@ rather than skipping it.</p>
 <td>Best nonnegative rank-r factorization of P, renormalized. Oracle.</td>
 <td><span data-cat="factorize"><code>factorize</code></span></td>
 <td>approximate</td>
-<td>—</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3366,9 +3313,7 @@ rather than skipping it.</p>
 <td>Truncated SVD of P: the best signed rank-r factorization. Oracle.</td>
 <td><span data-cat="factorize"><code>factorize</code></span></td>
 <td>approximate</td>
-<td>—</td>
-<td>yes</td>
-<td>—</td>
+<td><abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3376,9 +3321,7 @@ rather than skipping it.</p>
 <td>Doubly stochastic, rank-&lt;= r attention through a pivot measure.</td>
 <td><span data-cat="coupling"><code>coupling</code></span></td>
 <td>modify</td>
-<td>—</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3386,9 +3329,7 @@ rather than skipping it.</p>
 <td>Entropic-OT attention: Sinkhorn normalization of exp(s) to prescribed marginals.</td>
 <td><span data-cat="coupling"><code>coupling</code></span></td>
 <td>modify</td>
-<td>—</td>
-<td>yes</td>
-<td>yes</td>
+<td><abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3396,9 +3337,7 @@ rather than skipping it.</p>
 <td>Fixed exponential decay on the recurrent state.</td>
 <td><span data-cat="recurrent"><code>recurrent</code></span></td>
 <td>modify</td>
-<td>yes</td>
-<td>yes</td>
-<td>—</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3406,9 +3345,7 @@ rather than skipping it.</p>
 <td>Delta-rule (Widrow--Hoff) fast-weight memory.</td>
 <td><span data-cat="recurrent"><code>recurrent</code></span></td>
 <td>modify</td>
-<td>yes</td>
-<td>yes</td>
-<td>—</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 <tr>
@@ -3416,25 +3353,26 @@ rather than skipping it.</p>
 <td>Additive linear recurrence with an unnormalized readout.</td>
 <td><span data-cat="recurrent"><code>recurrent</code></span></td>
 <td>modify</td>
-<td>yes</td>
-<td>yes</td>
-<td>—</td>
+<td><abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr></td>
 <td>reference</td>
 </tr>
 </tbody>
 </table>
 </div>
 <h2 id="reading-the-columns">Reading the columns<a class="headerlink" href="#reading-the-columns" title="Permanent link">&para;</a></h2>
-<p><strong><code>weights</code></strong> — can the method name its measure <span class="arithmatex">\(\widehat\pi_q\)</span> on the <em>original</em> <span class="arithmatex">\(n\)</span>
-positions? A <code>—</code> means it genuinely cannot, and the method is then excluded from the
-error-decomposition studies <strong>by declaration, not by accident</strong>. See
-<a href="../invariant/">the invariant</a>.</p>
-<p><strong><code>stochastic</code></strong> — are those weights nonnegative and summing to one? <code>nystrom</code>,
-<code>linformer</code> and the unnormalised recurrences say no, and say it in an attribute rather
-than in a footnote.</p>
-<p><strong><code>causal</code></strong> — a <code>—</code> is a statement about the operator. Sinkhorn normalises across
-queries; there is no causal version of that, and asking for one raises an error that
-says so.</p>
+<p><strong><code>declares</code></strong> is three fixed slots, in this order, and a letter
+<span class="tx-struck">struck through</span> is the method declaring <em>no</em> — which on
+this page is never an omission and always a claim.</p>
+<p><strong><span class="tx-dec">w</span>, weights</strong> — can the method name its measure
+<span class="arithmatex">\(\widehat\pi_q\)</span> on the <em>original</em> <span class="arithmatex">\(n\)</span> positions? A struck-through <code>w</code> means it
+genuinely cannot, and the method is then excluded from the error-decomposition studies
+<strong>by declaration, not by accident</strong>. See <a href="../invariant/">the invariant</a>.</p>
+<p><strong><span class="tx-dec">s</span>, row-stochastic</strong> — are those weights nonnegative and
+summing to one? <code>nystrom</code>, <code>linformer</code> and the unnormalised recurrences say no, and
+say it in an attribute rather than in a footnote.</p>
+<p><strong><span class="tx-dec">c</span>, causal</strong> — a struck-through <code>c</code> is a statement about
+the operator. Sinkhorn normalises across queries; there is no causal version of that,
+and asking for one raises an error that says so.</p>
 <p><strong><code>backends</code></strong> — the execution paths this method claims are equal to the reference.
 Most of the bank is <code>reference</code> only, which is the correct answer for an operator that
 is not a dense softmax over a mask. See <a href="../backends/">Backends</a>.</p>
