@@ -982,47 +982,43 @@ Log axes on both sides in all three panels."""
 def cap_fig_finite_state_recall() -> Path:
     s, meta = load("S6_finite_state_recall")
     cr = s["collapse_ratio"]
-    el = s["embedding_limit"]
-    sc = s["softmax_control"]
     ds = list(meta["d_grid"])
     # panel (b) drops the smallest state rank (see S6_finite_state_recall), so its
     # span is not the span of the whole sweep -- the two disagreed in print.
     ds_shown = [d for d in ds if d != min(ds)]
+    # The MQAR construction itself -- Gaussian key/value codes, one query per batch
+    # element, the trained run that is not plotted -- is stated once, in
+    # \cref{tab:finite-state}; repeating it here cost an inch of the float, which is
+    # an inch the graphic needs more.  What stays is the pair of warnings that stop
+    # the figure being over-read: it is a *construction*, so capacity and not
+    # optimisation, and the bound is directional and not tight.
     cap = rf"""\textbf{{Finite state bounds recall --- but the bound is not attained.}}
-Multi-query associative recall in the \emph{{construction}} form, so that the result is
-about capacity and not about optimisation: $N$ key--value pairs are embedded as random
-Gaussian vectors, each query is one of the stored keys and is its own batch element
-($m=1$, $n=N$, which is decode semantics), and recall is scored by nearest stored
-value.  \emph{{Varied:}} the number of stored pairs
+Multi-query associative recall in the \emph{{construction}} form --- nothing is
+trained and no real activations are involved --- so the result is about capacity and
+not about optimisation; \cref{{tab:finite-state}} gives the construction in full.
+\emph{{Varied:}} the number of stored pairs
 $N\in\{{{min(meta['N_grid'])},\dots,{max(meta['N_grid'])}\}}$ and the state rank
-$d_\varphi\in\{{{min(ds)},\dots,{max(ds)}\}}$; the state is $d_\varphi\times d_v$ with
-$d_v={meta['dv']}$.  \emph{{Fixed:}} a query gain holding the matched softmax logit at
-{num(meta['matched_logit'], 0)} so the control is not temperature-limited, up to
-{meta['max_queries']} queries per configuration, float64, seed {meta['seed']},
-{max(r['n_seeds'] for r in s['recall_grid'])} seeds per cell.  No real activations are
-involved.
+$d_\varphi\in\{{{min(ds)},\dots,{max(ds)}\}}$, a state of $d_\varphi\times d_v$ numbers
+with $d_v={meta['dv']}$.  \emph{{Fixed:}} a query gain holding the matched softmax
+logit at {num(meta['matched_logit'], 0)} so the control is not temperature-limited, up
+to {meta['max_queries']} queries per configuration, float64, seed {meta['seed']},
+{max(r['n_seeds'] for r in s['recall_grid'])} seeds per cell.
 (a) Median recall with the interquartile band over the {len(ds)} state sizes and all
 seeds.  The linear and decay RNNs coincide at every $N$ --- the decay horizon is long
-relative to $N$ --- so the former is drawn wider to stay visible.  Softmax is the
-median over the key dimensions $\{{{', '.join(str(d) for d in el['d_where_embedding_is_clean'])}\}}$
-where the random key code is itself separable, and stays at {num(sc['median'], 2)}
-throughout; at $d_\varphi=8$ softmax itself falls to
-{num(el['by_d']['8']['min_recall'], 2)}, which measures the embedding and not the
-operator, so that column is excluded from the control.
-(b) The same sweep for the linear RNN resolved by state size, on the sequential ramp
-because state size is an ordered variable; $d_\varphi={min(ds)}$ is omitted because the
-random key code is not separable there even for softmax, so a low recall would measure
-the embedding rather than the operator.  The curves do not separate: a
+relative to $N$ --- so the former is drawn wider to stay visible.  The softmax control
+is read only at the state ranks where the random key code is itself separable; the
+panel gives those ranks and the recall at each.
+(b) The same sweep for the linear RNN resolved by state rank $d_\varphi$, on the
+sequential ramp because rank is an ordered variable, and omitting $d_\varphi={min(ds)}$
+for the reason noted in (a).  The curves do not separate: a
 {max(ds) // min(ds_shown)}$\times$ larger state buys no extra associations here.
 (c) Why that matters.  The collapse point --- the smallest $N$ at which median recall
 falls below 0.5 --- is flat in $d_\varphi$ while the $N=d_\varphi$ bound of
 \cref{{prop:memory-rank}} rises {max(ds) // min(ds)}$\times$ across the sweep.  The
 bound holds everywhere (median $N/S$ at collapse {cr['median']:g}, IQR {cr['q1']:g} to
 {cr['q3']:g}, $n={cr['n']}$) but is nowhere tight, so this experiment supports the
-\emph{{direction}} of the proposition and not its constant.  A 2-layer trained MQAR run
-was also made and is deliberately not shown: at the design's 200 steps the softmax
-control itself has not converged, so that run cannot separate capacity from
-optimisation.  Log $x$ in (a) and (b); log--log in (c)."""
+\emph{{direction}} of the proposition and not its constant.
+Log $x$ in (a) and (b); log--log in (c)."""
     return _figure("cap_fig_finite_state_recall", "fig:finite-state-recall", cap,
                    "S6_finite_state_recall", meta["git_short"])
 
@@ -1033,39 +1029,37 @@ def cap_fig_ot_tilt() -> Path:
     ti = s["tilt_identity"]
     pot = s["potential"]
     n_conv = pot["rho_vs_softmax_column_mass"]["n"]
+    # The Sinkhorn set-up -- why the reference is non-causal, why the Gini of the OT
+    # column mass is not plotted -- is a once-only argument and lives in
+    # \cref{{prop:ot-causal}} and Sec. 6's prose; carrying it here cost the graphic an
+    # inch.  The caveat that cannot leave is that panel (a) is a convergence curve for
+    # the *marginals* and not evidence for the tilt identity, which holds exactly by
+    # construction.  The correlation quantiles move into panel (b), where the two
+    # distributions they summarise are drawn.
     cap = rf"""\textbf{{Entropic-OT attention is softmax tilted by a key potential.}}
 \emph{{Varied:}} the entropic regularisation
 $\epsilon\in\{{{', '.join(f'{e:g}' for e in meta['eps_grid'])}\}}$ and the Sinkhorn
 iteration count from 0 to {max(meta['iter_grid'])}.  \emph{{Fixed:}} uniform prescribed
-marginals, \textbf{{non-causal}} softmax as the reference --- \texttt{{sinkhorn}}
-declares no causal support, since a causal coupling with uniform marginals is the
-identity --- $n=m={sh['n']}$, $H={sh['H']}$ heads, $d=d_v={sh['d']}$, float64, seed
+marginals, \textbf{{non-causal}} softmax as the reference (\cref{{prop:ot-causal}}),
+$n=m={sh['n']}$, $H={sh['H']}$ heads, $d=d_v={sh['d']}$, float64, seed
 {meta['seed']}.  \emph{{Data:}} GPT-2 small and Qwen2.5-0.5B on WikiText-103, four
 layers and three passages each, plus a matched Gaussian control ---
 {_slices(meta)['n_slices']} slices, {_slices(meta)['n_units']} heads.
 (a) Convergence to the prescribed marginals, median with the interquartile band over
-heads, layers and passages; $\epsilon$ is an ordered sweep and takes the sequential
-ramp.  The tilt identity of \cref{{prop:ot-conditional}} is \emph{{not}} a convergence
-curve: the library computes the conditional from the potential, so the residual is
-exactly {num(ti['max_residual'], 0)} at every iteration over {intc(ti['n_checks'])}
-checks, and the potential recovered back out of the coupling varies across queries by
-at most {sci(ti['max_potential_query_spread'])}.  That is the proposition; what
-converges is the coupling's marginals.
+heads, layers and passages; $\epsilon$ is ordered and takes the sequential ramp.  It
+is a convergence curve for the \emph{{marginals}} alone, not evidence for the tilt
+identity of \cref{{prop:ot-conditional}}: the library builds the conditional from the
+potential, so that residual is {num(ti['max_residual'], 0)} at every iteration
+({intc(ti['n_checks'])} checks; potential query-independent to
+{sci(ti['max_potential_query_spread'])}).
 (b) What the potential is correlated with, as a cumulative distribution over the
-{intc(n_conv)} converged slices.  Its rank correlation with the softmax column mass has
-median {mnum(pot['rho_vs_softmax_column_mass']['median'])} (IQR
-{mnum(pot['rho_vs_softmax_column_mass']['q1'])} to
-{mnum(pot['rho_vs_softmax_column_mass']['q3'])}) while with the key norm it is
-{mnum(pot['rho_vs_key_norm']['median'])}: the potential is a targeted suppression of
-exactly the keys plain softmax over-serves --- the attention-sink connection of
-Sec.~6 --- and not a restatement of key norm.  The Gini coefficient of the OT column
-mass is deliberately not plotted: uniform column marginals are the Sinkhorn target, so
-its collapse to zero is the algorithm's definition rather than a measurement.
-(c) How far OT moves the operator, median with the interquartile band.  $\epsilon$ is
-also a temperature on the logits, so the second curve measures against the softmax
-tempered by the same $\epsilon$; the gap between the two curves is the tilt alone, and
-they coincide at $\epsilon=1$ by definition.  Log axes except the linear cumulative
-fraction in (b)."""
+{intc(n_conv)} converged slices, medians and interquartile ranges in the panel.  It
+tracks the softmax column mass and not the key norm: the potential suppresses exactly
+the keys plain softmax over-serves, the attention-sink connection of Sec.~6.
+(c) How far OT moves the operator, median with the interquartile band.  The second
+curve divides out the temperature that $\epsilon$ also applies, so the gap between the
+two is the tilt alone and they meet at $\epsilon=1$ by definition.
+Log axes except the linear cumulative fraction in (b)."""
     return _figure("cap_fig_ot_tilt", "fig:ot-tilt", cap, "S7_ot_tilt",
                    meta["git_short"])
 

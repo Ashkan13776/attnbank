@@ -126,23 +126,40 @@ WIDTHS = {"column": FNT_TEXTWIDTH / 2, "full": FNT_TEXTWIDTH}
 #:
 #:     figure height <= \textheight - caption height - \abovecaptionskip
 #:
-#: with ``\textheight`` = 512.15pt (7.11in) and the caption at ``footnotesize``.  The
-#: caption heights subtracted below were *measured*, by typesetting each
+#: with ``\textheight`` = 512.15pt and the caption at ``footnotesize``.  The caption
+#: heights subtracted below were *measured*, by typesetting each
 #: ``sections/tables/cap_fig_*.tex`` in the real class at the real ``\textwidth``
-#: (10pt of caption skip and 8pt of slack are held back).  They are the reason the
-#: restacking is not uniform: ``fig_selection_raw_error`` carries a 1.5in caption and
-#: can be a 3x1 column 5.4in tall, while ``fig_finite_state_recall`` carries a 4.2in
-#: caption and has 2.6in for three panels, which no vertical stack survives.
+#: (10pt of caption skip and 8pt of slack are held back).
 #:
-#: Re-measure after a caption is rewritten; the figure must shrink if its caption grows.
+#: The derivation, to re-run after any caption is rewritten -- and it is
+#: executable, which is the point:
+#:
+#:     python -m attnbank.plotting.capheight
+#:
+#: typesets every generated caption in the real class at the real ``\textwidth`` and
+#: prints the box height, the caption height and the ``FIG_HEIGHT`` below, as
+#:
+#:     budget = 7.087 - caption box - 0.111 (slack), rounded DOWN to 0.05in
+#:
+#: where the measured box already contains the 10pt ``\abovecaptionskip`` and the
+#: ``caption`` column commented below is the box less that skip.  NB 512.15 is TeX
+#: points: 512.15/72.27 = 7.087in, not the 7.11in a bp conversion gives.  The nine
+#: budgets left untouched below were set against 7.11in; the 0.02in difference is
+#: inside the 8pt slack, so they stand, but anything re-measured uses 7.087 and will
+#: therefore come out up to 0.05in under the figure next to it in this table.
+#:
+#: These budgets are the reason the restacking is not uniform:
+#: ``fig_selection_raw_error`` carries a 1.5in caption and can be a 3x1 column 5.4in
+#: tall, while ``fig_rff_bias_variance`` carries a 3.2in caption and has to span one
+#: panel across a 2x2 mosaic to get its width back.
 FIG_HEIGHT = {
     "fig_bytes_per_token": 4.10,        # caption 2.71 in
-    "fig_finite_state_recall": 2.60,    # caption 4.24 in  <- the tightest in the paper
+    "fig_finite_state_recall": 3.75,    # caption 3.04 in  (was 4.24 before the trim)
     "fig_kv_quantization": 4.10,        # caption 2.72 in
     "fig_latent_factorization": 3.65,   # caption 3.17 in
     "fig_matrix_vs_output": 4.38,       # caption 2.45 in
     "fig_omitted_mass": 4.70,           # caption 2.10 in
-    "fig_ot_tilt": 3.05,                # caption 3.79 in
+    "fig_ot_tilt": 3.90,                # caption 2.89 in  (was 3.79 before the trim)
     "fig_rff_bias_variance": 3.48,      # caption 3.34 in
     "fig_roofline": 3.65,               # caption 3.17 in
     "fig_selection_raw_error": 5.35,    # caption 1.46 in
