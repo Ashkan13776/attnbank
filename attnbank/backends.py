@@ -80,7 +80,17 @@ class BackendFallbackWarning(UserWarning):
 
 @dataclass(frozen=True)
 class BackendInfo:
-    """One backend: whether it runs here, why not, and the install line that fixes it."""
+    """One backend: whether it runs here, why not, and the install line that fixes it.
+
+    Examples
+    --------
+    >>> import attnbank as ab
+    >>> info = ab.backend_info("reference")
+    >>> info.name, info.available
+    ('reference', True)
+    >>> print(ab.backend_info("triton").reason)          # doctest: +ELLIPSIS
+    no method declares it: the bank ships no hand-written kernel...
+    """
 
     name: str
     available: bool

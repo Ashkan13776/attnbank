@@ -53,6 +53,7 @@ import torch
 import attnbank as ab
 from attnbank import metrics
 from attnbank.core import scores
+
 from . import _common as C
 from . import _harness as H
 
@@ -278,19 +279,26 @@ def make_figure(recs, summary) -> list[str]:
     are the Sinkhorn target, so its collapse to zero is the algorithm's definition,
     not a measurement.
 
-    Layout.  This figure has the second-longest caption in the paper (3.8in of the
-    7.1in block), so three panels have to live in 3.05in.  A 1x3 strip is out -- at
-    1.55in a panel, (b)'s two-line x label alone runs into its neighbours -- so (a),
-    whose sixteen decades of y and five-way sweep need the width most, takes a
-    full-width row and (b) and (c) share the row below.  Every legend is turned into a
-    single row or moved onto the curves, because at 1.4in of panel height a stacked
-    five-entry legend is a third of the panel.
+    Layout.  The caption used to be the second-longest in the paper (3.8in of the
+    7.1in block) and left 3.05in for three panels, which forced every legend into a
+    single row or onto the curves and every note to two short lines.  The Sinkhorn
+    set-up and the Gini aside have moved to Sec. 6's prose and ``tab:ot-tilt``, the
+    caption is 2.9in and the graphic has 3.90in.
+
+    The arrangement is the same 2x2 mosaic, and for the same reason: a 1x3 strip
+    gives 1.55in a panel, at which (b)'s two-line x label alone runs into its
+    neighbours, while (a)'s sixteen decades of y and five-way sweep need the width
+    most, so (a) spans the top row.  What the extra 0.85in buys is height, split
+    evenly: (b) and (c) go from 1.4in to 1.8in, enough for (b) to hold the three
+    correlation quantiles the caption used to carry, and (a)'s legend band shrinks
+    from 25x to 8x of headroom now that one row of five fits without crowding the
+    curves.
     """
     from ..plotting import style
     style.use()
     rows = [{**r["job"], **r["metrics"]} for r in recs if r["_status"] == "ok"]
     fig, axd = style.mosaic("fig_ot_tilt", [["a", "a"], ["b", "c"]],
-                            height_ratios=(1.12, 1.0), width_ratios=(1.18, 1.0))
+                            height_ratios=(1.0, 1.0), width_ratios=(1.18, 1.0))
     axes = [axd["a"], axd["b"], axd["c"]]
 
     # --- (a) Sinkhorn convergence, epsilon on the sequential ramp -------------------
@@ -316,7 +324,7 @@ def make_figure(recs, summary) -> list[str]:
     ax.set_xscale("log", base=2); ax.set_yscale("log")
     style.log2_ticks(ax, "x", 0, 7, every=1)
     ax.set_xlim(2 ** -0.3, 2 ** 7.3)
-    ax.set_ylim(top=ax.get_ylim()[1] * 25)   # one legend row above the curves
+    ax.set_ylim(top=ax.get_ylim()[1] * 8)    # one legend row above the curves
     ax.set_xlabel("Sinkhorn iterations")
     # a rotated axis label is as long as the panel is tall: at 1.6in of panel the
     # one-line form ran off the top of the figure, so it is set on two short lines
@@ -331,9 +339,13 @@ def make_figure(recs, summary) -> list[str]:
     # the curves all fall away to the right, so the bottom left corner is the free one
     # the long line goes underneath: the free wedge widens towards the floor as the
     # eps=4 curve bottoms out
-    style.note(ax, "band: IQR over heads\n"
-                   f"tilt identity exact: residual {ti['max_residual']:.0f} "
-                   f"over {ti['n_checks']:,} checks",
+    # Every curve descends left to right, so the free ground is the bottom-left
+    # triangle, and it is a triangle: the block has to stay narrow to clear the
+    # eps = 4 curve on its way to the floor.  Four short lines, not two long ones.
+    style.note(ax, "band: IQR over heads,\nlayers and passages\n"
+                   "the tilt identity itself\nis exact by construction\n"
+                   f"(residual {ti['max_residual']:.0f} over "
+                   f"{ti['n_checks']:,} checks)",
                loc="lower left", size=7.5)
 
     # --- (b) what the potential is correlated with ----------------------------------

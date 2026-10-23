@@ -559,7 +559,9 @@ def make_figures(summary) -> list[str]:
                 color=style.INK["secondary"])
     ax.set_xscale("log"); ax.set_yscale("log")
     ax.set_ylim(bottom=ax.get_ylim()[0] / 60)     # room for the note under the data
-    ax.set_xlabel("bytes per token per layer")
+    # the same quantity as (a)'s x axis and as the caption, so the same words: the
+    # short form here read as a per-head figure, which is a factor of H out
+    ax.set_xlabel("bytes per token per layer,\nall heads")
     ax.set_ylabel("decode arithmetic intensity (FLOP/byte)")
     style.panel(ax, "b", "intensity against traffic")
     mla = [r for r in tbl if _family(r["variant"]) == "MLA"]

@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.eggs/
+# tooling
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.cache/
+site/
+.venv/
+venv/
+# study artefacts that are regenerated, not committed
+.cache/studies/

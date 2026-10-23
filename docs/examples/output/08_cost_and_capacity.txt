@@ -1,0 +1,46 @@
+decode step, n = 4096, d = dv = 128, fp16
+
+method                GFLOPs   state MB  vs dense  bytes moved MB
+lowrank_ot            0.0087       0.00      0.00            2.00
+merge_kv              0.0021       0.00      0.00            0.00
+evict_snapkv          0.0021       0.00      0.00            0.00
+latent_stochastic     0.0168       0.00      0.00            0.00
+linformer             0.0168       0.00      0.00            0.00
+window                0.0000       0.00      0.00            0.00
+evict_h2o             0.0000       0.00      0.00            0.00
+sink_window           0.0000       0.00      0.00            0.01
+nystrom               0.0336       0.01      0.00            2.01
+svd_oracle            0.0021       0.01      0.00            2.00
+performer             0.1343       0.02      0.01            2.02
+decay_rnn             0.1343       0.03      0.02            2.00
+delta_rnn             0.2685       0.03      0.02            2.00
+linear_rnn            0.1343       0.03      0.02            2.00
+nmf_oracle            0.0052       0.03      0.02            2.00
+linear_elu            0.1348       0.03      0.02            2.03
+trigrff               0.2685       0.03      0.02            2.03
+lowrank_kv            0.0105       0.06      0.03            0.06
+cosformer             0.2695       0.06      0.03            2.06
+mla                   0.0357       0.12      0.06            0.13
+quantkv               0.0021       0.50      0.25            0.50
+gqa                   0.0021       1.00      0.50            1.00
+lowprec               0.0021       1.00      0.50            1.00
+clustered             0.0021       2.00      1.00            2.00
+flash                 0.0021       2.00      1.00            2.00
+lsh_sample            0.0011       2.00      1.00            1.00
+softmax               0.0021       2.00      1.00            2.02
+splitk                0.0021       2.00      1.00            2.00
+topk                  0.0011       2.00      1.00            1.00
+value_topk            0.0094       2.00      1.00            2.00
+sinkhorn              0.0021       2.02      1.01            2.08
+blocktopk             0.0003       2.50      1.25            0.50
+
+The top of the table is the set of methods whose resident state does not grow with n:
+windows and evictions keep a fixed number of tokens, recurrences keep a fixed-size
+matrix, factorisations keep r latents. That is the whole content of 'finite state' --
+and prop:memory-rank is the price: recall is bounded by what the state can hold
+(study S6).
+
+Note how little `flops` tells you. `blocktopk` has the fewest and one of the largest
+caches; `softmax` and `flash` have identical cost models, because flash changes the
+evaluation and not the operator. At decode it is `bytes_moved` that sets the clock
+(eq:exact-decode-intensity, study S8).

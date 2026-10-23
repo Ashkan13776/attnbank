@@ -31,10 +31,17 @@ from __future__ import annotations
 
 import torch
 
-from ...core import (AttentionMethod, AttentionOutput, Category, Objective,
-                     make_generator, masked_softmax, scores)
 from ...components.quantization import hadamard, quantize_fp8, quantize_int
+from ...core import (
+    AttentionMethod,
+    AttentionOutput,
+    Category,
+    Objective,
+    masked_softmax,
+    scores,
+)
 from ...registry import register
+
 
 @register
 class LowPrecisionAttention(AttentionMethod):

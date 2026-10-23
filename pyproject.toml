@@ -46,6 +46,12 @@ dependencies = [
 [project.optional-dependencies]
 # figures: the plotting style module and anything that draws
 viz = ["matplotlib>=3.8"]
+# fast execution paths. `reference` and `sdpa` need nothing beyond torch; these are the
+# optional kernels. All of them are CUDA-only, so the core install stays CPU-friendly.
+flash = ["flash-attn>=2.5"]
+triton = ["triton>=2.3"]
+xformers = ["xformers>=0.0.26"]
+fast = ["attnbank[flash,triton,xformers]"]
 # reproducing the paper's studies on real activations (GPT-2 / Qwen2.5 capture)
 studies = [
     "attnbank[viz]",
@@ -55,7 +61,8 @@ studies = [
 ]
 # documentation site
 docs = [
-    "mkdocs-material>=9.5",
+    "mkdocs>=1.6,<2",
+    "mkdocs-material>=9.5,<10",
     "mkdocstrings[python]>=0.25",
     "pymdown-extensions>=10.8",
 ]
@@ -66,7 +73,7 @@ dev = [
     "pytest-xdist>=3.5",
     "ruff>=0.5",
 ]
-all = ["attnbank[viz,studies,docs,dev]"]
+all = ["attnbank[viz,studies,docs,dev,fast]"]
 
 [project.urls]
 Homepage = "https://github.com/attnbank/attnbank"
@@ -100,25 +107,41 @@ markers = [
 [tool.ruff]
 line-length = 100
 target-version = "py310"
-extend-exclude = ["results"]
+extend-exclude = ["results", "docs/examples/output"]
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "RUF"]
+select = ["E", "F", "W", "I", "B", "C4", "SIM"]
 ignore = [
-    "E741",    # `l`, `I`, `O` as names: the maths uses single letters on purpose
-    "B008",    # function call in a default argument
-    "SIM108",  # ternary-vs-if is a readability call, not a rule
-    "UP038",   # isinstance(x, (A, B)) is clearer than the PEP 604 form here
-    "RUF001",  # ambiguous unicode in docstrings carrying mathematics
-    "RUF002",
-    "RUF003",
+    # the maths uses single letters on purpose: q, k, v, l, I, O
+    "E741",
+    # a `lambda` inline is often the clearest way to write a one-line map over tensors
+    "E731",
+    # ternary-vs-if and dict()-vs-{} are readability calls, not rules
+    "SIM108",
+    "C408",
+    # a function call in a default argument is fine for torch dtypes/devices
+    "B008",
+    # zip(strict=) would be noise on tensors whose shapes the suite already asserts
+    "B905",
+    # the loop variable of an enumerate used only for its index is idiomatic here
+    "B007",
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"attnbank/methods/**/*.py" = ["E501"]   # the operator docstrings quote the paper verbatim
-"attnbank/studies/**/*.py" = ["E501"]
+# Method files quote the paper verbatim; a wrapped equation is worse than a long line.
+"attnbank/methods/**/*.py" = ["E501"]
+"attnbank/components/**/*.py" = ["E501"]
 "tests/**/*.py" = ["E501"]
-"examples/**/*.py" = ["E501", "I001"]
+"examples/**/*.py" = ["E501"]
+# The study and plotting modules are executable scripts, not library surface, and they
+# are the provenance of every published number: `a = ...; b = ...` for paired tensor
+# setup, `del` to free large buffers (which ruff then reads as an unbound name), import
+# for side effects, and branch structure kept parallel to the prose it implements.
+# Linting them is informative; rewriting them is not worth the risk, so the noisy and
+# auto-fixable rules are off here rather than applied.
+"attnbank/studies/**/*.py" = ["E501", "E702", "F821", "F401", "C416", "F841", "I001",
+                              "SIM114", "SIM102", "SIM103", "SIM110", "SIM118"]
+"attnbank/plotting/**/*.py" = ["E501", "E702", "F401", "I001", "SIM114", "SIM102"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["attnbank"]

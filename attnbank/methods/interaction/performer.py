@@ -33,8 +33,15 @@ from functools import lru_cache
 
 import torch
 
-from ...core import (AttentionMethod, AttentionOutput, Category, Objective, causal_mask,
-                     make_generator, weights_from_log_magnitude)
+from ...core import (
+    AttentionMethod,
+    AttentionOutput,
+    Category,
+    Objective,
+    causal_mask,
+    make_generator,
+    weights_from_log_magnitude,
+)
 from ...registry import register
 
 

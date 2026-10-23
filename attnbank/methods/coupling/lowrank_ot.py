@@ -34,8 +34,7 @@ from __future__ import annotations
 
 import torch
 
-from ...core import (AttentionMethod, AttentionOutput, Category, Objective,
-                     make_generator)
+from ...core import AttentionMethod, AttentionOutput, Category, Objective, make_generator
 from ...registry import register
 from .sinkhorn import sinkhorn_log
 

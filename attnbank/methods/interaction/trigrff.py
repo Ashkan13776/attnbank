@@ -28,12 +28,16 @@ Reference: Rahimi and Recht (2007); Peng et al. (2021); Choromanski et al. (2021
 """
 from __future__ import annotations
 
-import math
-
 import torch
 
-from ...core import (AttentionMethod, AttentionOutput, Category, Objective, causal_mask,
-                     weights_from_log_magnitude)
+from ...core import (
+    AttentionMethod,
+    AttentionOutput,
+    Category,
+    Objective,
+    causal_mask,
+    weights_from_log_magnitude,
+)
 from ...registry import register
 from .performer import gaussian_features
 

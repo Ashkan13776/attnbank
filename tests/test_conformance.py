@@ -9,12 +9,14 @@ from __future__ import annotations
 
 import math
 import re
+import warnings
 from pathlib import Path
 
 import pytest
 import torch
 
 import attnbank as ab
+from attnbank.backends import DISPATCHABLE
 from attnbank.core import Objective
 
 # The library ships its own bibliography (``attnbank/references.bib``) so that check 11
@@ -218,6 +220,146 @@ def test_cuda_matches_cpu(name):
     y_cpu = meth(q, k, v).y
     y_gpu = meth(q.cuda(), k.cuda(), v.cuda()).y.cpu()
     assert torch.allclose(y_cpu, y_gpu, atol=1e-4)
+
+
+# ---------------------------------------------------------------------------
+# 8b. backend equivalence -- every declared backend equals `reference`
+# ---------------------------------------------------------------------------
+#
+# Declaring a backend is a claim, and this is where the claim is checked. DESIGN.md
+# Sec. 6 says kernels "must match the reference within tolerance"; these are the
+# tolerances, and they are deliberately tight -- a fused kernel reorders a summation,
+# it does not change the operator.
+#
+#   float64   1e-10 * max(1, ||y_ref||_inf)
+#   float32   1e-5  * max(1, ||y_ref||_inf)
+#
+# The scaling by the output magnitude is what makes the tolerance a statement about
+# precision rather than about the test inputs: the `large-logits` case multiplies q, k
+# AND v by 10, so y grows with it while the relative error of a reassociated reduction
+# does not. Unscaled, these are exactly the suite's ATOL32 / ATOL64.
+#
+# The awkward shapes are the point of the parametrization: `m < n` catches a backend
+# that aligns the causal mask at the top left instead of the bottom right (SDPA's
+# `is_causal=True` does exactly that), `n == 1` catches single-element support, and
+# `scale=10` catches a kernel that exponentiates an unshifted score.
+BACKEND_ATOL = {torch.float32: ATOL32, torch.float64: ATOL64}
+
+BACKEND_SHAPES = [
+    pytest.param(dict(m=M, n=N), id="m<n"),
+    pytest.param(dict(m=SQ, n=SQ), id="square"),
+    pytest.param(dict(m=1, n=1), id="single-key"),
+    pytest.param(dict(m=1, n=N), id="decode"),
+    pytest.param(dict(m=M, n=N, scale=10.0), id="large-logits"),
+]
+
+BACKEND_CASES = [(name, backend)
+                 for name in METHODS
+                 for backend in ab.get_class(name).backends
+                 if backend != "reference"]
+
+
+@pytest.mark.parametrize("name,backend", BACKEND_CASES,
+                         ids=[f"{n}-{b}" for n, b in BACKEND_CASES])
+@pytest.mark.parametrize("shape", BACKEND_SHAPES)
+@pytest.mark.parametrize("dtype", [torch.float32, torch.float64],
+                         ids=["fp32", "fp64"])
+@pytest.mark.parametrize("causal", [False, True])
+def test_backend_equivalence(name, backend, shape, dtype, causal):
+    """Every declared backend reproduces the reference, bit-close, on every shape."""
+    if not ab.is_backend_available(backend):
+        pytest.skip(f"{backend} is not available here: {ab.backend_info(backend).reason}")
+    ref_method = ab.build(name, backend="reference")
+    if causal and not ref_method.supports_causal:
+        pytest.skip(f"{name} declares supports_causal = False")
+    q, k, v = qkv(dtype=dtype, **shape)
+    y_ref = ref_method(q, k, v, causal=causal).y
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", ab.BackendFallbackWarning)
+        y_backend = ab.build(name, backend=backend)(q, k, v, causal=causal).y
+    atol = BACKEND_ATOL[dtype] * max(1.0, float(y_ref.abs().max()))
+    assert y_backend.shape == y_ref.shape
+    assert torch.allclose(y_backend, y_ref, atol=atol, rtol=0), (
+        f"{name} backend={backend} dtype={dtype} causal={causal} {shape}: "
+        f"max |y - y_reference| = {(y_backend - y_ref).abs().max():.3e} > {atol:.3e}")
+
+
+@pytest.mark.parametrize("name", METHODS)
+def test_backends_are_declared_honestly(name):
+    """A declared backend must exist, be dispatchable, and have an implementation."""
+    cls = ab.get_class(name)
+    assert cls.backends, f"{name} declares no backends at all"
+    assert cls.backends[0] == "reference", \
+        f"{name}: 'reference' must come first; it is the anchor everything is tested against"
+    assert len(set(cls.backends)) == len(cls.backends), f"{name}: duplicate backend"
+    for backend in cls.backends:
+        assert backend in ab.backends().names, f"{name}: unknown backend {backend!r}"
+        if backend == "reference":
+            continue
+        assert backend in DISPATCHABLE, \
+            f"{name} declares {backend!r}, which the library does not dispatch"
+        assert hasattr(cls, f"_forward_{backend}"), \
+            f"{name} declares backend {backend!r} but has no _forward_{backend}"
+
+
+@pytest.mark.parametrize("name,backend", BACKEND_CASES,
+                         ids=[f"{n}-{b}" for n, b in BACKEND_CASES])
+def test_backend_falls_back_loudly_for_weights(name, backend):
+    """No fused kernel materialises pi; asking for it must say so, not return None."""
+    if not ab.is_backend_available(backend):
+        pytest.skip(f"{backend} is not available here")
+    meth = ab.build(name, backend=backend)
+    q, k, v = qkv(dtype=torch.float64)
+    with pytest.warns(ab.BackendFallbackWarning, match="falls back"):
+        out = meth(q, k, v, return_weights=True)
+    assert out.weights is not None, f"{name}: fell back but still returned no weights"
+    ref = ab.build(name, backend="reference")(q, k, v, return_weights=True)
+    assert torch.allclose(out.weights, ref.weights, atol=ATOL64, rtol=0)
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="no CUDA")
+@pytest.mark.parametrize("name,backend", BACKEND_CASES,
+                         ids=[f"{n}-{b}" for n, b in BACKEND_CASES])
+@pytest.mark.parametrize("causal", [False, True])
+def test_backend_equivalence_on_cuda(name, backend, causal):
+    """On CUDA `sdpa` dispatches to a real fused kernel; it must still equal reference."""
+    if not ab.is_backend_available(backend):
+        pytest.skip(f"{backend} is not available here")
+    ref_method = ab.build(name, backend="reference")
+    if causal and not ref_method.supports_causal:
+        pytest.skip(f"{name} declares supports_causal = False")
+    q, k, v = qkv(device="cuda")
+    y_ref = ref_method(q, k, v, causal=causal).y
+    y_backend = ab.build(name, backend=backend)(q, k, v, causal=causal).y
+    atol = ATOL32 * max(1.0, float(y_ref.abs().max()))
+    assert torch.allclose(y_backend, y_ref, atol=atol, rtol=0), (
+        f"{name} backend={backend} on cuda, causal={causal}: "
+        f"max |y - y_reference| = {(y_backend - y_ref).abs().max():.3e} > {atol:.3e}")
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="no CUDA")
+@pytest.mark.parametrize("kernel", ["math", "mem_efficient", "flash"])
+def test_sdpa_sub_backends_agree(kernel):
+    """`sdpa_kernel=` pins a sub-backend; all of them compute the same operator."""
+    q, k, v = qkv(m=SQ, n=SQ, d=64, dv=64, dtype=torch.float16, device="cuda")
+    ref = ab.build("softmax", backend="reference")(q.float(), k.float(), v.float()).y
+    try:
+        got = ab.build("softmax", backend="sdpa", sdpa_kernel=kernel)(q, k, v).y
+    except RuntimeError as e:                 # a sub-backend this GPU cannot run
+        pytest.skip(f"sdpa_kernel={kernel!r} unavailable: {e}")
+    assert torch.allclose(got.float(), ref, atol=2e-2, rtol=0), \
+        f"sdpa_kernel={kernel}: max diff {(got.float() - ref).abs().max():.3e}"
+
+
+def test_an_unsupported_backend_raises_rather_than_downgrading():
+    with pytest.raises(ab.BackendNotSupportedError, match="does not support backend"):
+        ab.build("nmf_oracle", backend="sdpa")
+
+
+def test_the_default_backend_is_reference():
+    """Nothing may change a published number by changing the default execution path."""
+    assert ab.get_default_backend() == "reference"
+    assert all(ab.build(n).backend == "reference" for n in METHODS)
 
 
 # ---------------------------------------------------------------------------

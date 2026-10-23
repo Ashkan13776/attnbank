@@ -13,8 +13,7 @@ from __future__ import annotations
 
 import torch
 
-from ..core import (AttentionOutput, causal_mask, masked_softmax,
-                    normalize_nonnegative, scores)
+from ..core import AttentionOutput, causal_mask, masked_softmax, normalize_nonnegative, scores
 
 
 def reference_pi(method, q, k, causal):
@@ -65,8 +64,8 @@ def restrict(pi, support, v, return_weights, extras=None):
     >>> out = restrict(pi, torch.tensor([[[True, True, False]]]), v, True)
     >>> out.weights
     tensor([[[0.6250, 0.3750, 0.0000]]])
-    >>> float(out.extras["eps"])                         # the omitted mass
-    0.20000000298023224
+    >>> round(float(out.extras["eps"]), 4)               # the omitted mass
+    0.2
     """
     pi_hat, mass = normalize_nonnegative(pi, support)
     eps = 1.0 - mass

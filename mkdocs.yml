@@ -80,6 +80,7 @@ nav:
   - The taxonomy: taxonomy.md
   - The invariant: invariant.md
   - Conformance: conformance.md
+  - Backends: backends.md
   - Examples gallery:
       - examples/index.md
       - Quickstart: examples/01_quickstart.md
@@ -91,6 +92,7 @@ nav:
       - Browsing the bank: examples/07_browse_the_bank.md
       - Cost and capacity: examples/08_cost_and_capacity.md
       - Adding a method: examples/09_add_your_own_method.md
+      - Backends: examples/10_backends.md
   - API reference:
       - api/index.md
       - Top level: api/top-level.md

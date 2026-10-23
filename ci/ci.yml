@@ -1,0 +1,123 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  # the CPU wheels are an order of magnitude smaller and the suite is CPU-only
+  PIP_EXTRA_INDEX_URL: https://download.pytorch.org/whl/cpu
+
+jobs:
+  lint:
+    name: ruff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - name: ruff check
+        run: ruff check --output-format=github .
+      # `ruff format` is deliberately NOT enforced: the method files align equations by
+      # hand so they can be read against the monograph, and the formatter would undo
+      # that. `ruff check` covers everything that is a defect rather than a preference.
+
+  test:
+    name: pytest (py${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        include:
+          # one macOS job to catch anything that is accidentally Linux-specific
+          - os: macos-latest
+            python-version: "3.12"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Show the backends this runner has
+        run: python -c "import attnbank as ab; print(ab.backends())"
+      - name: pytest
+        run: pytest -q -n auto --durations=10
+
+  minimal-install:
+    # the core install must stay light: torch + numpy, CPU-only, no matplotlib,
+    # no transformers, no kernels. A new top-level import that breaks this fails here.
+    name: minimal install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install .
+      - name: Import and run without any extra
+        run: |
+          cd "$RUNNER_TEMP"
+          python - <<'PY'
+          import importlib.util, torch, attnbank as ab
+          assert importlib.util.find_spec("matplotlib") is None, "matplotlib leaked into the core install"
+          assert importlib.util.find_spec("transformers") is None, "transformers leaked into the core install"
+          q, k, v = (torch.randn(1, 2, 16, 8) for _ in range(3))
+          assert ab.attend("topk", q, k, v, causal=True, k=4).shape == (1, 2, 16, 8)
+          assert len(ab.available()) == 32
+          assert ab.get_default_backend() == "reference"
+          assert ab.check_conformance("softmax").ok
+          print(ab.backends())
+          PY
+
+  docs:
+    name: docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - run: pip install -e ".[docs]"
+      - name: Build the site (warnings are errors)
+        run: mkdocs build --strict
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: site/
+
+  package:
+    name: build and check the wheel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install build twine
+      - run: python -m build
+      - run: twine check --strict dist/*
+      - name: py.typed and the bibliography must be in the wheel
+        run: |
+          python - <<'PY'
+          import glob, zipfile
+          names = zipfile.ZipFile(glob.glob("dist/*.whl")[0]).namelist()
+          for required in ("attnbank/py.typed", "attnbank/references.bib"):
+              assert required in names, f"{required} missing from the wheel"
+          print("wheel contents ok")
+          PY

@@ -19,6 +19,7 @@ import attnbank as ab
 #: modules whose docstrings are executed
 DOCTEST_MODULES = [
     "attnbank",
+    "attnbank.backends",
     "attnbank.core",
     "attnbank.registry",
     "attnbank.errors",
@@ -26,6 +27,12 @@ DOCTEST_MODULES = [
     "attnbank.conformance",
     "attnbank.metrics",
     "attnbank.reference",
+    "attnbank.components",
+    "attnbank.components.online_softmax",
+    "attnbank.components.quantization",
+    "attnbank.components.recurrence",
+    "attnbank.components.restriction",
+    "attnbank.components.sdpa",
 ]
 
 OPTIONS = (doctest.ELLIPSIS | doctest.IGNORE_EXCEPTION_DETAIL

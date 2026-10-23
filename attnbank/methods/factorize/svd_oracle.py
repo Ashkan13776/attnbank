@@ -27,8 +27,7 @@ from __future__ import annotations
 
 import torch
 
-from ...core import (AttentionMethod, AttentionOutput, Category, Objective,
-                     masked_softmax, scores)
+from ...core import AttentionMethod, AttentionOutput, Category, Objective, masked_softmax, scores
 from ...registry import register
 
 

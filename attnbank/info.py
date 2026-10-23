@@ -59,6 +59,7 @@ class MethodInfo:
     trainable: bool
     references: tuple = ()
     paper_section: str = ""
+    backends: tuple = ("reference",)
     limit_config: Optional[dict] = None
     n_convergence_configs: int = 0
     summary: str = ""
@@ -92,6 +93,7 @@ class MethodInfo:
             trainable=bool(klass.trainable),
             references=tuple(klass.references),
             paper_section=klass.paper_section,
+            backends=tuple(klass.backends),
             limit_config=klass.limit_config(),
             n_convergence_configs=0 if conv is None else len(conv),
             summary=_summary(klass),
@@ -104,6 +106,7 @@ class MethodInfo:
         """A plain ``dict`` (JSON-serialisable apart from ``references``, a tuple)."""
         d = asdict(self)
         d["references"] = list(self.references)
+        d["backends"] = list(self.backends)
         return d
 
     # ---- human-readable -----------------------------------------------------
@@ -126,9 +129,13 @@ class MethodInfo:
             + ("" if self.expresses_weights else
                "   (excluded from the error decomposition, by declaration)"),
             f"stochastic   {_FLAG[self.row_stochastic]}",
-            f"heads        {'independent' if self.head_independent else 'coupled (shares K/V across query heads)'}",
+            "heads        " + ("independent" if self.head_independent
+                               else "coupled (shares K/V across query heads)"),
             f"trainable    {_FLAG[self.trainable]}",
             f"anchor       {anchor}",
+            f"backends     {', '.join(self.backends)}"
+            + ("   (reference only: no equivalent kernel exists for this operator)"
+               if tuple(self.backends) == ("reference",) else ""),
         ]
         if self.parameters:
             args = ", ".join(f"{key}={val!r}" for key, val in self.parameters.items())
@@ -163,7 +170,8 @@ class MethodTable(list):
     #: columns rendered, in order, as ``(key, header, width)``
     COLUMNS: Sequence[tuple] = (("name", "method", 16), ("objective", "objective", 11),
                                 ("causal", "causal", 6), ("expresses_weights", "weights", 7),
-                                ("row_stochastic", "stoch.", 6))
+                                ("row_stochastic", "stoch.", 6),
+                                ("backends", "backends", 8))
 
     def __init__(self, rows: Iterable[dict] = ()):
         super().__init__(rows)
@@ -221,6 +229,8 @@ class MethodTable(list):
 
 
 def _cell(val) -> str:
+    if isinstance(val, (list, tuple)):
+        return ",".join(str(x) for x in val)
     if val is True:
         return "yes"
     if val is False:

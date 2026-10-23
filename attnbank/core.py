@@ -152,7 +152,8 @@ class AttentionOutput:
                 return "None"
             return "[" + ", ".join(str(int(x)) for x in t.shape) + "]"
 
-        extras = "[" + ", ".join(sorted(map(str, self.extras))) + "]" if self.extras             else "{}"
+        keys = ", ".join(sorted(map(str, self.extras)))
+        extras = f"[{keys}]" if self.extras else "{}"
         tail = ""
         if self.y is not None:
             tail = f", dtype={str(self.y.dtype).removeprefix('torch.')}, " \

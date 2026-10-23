@@ -29,8 +29,14 @@ from __future__ import annotations
 
 import torch
 
-from ...core import (AttentionMethod, AttentionOutput, Category, Objective, causal_mask,
-                     normalize_nonnegative)
+from ...core import (
+    AttentionMethod,
+    AttentionOutput,
+    Category,
+    Objective,
+    causal_mask,
+    normalize_nonnegative,
+)
 from ...registry import register
 
 

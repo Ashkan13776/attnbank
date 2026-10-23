@@ -619,7 +619,8 @@ class _Capture:
             mask = _causal_mask(vq, n, device=s.device)
             pi = torch.softmax(s.masked_fill(~mask, float("-inf")), dim=-1)
             y = pi @ v64
-            yr = y_ref.index_select(1, torch.as_tensor(hs, device=y_ref.device))[:, :, -vq:].double()
+            head_idx = torch.as_tensor(hs, device=y_ref.device)
+            yr = y_ref.index_select(1, head_idx)[:, :, -vq:].double()
             rel_y = float((y - yr).norm() / yr.norm().clamp_min(1e-30))
             rel_w = float("nan")
             if w_ref is not None:
@@ -654,7 +655,7 @@ def _register_impl() -> None:
     """
     from transformers.modeling_utils import AttentionInterface
     AttentionInterface.register(CAPTURE_IMPL, _capture_attention_forward)
-    from transformers.masking_utils import AttentionMaskInterface, ALL_MASK_ATTENTION_FUNCTIONS
+    from transformers.masking_utils import ALL_MASK_ATTENTION_FUNCTIONS, AttentionMaskInterface
     AttentionMaskInterface.register(CAPTURE_IMPL, ALL_MASK_ATTENTION_FUNCTIONS["eager"])
 
 

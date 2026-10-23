@@ -47,7 +47,8 @@ def _kernel_context(kernel: Optional[str]):
     if kernel not in SDPA_KERNELS:
         raise ValueError(
             f"sdpa_kernel must be one of {SDPA_KERNELS} or None, got {kernel!r}")
-    from torch.nn.attention import SDPBackend, sdpa_kernel as _ctx
+    from torch.nn.attention import SDPBackend
+    from torch.nn.attention import sdpa_kernel as _ctx
 
     backend = {"flash": SDPBackend.FLASH_ATTENTION,
                "mem_efficient": SDPBackend.EFFICIENT_ATTENTION,

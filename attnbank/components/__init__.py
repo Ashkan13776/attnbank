@@ -34,8 +34,15 @@ Examples
 """
 from __future__ import annotations
 
-from ..core import (causal_mask, masked_softmax, normalize_nonnegative, query_positions,
-                    renormalize, scores, weights_from_log_magnitude)
+from ..core import (
+                    causal_mask,
+                    masked_softmax,
+                    normalize_nonnegative,
+                    query_positions,
+                    renormalize,
+                    scores,
+                    weights_from_log_magnitude,
+)
 from .online_softmax import merge_states, online_state, readout
 from .quantization import affine_quantize, hadamard, quantize_fp8, quantize_int
 from .recurrence import FEATURES, feature_map, readout_positions

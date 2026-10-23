@@ -45,6 +45,7 @@ class MyAttention(ab.AttentionMethod):
     trainable = False
     references = ("author2024paper",)     # keys that resolve in references.bib
     paper_section = "sec:sparse"
+    backends = ("reference",)             # see step 5; this is usually correct
 ```
 
 Those attributes are **commitments, not documentation**. The conformance suite reads
@@ -116,6 +117,9 @@ import attnbank as ab
 print(ab.check_conformance("my_method"))     # the fast half, immediately
 ```
 
+(Steps 5 and 6 below are about backends and shared components; step 4 is the only
+wiring you need to be picked up by the suite.)
+
 ```bash
 pytest tests/test_conformance.py -k my_method    # the full eleven points
 pytest -q                                        # and everything else
@@ -127,13 +131,57 @@ float32/float64/CUDA agreement · the cost model · no NaN at degenerate support
 large logits · every citation resolves in `references.bib`. `DESIGN.md` §4 is the
 normative description.
 
-### 5. Add the citation
+### 5. Declare a backend, or declare `reference` only
+
+```python
+backends = ("reference",)      # the default, and usually the right answer
+```
+
+`reference` is plain PyTorch: always available, every dtype and device, and the path
+every other backend is tested against. A method may additionally declare `sdpa` or
+`flash_attn` — **but only if it can prove equality**.
+`tests/test_conformance.py::test_backend_equivalence` compares every declared backend
+against `reference` for both causal settings, float32 and float64, on `m < n`,
+`m == n`, `n == 1`, a single decode step and logits scaled by 10. Tolerances are `1e-5`
+(fp32) and `1e-10` (fp64), scaled by the output magnitude.
+
+Twenty-eight of the thirty-two methods declare `reference` only, and they are right to.
+`sdpa` computes exactly $\mathrm{softmax}(\beta\langle q,k\rangle + \text{mask})\,v$;
+if your operator is not that — or if its `extras` need the full score matrix anyway, as
+every score-based selector's omitted mass does — there is nothing to dispatch to.
+**Declaring `reference` only is a correct answer and far better than pretending
+otherwise.**
+
+If you do declare one, implement `_forward_<backend>` and route through
+`attnbank.components.sdpa.sdpa_attend` rather than calling SDPA directly: it carries
+the end-alignment convention that `is_causal=True` gets wrong when `m < n`. Delegate to
+`self._fallback_to_reference(reason)` for anything the kernel cannot serve —
+`return_weights=True`, most often — so the fallback is announced rather than silent.
+
+### 6. Reuse the shared components
+
+Before writing a helper, check [`attnbank/components/`](attnbank/components/):
+
+| module | what lives there |
+|---|---|
+| `components.restriction` | the renormalised restriction of `prop:sparse-identity`, and `topk_support` |
+| `components.online_softmax` | the state / merge / readout monoid of `prop:exact-monoid` |
+| `components.quantization` | symmetric INT, asymmetric affine with grouping, FP8, Hadamard |
+| `components.recurrence` | feature maps and the readout convention |
+| `components.sdpa` | the one SDPA call every `_forward_sdpa` goes through |
+| `attnbank.core` | masking, log-space softmax, renormalisation, seeded generators |
+
+A new selector in `restrict/` should be three lines plus the support rule. If yours is
+not, either you are reinventing something, or the shared piece needs widening — which
+is a fine pull request on its own.
+
+### 7. Add the citation
 
 Put the BibTeX entry in `attnbank/references.bib`. Check 11 fails if a key in
 `references` does not resolve there, which is deliberate: an implementation without a
 source is not reviewable.
 
-### 6. Write the method's own tests
+### 8. Write the method's own tests
 
 Conformance proves the method is *well-formed*. It does not prove the method is
 *correct*. Add `tests/test_<category>.py` cases for the behaviour that makes your
@@ -150,9 +198,25 @@ upper bound on something, and `tests/test_metrics.py` must contain a randomised 
 that it really bounds it.
 
 **Documentation.** The site is MkDocs Material; `pip install -e ".[docs]"` then
-`mkdocs serve`. Pages live in `docs/`, the gallery in `examples/`. Every example script
-is executed in CI, so an example that no longer runs is a failing build, not a stale
-page.
+`mkdocs serve`. Pages live in `docs/`, the gallery in `examples/`.
+
+Two pages are generated and should not be hand-edited:
+
+```bash
+python docs/gen_taxonomy.py    # docs/taxonomy.md, from the live registry
+python docs/gen_gallery.py     # docs/examples/*.md, from examples/*.py + captured output
+```
+
+The gallery pages *include* each script rather than copying it, so the code can never
+drift; only the captured output can, which is why the generator re-runs everything.
+`tests/test_examples.py` executes every script in CI, so a broken example is a failing
+build rather than a stale page. `mkdocs build --strict` runs in CI too: a dangling link
+is an error.
+
+**A docstring.** Every public function carries a runnable `Examples` block, and
+`tests/test_docs.py` executes all of them and fails the build for a public name without
+one. Add the example, run `pytest tests/test_docs.py`, and paste in the output it
+tells you it got.
 
 **A bug.** A failing test first, in the file where the behaviour belongs, then the fix.
 
@@ -166,7 +230,11 @@ micro-optimisation, no fused tricks, and no `einsum` string longer than the equa
 implements. Every method file opens with a docstring giving the operator in the paper's
 notation, the section label and the citation.
 
-`ruff check .` and `ruff format --diff .` must be clean. Line length is 100.
+`ruff check .` must be clean; CI runs it on Python 3.10–3.13. Line length is 100.
+
+`ruff format` is deliberately **not** enforced. The method files align equations by hand
+so they can be read next to the monograph, and the formatter would undo that. Match the
+surrounding file.
 
 ## The contract wins
 

@@ -39,8 +39,8 @@ def quantize_int(x, bits, dim=-1):
     >>> import torch
     >>> from attnbank.components import quantize_int
     >>> x = torch.tensor([[-1.0, 0.0, 0.5, 1.0]])
-    >>> quantize_int(x, bits=2)
-    tensor([[-1.0000,  0.0000,  1.0000,  1.0000]])
+    >>> quantize_int(x, bits=2)             # 2 bits: three usable levels, step = 1
+    tensor([[-1.,  0.,  0.,  1.]])
     >>> bool((quantize_int(x, bits=None) == x).all())        # None is the identity
     True
     """
@@ -110,8 +110,8 @@ def affine_quantize(x, bits, axis="token", group=None):
     >>> import torch
     >>> from attnbank.components import affine_quantize
     >>> x = torch.tensor([[[0.0, 0.25, 0.5, 1.0]]])
-    >>> affine_quantize(x, bits=1, axis="token")
-    tensor([[[0., 0., 1., 1.]]])
+    >>> affine_quantize(x, bits=1, axis="token")     # 1 bit: two levels, 0 and 1
+    tensor([[[0., 0., 0., 1.]]])
     >>> q = affine_quantize(x, bits=3, axis="token")
     >>> torch.allclose(affine_quantize(q, bits=3, axis="token"), q)   # idempotent
     True

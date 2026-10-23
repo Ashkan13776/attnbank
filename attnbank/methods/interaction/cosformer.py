@@ -25,8 +25,15 @@ import math
 
 import torch
 
-from ...core import (AttentionMethod, AttentionOutput, Category, Objective, causal_mask,
-                     normalize_nonnegative, query_positions)
+from ...core import (
+    AttentionMethod,
+    AttentionOutput,
+    Category,
+    Objective,
+    causal_mask,
+    normalize_nonnegative,
+    query_positions,
+)
 from ...registry import register
 
 

@@ -28,8 +28,14 @@ from __future__ import annotations
 
 import torch
 
-from ...core import (AttentionMethod, AttentionOutput, Category, Objective,
-                     make_generator, masked_softmax)
+from ...core import (
+    AttentionMethod,
+    AttentionOutput,
+    Category,
+    Objective,
+    make_generator,
+    masked_softmax,
+)
 from ...registry import register
 
 

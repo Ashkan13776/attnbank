@@ -35,8 +35,15 @@ from __future__ import annotations
 
 import torch
 
-from ...core import (AttentionMethod, Category, Objective, make_generator,
-                     masked_softmax, normalize_nonnegative, AttentionOutput)
+from ...core import (
+    AttentionMethod,
+    AttentionOutput,
+    Category,
+    Objective,
+    make_generator,
+    masked_softmax,
+    normalize_nonnegative,
+)
 from ...registry import register
 from ._restriction import reference_pi, visible
 

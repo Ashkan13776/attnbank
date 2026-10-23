@@ -24,7 +24,6 @@ import torch
 from attnbank import data
 from attnbank.studies import _harness as H
 
-
 # ======================================================================================
 # synthetic control
 # ======================================================================================
@@ -237,8 +236,8 @@ def _capture_available(model: str) -> str | None:
     if os.environ.get("ATTNBANK_SKIP_MODEL_TESTS"):
         return "ATTNBANK_SKIP_MODEL_TESTS is set"
     try:
+        import datasets  # noqa: F401
         import transformers  # noqa: F401
-        import datasets      # noqa: F401
     except Exception as e:
         return f"transformers/datasets unavailable: {e}"
     return None

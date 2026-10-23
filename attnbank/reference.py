@@ -9,8 +9,14 @@ from __future__ import annotations
 import torch
 
 from .components.sdpa import sdpa_attend
-from .core import (AttentionMethod, AttentionOutput, Category, Objective, causal_mask,
-                   masked_softmax, scores)
+from .core import (
+    AttentionMethod,
+    AttentionOutput,
+    Category,
+    Objective,
+    masked_softmax,
+    scores,
+)
 from .registry import register
 
 

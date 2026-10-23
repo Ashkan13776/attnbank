@@ -59,6 +59,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 import attnbank as ab
+
 from . import _common as C
 from . import _harness as H
 
@@ -368,13 +369,20 @@ def make_figure(summary) -> list[str]:  # noqa: C901
     attained, while softmax stays at 1.00 to ``N = 512``.  Each panel now makes one of
     those three statements.
 
-    Layout.  This caption is the longest in the paper -- 4.2in of a 7.1in block --
-    which leaves 2.6in for the graphic, and no vertical stack of three panels
-    survives that.  The strip therefore stays 1x3, and the width is bought back
-    instead: (a) and (b) are the same measurement on the same axes, so (b) shares
-    (a)'s y axis and spends the freed half-inch on plotting area.  Every annotation is
-    cut to the ~20 characters a 1.2in panel holds at 7.5pt; the long form is in the
-    caption, which is exactly the trade the house style asks for.
+    Layout.  The caption used to be the longest in the paper (4.2in of the 7.1in
+    block), which left 2.6in for the graphic; a 1x3 strip was the only arrangement
+    that fitted, and at 1.2in a panel every annotation had to be cut to ~20
+    characters a line.  The MQAR construction and the trained run now live in
+    ``tab:finite-state`` instead, the caption is 3.0in and the graphic has 3.75in.
+
+    That buys a mosaic.  (a) and (b) are the *same* measurement -- recall against
+    load -- on the same two axes, so they stack in the left column with one shared
+    x axis and one shared y scale, each twice as wide as it was.  (c) is the derived
+    summary and is the panel whose claim is a *divergence* between two log-log
+    curves, so it spans both rows on the right, where five octaves of $d_\varphi$
+    against eight of $N$ get an aspect that shows the gap opening.  The width is what
+    the annotations needed: the softmax control's own numbers, which the caption used
+    to carry, now sit in (a) next to the line they describe.
     """
     from ..plotting import style
     style.use()
@@ -383,8 +391,14 @@ def make_figure(summary) -> list[str]:  # noqa: C901
     ds = sorted({r["d"] for r in rows})
     Ns = sorted({r["N"] for r in rows})
     clean = summary.get("embedding_limit", {}).get("d_where_embedding_is_clean") or ds
-    fig, axes = style.stack("fig_finite_state_recall", 1, 3, sharey=False,
-                            width_ratios=(1.25, 1.2, 1.25))
+    el = summary.get("embedding_limit", {})
+    sc = summary.get("softmax_control", {})
+    fig, axd = style.mosaic("fig_finite_state_recall",
+                            [["a", "c"], ["b", "c"]], width_ratios=(1.1, 0.9))
+    axes = [axd["a"], axd["b"], axd["c"]]
+    # (a) over (b): one measurement, one pair of axes.  Sharing both means the x
+    # ticks and the y label are drawn once and the two panels line up exactly.
+    axes[1].sharex(axes[0])
     axes[1].sharey(axes[0])
 
     # --- (a) every operator, pooled over state size ---------------------------------
@@ -408,18 +422,26 @@ def make_figure(summary) -> list[str]:  # noqa: C901
     ax.plot(Ns, soft, "-", color=style.INK["primary"], linewidth=1.6)
     ends.append((Ns[-1], soft[-1], "softmax"))
     ax.set_xscale("log", base=2)
-    style.log2_ticks(ax, "x", 2, 9, every=2)
-    ax.set_xlim(2 ** 1.7, 2 ** 10.2)
+    style.log2_ticks(ax, "x", 2, 9, every=1)
+    ax.set_xlim(2 ** 1.7, 2 ** 10.4)
     # a band above the softmax line for the note: it is the only ground in this panel
     # that neither the flat control nor the three decaying curves already occupy
-    ax.set_ylim(-0.04, 1.42)
+    ax.set_ylim(-0.04, 1.58)
     ax.set_yticks([0.0, 0.5, 1.0])
-    ax.set_xlabel("stored pairs $N$")
-    ax.set_ylabel("recall accuracy\n(fraction correct)")
+    # (b) carries the x label for the pair; (a)'s ticks are the shared ones
+    ax.tick_params(labelbottom=False)
+    ax.set_ylabel("recall (fraction correct)")
     style.panel(ax, "a", "recall against load")
     style.label_ends(ax, ends, size=7.5, min_gap_frac=0.075)
-    style.note(ax, f"median, IQR,\n{len(ds)} state sizes\n"
-                   "linear = decay",
+    # The softmax control's own numbers used to be three lines of caption; at this
+    # width they fit beside the line they describe, which is where they belong.  The
+    # band above y = 1 is sized for exactly these three lines, so the block clears
+    # both the flat control and its end label.
+    d8 = el.get("by_d", {}).get(str(min(ds)), {}).get("min_recall", 0.0)
+    style.note(ax, f"median and IQR over the {len(ds)} state sizes\n"
+                   f"softmax = {sc.get('median', 1.0):.2f} for "
+                   f"$d_\\varphi\\geq{min(clean)}$; at $d_\\varphi$={min(ds)} it is\n"
+                   f"{d8:.2f}, which is the embedding and not the operator",
                loc="upper left", size=7.5)
 
     # --- (b) does the state size matter at all? -------------------------------------
@@ -434,25 +456,24 @@ def make_figure(summary) -> list[str]:  # noqa: C901
         med = [float(np.median(_pool(rows, method=meth, d=dd, N=N))) for N in Ns]
         ax.plot(Ns, med, "-o", color=style.seq(i, len(shown)), markersize=3.0,
                 label=f"${dd}$")
-    ax.set_xscale("log", base=2)
-    style.log2_ticks(ax, "x", 2, 9, every=2)
-    ax.set_xlim(2 ** 1.7, 2 ** 9.4)
+    # x and y come from (a): same measurement, same scale, drawn once
     ax.set_xlabel("stored pairs $N$")
-    # shares (a)'s y axis: the same measurement on the same scale, and the half inch
-    # of duplicated label and ticks is this panel's whole annotation budget
-    ax.tick_params(labelleft=False)
-    style.panel(ax, "b", f"{PRETTY[meth]}, by state")
-    # two columns of bare ranks: d_v is fixed at 64 and is in the caption, and five
-    # stacked "16x64" rows would be a third of a panel this narrow
-    ax.legend(loc="upper right", fontsize=7.5, title="state $d_\\varphi$",
-              title_fontsize=7.5, ncol=2, labelspacing=0.15, columnspacing=0.9,
-              borderpad=0.2, handlelength=1.0, handletextpad=0.4)
+    style.panel(ax, "b", f"{PRETTY[meth]}, by state rank")
+    # the legend title names the *rank*, which is what the entries are; the state is
+    # d_phi x d_v numbers and d_v is fixed, which the caption and (c)'s x label say.
+    # One row of five: the ramp reads light to dark across it.
+    ax.legend(loc="upper right", fontsize=7.5, title="state rank $d_\\varphi$",
+              title_fontsize=7.5, ncol=len(shown), labelspacing=0.15,
+              columnspacing=0.8, borderpad=0.2, handlelength=1.0,
+              handletextpad=0.35)
     cr = summary["collapse_ratio"]
-    style.note(ax, f"curves do not\nseparate:\n"
-                   f"{max(shown) // min(shown)}$\\times$ state buys\n"
-                   f"no extra pairs\n"
-                   f"$N/S$ at\ncollapse {cr['median']:g}",
-               loc="lower right", size=7.5, ypad=0.04)
+    # the curves are all on the floor past N = 2^5, so the free ground is the right
+    # half between the floor and the legend row
+    style.note(ax, f"the curves do not separate:\n"
+                   f"a {max(shown) // min(shown)}$\\times$ larger state buys\n"
+                   f"no extra associations\n"
+                   f"($N/S$ at collapse {cr['median']:g})",
+               loc="upper right", size=7.5, ypad=0.42)
 
     # --- (c) the collapse point against the bound -----------------------------------
     ax = axes[2]
@@ -469,24 +490,29 @@ def make_figure(summary) -> list[str]:  # noqa: C901
     ax.plot(ds, ds, color=style.INK["primary"], linewidth=1.0, zorder=1)
     ax.set_xscale("log", base=2); ax.set_yscale("log", base=2)
     style.log2_ticks(ax, "x", 3, 8, every=1)
-    style.log2_ticks(ax, "y", 1, 9, every=2)
-    ax.set_xlim(2 ** 2.7, 2 ** 9.9)
-    # a clear octave under the flat collapse curves, so the note does not meet the
-    # "delta RNN" end label sitting on the lowest of them
-    ax.set_ylim(2 ** -0.3, 2 ** 9.6)
-    # the bound is named on the line rather than past its end: at 1.3in of panel the
-    # end label would be a quarter of the plotting area
-    # the empty half of this panel is the triangle above the diagonal, so the bound
-    # is named back along its own top-right end
-    style.direct_label(ax, ds[-1], ds[-1], r"bound $N=d_\varphi$", dx=-1, dy=4,
-                       ha="right", va="bottom", size=7.5)
+    style.log2_ticks(ax, "y", 2, 8, every=2)
+    ax.set_xlim(2 ** 2.7, 2 ** 9.6)
+    # The y axis spans only what the claim needs: the collapse curves at N of 4-8 and
+    # the bound's top at 256.  Ten octaves (the earlier range) pressed the three
+    # collapse curves into the bottom fifth of a panel that is now the tall one, and
+    # the flatness that is the whole point stopped being legible.
+    ax.set_ylim(2 ** 1.2, 2 ** 8.9)
+    # The bound is named on the line, not past its end: an end label would be outside
+    # the axes and would widen the crop.  It goes half way up and on the *lower* side,
+    # inside the wedge between the bound and the collapse curves -- the gap the panel
+    # exists to show -- which keeps it clear of the note in the opposite corner.
+    dmid = ds[len(ds) // 2]
+    style.direct_label(ax, dmid, dmid, r"bound $N=d_\varphi$", dx=5, dy=-4,
+                       ha="left", va="top", size=7.5)
     ax.set_xlabel(r"state rank $d_\varphi$ ($d_v$=" f"{DV})")
     ax.set_ylabel("$N$ at which median\nrecall first drops below 0.5")
     style.panel(ax, "c", "bound not attained")
     style.label_ends(ax, ends, size=7.5, min_gap_frac=0.07)
-    style.note(ax, "collapse flat in $d_\\varphi$;\n"
+    # the bound runs bottom-left to top-right, so the free ground is the wedge above
+    # it on the left -- which is also, literally, the gap the panel is about
+    style.note(ax, "the collapse point is\nflat in $d_\\varphi$ while the\n"
                    f"bound rises {ds[-1] // ds[0]}$\\times$",
-               loc="lower right", size=7.5)
+               loc="upper left", size=7.5)
     return [str(C.save_fig(fig, "fig_finite_state_recall"))]
 
 

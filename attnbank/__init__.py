@@ -39,6 +39,19 @@ from __future__ import annotations
 
 __version__ = "0.2.0"
 
+from . import components, metrics
+from .backends import (
+    BackendFallbackWarning,
+    BackendInfo,
+    BackendNotSupportedError,
+    backend_info,
+    backends,
+    default_backend,
+    get_default_backend,
+    is_backend_available,
+    set_default_backend,
+)
+from .conformance import check_conformance, check_invariant
 from .core import (
     AttentionMethod,
     AttentionOutput,
@@ -62,9 +75,11 @@ from .errors import (
     ShapeError,
     UnknownMethodError,
 )
+from .info import MethodInfo, MethodTable
 from .registry import (
     attend,
     available,
+    backend_matrix,
     build,
     categories,
     compare,
@@ -74,15 +89,15 @@ from .registry import (
     method_table,
     register,
 )
-from .conformance import check_conformance, check_invariant
-from .info import MethodInfo, MethodTable
-from . import metrics
 
 __all__ = [
     "__version__",
     # ---- the flat surface: start here -------------------------------------
     "attend", "build", "compare", "available", "list_methods", "describe",
     "categories", "method_table", "get_class", "register",
+    # ---- execution backends ------------------------------------------------
+    "backends", "backend_info", "backend_matrix", "is_backend_available",
+    "get_default_backend", "set_default_backend", "default_backend", "BackendInfo",
     # ---- the contract ------------------------------------------------------
     "check_invariant", "check_conformance",
     # ---- types -------------------------------------------------------------
@@ -90,11 +105,12 @@ __all__ = [
     "MethodInfo", "MethodTable",
     # ---- errors ------------------------------------------------------------
     "AttnBankError", "UnknownMethodError", "ShapeError", "CausalNotSupportedError",
-    "ConfigError", "ConformanceError",
+    "ConfigError", "ConformanceError", "BackendNotSupportedError",
+    "BackendFallbackWarning",
     # ---- building blocks for new methods -----------------------------------
     "causal_mask", "query_positions", "scores", "masked_softmax", "renormalize",
     "normalize_nonnegative", "make_generator", "weights_from_log_magnitude",
     "check_qkv",
     # ---- submodules --------------------------------------------------------
-    "metrics",
+    "components", "metrics",
 ]

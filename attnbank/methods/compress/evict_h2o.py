@@ -26,8 +26,7 @@ from __future__ import annotations
 
 import torch
 
-from ...core import (AttentionMethod, Category, Objective, masked_softmax,
-                     query_positions, scores)
+from ...core import AttentionMethod, Category, Objective, masked_softmax, query_positions, scores
 from ...registry import register
 from ..restrict._restriction import restrict
 

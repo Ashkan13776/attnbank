@@ -1,2 +1,5 @@
 """Import every category so methods register themselves."""
-from . import exact, interaction, restrict, compress, factorize, coupling, recurrent  # noqa: F401
+from . import compress, coupling, exact, factorize, interaction, recurrent, restrict  # noqa: F401
+
+__all__ = ["compress", "coupling", "exact", "factorize", "interaction",
+           "recurrent", "restrict"]

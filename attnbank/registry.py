@@ -15,7 +15,7 @@ conformance suite, which is parametrized over the registry.
 """
 from __future__ import annotations
 
-from typing import Any, Iterable, Optional, Sequence, Union
+from typing import Any, Optional, Sequence, Union
 
 from torch import Tensor
 
@@ -23,7 +23,7 @@ from .core import AttentionMethod, Category, Objective, check_qkv
 from .errors import UnknownMethodError, unknown_method_message
 
 __all__ = ["register", "build", "get_class", "available", "categories", "describe",
-           "list_methods", "method_table", "attend", "compare"]
+           "list_methods", "method_table", "backend_matrix", "attend", "compare"]
 
 _REGISTRY: dict[str, type[AttentionMethod]] = {}
 
@@ -279,6 +279,41 @@ def method_table() -> list[dict]:
     return rows
 
 
+def backend_matrix(backend: Optional[str] = None) -> dict[str, tuple]:
+    """Which method declares which execution backend: ``{method: (backends...)}``.
+
+    Declaring a backend is a claim that it equals the ``reference`` path, checked by
+    ``tests/test_conformance.py::test_backend_equivalence``. Most of the bank declares
+    ``("reference",)`` and that is the correct answer: an operator that is not a dense
+    softmax over a mask, or whose ``extras`` need the full score matrix anyway, has no
+    kernel to dispatch to.
+
+    Parameters
+    ----------
+    backend:
+        return only the methods that declare this backend.
+
+    Examples
+    --------
+    >>> import attnbank as ab
+    >>> for name, declared in ab.backend_matrix("sdpa").items():
+    ...     print(name, declared)
+    flash ('reference', 'sdpa')
+    gqa ('reference', 'sdpa')
+    mla ('reference', 'sdpa')
+    softmax ('reference', 'sdpa', 'flash_attn')
+    >>> ab.backend_matrix()["nmf_oracle"]
+    ('reference',)
+    >>> sum(len(b) == 1 for b in ab.backend_matrix().values())   # reference-only
+    28
+    """
+    _ensure_loaded()
+    rows = {n: tuple(c.backends) for n, c in sorted(_REGISTRY.items())}
+    if backend is not None:
+        rows = {n: b for n, b in rows.items() if backend in b}
+    return rows
+
+
 # ---------------------------------------------------------------------------
 # The one-liners
 # ---------------------------------------------------------------------------
@@ -465,5 +500,7 @@ def _ensure_loaded() -> None:
     global _loaded
     if not _loaded:
         _loaded = True
-        from . import reference  # noqa: F401
-        from . import methods  # noqa: F401
+        from . import (
+            methods,  # noqa: F401
+            reference,  # noqa: F401
+        )

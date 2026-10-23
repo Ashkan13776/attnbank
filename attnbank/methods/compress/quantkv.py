@@ -32,11 +32,8 @@ Reference: Liu et al. (2024) KIVI; Hooper et al. (2024) KVQuant; Liu et al. (202
 """
 from __future__ import annotations
 
-import torch
-
-from ...core import (AttentionMethod, AttentionOutput, Category, Objective,
-                     masked_softmax, scores)
 from ...components.quantization import affine_quantize
+from ...core import AttentionMethod, AttentionOutput, Category, Objective, masked_softmax, scores
 from ...registry import register
 
 

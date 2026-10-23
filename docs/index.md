@@ -19,15 +19,15 @@ approximation cost you*, and in which of the two ways an approximation can be wr
 
 ```python
 rows = ab.compare(["softmax", "topk", "performer", "quantkv"], query, key, value,
-                  configs={"topk": {"k": 64}, "performer": {"r": 256},
-                           "quantkv": {"bits_k": 4, "bits_v": 4}})
+                  configs={"topk": {"k": 16}, "performer": {"r": 64},
+                           "quantkv": {"bits_k": 16, "bits_v": 2}})
 ```
 
 | | output error | distributional | value |
 |---|---|---|---|
-| `topk` | 1.03 | 1.03 | 0.00 |
-| `performer` | 2.37 | 2.37 | 0.00 |
-| `quantkv` | 0.14 | 0.02 | 0.14 |
+| `topk` | 1.03 | **1.03** | 0.00 |
+| `performer` | 2.76 | **2.76** | 0.00 |
+| `quantkv` | 0.72 | 0.00 | **0.72** |
 
 Restriction moves mass to the wrong places. Quantisation aggregates the wrong values.
 Both show up as "error" in a single number; only the split says which mechanism is at
@@ -79,6 +79,7 @@ and float64, is the subject of its own page.
 - :material-sitemap: **[The taxonomy](taxonomy.md)** — what each category means and which methods are in it.
 - :material-check-decagram: **[The invariant](invariant.md)** — the property everything else rests on.
 - :material-test-tube: **[Conformance](conformance.md)** — the eleven checks every method passes.
+- :material-rocket: **[Backends](backends.md)** — `reference`, `sdpa`, `flash_attn`, and why most methods declare only the first.
 - :material-image-multiple: **[Examples gallery](examples/index.md)** — short runnable scripts.
 - :material-api: **[API reference](api/index.md)** — every public function, with examples.
 

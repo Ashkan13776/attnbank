@@ -12,7 +12,6 @@ Rank the same methods by both and watch the order change.
 import torch
 
 import attnbank as ab
-from attnbank import metrics
 
 torch.manual_seed(0)
 q, k, v = (torch.randn(1, 4, 128, 64) for _ in range(3))

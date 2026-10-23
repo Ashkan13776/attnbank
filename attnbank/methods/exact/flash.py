@@ -25,9 +25,9 @@ from __future__ import annotations
 
 import torch
 
-from ...core import AttentionMethod, AttentionOutput, Category, Objective, causal_mask
 from ...components.online_softmax import merge_states, online_state
 from ...components.sdpa import sdpa_attend
+from ...core import AttentionMethod, AttentionOutput, Category, Objective, causal_mask
 from ...registry import register
 
 

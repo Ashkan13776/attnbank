@@ -52,8 +52,45 @@ packaging.
 - **A packaged bibliography** (`attnbank/references.bib`) containing every key cited by
   a method, so conformance check 11 — "every citation resolves" — survives the split
   from the monograph's repository.
+- **An execution-backend layer.** A method is now an *operator* (one readable file) and
+  an *execution path*. `ab.backends()` reports what this machine can run and, for
+  anything it cannot, why and the exact `pip install` that would fix it;
+  `ab.backend_matrix()` shows which method declares which; `ab.build(name,
+  backend="sdpa")` selects one, `ab.default_backend(...)` scopes a default.
+  - Backends: `reference` (plain PyTorch, always available, **the default and the
+    correctness anchor**), `sdpa` (`torch.nn.functional.scaled_dot_product_attention`,
+    with `sdpa_kernel=` to pin the FlashAttention-2 / memory-efficient / math
+    sub-backend), `flash_attn` (the `flash-attn` package, CUDA + fp16/bf16).
+    `xformers` and `triton` are detected and **reported as deliberately unused**, with
+    the reason, rather than left to guesswork.
+  - Four methods declare a non-reference backend: `softmax`, `flash`, `gqa`, `mla`.
+    The other twenty-eight declare `reference` only, which is the correct answer for an
+    operator that is not a dense softmax over a mask — and `ab.describe` prints the
+    reason rather than a blank.
+  - **Equivalence is tested, not asserted.**
+    `tests/test_conformance.py::test_backend_equivalence` compares every declared
+    backend against `reference` for both causal settings, float32 and float64, on
+    `m < n`, `m == n`, `n == 1`, a single decode step and logits scaled by 10, and
+    again on CUDA where available. Tolerances `1e-5` (fp32) and `1e-10` (fp64), scaled
+    by ‖y‖∞.
+  - Selection is never silent: an undeclared backend raises
+    `BackendNotSupportedError` naming what the method does declare; a declared but
+    uninstalled backend warns with `BackendFallbackWarning` and falls back; and
+    `return_weights=True` — which no fused kernel can serve — falls back for that call
+    and says so.
+- **`attnbank/components/`** — the behaviour that recurs across methods, in one
+  documented place, so a method file shows what the method *adds*: the online-softmax
+  monoid (`flash`, `splitk`), the quantisers (`lowprec`, `quantkv`), the renormalised
+  restriction (every selector in `restrict/`, both evictions in `compress/`), the
+  recurrent feature maps and readout, and the shared SDPA call. The old private module
+  paths (`methods/restrict/_restriction.py`, `methods/recurrent/_state.py`) remain as
+  re-export shims, so no import broke.
+- `tests/test_backends.py` — detection, selection, announcement, the matrix, and the
+  study pin.
 - `LICENSE` (Apache-2.0), `CONTRIBUTING.md`, this file, and a GitHub Actions workflow
-  running pytest and ruff on Python 3.10–3.13.
+  running pytest and ruff on Python 3.10–3.13, plus jobs that build the docs strictly,
+  build and `twine check` the distribution, and verify that a bare `pip install
+  attnbank` still works with neither matplotlib nor transformers present.
 
 ### Changed
 
@@ -65,8 +102,14 @@ packaging.
 - `ab.available()` takes an `objective=` filter alongside `category=`.
 - `pyproject.toml` is PyPI-ready: metadata, classifiers, keywords, URLs, and optional
   extras so the core install is `torch` and `numpy` only. Plotting moved to `[viz]`,
-  real-activation capture to `[studies]`, the docs toolchain to `[docs]`, and
+  real-activation capture to `[studies]`, the optional CUDA kernels to
+  `[flash]` / `[triton]` / `[xformers]` / `[fast]`, the docs toolchain to `[docs]`, and
   everything a contributor needs to `[dev]`.
+- **`attnbank/studies/` pins `backend="reference"` on import.** Every number in the
+  monograph came out of those modules; a published figure must not be able to move
+  because a faster execution path appeared. `tests/test_backends.py` asserts the pin in
+  a subprocess and separately greps the eight study modules for an override. No result
+  file was touched and no sweep was re-run.
 
 ### Deprecated
 
