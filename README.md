@@ -6,17 +6,18 @@
 This library implements them side by side, organised by *which* object they change —
 and holds every one of them to a single invariant.
 
-[![tests](https://github.com/Ashkan13776/attnbank/actions/workflows/ci.yml/badge.svg)](https://github.com/Ashkan13776/attnbank/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/attnbank)](https://pypi.org/project/attnbank/)
-[![Python](https://img.shields.io/pypi/pyversions/attnbank)](https://pypi.org/project/attnbank/)
+[![status](https://img.shields.io/badge/status-pre--release-orange)](#status)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](pyproject.toml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-[![docs](https://img.shields.io/badge/docs-Ashkan13776.github.io-black)](https://Ashkan13776.github.io/attnbank/)
 
 </div>
 
 ```bash
-pip install attnbank
+git clone https://github.com/Ashkan13776/attnbank && pip install -e attnbank
 ```
+
+> Not on PyPI yet, so `pip install attnbank` does not work — install from source
+> until the first release. See [Status](#status).
 
 ```python
 import attnbank as ab
@@ -296,3 +297,21 @@ useful in your work, please cite the monograph:
 ## Licence
 
 [Apache License 2.0](LICENSE).
+
+## Status
+
+Pre-release. The library is complete and tested — 32 methods, 1254 tests — but
+three pieces of public infrastructure are not up yet, which is why this README
+carries no badges for them:
+
+| | State | Blocked on |
+|---|---|---|
+| **PyPI** | not published | first tagged release; `pip install attnbank` will not work until then |
+| **CI** | workflow written, not active | the workflow file sits at [`ci/ci.yml`](ci/ci.yml) rather than `.github/workflows/`, because the token used to create this repository lacks the `workflow` OAuth scope. [`ci/README.md`](ci/README.md) has the one-line fix |
+| **Docs site** | built, not deployed | publishing the existing MkDocs site to GitHub Pages |
+
+Until then: clone and `pip install -e .`, run `python -m pytest tests -q`, and
+read the docs locally with `mkdocs serve`.
+
+A badge that renders blank is worse than no badge, so they go back when the
+things behind them are real.

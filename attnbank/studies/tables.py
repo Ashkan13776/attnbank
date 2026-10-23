@@ -534,6 +534,98 @@ operator & {' & '.join(str(d) for d in ds)} \\
 
 
 # ======================================================================================
+# S9
+# ======================================================================================
+
+REC_PRETTY = {"linear_rnn": "linear RNN", "decay_rnn": "decay RNN",
+              "delta_rnn": "delta RNN", "softmax": "softmax"}
+
+
+def _collapse_cells(block, ds, mark=None) -> list[str]:
+    """One table row per operator: the collapse point at each state rank.
+
+    ``mark`` is the pre-registered block; a cell present here but not there came from
+    the labelled extension and is daggered, so the table never passes off a post-hoc
+    number as a pre-registered one.
+    """
+    rows = []
+    for m in ("linear_rnn", "decay_rnn", "delta_rnn", "softmax"):
+        cells = []
+        for d in ds:
+            v = block.get(m, {}).get(str(d), {}).get("N_at_recall_0.5")
+            if v is None:
+                cells.append("---")
+                continue
+            pre = mark is None or mark.get(m, {}).get(str(d), {}).get(
+                "N_at_recall_0.5") is not None
+            cells.append(intc(v) + ("" if pre else r"$^\dagger$"))
+        rows.append(f"{REC_PRETTY[m]} & " + " & ".join(cells) + r" \\")
+    return rows
+
+
+def tab_state_scaling() -> Path:
+    s, meta = load("S9_state_scaling")
+    s6, meta6 = load("S6_finite_state_recall")
+    ds = list(meta["d_grid"])
+    ext = s.get("collapse_extended") or s["collapse"]
+    rows9 = _collapse_cells(ext, ds, mark=s["collapse"])
+    rows6 = _collapse_cells(s6["collapse"], ds)
+    fits = s["falsifier"]["slopes"]
+    fx = s["falsifier"].get("slopes_extended", fits)
+    cr, cr6 = s["collapse_ratio"], s6["collapse_ratio"]
+    sc = s["softmax_control"]
+    nseeds = max(r["n_seeds"] for r in s["recall_grid"])
+    nmax, xmax = max(meta["N_grid"]), max(meta["N_grid_extension"])
+    slope_txt = "; ".join(
+        f"{REC_PRETTY[m]} {ci(fx[m], 2)}" for m in ("linear_rnn", "delta_rnn"))
+    body = rf"""\begin{{table}}[tbp]
+\centering
+\caption{{The collapse point against the state rank, under two constructions
+(S6, S9).  Each cell is the smallest number of stored key--value pairs $N$ at which
+median recall falls below 0.5, for a state of rank $d_\varphi$ and $d_v={meta['dv']}$.
+Both blocks are the same construction-form multi-query associative recall --- nothing
+trained, no real activations, one query per batch element ($m=1$), recall scored by
+nearest stored value, median over {nseeds} seeds and up to {meta['max_queries']}
+queries, float64, a query gain holding the matched softmax logit at
+{num(meta['matched_logit'], 0)} --- and differ in exactly two respects: (a) uses the
+feature map $\varphi(k)=\mathrm{{elu}}(k)+1$ on standard Gaussian keys, (b) uses
+$\varphi=\mathrm{{id}}$ on orthonormal keys (the polar factor of a Gaussian, unit-norm
+rows: exactly orthonormal for $N\le d_\varphi$, a unit-norm tight frame beyond it).
+A dash means recall never fell below 0.5 over $N\le{intc(nmax)}$.  In (a) the collapse
+point is flat: $N/S$ at collapse has median {cr6['median']:g} (IQR {cr6['q1']:g} to
+{cr6['q3']:g}, $n={cr6['n']}$) and a {max(ds) // min(ds)}$\times$ larger state buys
+nothing.  In (b) it tracks the rank one-for-one --- a log--log slope of
+{slope_txt} --- at a load of $N/S$ median {cr['median']:g} (IQR {cr['q1']:g} to
+{cr['q3']:g}, $n={cr['n']}$), so the $O(S)$ scaling of \cref{{prop:memory-rank}} is
+exhibited, with a constant above~1 that the proposition does not fix.  Daggered cells
+in (b) come from a labelled post-hoc extension to $N\le{intc(xmax)}$, run only because
+the collapse point at $d_\varphi\ge128$ lies above the pre-registered grid; no
+pre-registered quantity in this table or in \cref{{fig:state-scaling}} uses them, and
+the slope on the pre-registered grid alone is {ci(fits['linear_rnn'], 2)} for the
+linear RNN.  Softmax is the control in both blocks and never collapses
+(median recall {num(sc['median'], 2)} in (b)).}}
+\label{{tab:state-scaling}}
+\begin{{tabular}}{{@{{}}l{'r' * len(ds)}@{{}}}}
+\toprule
+ & \multicolumn{{{len(ds)}}}{{c}}{{state rank $d_\varphi$}} \\
+\cmidrule(l){{2-{len(ds) + 1}}}
+operator & {' & '.join(str(d) for d in ds)} \\
+\midrule
+\multicolumn{{{len(ds) + 1}}}{{@{{}}l}}{{\itshape (a) S6: $\mathrm{{elu}}(k)+1$ features,
+  Gaussian keys}} \\
+{chr(10).join(rows6)}
+\midrule
+\multicolumn{{{len(ds) + 1}}}{{@{{}}l}}{{\itshape (b) S9: identity features, orthonormal
+  keys}} \\
+{chr(10).join(rows9)}
+\bottomrule
+\end{{tabular}}
+\end{{table}}
+"""
+    return write("tab_state_scaling", body, "S9_state_scaling", meta["git_short"])
+
+
+# ======================================================================================
 # S7
 # ======================================================================================
 
@@ -715,6 +807,7 @@ ALL = {
     "tab_quant_grid": tab_quant_grid,
     "tab_factorization": tab_factorization,
     "tab_finite_state": tab_finite_state,
+    "tab_state_scaling": tab_state_scaling,
     "tab_ot_tilt": tab_ot_tilt,
     "tab_cost_model": tab_cost_model,
     "tab_roofline": tab_roofline,
@@ -1029,6 +1122,50 @@ Log $x$ in (a) and (b); log--log in (c)."""
                    "S6_finite_state_recall", meta["git_short"])
 
 
+def cap_fig_state_scaling() -> Path:
+    s, meta = load("S9_state_scaling")
+    ds = list(meta["d_grid"])
+    fit = s["falsifier"]["slopes"]["linear_rnn"]
+    fx = s["falsifier"].get("slopes_extended", s["falsifier"]["slopes"])["linear_rnn"]
+    cr = s["collapse_ratio"]
+    sc = s["softmax_control"]
+    rs = s["rescaled_by_load"]["by_method"]["linear_rnn"]["max_spread"]
+    nseeds = max(r["n_seeds"] for r in s["recall_grid"])
+    nmax, xmax = max(meta["N_grid"]), max(meta["N_grid_extension"])
+    cap = rf"""\textbf{{With the feature map and the key geometry fixed, the collapse
+point tracks the state rank.}}  Panel for panel this is
+\cref{{fig:finite-state-recall}}, on the same construction-form multi-query
+associative recall with exactly two changes: identity features in place of
+$\mathrm{{elu}}(k)+1$, and orthonormal keys in place of Gaussian ones
+(\cref{{tab:state-scaling}} gives the construction and the side-by-side collapse
+points).  Nothing is trained and no real activations are involved, so this is
+capacity and not optimisation.  \emph{{Varied:}} the stored pairs
+$N\in\{{{min(meta['N_grid'])},\dots,{intc(nmax)}\}}$ and the state rank
+$d_\varphi\in\{{{min(ds)},\dots,{max(ds)}\}}$, a state of $d_\varphi\times d_v$ numbers
+with $d_v={meta['dv']}$.  \emph{{Fixed:}} a query gain holding the matched softmax
+logit at {num(meta['matched_logit'], 0)}, up to {meta['max_queries']} queries per
+configuration, float64, seed {meta['seed']}, {nseeds} seeds per cell.
+(a) Median recall with the interquartile band over the {len(ds)} state sizes.  The
+band is wide here precisely because the curves now move with the state; in
+\cref{{fig:finite-state-recall}}(a) they lay on top of one another.
+(b) The same sweep for the linear RNN resolved by rank, on the sequential ramp because
+rank is ordered.  Each doubling of $d_\varphi$ shifts the curve one octave to the
+right; plotted against the load $N/S$ the six curves agree to {num(rs, 2)} in recall.
+(c) The collapse point --- the smallest $N$ at which median recall falls below 0.5 ---
+against the rank, with the $N=d_\varphi$ line of \cref{{prop:memory-rank}}.  The fitted
+log--log slope is {ci(fit, 2)} on the pre-registered grid and {ci(fx, 2)} including the
+open markers, which are a labelled post-hoc extension to $N\le{intc(xmax)}$ run only
+because the collapse point at the two largest ranks lies above the pre-registered
+grid.  Collapse occurs at a load of $N/S$ median {cr['median']:g} (IQR {cr['q1']:g} to
+{cr['q3']:g}, $n={cr['n']}$), i.e.\ \emph{{above}} the $N=d_\varphi$ line: recall here
+is scored by nearest stored value, which tolerates interference that exact retrieval
+would not, so what is attained is the proposition's scaling in $S$ and not its
+constant.  Softmax is the control throughout and never collapses (median recall
+{num(sc['median'], 2)}).  Log $x$ in (a) and (b); log--log in (c)."""
+    return _figure("cap_fig_state_scaling", "fig:state-scaling", cap,
+                   "S9_state_scaling", meta["git_short"])
+
+
 def cap_fig_ot_tilt() -> Path:
     s, meta = load("S7_ot_tilt")
     sh = _slices(meta)["shape"]
@@ -1146,6 +1283,7 @@ CAPTIONS = {
     "cap_fig_kv_quantization": cap_fig_kv_quantization,
     "cap_fig_latent_factorization": cap_fig_latent_factorization,
     "cap_fig_finite_state_recall": cap_fig_finite_state_recall,
+    "cap_fig_state_scaling": cap_fig_state_scaling,
     "cap_fig_ot_tilt": cap_fig_ot_tilt,
     "cap_fig_roofline": cap_fig_roofline,
     "cap_fig_bytes_per_token": cap_fig_bytes_per_token,
