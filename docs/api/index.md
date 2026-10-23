@@ -44,5 +44,5 @@ import attnbank as ab
 - [Errors](errors.md) — what each one means and what to do about it
 
 Every function below carries a runnable example, and
-[`tests/test_docs.py`](https://github.com/attnbank/attnbank/blob/main/tests/test_docs.py)
+[`tests/test_docs.py`](https://github.com/Ashkan13776/attnbank/blob/main/tests/test_docs.py)
 executes all of them in CI. A public function without an example fails the build.

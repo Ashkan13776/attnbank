@@ -121,6 +121,6 @@ packaging.
 Initial internal release: the taxonomy, thirty-two methods, `attnbank.metrics`, the
 eleven-point conformance suite, and the eight studies behind the monograph.
 
-[Unreleased]: https://github.com/attnbank/attnbank/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/attnbank/attnbank/releases/tag/v0.2.0
-[0.1.0]: https://github.com/attnbank/attnbank/releases/tag/v0.1.0
+[Unreleased]: https://github.com/Ashkan13776/attnbank/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Ashkan13776/attnbank/releases/tag/v0.2.0
+[0.1.0]: https://github.com/Ashkan13776/attnbank/releases/tag/v0.1.0

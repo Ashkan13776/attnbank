@@ -6,7 +6,7 @@ the conformance suite on the strength of that declaration. Nothing is merged wit
 `skip`.
 
 ```bash
-git clone https://github.com/attnbank/attnbank
+git clone https://github.com/Ashkan13776/attnbank
 cd attnbank
 pip install -e ".[dev]"
 pytest -q          # ~1000 tests, about ten seconds on a laptop

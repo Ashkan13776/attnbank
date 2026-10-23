@@ -97,6 +97,7 @@ useful in your work, please cite the monograph:
             A Unified View of Interactions, Memory, and Error},
   author = {Shahbazi, Ashkan},
   year   = {2026},
+  note   = {Manuscript in preparation},
 }
 ```
 

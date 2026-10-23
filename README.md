@@ -6,11 +6,11 @@
 This library implements them side by side, organised by *which* object they change —
 and holds every one of them to a single invariant.
 
-[![tests](https://github.com/attnbank/attnbank/actions/workflows/ci.yml/badge.svg)](https://github.com/attnbank/attnbank/actions/workflows/ci.yml)
+[![tests](https://github.com/Ashkan13776/attnbank/actions/workflows/ci.yml/badge.svg)](https://github.com/Ashkan13776/attnbank/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/attnbank)](https://pypi.org/project/attnbank/)
 [![Python](https://img.shields.io/pypi/pyversions/attnbank)](https://pypi.org/project/attnbank/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-[![docs](https://img.shields.io/badge/docs-attnbank.github.io-black)](https://attnbank.github.io/attnbank/)
+[![docs](https://img.shields.io/badge/docs-Ashkan13776.github.io-black)](https://Ashkan13776.github.io/attnbank/)
 
 </div>
 
@@ -201,7 +201,7 @@ pytest -q         # 1250+ tests, about twenty seconds
 
 ## Documentation
 
-**[attnbank.github.io/attnbank](https://attnbank.github.io/attnbank/)** — quickstart,
+**[Ashkan13776.github.io/attnbank](https://Ashkan13776.github.io/attnbank/)** — quickstart,
 the taxonomy, the invariant, the conformance suite, backends, a full API reference, and
 a gallery of short runnable scripts.
 
@@ -289,6 +289,7 @@ useful in your work, please cite the monograph:
             A Unified View of Interactions, Memory, and Error},
   author = {Shahbazi, Ashkan},
   year   = {2026},
+  note   = {Manuscript in preparation},
 }
 ```
 

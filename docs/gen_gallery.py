@@ -67,7 +67,7 @@ def main() -> int:
              "Short, self-contained scripts. Every one of them runs as written, and",
              "`tests/test_examples.py` executes all of them in CI, so a broken example",
              "is a failing build rather than a stale page.", "",
-             "```bash", "git clone https://github.com/attnbank/attnbank",
+             "```bash", "git clone https://github.com/Ashkan13776/attnbank",
              "python attnbank/examples/01_quickstart.py", "```", "",
              "| | example | what it shows |", "|---|---|---|"]
 

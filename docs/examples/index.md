@@ -5,7 +5,7 @@ Short, self-contained scripts. Every one of them runs as written, and
 is a failing build rather than a stale page.
 
 ```bash
-git clone https://github.com/attnbank/attnbank
+git clone https://github.com/Ashkan13776/attnbank
 python attnbank/examples/01_quickstart.py
 ```
 

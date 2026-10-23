@@ -76,12 +76,12 @@ dev = [
 all = ["attnbank[viz,studies,docs,dev,fast]"]
 
 [project.urls]
-Homepage = "https://github.com/attnbank/attnbank"
-Documentation = "https://attnbank.github.io/attnbank/"
-Repository = "https://github.com/attnbank/attnbank"
-Issues = "https://github.com/attnbank/attnbank/issues"
-Changelog = "https://github.com/attnbank/attnbank/blob/main/CHANGELOG.md"
-"Design contract" = "https://github.com/attnbank/attnbank/blob/main/DESIGN.md"
+Homepage = "https://github.com/Ashkan13776/attnbank"
+Documentation = "https://Ashkan13776.github.io/attnbank/"
+Repository = "https://github.com/Ashkan13776/attnbank"
+Issues = "https://github.com/Ashkan13776/attnbank/issues"
+Changelog = "https://github.com/Ashkan13776/attnbank/blob/main/CHANGELOG.md"
+"Design contract" = "https://github.com/Ashkan13776/attnbank/blob/main/DESIGN.md"
 
 [tool.setuptools.packages.find]
 include = ["attnbank*"]
