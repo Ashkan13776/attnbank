@@ -157,15 +157,58 @@ invariant W: 0.0
 {'output_error': 7.51573, 'distributional_error': 7.51573, 'value_error': 0.0, 'tv': 2.26019}
 ```
 
-## Others in `interaction`
+## Related methods
 
-[`cosformer`](cosformer.md), [`linear_elu`](linear_elu.md), [`nystrom`](nystrom.md), [`performer`](performer.md) — see [the taxonomy](../taxonomy.md#interaction).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `trigrff` removed.
+
+changes the same object — [`interaction`](../taxonomy.md#interaction)
+:   [`cosformer`](cosformer.md), [`linear_elu`](linear_elu.md), [`nystrom`](nystrom.md), [`performer`](performer.md) &nbsp;·&nbsp; [browse the bank, interaction only](index.md?category=interaction)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`lsh_sample`](lsh_sample.md), [`merge_kv`](merge_kv.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`quantkv`](quantkv.md), [`sink_window`](sink_window.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `trigrff` selected](index.md?compare=trigrff) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Rahimi and Recht (2007).** *Random Features for Large-Scale Kernel Machines.* Advances in Neural Information Processing Systems (NIPS).<br>`rahimi2007random`
-- **Peng et al. (2021).** *Random Feature Attention.* International Conference on Learning Representations (ICLR). [arXiv:2103.02143](https://arxiv.org/abs/2103.02143)<br>`peng2021random`
-- **Choromanski et al. (2021).** *Rethinking Attention with Performers.* International Conference on Learning Representations (ICLR). [arXiv:2009.14794](https://arxiv.org/abs/2009.14794)<br>`choromanski2021rethinking`
+- **Rahimi and Recht (2007).** *Random Features for Large-Scale Kernel Machines.* Advances in Neural Information Processing Systems (NIPS).<br><span class="attn-cite" data-bibkey="rahimi2007random"><code>rahimi2007random</code></span>
+- **Peng et al. (2021).** *Random Feature Attention.* International Conference on Learning Representations (ICLR). [arXiv:2103.02143](https://arxiv.org/abs/2103.02143)<br><span class="attn-cite" data-bibkey="peng2021random"><code>peng2021random</code></span>
+- **Choromanski et al. (2021).** *Rethinking Attention with Performers.* International Conference on Learning Representations (ICLR). [arXiv:2009.14794](https://arxiv.org/abs/2009.14794)<br><span class="attn-cite" data-bibkey="choromanski2021rethinking"><code>choromanski2021rethinking</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="rahimi2007random">
+<pre class="attn-bib__src"><code>@inproceedings{rahimi2007random,
+  title     = {Random Features for Large-Scale Kernel Machines},
+  author    = {Rahimi, Ali and Recht, Benjamin},
+  booktitle = {Advances in Neural Information Processing Systems (NIPS)},
+  volume    = {20},
+  year      = {2007}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="peng2021random">
+<pre class="attn-bib__src"><code>@inproceedings{peng2021random,
+  title     = {Random Feature Attention},
+  author    = {Peng, Hao and Pappas, Nikolaos and Yogatama, Dani and Schwartz, Roy and Smith, Noah A. and Kong, Lingpeng},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021},
+  eprint    = {2103.02143},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="choromanski2021rethinking">
+<pre class="attn-bib__src"><code>@inproceedings{choromanski2021rethinking,
+  title     = {Rethinking Attention with Performers},
+  author    = {Choromanski, Krzysztof and Likhosherstov, Valerii and Dohan, David and Song, Xingyou and Gane, Andreea and Sarlos, Tamas and Hawkins, Peter and Davis, Jared and Mohiuddin, Afroz and Kaiser, Lukasz and Belanger, David and Colwell, Lucy and Weller, Adrian},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021},
+  eprint    = {2009.14794},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

@@ -804,3 +804,131 @@ a.bank-name {
   color: var(--md-default-fg-color--light);
 }
 .md-typeset .tx-regkey code { font-size: inherit; }
+
+/* ---- copy controls ------------------------------------------------------
+ * docs/javascripts/clip.js inserts every one of these; none of them is in the HTML,
+ * so with scripting off there is no button sitting there doing nothing. What they
+ * copy is on the page either way -- the BibTeX inside its <details>, the LaTeX in
+ * the `data-tex` of the formula (and, with MathJax not running, in the formula
+ * itself).
+ */
+
+.md-typeset .ab-copy {
+  margin-left: 0.45em;
+  padding: 0 0.42em;
+  font-family: var(--ab-mono);
+  font-size: 0.6rem;
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+  vertical-align: 1px;
+  cursor: pointer;
+  color: var(--ab-faint);
+  background: none;
+  border: 1px solid var(--ab-rule);
+  border-radius: 0.15rem;
+  transition: color 80ms, border-color 80ms;
+}
+
+.md-typeset .ab-copy:hover,
+.md-typeset .ab-copy:focus-visible {
+  color: var(--md-accent-fg-color);
+  border-color: var(--md-accent-fg-color);
+}
+
+/* the confirmation: the button says what happened, where the eye already is */
+.md-typeset .ab-copy[data-state="done"] {
+  color: var(--c-compress);
+  border-color: var(--c-compress);
+}
+
+.md-typeset .ab-copy[data-state="failed"] {
+  color: var(--c-recurrent);
+  border-color: var(--c-recurrent);
+}
+
+/* ---- the bibliography block on a method page ---------------------------- */
+
+.md-typeset details.attn-bib {
+  margin: 0.9rem 0 1rem;
+  padding: 0;
+  font-size: 0.7rem;
+  border: 1px solid var(--ab-rule);
+  border-radius: 0.2rem;
+  background: none;
+  box-shadow: none;
+}
+
+.md-typeset details.attn-bib > summary {
+  padding: 0.4rem 0.7rem 0.4rem 1.8rem;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--md-default-fg-color--light);
+  background: none;
+  border: none;
+}
+
+.md-typeset details.attn-bib > summary::before {
+  top: 0.32rem;
+  background-color: var(--ab-faint);
+}
+
+.md-typeset details.attn-bib > summary code { font-size: 0.92em; }
+
+.attn-bib__entry {
+  position: relative;
+  border-top: 1px solid var(--ab-rule-soft);
+}
+
+/* Material gives every <pre> `position: relative`, and the pre is the later
+ * sibling, so the bar needs a layer of its own to stay clickable; the background
+ * keeps a long line from scrolling underneath it. */
+.attn-bib__bar {
+  position: absolute;
+  z-index: 2;
+  top: 0.35rem;
+  right: 0.45rem;
+  padding-left: 0.3rem;
+  background: var(--md-default-bg-color);
+}
+
+.md-typeset pre.attn-bib__src {
+  margin: 0;
+  padding: 0.5rem 5rem 0.6rem 0.7rem;
+  overflow-x: auto;
+  background: none;
+}
+
+.md-typeset pre.attn-bib__src > code {
+  padding: 0;
+  font-size: 0.68rem;
+  line-height: 1.55;
+  background: none;
+  white-space: pre;
+}
+
+/* the key under each rendered citation is where the button for that entry goes */
+.md-typeset .attn-cite {
+  white-space: nowrap;
+}
+
+/* ---- the LaTeX source of a formula -------------------------------------- */
+
+.ab-tex-bar {
+  margin: -0.4rem 0 0.9rem;
+  text-align: right;
+}
+
+/* the operator plate is the hero: its control sits back until the plate is hovered
+   or the button itself is focused. Faint rather than invisible, because a tap is not
+   a hover and a control nobody can find on a phone is a control nobody has. */
+.op-plate .ab-tex-bar {
+  /* clear of the `exact` frame, which is drawn round the formula itself */
+  margin: 0.95rem 0 -0.45rem;
+  opacity: 0.4;
+  transition: opacity 120ms;
+}
+
+.op-plate:hover .ab-tex-bar,
+.op-plate:focus-within .ab-tex-bar {
+  opacity: 1;
+}

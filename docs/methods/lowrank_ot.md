@@ -157,16 +157,73 @@ row_stochastic = True | first row sums: [1.0, 1.0, 1.0, 1.0]
 extras: ['a', 'b', 'col_marginal', 'pivots', 'r']
 ```
 
-## Others in `coupling`
+## Related methods
 
-[`sinkhorn`](sinkhorn.md) — see [the taxonomy](../taxonomy.md#coupling).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `lowrank_ot` removed.
+
+changes the same object — [`coupling`](../taxonomy.md#coupling)
+:   [`sinkhorn`](sinkhorn.md) &nbsp;·&nbsp; [browse the bank, coupling only](index.md?category=coupling)
+
+judged the same way — `modify`, beyond the ones above
+:   [`cosformer`](cosformer.md), [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`gqa`](gqa.md), [`latent_stochastic`](latent_stochastic.md), [`linear_elu`](linear_elu.md), [`linear_rnn`](linear_rnn.md), [`mla`](mla.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+
+[Open the browser with `lowrank_ot` selected](index.md?compare=lowrank_ot) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Shahbazi et al. (2025).** *LOTFormer: Doubly-Stochastic Linear Attention via Low-Rank Optimal Transport.* [arXiv:2509.23436](https://arxiv.org/abs/2509.23436)<br>`shahbazi2025lotformer`
-- **Scetbon et al. (2021).** *Low-Rank Sinkhorn Factorization.* Proceedings of the 38th International Conference on Machine Learning (ICML). [arXiv:2103.04737](https://arxiv.org/abs/2103.04737)<br>`scetbon2021lowrank`
-- **Forrow et al. (2019).** *Statistical Optimal Transport via Factored Couplings.* Proceedings of the 22nd International Conference on Artificial Intelligence and Statistics (AISTATS). [arXiv:1806.07348](https://arxiv.org/abs/1806.07348)<br>`forrow2019statistical`
-- **Mialon et al. (2021).** *A Trainable Optimal Transport Embedding for Feature Aggregation and its Relationship to Attention.* International Conference on Learning Representations (ICLR). [arXiv:2006.12065](https://arxiv.org/abs/2006.12065)<br>`mialon2021trainable`
+- **Shahbazi et al. (2025).** *LOTFormer: Doubly-Stochastic Linear Attention via Low-Rank Optimal Transport.* [arXiv:2509.23436](https://arxiv.org/abs/2509.23436)<br><span class="attn-cite" data-bibkey="shahbazi2025lotformer"><code>shahbazi2025lotformer</code></span>
+- **Scetbon et al. (2021).** *Low-Rank Sinkhorn Factorization.* Proceedings of the 38th International Conference on Machine Learning (ICML). [arXiv:2103.04737](https://arxiv.org/abs/2103.04737)<br><span class="attn-cite" data-bibkey="scetbon2021lowrank"><code>scetbon2021lowrank</code></span>
+- **Forrow et al. (2019).** *Statistical Optimal Transport via Factored Couplings.* Proceedings of the 22nd International Conference on Artificial Intelligence and Statistics (AISTATS). [arXiv:1806.07348](https://arxiv.org/abs/1806.07348)<br><span class="attn-cite" data-bibkey="forrow2019statistical"><code>forrow2019statistical</code></span>
+- **Mialon et al. (2021).** *A Trainable Optimal Transport Embedding for Feature Aggregation and its Relationship to Attention.* International Conference on Learning Representations (ICLR). [arXiv:2006.12065](https://arxiv.org/abs/2006.12065)<br><span class="attn-cite" data-bibkey="mialon2021trainable"><code>mialon2021trainable</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 4 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="shahbazi2025lotformer">
+<pre class="attn-bib__src"><code>@misc{shahbazi2025lotformer,
+  title         = {{LOTFormer}: Doubly-Stochastic Linear Attention via Low-Rank Optimal Transport},
+  author        = {Shahbazi, Ashkan and Thrash, Chayne and Bai, Yikun and Hamm, Keaton and NaderiAlizadeh, Navid and Kolouri, Soheil},
+  year          = {2025},
+  eprint        = {2509.23436},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note          = {arXiv preprint, v2 February 2026}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="scetbon2021lowrank">
+<pre class="attn-bib__src"><code>@inproceedings{scetbon2021lowrank,
+  title         = {Low-Rank {S}inkhorn Factorization},
+  author        = {Scetbon, Meyer and Cuturi, Marco and Peyr{\'e}, Gabriel},
+  booktitle     = {Proceedings of the 38th International Conference on Machine Learning (ICML)},
+  series        = {PMLR},
+  volume        = {139},
+  pages         = {9344--9354},
+  year          = {2021},
+  eprint        = {2103.04737},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="forrow2019statistical">
+<pre class="attn-bib__src"><code>@inproceedings{forrow2019statistical,
+  title         = {Statistical Optimal Transport via Factored Couplings},
+  author        = {Forrow, Aden and H{\&quot;u}tter, Jan-Christian and Nitzan, Mor and Rigollet, Philippe and Schiebinger, Geoffrey and Weed, Jonathan},
+  booktitle     = {Proceedings of the 22nd International Conference on Artificial Intelligence and Statistics (AISTATS)},
+  series        = {PMLR},
+  volume        = {89},
+  pages         = {2454--2465},
+  year          = {2019},
+  eprint        = {1806.07348},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="mialon2021trainable">
+<pre class="attn-bib__src"><code>@inproceedings{mialon2021trainable,
+  title={A Trainable Optimal Transport Embedding for Feature Aggregation and its Relationship to Attention},
+  author={Mialon, Gr{\'e}goire and Chen, Dexiong and d'Aspremont, Alexandre and Mairal, Julien},
+  booktitle={International Conference on Learning Representations (ICLR)}, year={2021}, eprint={2006.12065}, archivePrefix={arXiv}}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

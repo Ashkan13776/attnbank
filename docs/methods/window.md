@@ -141,15 +141,59 @@ invariant W: 0.0
 {'output_error': 2.23291, 'distributional_error': 2.23291, 'value_error': 0.0, 'tv': 0.74132}
 ```
 
-## Others in `restrict`
+## Related methods
 
-[`blocktopk`](blocktopk.md), [`lsh_sample`](lsh_sample.md), [`sink_window`](sink_window.md), [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)* — see [the taxonomy](../taxonomy.md#restrict).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `window` removed.
+
+changes the same object — [`restrict`](../taxonomy.md#restrict)
+:   [`blocktopk`](blocktopk.md), [`lsh_sample`](lsh_sample.md), [`sink_window`](sink_window.md), [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)* &nbsp;·&nbsp; [browse the bank, restrict only](index.md?category=restrict)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`clustered`](clustered.md), [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`quantkv`](quantkv.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`trigrff`](trigrff.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `window` selected](index.md?compare=window) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Beltagy et al. (2020).** *Longformer: The Long-Document Transformer.* [arXiv:2004.05150](https://arxiv.org/abs/2004.05150)<br>`beltagy2020longformer`
-- **Jiang et al. (2023).** *Mistral 7B.* [arXiv:2310.06825](https://arxiv.org/abs/2310.06825)<br>`jiang2023mistral`
-- **Child et al. (2019).** *Generating Long Sequences with Sparse Transformers.* [arXiv:1904.10509](https://arxiv.org/abs/1904.10509)<br>`child2019generating`
+- **Beltagy et al. (2020).** *Longformer: The Long-Document Transformer.* [arXiv:2004.05150](https://arxiv.org/abs/2004.05150)<br><span class="attn-cite" data-bibkey="beltagy2020longformer"><code>beltagy2020longformer</code></span>
+- **Jiang et al. (2023).** *Mistral 7B.* [arXiv:2310.06825](https://arxiv.org/abs/2310.06825)<br><span class="attn-cite" data-bibkey="jiang2023mistral"><code>jiang2023mistral</code></span>
+- **Child et al. (2019).** *Generating Long Sequences with Sparse Transformers.* [arXiv:1904.10509](https://arxiv.org/abs/1904.10509)<br><span class="attn-cite" data-bibkey="child2019generating"><code>child2019generating</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="beltagy2020longformer">
+<pre class="attn-bib__src"><code>@misc{beltagy2020longformer,
+  title = {{Longformer: The Long-Document Transformer}},
+  author = {Beltagy, Iz and Peters, Matthew E. and Cohan, Arman},
+  year = {2020},
+  howpublished = {arXiv preprint arXiv:2004.05150},
+  eprint = {2004.05150},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="jiang2023mistral">
+<pre class="attn-bib__src"><code>@misc{jiang2023mistral,
+  title = {{Mistral 7B}},
+  author = {Jiang, Albert Q. and Sablayrolles, Alexandre and Mensch, Arthur and Bamford, Chris and Chaplot, Devendra Singh and Casas, Diego de las and Bressand, Florian and Lengyel, Gianna and Lample, Guillaume and Saulnier, Lucile and others},
+  year = {2023},
+  howpublished = {arXiv preprint arXiv:2310.06825},
+  eprint = {2310.06825},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="child2019generating">
+<pre class="attn-bib__src"><code>@misc{child2019generating,
+  title = {{Generating Long Sequences with Sparse Transformers}},
+  author = {Child, Rewon and Gray, Scott and Radford, Alec and Sutskever, Ilya},
+  year = {2019},
+  howpublished = {arXiv preprint arXiv:1904.10509},
+  eprint = {1904.10509},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

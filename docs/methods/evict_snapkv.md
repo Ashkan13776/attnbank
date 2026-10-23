@@ -149,14 +149,47 @@ invariant W: 0.0
 {'output_error': 2.30297, 'distributional_error': 2.30297, 'value_error': 0.0, 'tv': 0.87141}
 ```
 
-## Others in `compress`
+## Related methods
 
-[`evict_h2o`](evict_h2o.md), [`gqa`](gqa.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`mla`](mla.md), [`quantkv`](quantkv.md) — see [the taxonomy](../taxonomy.md#compress).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `evict_snapkv` removed.
+
+changes the same object — [`compress`](../taxonomy.md#compress)
+:   [`evict_h2o`](evict_h2o.md), [`gqa`](gqa.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`mla`](mla.md), [`quantkv`](quantkv.md) &nbsp;·&nbsp; [browse the bank, compress only](index.md?category=compress)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`lowprec`](lowprec.md), [`lsh_sample`](lsh_sample.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`sink_window`](sink_window.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `evict_snapkv` selected](index.md?compare=evict_snapkv) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Li et al. (2024).** *SnapKV: LLM Knows What You are Looking for Before Generation.* Advances in Neural Information Processing Systems (NeurIPS). [doi:10.52202/079017-0722](https://doi.org/10.52202/079017-0722)<br>`li2024snapkv`
-- **Cai et al. (2024).** *PyramidKV: Dynamic KV Cache Compression based on Pyramidal Information Funneling.* [arXiv:2406.02069](https://arxiv.org/abs/2406.02069)<br>`cai2024pyramidkv`
+- **Li et al. (2024).** *SnapKV: LLM Knows What You are Looking for Before Generation.* Advances in Neural Information Processing Systems (NeurIPS). [doi:10.52202/079017-0722](https://doi.org/10.52202/079017-0722)<br><span class="attn-cite" data-bibkey="li2024snapkv"><code>li2024snapkv</code></span>
+- **Cai et al. (2024).** *PyramidKV: Dynamic KV Cache Compression based on Pyramidal Information Funneling.* [arXiv:2406.02069](https://arxiv.org/abs/2406.02069)<br><span class="attn-cite" data-bibkey="cai2024pyramidkv"><code>cai2024pyramidkv</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 2 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="li2024snapkv">
+<pre class="attn-bib__src"><code>@inproceedings{li2024snapkv,
+  title={{SnapKV}: {LLM} Knows What You are Looking for Before Generation},
+  author={Li, Yuhong and Huang, Yingbing and Yang, Bowen and Venkitesh, Bharat and Locatelli, Acyr and Ye, Hanchen and Cai, Tianle and Lewis, Patrick and Chen, Deming},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2024},
+  doi={10.52202/079017-0722}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="cai2024pyramidkv">
+<pre class="attn-bib__src"><code>@misc{cai2024pyramidkv,
+  title = {{PyramidKV: Dynamic KV Cache Compression based on Pyramidal Information Funneling}},
+  author = {Zefan Cai and Yichi Zhang and Bofei Gao and Yuliang Liu and Yucheng Li and Tianyu Liu and Keming Lu and Wayne Xiong and Yue Dong and Junjie Hu and Wen Xiao},
+  year = {2024},
+  howpublished = {arXiv preprint arXiv:2406.02069},
+  eprint = {2406.02069},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

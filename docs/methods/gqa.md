@@ -147,14 +147,48 @@ row_stochastic = True | first row sums: [1.0, 1.0, 1.0, 1.0]
 extras: ['group_size', 'n_kv_heads']
 ```
 
-## Others in `compress`
+## Related methods
 
-[`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`mla`](mla.md), [`quantkv`](quantkv.md) — see [the taxonomy](../taxonomy.md#compress).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `gqa` removed.
+
+changes the same object — [`compress`](../taxonomy.md#compress)
+:   [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`mla`](mla.md), [`quantkv`](quantkv.md) &nbsp;·&nbsp; [browse the bank, compress only](index.md?category=compress)
+
+judged the same way — `modify`, beyond the ones above
+:   [`cosformer`](cosformer.md), [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`latent_stochastic`](latent_stochastic.md), [`linear_elu`](linear_elu.md), [`linear_rnn`](linear_rnn.md), [`lowrank_ot`](lowrank_ot.md), [`sinkhorn`](sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+
+[Open the browser with `gqa` selected](index.md?compare=gqa) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Ainslie et al. (2023).** *GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints.* Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP). [arXiv:2305.13245](https://arxiv.org/abs/2305.13245)<br>`ainslie2023gqa`
-- **Shazeer (2019).** *Fast Transformer Decoding: One Write-Head is All You Need.* [arXiv:1911.02150](https://arxiv.org/abs/1911.02150)<br>`shazeer2019fast`
+- **Ainslie et al. (2023).** *GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints.* Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP). [arXiv:2305.13245](https://arxiv.org/abs/2305.13245)<br><span class="attn-cite" data-bibkey="ainslie2023gqa"><code>ainslie2023gqa</code></span>
+- **Shazeer (2019).** *Fast Transformer Decoding: One Write-Head is All You Need.* [arXiv:1911.02150](https://arxiv.org/abs/1911.02150)<br><span class="attn-cite" data-bibkey="shazeer2019fast"><code>shazeer2019fast</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 2 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="ainslie2023gqa">
+<pre class="attn-bib__src"><code>@inproceedings{ainslie2023gqa,
+  title = {{GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints}},
+  author = {Joshua Ainslie and James Lee-Thorp and Michiel de Jong and Yury Zemlyanskiy and Federico Lebrón and Sumit Sanghai},
+  year = {2023},
+  booktitle = {Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  eprint = {2305.13245},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="shazeer2019fast">
+<pre class="attn-bib__src"><code>@misc{shazeer2019fast,
+  title = {{Fast Transformer Decoding: One Write-Head is All You Need}},
+  author = {Noam Shazeer},
+  year = {2019},
+  howpublished = {arXiv preprint arXiv:1911.02150},
+  eprint = {1911.02150},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

@@ -10,6 +10,38 @@ major version and this file says so in the first line.
 
 ## [Unreleased]
 
+Documentation site only. No method's mathematics, no number and no result file
+changed, and the site still makes **zero third-party requests**.
+
+### Added
+
+- **Side-by-side comparison** on the **Browse the bank** page. Tick two to
+  four rows and the methods appear in columns: category, objective, paper section, the
+  five declaration booleans, the oracle flag, backends, correctness anchor,
+  configuration defaults, the three cost quantities at the shape every method page
+  quotes, and the BibTeX keys. Every value is read from `ab.describe()` and the
+  method's own `cost()` — `docs/gen_methods.py` writes them into one JSON block on the
+  page. Rows the selected methods agree on fold away, a cell is marked when it is the
+  odd one out, and a property not declared by *all* of the selected methods is not
+  shown at all rather than guessed at.
+- **URL state.** Search text, chip filters, sort column and direction, and the
+  comparison selection are all in the query string, so a filtered view or a comparison
+  is a link you can paste. It survives `navigation.instant` and is restored on load.
+- **Copy controls.** A copy-BibTeX button beside each citation key on a method page, a
+  *copy all* for the page's bibliography, and a copy-LaTeX button on every display
+  formula and on the operator plate — the TeX source, not the rendered form.
+- **Related methods** on every method page: the methods that change the same object
+  and the methods that pursue the same objective, both derived from the registry.
+- `/` focuses the search box of the method browser.
+
+### Changed
+
+- The *Others in `<category>`* section of a method page is now *Related methods*, and
+  names the same-objective methods as well as the same-category ones.
+- `docs/tex_source.py`, a new mkdocs hook, stamps each display formula's LaTeX source
+  onto its element at build time; MathJax replaces the source with SVG, so scraping it
+  in the browser is a race.
+
 ## [0.2.0] — 2026-10-22
 
 The release that turns the research code into a library. No method's mathematics, no

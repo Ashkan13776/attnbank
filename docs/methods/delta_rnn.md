@@ -160,16 +160,71 @@ row_stochastic = False | first row sums: [5.3093, 8.0564, 8.2169, 7.149]
 extras: ['beta', 'mass', 'state_rank']
 ```
 
-## Others in `recurrent`
+## Related methods
 
-[`decay_rnn`](decay_rnn.md), [`linear_rnn`](linear_rnn.md) — see [the taxonomy](../taxonomy.md#recurrent).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `delta_rnn` removed.
+
+changes the same object — [`recurrent`](../taxonomy.md#recurrent)
+:   [`decay_rnn`](decay_rnn.md), [`linear_rnn`](linear_rnn.md) &nbsp;·&nbsp; [browse the bank, recurrent only](index.md?category=recurrent)
+
+judged the same way — `modify`, beyond the ones above
+:   [`cosformer`](cosformer.md), [`gqa`](gqa.md), [`latent_stochastic`](latent_stochastic.md), [`linear_elu`](linear_elu.md), [`lowrank_ot`](lowrank_ot.md), [`mla`](mla.md), [`sinkhorn`](sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+
+[Open the browser with `delta_rnn` selected](index.md?compare=delta_rnn) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Schlag et al. (2021).** *Linear Transformers Are Secretly Fast Weight Programmers.* Proceedings of the 38th International Conference on Machine Learning (ICML). [arXiv:2102.11174](https://arxiv.org/abs/2102.11174)<br>`schlag2021linear`
-- **Yang et al. (2024).** *Parallelizing Linear Transformers with the Delta Rule over Sequence Length.* Advances in Neural Information Processing Systems 37 (NeurIPS). [arXiv:2406.06484](https://arxiv.org/abs/2406.06484)<br>`yang2024parallelizing`
-- **Widrow and Hoff (1960).** *Adaptive Switching Circuits.* IRE WESCON Convention Record.<br>`widrow1960adaptive`
-- **Yang et al. (2025).** *Gated Delta Networks: Improving Mamba2 with Delta Rule.* International Conference on Learning Representations (ICLR). [arXiv:2412.06464](https://arxiv.org/abs/2412.06464)<br>`yang2025gated`
+- **Schlag et al. (2021).** *Linear Transformers Are Secretly Fast Weight Programmers.* Proceedings of the 38th International Conference on Machine Learning (ICML). [arXiv:2102.11174](https://arxiv.org/abs/2102.11174)<br><span class="attn-cite" data-bibkey="schlag2021linear"><code>schlag2021linear</code></span>
+- **Yang et al. (2024).** *Parallelizing Linear Transformers with the Delta Rule over Sequence Length.* Advances in Neural Information Processing Systems 37 (NeurIPS). [arXiv:2406.06484](https://arxiv.org/abs/2406.06484)<br><span class="attn-cite" data-bibkey="yang2024parallelizing"><code>yang2024parallelizing</code></span>
+- **Widrow and Hoff (1960).** *Adaptive Switching Circuits.* IRE WESCON Convention Record.<br><span class="attn-cite" data-bibkey="widrow1960adaptive"><code>widrow1960adaptive</code></span>
+- **Yang et al. (2025).** *Gated Delta Networks: Improving Mamba2 with Delta Rule.* International Conference on Learning Representations (ICLR). [arXiv:2412.06464](https://arxiv.org/abs/2412.06464)<br><span class="attn-cite" data-bibkey="yang2025gated"><code>yang2025gated</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 4 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="schlag2021linear">
+<pre class="attn-bib__src"><code>@inproceedings{schlag2021linear,
+  title={Linear Transformers Are Secretly Fast Weight Programmers},
+  author={Schlag, Imanol and Irie, Kazuki and Schmidhuber, J{\&quot;u}rgen},
+  booktitle={Proceedings of the 38th International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={139},
+  pages={9355--9366},
+  year={2021},
+  eprint={2102.11174},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="yang2024parallelizing">
+<pre class="attn-bib__src"><code>@inproceedings{yang2024parallelizing,
+  title={Parallelizing Linear Transformers with the Delta Rule over Sequence Length},
+  author={Yang, Songlin and Wang, Bailin and Zhang, Yu and Shen, Yikang and Kim, Yoon},
+  booktitle={Advances in Neural Information Processing Systems 37 (NeurIPS)},
+  year={2024},
+  eprint={2406.06484},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="widrow1960adaptive">
+<pre class="attn-bib__src"><code>@inproceedings{widrow1960adaptive,
+  title={Adaptive Switching Circuits},
+  author={Widrow, Bernard and Hoff, Marcian E.},
+  booktitle={IRE WESCON Convention Record},
+  pages={96--104},
+  year={1960}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="yang2025gated">
+<pre class="attn-bib__src"><code>@inproceedings{yang2025gated,
+  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule},
+  author={Yang, Songlin and Kautz, Jan and Hatamizadeh, Ali},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2025},
+  eprint={2412.06464}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

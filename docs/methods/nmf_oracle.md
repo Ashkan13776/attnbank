@@ -171,15 +171,62 @@ invariant W: 0.0
 {'output_error': 0.64372, 'distributional_error': 0.64372, 'value_error': 0.0, 'tv': 0.3159}
 ```
 
-## Others in `factorize`
+## Related methods
 
-[`clustered`](clustered.md), [`latent_stochastic`](latent_stochastic.md), [`svd_oracle`](svd_oracle.md) *(oracle)* — see [the taxonomy](../taxonomy.md#factorize).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `nmf_oracle` removed.
+
+changes the same object — [`factorize`](../taxonomy.md#factorize)
+:   [`clustered`](clustered.md), [`latent_stochastic`](latent_stochastic.md), [`svd_oracle`](svd_oracle.md) *(oracle)* &nbsp;·&nbsp; [browse the bank, factorize only](index.md?category=factorize)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`blocktopk`](blocktopk.md), [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`lsh_sample`](lsh_sample.md), [`merge_kv`](merge_kv.md), [`nystrom`](nystrom.md), [`performer`](performer.md), [`quantkv`](quantkv.md), [`sink_window`](sink_window.md), [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `nmf_oracle` selected](index.md?compare=nmf_oracle) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Lee and Seung (1999).** *Learning the Parts of Objects by Non-negative Matrix Factorization.* Nature. [doi:10.1038/44565](https://doi.org/10.1038/44565)<br>`lee1999learning`
-- **Cohen and Rothblum (1993).** *Nonnegative Ranks, Decompositions, and Factorizations of Nonnegative Matrices.* Linear Algebra and its Applications. [doi:10.1016/0024-3795(93)90224-C](https://doi.org/10.1016/0024-3795(93)90224-C)<br>`cohen1993nonnegative`
-- **Gillis (2020).** *Nonnegative Matrix Factorization.* [doi:10.1137/1.9781611976410](https://doi.org/10.1137/1.9781611976410)<br>`gillis2020nonnegative`
+- **Lee and Seung (1999).** *Learning the Parts of Objects by Non-negative Matrix Factorization.* Nature. [doi:10.1038/44565](https://doi.org/10.1038/44565)<br><span class="attn-cite" data-bibkey="lee1999learning"><code>lee1999learning</code></span>
+- **Cohen and Rothblum (1993).** *Nonnegative Ranks, Decompositions, and Factorizations of Nonnegative Matrices.* Linear Algebra and its Applications. [doi:10.1016/0024-3795(93)90224-C](https://doi.org/10.1016/0024-3795(93)90224-C)<br><span class="attn-cite" data-bibkey="cohen1993nonnegative"><code>cohen1993nonnegative</code></span>
+- **Gillis (2020).** *Nonnegative Matrix Factorization.* [doi:10.1137/1.9781611976410](https://doi.org/10.1137/1.9781611976410)<br><span class="attn-cite" data-bibkey="gillis2020nonnegative"><code>gillis2020nonnegative</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="lee1999learning">
+<pre class="attn-bib__src"><code>@article{lee1999learning,
+  title   = {Learning the Parts of Objects by Non-negative Matrix Factorization},
+  author  = {Lee, Daniel D. and Seung, H. Sebastian},
+  journal = {Nature},
+  volume  = {401},
+  number  = {6755},
+  pages   = {788--791},
+  year    = {1999},
+  doi     = {10.1038/44565}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="cohen1993nonnegative">
+<pre class="attn-bib__src"><code>@article{cohen1993nonnegative,
+  title   = {Nonnegative Ranks, Decompositions, and Factorizations of Nonnegative Matrices},
+  author  = {Cohen, Joel E. and Rothblum, Uriel G.},
+  journal = {Linear Algebra and its Applications},
+  volume  = {190},
+  pages   = {149--168},
+  year    = {1993},
+  doi     = {10.1016/0024-3795(93)90224-C}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="gillis2020nonnegative">
+<pre class="attn-bib__src"><code>@book{gillis2020nonnegative,
+  title     = {Nonnegative Matrix Factorization},
+  author    = {Gillis, Nicolas},
+  publisher = {SIAM},
+  address   = {Philadelphia, PA},
+  year      = {2020},
+  doi       = {10.1137/1.9781611976410}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

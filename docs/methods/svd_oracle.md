@@ -156,15 +156,62 @@ invariant W: 0.0
 {'output_error': 0.64546, 'distributional_error': 0.64546, 'value_error': 0.0, 'tv': 0.3167}
 ```
 
-## Others in `factorize`
+## Related methods
 
-[`clustered`](clustered.md), [`latent_stochastic`](latent_stochastic.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)* — see [the taxonomy](../taxonomy.md#factorize).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `svd_oracle` removed.
+
+changes the same object — [`factorize`](../taxonomy.md#factorize)
+:   [`clustered`](clustered.md), [`latent_stochastic`](latent_stochastic.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)* &nbsp;·&nbsp; [browse the bank, factorize only](index.md?category=factorize)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`blocktopk`](blocktopk.md), [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`lsh_sample`](lsh_sample.md), [`merge_kv`](merge_kv.md), [`nystrom`](nystrom.md), [`performer`](performer.md), [`quantkv`](quantkv.md), [`sink_window`](sink_window.md), [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `svd_oracle` selected](index.md?compare=svd_oracle) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Bhojanapalli et al. (2020).** *Low-Rank Bottleneck in Multi-head Attention Models.* Proceedings of the 37th International Conference on Machine Learning (ICML). [arXiv:2002.07028](https://arxiv.org/abs/2002.07028)<br>`bhojanapalli2020lowrank`
-- **Wang et al. (2020).** *Linformer: Self-Attention with Linear Complexity.* [arXiv:2006.04768](https://arxiv.org/abs/2006.04768)<br>`wang2020linformer`
-- **Gillis (2020).** *Nonnegative Matrix Factorization.* [doi:10.1137/1.9781611976410](https://doi.org/10.1137/1.9781611976410)<br>`gillis2020nonnegative`
+- **Bhojanapalli et al. (2020).** *Low-Rank Bottleneck in Multi-head Attention Models.* Proceedings of the 37th International Conference on Machine Learning (ICML). [arXiv:2002.07028](https://arxiv.org/abs/2002.07028)<br><span class="attn-cite" data-bibkey="bhojanapalli2020lowrank"><code>bhojanapalli2020lowrank</code></span>
+- **Wang et al. (2020).** *Linformer: Self-Attention with Linear Complexity.* [arXiv:2006.04768](https://arxiv.org/abs/2006.04768)<br><span class="attn-cite" data-bibkey="wang2020linformer"><code>wang2020linformer</code></span>
+- **Gillis (2020).** *Nonnegative Matrix Factorization.* [doi:10.1137/1.9781611976410](https://doi.org/10.1137/1.9781611976410)<br><span class="attn-cite" data-bibkey="gillis2020nonnegative"><code>gillis2020nonnegative</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="bhojanapalli2020lowrank">
+<pre class="attn-bib__src"><code>@inproceedings{bhojanapalli2020lowrank,
+  title         = {Low-Rank Bottleneck in Multi-head Attention Models},
+  author        = {Bhojanapalli, Srinadh and Yun, Chulhee and Rawat, Ankit Singh and Reddi, Sashank and Kumar, Sanjiv},
+  booktitle     = {Proceedings of the 37th International Conference on Machine Learning (ICML)},
+  series        = {PMLR},
+  volume        = {119},
+  pages         = {864--873},
+  year          = {2020},
+  eprint        = {2002.07028},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="wang2020linformer">
+<pre class="attn-bib__src"><code>@misc{wang2020linformer,
+  title = {{Linformer: Self-Attention with Linear Complexity}},
+  author = {Sinong Wang and Belinda Z. Li and Madian Khabsa and Han Fang and Hao Ma},
+  year = {2020},
+  howpublished = {arXiv preprint arXiv:2006.04768},
+  eprint = {2006.04768},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="gillis2020nonnegative">
+<pre class="attn-bib__src"><code>@book{gillis2020nonnegative,
+  title     = {Nonnegative Matrix Factorization},
+  author    = {Gillis, Nicolas},
+  publisher = {SIAM},
+  address   = {Philadelphia, PA},
+  year      = {2020},
+  doi       = {10.1137/1.9781611976410}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

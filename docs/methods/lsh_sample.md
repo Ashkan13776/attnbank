@@ -168,15 +168,57 @@ invariant W: 0.0
 {'output_error': 1.31059, 'distributional_error': 1.31059, 'value_error': 0.0, 'tv': 0.53857}
 ```
 
-## Others in `restrict`
+## Related methods
 
-[`blocktopk`](blocktopk.md), [`sink_window`](sink_window.md), [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) — see [the taxonomy](../taxonomy.md#restrict).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `lsh_sample` removed.
+
+changes the same object — [`restrict`](../taxonomy.md#restrict)
+:   [`blocktopk`](blocktopk.md), [`sink_window`](sink_window.md), [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, restrict only](index.md?category=restrict)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`clustered`](clustered.md), [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`quantkv`](quantkv.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`trigrff`](trigrff.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `lsh_sample` selected](index.md?compare=lsh_sample) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Chen et al. (2025).** *MagicPIG: LSH Sampling for Efficient LLM Generation.* International Conference on Learning Representations (ICLR). [arXiv:2410.16179](https://arxiv.org/abs/2410.16179)<br>`chen2025magicpig`
-- **Owen (2013).** *Monte Carlo Theory, Methods and Examples.*<br>`owen2013monte`
-- **Kitaev et al. (2020).** *Reformer: The Efficient Transformer.* International Conference on Learning Representations (ICLR). [arXiv:2001.04451](https://arxiv.org/abs/2001.04451)<br>`kitaev2020reformer`
+- **Chen et al. (2025).** *MagicPIG: LSH Sampling for Efficient LLM Generation.* International Conference on Learning Representations (ICLR). [arXiv:2410.16179](https://arxiv.org/abs/2410.16179)<br><span class="attn-cite" data-bibkey="chen2025magicpig"><code>chen2025magicpig</code></span>
+- **Owen (2013).** *Monte Carlo Theory, Methods and Examples.*<br><span class="attn-cite" data-bibkey="owen2013monte"><code>owen2013monte</code></span>
+- **Kitaev et al. (2020).** *Reformer: The Efficient Transformer.* International Conference on Learning Representations (ICLR). [arXiv:2001.04451](https://arxiv.org/abs/2001.04451)<br><span class="attn-cite" data-bibkey="kitaev2020reformer"><code>kitaev2020reformer</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="chen2025magicpig">
+<pre class="attn-bib__src"><code>@inproceedings{chen2025magicpig,
+  title     = {{MagicPIG}: {LSH} Sampling for Efficient {LLM} Generation},
+  author    = {Chen, Zhuoming and Sadhukhan, Ranajoy and Ye, Zihao and Zhou, Yang and Zhang, Jianyu and Nolte, Niklas and Tian, Yuandong and Douze, Matthijs and Bottou, Leon and Jia, Zhihao and Chen, Beidi},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2025},
+  eprint    = {2410.16179},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="owen2013monte">
+<pre class="attn-bib__src"><code>@book{owen2013monte,
+  title     = {Monte Carlo Theory, Methods and Examples},
+  author    = {Owen, Art B.},
+  year      = {2013},
+  note      = {Book manuscript, available online at \url{https://artowen.su.domains/mc/}}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="kitaev2020reformer">
+<pre class="attn-bib__src"><code>@inproceedings{kitaev2020reformer,
+  title={Reformer: The Efficient Transformer},
+  author={Kitaev, Nikita and Kaiser, {\L}ukasz and Levskaya, Anselm},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2020},
+  eprint={2001.04451},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

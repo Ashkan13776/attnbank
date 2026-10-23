@@ -157,14 +157,49 @@ invariant W: 0.0
 {'output_error': 1.53824, 'distributional_error': 1.53824, 'value_error': 0.0, 'tv': 0.5296}
 ```
 
-## Others in `restrict`
+## Related methods
 
-[`lsh_sample`](lsh_sample.md), [`sink_window`](sink_window.md), [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) — see [the taxonomy](../taxonomy.md#restrict).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `blocktopk` removed.
+
+changes the same object — [`restrict`](../taxonomy.md#restrict)
+:   [`lsh_sample`](lsh_sample.md), [`sink_window`](sink_window.md), [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, restrict only](index.md?category=restrict)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`clustered`](clustered.md), [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`quantkv`](quantkv.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`trigrff`](trigrff.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `blocktopk` selected](index.md?compare=blocktopk) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Tang et al. (2024).** *Quest: Query-Aware Sparsity for Efficient Long-Context LLM Inference.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2406.10774](https://arxiv.org/abs/2406.10774)<br>`tang2024quest`
-- **Xiao et al. (2024).** *InfLLM: Training-Free Long-Context Extrapolation for LLMs with an Efficient Context Memory.* Advances in Neural Information Processing Systems (NeurIPS). [doi:10.52202/079017-3801](https://doi.org/10.52202/079017-3801)<br>`xiao2024infllm`
+- **Tang et al. (2024).** *Quest: Query-Aware Sparsity for Efficient Long-Context LLM Inference.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2406.10774](https://arxiv.org/abs/2406.10774)<br><span class="attn-cite" data-bibkey="tang2024quest"><code>tang2024quest</code></span>
+- **Xiao et al. (2024).** *InfLLM: Training-Free Long-Context Extrapolation for LLMs with an Efficient Context Memory.* Advances in Neural Information Processing Systems (NeurIPS). [doi:10.52202/079017-3801](https://doi.org/10.52202/079017-3801)<br><span class="attn-cite" data-bibkey="xiao2024infllm"><code>xiao2024infllm</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 2 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="tang2024quest">
+<pre class="attn-bib__src"><code>@inproceedings{tang2024quest,
+  title     = {{Quest}: Query-Aware Sparsity for Efficient Long-Context {LLM} Inference},
+  author    = {Tang, Jiaming and Zhao, Yilong and Zhu, Kan and Xiao, Guangxuan and Kasikci, Baris and Han, Song},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {235},
+  year      = {2024},
+  eprint    = {2406.10774},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="xiao2024infllm">
+<pre class="attn-bib__src"><code>@inproceedings{xiao2024infllm,
+  title={{InfLLM}: Training-Free Long-Context Extrapolation for {LLMs} with an Efficient Context Memory},
+  author={Xiao, Chaojun and Zhang, Pengle and Han, Xu and Xiao, Guangxuan and Lin, Yankai and Zhang, Zhengyan and Liu, Zhiyuan and Sun, Maosong},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2024},
+  doi={10.52202/079017-3801}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

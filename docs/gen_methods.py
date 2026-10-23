@@ -27,6 +27,7 @@ from __future__ import annotations
 import contextlib
 import inspect
 import io
+import json
 import re
 import sys
 import textwrap
@@ -270,7 +271,12 @@ def _detex(s: str) -> str:
 
 
 def parse_bib(path: Path) -> dict[str, dict]:
-    """``{key: {field: value}}``. A small brace-counting reader; no bibtex dependency."""
+    """``{key: {field: value}}``. A small brace-counting reader; no bibtex dependency.
+
+    ``_source`` is the entry exactly as it stands in the file. The copy-BibTeX control
+    hands that text to the clipboard, so what a reader pastes into their own ``.bib``
+    is the packaged bibliography byte for byte -- not this parser's idea of it.
+    """
     text = path.read_text(errors="ignore")
     entries: dict[str, dict] = {}
     for match in re.finditer(r"@(\w+)\s*\{\s*([^,]+),", text):
@@ -298,7 +304,8 @@ def parse_bib(path: Path) -> dict[str, dict]:
             else:
                 end = body.find(",", j)
                 fields[fmatch.group(1).lower()] = body[j:end if end > 0 else len(body)]
-        entries[match.group(2).strip()] = {"_type": match.group(1), **fields}
+        entries[match.group(2).strip()] = {
+            "_type": match.group(1), "_source": text[match.start():i], **fields}
     return entries
 
 
@@ -335,7 +342,9 @@ def citation(key: str, entry: dict | None) -> str:
         bits.append(venue + ".")
     if links:
         bits.append(" ".join(links))
-    return "- " + " ".join(bits) + f"<br>`{key}`"
+    return ("- " + " ".join(bits)
+            + f'<br><span class="attn-cite" data-bibkey="{key}"><code>{key}</code>'
+            + "</span>")
 
 
 # ---------------------------------------------------------------------------
@@ -525,6 +534,90 @@ def cost_block(name: str) -> list[str]:
     ]
 
 
+def bibtex_block(keys, bib: dict) -> list[str]:
+    """The cited entries, verbatim, inside a closed `<details>`.
+
+    Raw HTML rather than a fenced block on purpose: a fence would pick up Material's
+    own code-copy button as well as the one `docs/javascripts/clip.js` adds, and two
+    buttons that do almost the same thing is worse than none. Closed, and inside a
+    disclosure, so the page reads the same as it did; open, and it is the bibliography
+    itself -- which is what a reader with scripting off selects by hand, there being no
+    button for them to press.
+    """
+    entries = [(key, bib[key]["_source"]) for key in keys
+               if bib.get(key, {}).get("_source")]
+    if not entries:                                     # pragma: no cover - CI gate
+        return []
+    plural = "entry" if len(entries) == 1 else "entries"
+    # ``no-copy`` is the theme's own opt-out: ``content.code.copy`` is on, and
+    # mkdocs-material mounts a copy button on every ``pre > code`` it finds. Two
+    # buttons on one block, one of them overlapping the other, is worse than either.
+    out = [
+        '<details class="attn-bib no-copy">',
+        f'<summary>BibTeX — {len(entries)} {plural}, verbatim from '
+        '<code>attnbank/references.bib</code></summary>',
+        '<div class="attn-bib__entries">',
+    ]
+    for key, src in entries:
+        out += [f'<div class="attn-bib__entry" data-bibkey="{key}">',
+                f'<pre class="attn-bib__src"><code>{_escape(src)}</code></pre>',
+                "</div>"]
+    return out + ["</div>", "</details>"]
+
+
+def related_block(name: str, oracles: tuple) -> list[str]:
+    """Methods related to this one, by the two axes the registry actually has.
+
+    Same `category` is *changes the same object*; same `objective` is *judged the same
+    way*. Both lists are `ab.available(...)` with this method removed, so there is no
+    hand-written "see also" to go stale -- and no third axis, because the registry does
+    not have one. A method in both lists is named once, under the category: the
+    stronger relation of the two.
+    """
+    cls = ab.get_class(name)
+    cat, obj = cls.category.value, cls.objective.value
+    same_cat = [n for n in ab.available(cat) if n != name]
+    same_obj = [n for n in ab.available(objective=obj)
+                if n != name and n not in same_cat]
+    if not same_cat and not same_obj:                   # pragma: no cover - CI gate
+        return []
+
+    def links(names) -> str:
+        return ", ".join(f"[`{n}`]({n}.md)" + (" *(oracle)*" if n in oracles else "")
+                         for n in names)
+
+    out = [
+        "## Related methods",
+        "",
+        "Two relations, because the registry declares two axes: what a method changes, "
+        "and what it is trying to be. Both lists are "
+        f"`ab.available(...)` with `{name}` removed.",
+        "",
+    ]
+    if same_cat:
+        out += [
+            f"changes the same object — [`{cat}`](../taxonomy.md#{cat})",
+            f":   {links(same_cat)}"
+            f" &nbsp;·&nbsp; [browse the bank, {cat} only](index.md?category={cat})",
+            "",
+        ]
+    if same_obj:
+        beyond = ", beyond the ones above" if same_cat else ""
+        out += [
+            f"judged the same way — `{obj}`{beyond}",
+            f":   {links(same_obj)}"
+            f" &nbsp;·&nbsp; [browse the bank, {obj} only](index.md?objective={obj})",
+            "",
+        ]
+    out += [
+        f"[Open the browser with `{name}` selected](index.md?compare={name}) and tick up "
+        "to three more to see them in columns. Every row there is one the registry "
+        "declares, and the rows the selected methods agree on fold away.",
+        "",
+    ]
+    return out
+
+
 # ---------------------------------------------------------------------------
 # the per-method page
 # ---------------------------------------------------------------------------
@@ -692,19 +785,11 @@ def page(name: str, bib: dict, oracles: tuple) -> str:
     src = example_source(name, info)
     out += ["```python", src, "```", "", "```text", run_example(src), "```", ""]
 
-    siblings = [n for n in ab.available(cat) if n != name]
-    if siblings:
-        out += [
-            f"## Others in `{cat}`",
-            "",
-            ", ".join(f"[`{n}`]({n}.md)" + (" *(oracle)*" if n in oracles else "")
-                      for n in siblings)
-            + f" — see [the taxonomy](../taxonomy.md#{cat}).",
-            "",
-        ]
+    out += related_block(name, oracles)
 
     out += ["## References", ""]
     out += [citation(key, bib.get(key)) for key in info.references]
+    out += ["", *bibtex_block(info.references, bib)]
     module = cls.__module__.replace(".", "/") + ".py"
     out += [
         "",
@@ -761,6 +846,73 @@ def _search_text(name: str, info, oracles: tuple) -> str:
     return " ".join(words).lower().replace('"', " ")
 
 
+def anchor_line(info) -> str:
+    """The correctness anchor as one line: the kind, and the declaration itself.
+
+    Four outcomes, and every one of them is a declaration rather than a silence --
+    which is why the ``modify`` case says so in words instead of leaving the cell
+    empty. Same four branches as :func:`anchor_block`, which writes the paragraph
+    version of this on the method's own page.
+    """
+    if info.limit_config == {}:
+        return "exact as built (limit_config() == {})"
+    if info.limit_config:
+        cfg = ", ".join(f"{key}={val!r}" for key, val in info.limit_config.items())
+        return f"exact limit at {cfg}"
+    if info.n_convergence_configs:
+        return f"convergence anchor, {info.n_convergence_configs} configs"
+    return "none, and the suite asserts the exemption (objective = modify)"
+
+
+def config_line(name: str, info) -> str:
+    """The method's own knobs and their defaults, or the fact that it has none."""
+    cls = ab.get_class(name)
+    params = {key: val for key, val in info.parameters.items() if key != "backend"}
+    if "__init__" not in cls.__dict__ or not params:
+        return "none of its own (only the base class's scale and backend)"
+    return ", ".join(f"{key}={val!r}" for key, val in params.items())
+
+
+def compare_payload(oracles: tuple) -> str:
+    """Every declared field the side-by-side view can show, as one JSON block.
+
+    The comparison is not a second description of the bank: every key below is read
+    off :func:`attnbank.describe` or off the method's own ``cost()``, at the same shape
+    the per-method pages quote, so a column here and that method's page cannot
+    disagree. A field a method does not declare is simply absent, and
+    ``docs/javascripts/bank.js`` drops any row that is not declared by all of the
+    selected methods rather than inventing a cell for it.
+    """
+    out = {}
+    for name in ab.available():
+        info = ab.describe(name)
+        row = {
+            "title": display_name(name),
+            "summary": summary_text(info.summary),
+            "category": info.category,
+            "objective": info.objective,
+            "paper_section": info.paper_section,
+            "supports_causal": info.supports_causal,
+            "expresses_weights": info.expresses_weights,
+            "row_stochastic": info.row_stochastic,
+            "head_independent": info.head_independent,
+            "trainable": info.trainable,
+            "oracle": name in oracles,
+            "backends": list(info.backends),
+            "anchor": anchor_line(info),
+            "config": config_line(name, info),
+            "references": list(info.references),
+        }
+        row.update({key: float(val)
+                    for key, val in ab.build(name).cost(**COST_SHAPE).items()
+                    if key in ("flops", "state_bytes", "bytes_moved")})
+        out[name] = row
+    blob = {"shape": COST_SHAPE, "bytes_per_el": 2, "methods": out}
+    # ``<`` never appears in the data, but a JSON block that cannot close its own
+    # <script> early is one less thing to think about.
+    return json.dumps(blob, separators=(",", ":")).replace("<", "\\u003c")
+
+
 def browser(bib: dict, oracles: tuple) -> str:
     order = [c.value for c in Category]
     infos = [(n, ab.describe(n)) for n in ab.available()]
@@ -807,6 +959,7 @@ def browser(bib: dict, oracles: tuple) -> str:
             f'<button type="button" class="bank-chip" data-filter="{field}" '
             f'data-value="{value}">{label}</button>' for field, value, label in pairs)
 
+    payload = compare_payload(oracles)
     cats = chips(("category", c, c) for c in order)
     objs = chips(("objective", o.value, o.value) for o in Objective)
     only = chips([("causal", "yes", "causal"),
@@ -833,9 +986,16 @@ the method's own page is filed under.
 
 Searching matches both of those, plus the summary, the category, the objective, the
 backends, the config keys, the BibTeX keys, and words you would plausibly type instead
-of a flag — `causal`, `trainable`, `oracle`, `signed`. The filters are plain
-client-side JavaScript over the table that is already on the page: with scripting off
-you get all {n} rows, sorted by category, which is the whole content.
+of a flag — `causal`, `trainable`, `oracle`, `signed`. Press `/` to jump to the
+box. Tick two to four rows to put them **side by side**, and the rows where the
+selected methods declare the same thing fold away, so what is left is the difference.
+Whatever you search, filter, sort or select is in the address bar, so the view you are
+looking at is a link you can paste.
+
+All of that is plain client-side JavaScript over the table that is already on the
+page: with scripting off you get all {n} rows, sorted by category, every column
+filled, which is the whole content — there is nothing here to hydrate and nothing to
+fetch.
 
 !!! warning "Three of these are oracles"
     `value_topk`, `nmf_oracle` and `svd_oracle` are **upper bounds on what a mechanism
@@ -844,6 +1004,7 @@ you get all {n} rows, sorted by category, which is the whole content.
     tagged `oracle` in the table and carry a banner on their own pages.
 
 <div class="bank" id="bank">
+  <script type="application/json" id="bank-data">{payload}</script>
   <div class="bank-controls" hidden>
     <label class="bank-search">
       <span class="bank-search__label">Search the bank</span>
@@ -861,7 +1022,23 @@ you get all {n} rows, sorted by category, which is the whole content.
         class="bank-reset" id="bank-reset">reset</button>
     </div>
     <p class="bank-count" id="bank-count" aria-live="polite">{n} of {n} methods</p>
+    <p class="bank-pick-hint" id="bank-pick-hint" aria-live="polite">Tick 2&ndash;4
+      boxes to compare those methods column by column.</p>
   </div>
+  <section class="bank-compare" id="bank-compare" hidden aria-labelledby="bank-compare-h">
+    <div class="bank-compare__bar">
+      <h2 class="bank-compare__h" id="bank-compare-h">Side by side</h2>
+      <p class="bank-compare__hint" id="bank-compare-hint" aria-live="polite"></p>
+      <button type="button" class="bank-chip" id="bank-compare-same"
+              aria-pressed="false" hidden></button>
+      <button type="button" class="bank-reset" id="bank-compare-clear">clear</button>
+    </div>
+    <div class="bank-compare__scroll">
+      <table class="bank-compare__table" id="bank-compare-table"></table>
+    </div>
+    <p class="bank-compare__note" id="bank-compare-note"></p>
+  </section>
+  <div class="bank-scroll">
   <table class="bank-table">
     <thead>
       <tr>
@@ -877,6 +1054,7 @@ you get all {n} rows, sorted by category, which is the whole content.
 """
     tail = f"""    </tbody>
   </table>
+  </div>
   <p class="bank-empty" id="bank-empty" hidden>No method matches. <button type="button"
      class="bank-reset" data-reset>Reset the filters</button></p>
 </div>

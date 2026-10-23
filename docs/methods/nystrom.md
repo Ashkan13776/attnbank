@@ -161,14 +161,48 @@ invariant W: 0.0
 {'output_error': 13.3981, 'distributional_error': 13.3981, 'value_error': 0.0, 'tv': 7.27394}
 ```
 
-## Others in `interaction`
+## Related methods
 
-[`cosformer`](cosformer.md), [`linear_elu`](linear_elu.md), [`performer`](performer.md), [`trigrff`](trigrff.md) — see [the taxonomy](../taxonomy.md#interaction).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `nystrom` removed.
+
+changes the same object — [`interaction`](../taxonomy.md#interaction)
+:   [`cosformer`](cosformer.md), [`linear_elu`](linear_elu.md), [`performer`](performer.md), [`trigrff`](trigrff.md) &nbsp;·&nbsp; [browse the bank, interaction only](index.md?category=interaction)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`lsh_sample`](lsh_sample.md), [`merge_kv`](merge_kv.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`quantkv`](quantkv.md), [`sink_window`](sink_window.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `nystrom` selected](index.md?compare=nystrom) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Xiong et al. (2021).** *Nystromformer: A Nystrom-Based Algorithm for Approximating Self-Attention.* Proceedings of the AAAI Conference on Artificial Intelligence. [arXiv:2102.03902](https://arxiv.org/abs/2102.03902)<br>`xiong2021nystromformer`
-- **Williams and Seeger (2001).** *Using the Nystrom Method to Speed Up Kernel Machines.* Advances in Neural Information Processing Systems 13 (NIPS 2000).<br>`williams2001using`
+- **Xiong et al. (2021).** *Nystromformer: A Nystrom-Based Algorithm for Approximating Self-Attention.* Proceedings of the AAAI Conference on Artificial Intelligence. [arXiv:2102.03902](https://arxiv.org/abs/2102.03902)<br><span class="attn-cite" data-bibkey="xiong2021nystromformer"><code>xiong2021nystromformer</code></span>
+- **Williams and Seeger (2001).** *Using the Nystrom Method to Speed Up Kernel Machines.* Advances in Neural Information Processing Systems 13 (NIPS 2000).<br><span class="attn-cite" data-bibkey="williams2001using"><code>williams2001using</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 2 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="xiong2021nystromformer">
+<pre class="attn-bib__src"><code>@inproceedings{xiong2021nystromformer,
+  title     = {Nystr{\&quot;o}mformer: A Nystr{\&quot;o}m-Based Algorithm for Approximating Self-Attention},
+  author    = {Xiong, Yunyang and Zeng, Zhanpeng and Chakraborty, Rudrasis and Tan, Mingxing and Fung, Glenn and Li, Yin and Singh, Vikas},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {35},
+  year      = {2021},
+  eprint    = {2102.03902},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="williams2001using">
+<pre class="attn-bib__src"><code>@inproceedings{williams2001using,
+  title     = {Using the {N}ystr{\&quot;o}m Method to Speed Up Kernel Machines},
+  author    = {Williams, Christopher K. I. and Seeger, Matthias},
+  booktitle = {Advances in Neural Information Processing Systems 13 (NIPS 2000)},
+  pages     = {682--688},
+  year      = {2001}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

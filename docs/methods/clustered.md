@@ -152,13 +152,37 @@ invariant W: 0.0
 {'output_error': 0.71176, 'distributional_error': 0.71176, 'value_error': 0.0, 'tv': 0.33493}
 ```
 
-## Others in `factorize`
+## Related methods
 
-[`latent_stochastic`](latent_stochastic.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`svd_oracle`](svd_oracle.md) *(oracle)* — see [the taxonomy](../taxonomy.md#factorize).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `clustered` removed.
+
+changes the same object — [`factorize`](../taxonomy.md#factorize)
+:   [`latent_stochastic`](latent_stochastic.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`svd_oracle`](svd_oracle.md) *(oracle)* &nbsp;·&nbsp; [browse the bank, factorize only](index.md?category=factorize)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`blocktopk`](blocktopk.md), [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`lsh_sample`](lsh_sample.md), [`merge_kv`](merge_kv.md), [`nystrom`](nystrom.md), [`performer`](performer.md), [`quantkv`](quantkv.md), [`sink_window`](sink_window.md), [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `clustered` selected](index.md?compare=clustered) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Vyas et al. (2020).** *Fast Transformers with Clustered Attention.* Advances in Neural Information Processing Systems 33 (NeurIPS). [arXiv:2007.04825](https://arxiv.org/abs/2007.04825)<br>`vyas2020fast`
+- **Vyas et al. (2020).** *Fast Transformers with Clustered Attention.* Advances in Neural Information Processing Systems 33 (NeurIPS). [arXiv:2007.04825](https://arxiv.org/abs/2007.04825)<br><span class="attn-cite" data-bibkey="vyas2020fast"><code>vyas2020fast</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 1 entry, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="vyas2020fast">
+<pre class="attn-bib__src"><code>@inproceedings{vyas2020fast,
+  title         = {Fast Transformers with Clustered Attention},
+  author        = {Vyas, Apoorv and Katharopoulos, Angelos and Fleuret, Fran{\c{c}}ois},
+  booktitle     = {Advances in Neural Information Processing Systems 33 (NeurIPS)},
+  year          = {2020},
+  eprint        = {2007.04825},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

@@ -147,17 +147,84 @@ row_stochastic = False | first row sums: [43.946, 78.9989, 108.2692, 140.6155]
 extras: ['decay', 'gate', 'mass']
 ```
 
-## Others in `recurrent`
+## Related methods
 
-[`delta_rnn`](delta_rnn.md), [`linear_rnn`](linear_rnn.md) — see [the taxonomy](../taxonomy.md#recurrent).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `decay_rnn` removed.
+
+changes the same object — [`recurrent`](../taxonomy.md#recurrent)
+:   [`delta_rnn`](delta_rnn.md), [`linear_rnn`](linear_rnn.md) &nbsp;·&nbsp; [browse the bank, recurrent only](index.md?category=recurrent)
+
+judged the same way — `modify`, beyond the ones above
+:   [`cosformer`](cosformer.md), [`gqa`](gqa.md), [`latent_stochastic`](latent_stochastic.md), [`linear_elu`](linear_elu.md), [`lowrank_ot`](lowrank_ot.md), [`mla`](mla.md), [`sinkhorn`](sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+
+[Open the browser with `decay_rnn` selected](index.md?compare=decay_rnn) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Sun et al. (2023).** *Retentive Network: A Successor to Transformer for Large Language Models.* [arXiv:2307.08621](https://arxiv.org/abs/2307.08621)<br>`sun2023retentive`
-- **Yang et al. (2024).** *Gated Linear Attention Transformers with Hardware-Efficient Training.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2312.06635](https://arxiv.org/abs/2312.06635)<br>`yang2024gated`
-- **Dao and Gu (2024).** *Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2405.21060](https://arxiv.org/abs/2405.21060)<br>`dao2024transformers`
-- **Peng et al. (2023).** *RWKV: Reinventing RNNs for the Transformer Era.* Findings of the Association for Computational Linguistics: EMNLP 2023. [arXiv:2305.13048](https://arxiv.org/abs/2305.13048)<br>`peng2023rwkv`
-- **Beck et al. (2024).** *xLSTM: Extended Long Short-Term Memory.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2405.04517](https://arxiv.org/abs/2405.04517)<br>`beck2024xlstm`
+- **Sun et al. (2023).** *Retentive Network: A Successor to Transformer for Large Language Models.* [arXiv:2307.08621](https://arxiv.org/abs/2307.08621)<br><span class="attn-cite" data-bibkey="sun2023retentive"><code>sun2023retentive</code></span>
+- **Yang et al. (2024).** *Gated Linear Attention Transformers with Hardware-Efficient Training.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2312.06635](https://arxiv.org/abs/2312.06635)<br><span class="attn-cite" data-bibkey="yang2024gated"><code>yang2024gated</code></span>
+- **Dao and Gu (2024).** *Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2405.21060](https://arxiv.org/abs/2405.21060)<br><span class="attn-cite" data-bibkey="dao2024transformers"><code>dao2024transformers</code></span>
+- **Peng et al. (2023).** *RWKV: Reinventing RNNs for the Transformer Era.* Findings of the Association for Computational Linguistics: EMNLP 2023. [arXiv:2305.13048](https://arxiv.org/abs/2305.13048)<br><span class="attn-cite" data-bibkey="peng2023rwkv"><code>peng2023rwkv</code></span>
+- **Beck et al. (2024).** *xLSTM: Extended Long Short-Term Memory.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2405.04517](https://arxiv.org/abs/2405.04517)<br><span class="attn-cite" data-bibkey="beck2024xlstm"><code>beck2024xlstm</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 5 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="sun2023retentive">
+<pre class="attn-bib__src"><code>@misc{sun2023retentive,
+  title={Retentive Network: A Successor to Transformer for Large Language Models},
+  author={Sun, Yutao and Dong, Li and Huang, Shaohan and Ma, Shuming and Xia, Yuqing and Xue, Jilong and Wang, Jianyong and Wei, Furu},
+  year={2023},
+  eprint={2307.08621},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="yang2024gated">
+<pre class="attn-bib__src"><code>@inproceedings{yang2024gated,
+  title={Gated Linear Attention Transformers with Hardware-Efficient Training},
+  author={Yang, Songlin and Wang, Bailin and Shen, Yikang and Panda, Rameswar and Kim, Yoon},
+  booktitle={Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={235},
+  pages={56501--56523},
+  year={2024},
+  eprint={2312.06635},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="dao2024transformers">
+<pre class="attn-bib__src"><code>@inproceedings{dao2024transformers,
+  title={Transformers are {SSM}s: Generalized Models and Efficient Algorithms Through Structured State Space Duality},
+  author={Dao, Tri and Gu, Albert},
+  booktitle={Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={235},
+  pages={10041--10071},
+  year={2024},
+  eprint={2405.21060},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="peng2023rwkv">
+<pre class="attn-bib__src"><code>@inproceedings{peng2023rwkv,
+  title={{RWKV}: Reinventing {RNN}s for the Transformer Era},
+  author={Peng, Bo and Alcaide, Eric and Anthony, Quentin and Albalak, Alon and Arcadinho, Samuel and Biderman, Stella and others},
+  booktitle={Findings of the Association for Computational Linguistics: EMNLP 2023},
+  year={2023},
+  eprint={2305.13048}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="beck2024xlstm">
+<pre class="attn-bib__src"><code>@inproceedings{beck2024xlstm,
+  title={{xLSTM}: Extended Long Short-Term Memory},
+  author={Beck, Maximilian and P{\&quot;o}ppel, Korbinian and Spanring, Markus and Auer, Andreas and Prudnikova, Oleksandra and Kopp, Michael and Klambauer, G{\&quot;u}nter and Brandstetter, Johannes and Hochreiter, Sepp},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2024},
+  eprint={2405.04517}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

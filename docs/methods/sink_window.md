@@ -140,14 +140,48 @@ invariant W: 0.0
 {'output_error': 1.9121, 'distributional_error': 1.9121, 'value_error': 0.0, 'tv': 0.66426}
 ```
 
-## Others in `restrict`
+## Related methods
 
-[`blocktopk`](blocktopk.md), [`lsh_sample`](lsh_sample.md), [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) — see [the taxonomy](../taxonomy.md#restrict).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `sink_window` removed.
+
+changes the same object — [`restrict`](../taxonomy.md#restrict)
+:   [`blocktopk`](blocktopk.md), [`lsh_sample`](lsh_sample.md), [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, restrict only](index.md?category=restrict)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`clustered`](clustered.md), [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`quantkv`](quantkv.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`trigrff`](trigrff.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `sink_window` selected](index.md?compare=sink_window) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Xiao et al. (2024).** *Efficient Streaming Language Models with Attention Sinks.* International Conference on Learning Representations (ICLR). [arXiv:2309.17453](https://arxiv.org/abs/2309.17453)<br>`xiao2024efficient`
-- **Han et al. (2024).** *LM-Infinite: Zero-Shot Extreme Length Generalization for Large Language Models.* Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics (NAACL). [arXiv:2308.16137](https://arxiv.org/abs/2308.16137)<br>`han2024lminfinite`
+- **Xiao et al. (2024).** *Efficient Streaming Language Models with Attention Sinks.* International Conference on Learning Representations (ICLR). [arXiv:2309.17453](https://arxiv.org/abs/2309.17453)<br><span class="attn-cite" data-bibkey="xiao2024efficient"><code>xiao2024efficient</code></span>
+- **Han et al. (2024).** *LM-Infinite: Zero-Shot Extreme Length Generalization for Large Language Models.* Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics (NAACL). [arXiv:2308.16137](https://arxiv.org/abs/2308.16137)<br><span class="attn-cite" data-bibkey="han2024lminfinite"><code>han2024lminfinite</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 2 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="xiao2024efficient">
+<pre class="attn-bib__src"><code>@inproceedings{xiao2024efficient,
+  title = {{Efficient Streaming Language Models with Attention Sinks}},
+  author = {Guangxuan Xiao and Yuandong Tian and Beidi Chen and Song Han and Mike Lewis},
+  year = {2024},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  eprint = {2309.17453},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="han2024lminfinite">
+<pre class="attn-bib__src"><code>@inproceedings{han2024lminfinite,
+  title = {{LM-Infinite: Zero-Shot Extreme Length Generalization for Large Language Models}},
+  author = {Han, Chi and Wang, Qifan and Peng, Hao and Xiong, Wenhan and Chen, Yu and Ji, Heng and Wang, Sinong},
+  year = {2024},
+  booktitle = {Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics (NAACL)},
+  eprint = {2308.16137},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

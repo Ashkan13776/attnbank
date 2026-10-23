@@ -150,15 +150,61 @@ invariant W: 0.0
 {'output_error': 2.17848, 'distributional_error': 2.17848, 'value_error': 0.0, 'tv': 0.77822}
 ```
 
-## Others in `compress`
+## Related methods
 
-[`evict_snapkv`](evict_snapkv.md), [`gqa`](gqa.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`mla`](mla.md), [`quantkv`](quantkv.md) — see [the taxonomy](../taxonomy.md#compress).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `evict_h2o` removed.
+
+changes the same object — [`compress`](../taxonomy.md#compress)
+:   [`evict_snapkv`](evict_snapkv.md), [`gqa`](gqa.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`mla`](mla.md), [`quantkv`](quantkv.md) &nbsp;·&nbsp; [browse the bank, compress only](index.md?category=compress)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`lowprec`](lowprec.md), [`lsh_sample`](lsh_sample.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`sink_window`](sink_window.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `evict_h2o` selected](index.md?compare=evict_h2o) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Zhang et al. (2023).** *H2O: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2306.14048](https://arxiv.org/abs/2306.14048)<br>`zhang2023h2o`
-- **Liu et al. (2023).** *Scissorhands: Exploiting the Persistence of Importance Hypothesis for LLM KV Cache Compression at Test Time.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2305.17118](https://arxiv.org/abs/2305.17118)<br>`liu2023scissorhands`
-- **Oren et al. (2024).** *Transformers are Multi-State RNNs.* Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP). [arXiv:2401.06104](https://arxiv.org/abs/2401.06104)<br>`oren2024transformers`
+- **Zhang et al. (2023).** *H2O: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2306.14048](https://arxiv.org/abs/2306.14048)<br><span class="attn-cite" data-bibkey="zhang2023h2o"><code>zhang2023h2o</code></span>
+- **Liu et al. (2023).** *Scissorhands: Exploiting the Persistence of Importance Hypothesis for LLM KV Cache Compression at Test Time.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2305.17118](https://arxiv.org/abs/2305.17118)<br><span class="attn-cite" data-bibkey="liu2023scissorhands"><code>liu2023scissorhands</code></span>
+- **Oren et al. (2024).** *Transformers are Multi-State RNNs.* Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP). [arXiv:2401.06104](https://arxiv.org/abs/2401.06104)<br><span class="attn-cite" data-bibkey="oren2024transformers"><code>oren2024transformers</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="zhang2023h2o">
+<pre class="attn-bib__src"><code>@inproceedings{zhang2023h2o,
+  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models},
+  author    = {Zhang, Zhenyu and Sheng, Ying and Zhou, Tianyi and Chen, Tianlong and Zheng, Lianmin and Cai, Ruisi and Song, Zhao and Tian, Yuandong and R{\'e}, Christopher and Barrett, Clark and Wang, Zhangyang and Chen, Beidi},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {36},
+  year      = {2023},
+  eprint    = {2306.14048},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="liu2023scissorhands">
+<pre class="attn-bib__src"><code>@inproceedings{liu2023scissorhands,
+  title     = {Scissorhands: Exploiting the Persistence of Importance Hypothesis for {LLM} {KV} Cache Compression at Test Time},
+  author    = {Liu, Zichang and Desai, Aditya and Liao, Fangshuo and Wang, Weitao and Xie, Victor and Xu, Zhaozhuo and Kyrillidis, Anastasios and Shrivastava, Anshumali},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {36},
+  year      = {2023},
+  eprint    = {2305.17118},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="oren2024transformers">
+<pre class="attn-bib__src"><code>@inproceedings{oren2024transformers,
+  title = {{Transformers are Multi-State RNNs}},
+  author = {Matanel Oren and Michael Hassid and Nir Yarden and Yossi Adi and Roy Schwartz},
+  year = {2024},
+  booktitle = {Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  eprint = {2401.06104},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

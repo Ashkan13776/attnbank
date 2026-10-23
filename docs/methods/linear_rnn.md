@@ -143,15 +143,63 @@ row_stochastic = False | first row sums: [43.946, 84.5266, 119.8822, 162.848]
 extras: ['mass', 'state_rank']
 ```
 
-## Others in `recurrent`
+## Related methods
 
-[`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md) — see [the taxonomy](../taxonomy.md#recurrent).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `linear_rnn` removed.
+
+changes the same object — [`recurrent`](../taxonomy.md#recurrent)
+:   [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md) &nbsp;·&nbsp; [browse the bank, recurrent only](index.md?category=recurrent)
+
+judged the same way — `modify`, beyond the ones above
+:   [`cosformer`](cosformer.md), [`gqa`](gqa.md), [`latent_stochastic`](latent_stochastic.md), [`linear_elu`](linear_elu.md), [`lowrank_ot`](lowrank_ot.md), [`mla`](mla.md), [`sinkhorn`](sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+
+[Open the browser with `linear_rnn` selected](index.md?compare=linear_rnn) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Katharopoulos et al. (2020).** *Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention.* Proceedings of the 37th International Conference on Machine Learning (ICML). [arXiv:2006.16236](https://arxiv.org/abs/2006.16236)<br>`katharopoulos2020transformers`
-- **Schlag et al. (2021).** *Linear Transformers Are Secretly Fast Weight Programmers.* Proceedings of the 38th International Conference on Machine Learning (ICML). [arXiv:2102.11174](https://arxiv.org/abs/2102.11174)<br>`schlag2021linear`
-- **Sun et al. (2024).** *Learning to (Learn at Test Time): RNNs with Expressive Hidden States.* [arXiv:2407.04620](https://arxiv.org/abs/2407.04620)<br>`sun2024learning`
+- **Katharopoulos et al. (2020).** *Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention.* Proceedings of the 37th International Conference on Machine Learning (ICML). [arXiv:2006.16236](https://arxiv.org/abs/2006.16236)<br><span class="attn-cite" data-bibkey="katharopoulos2020transformers"><code>katharopoulos2020transformers</code></span>
+- **Schlag et al. (2021).** *Linear Transformers Are Secretly Fast Weight Programmers.* Proceedings of the 38th International Conference on Machine Learning (ICML). [arXiv:2102.11174](https://arxiv.org/abs/2102.11174)<br><span class="attn-cite" data-bibkey="schlag2021linear"><code>schlag2021linear</code></span>
+- **Sun et al. (2024).** *Learning to (Learn at Test Time): RNNs with Expressive Hidden States.* [arXiv:2407.04620](https://arxiv.org/abs/2407.04620)<br><span class="attn-cite" data-bibkey="sun2024learning"><code>sun2024learning</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="katharopoulos2020transformers">
+<pre class="attn-bib__src"><code>@inproceedings{katharopoulos2020transformers,
+  title     = {Transformers are {RNN}s: Fast Autoregressive Transformers with Linear Attention},
+  author    = {Katharopoulos, Angelos and Vyas, Apoorv and Pappas, Nikolaos and Fleuret, Fran{\c{c}}ois},
+  booktitle = {Proceedings of the 37th International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {119},
+  pages     = {5156--5165},
+  year      = {2020},
+  eprint    = {2006.16236},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="schlag2021linear">
+<pre class="attn-bib__src"><code>@inproceedings{schlag2021linear,
+  title={Linear Transformers Are Secretly Fast Weight Programmers},
+  author={Schlag, Imanol and Irie, Kazuki and Schmidhuber, J{\&quot;u}rgen},
+  booktitle={Proceedings of the 38th International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={139},
+  pages={9355--9366},
+  year={2021},
+  eprint={2102.11174},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="sun2024learning">
+<pre class="attn-bib__src"><code>@misc{sun2024learning,
+  title={Learning to (Learn at Test Time): {RNN}s with Expressive Hidden States},
+  author={Sun, Yu and Li, Xinhao and Dalal, Karan and Xu, Jiarui and Vikram, Arjun and Zhang, Genghan and others},
+  year={2024},
+  eprint={2407.04620}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

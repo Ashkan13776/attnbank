@@ -147,14 +147,54 @@ row_stochastic = True | first row sums: [1.0, 1.0, 1.0, 1.0]
 extras: ['Z_hat', 'g_hat']
 ```
 
-## Others in `interaction`
+## Related methods
 
-[`cosformer`](cosformer.md), [`nystrom`](nystrom.md), [`performer`](performer.md), [`trigrff`](trigrff.md) — see [the taxonomy](../taxonomy.md#interaction).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `linear_elu` removed.
+
+changes the same object — [`interaction`](../taxonomy.md#interaction)
+:   [`cosformer`](cosformer.md), [`nystrom`](nystrom.md), [`performer`](performer.md), [`trigrff`](trigrff.md) &nbsp;·&nbsp; [browse the bank, interaction only](index.md?category=interaction)
+
+judged the same way — `modify`, beyond the ones above
+:   [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`gqa`](gqa.md), [`latent_stochastic`](latent_stochastic.md), [`linear_rnn`](linear_rnn.md), [`lowrank_ot`](lowrank_ot.md), [`mla`](mla.md), [`sinkhorn`](sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+
+[Open the browser with `linear_elu` selected](index.md?compare=linear_elu) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Katharopoulos et al. (2020).** *Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention.* Proceedings of the 37th International Conference on Machine Learning (ICML). [arXiv:2006.16236](https://arxiv.org/abs/2006.16236)<br>`katharopoulos2020transformers`
-- **Schlag et al. (2021).** *Linear Transformers Are Secretly Fast Weight Programmers.* Proceedings of the 38th International Conference on Machine Learning (ICML). [arXiv:2102.11174](https://arxiv.org/abs/2102.11174)<br>`schlag2021linear`
+- **Katharopoulos et al. (2020).** *Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention.* Proceedings of the 37th International Conference on Machine Learning (ICML). [arXiv:2006.16236](https://arxiv.org/abs/2006.16236)<br><span class="attn-cite" data-bibkey="katharopoulos2020transformers"><code>katharopoulos2020transformers</code></span>
+- **Schlag et al. (2021).** *Linear Transformers Are Secretly Fast Weight Programmers.* Proceedings of the 38th International Conference on Machine Learning (ICML). [arXiv:2102.11174](https://arxiv.org/abs/2102.11174)<br><span class="attn-cite" data-bibkey="schlag2021linear"><code>schlag2021linear</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 2 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="katharopoulos2020transformers">
+<pre class="attn-bib__src"><code>@inproceedings{katharopoulos2020transformers,
+  title     = {Transformers are {RNN}s: Fast Autoregressive Transformers with Linear Attention},
+  author    = {Katharopoulos, Angelos and Vyas, Apoorv and Pappas, Nikolaos and Fleuret, Fran{\c{c}}ois},
+  booktitle = {Proceedings of the 37th International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {119},
+  pages     = {5156--5165},
+  year      = {2020},
+  eprint    = {2006.16236},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="schlag2021linear">
+<pre class="attn-bib__src"><code>@inproceedings{schlag2021linear,
+  title={Linear Transformers Are Secretly Fast Weight Programmers},
+  author={Schlag, Imanol and Irie, Kazuki and Schmidhuber, J{\&quot;u}rgen},
+  booktitle={Proceedings of the 38th International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={139},
+  pages={9355--9366},
+  year={2021},
+  eprint={2102.11174},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

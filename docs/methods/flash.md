@@ -143,16 +143,60 @@ invariant W: 4.172325134277344e-07
 max |y - y_softmax|: 4.172325134277344e-07
 ```
 
-## Others in `exact`
+## Related methods
 
-[`lowprec`](lowprec.md), [`softmax`](softmax.md), [`splitk`](splitk.md) — see [the taxonomy](../taxonomy.md#exact).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `flash` removed.
+
+changes the same object — [`exact`](../taxonomy.md#exact)
+:   [`lowprec`](lowprec.md), [`softmax`](softmax.md), [`splitk`](splitk.md) &nbsp;·&nbsp; [browse the bank, exact only](index.md?category=exact)
+
+[Open the browser with `flash` selected](index.md?compare=flash) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Dao et al. (2022).** *FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2205.14135](https://arxiv.org/abs/2205.14135)<br>`dao2022flashattention`
-- **Dao (2024).** *FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning.* International Conference on Learning Representations (ICLR). [arXiv:2307.08691](https://arxiv.org/abs/2307.08691)<br>`dao2024flashattention2`
-- **Milakov and Gimelshein (2018).** *Online normalizer calculation for softmax.* [arXiv:1805.02867](https://arxiv.org/abs/1805.02867)<br>`milakov2018online`
-- **Rabe and Staats (2021).** *Self-attention Does Not Need $O(n^2)$ Memory.* [arXiv:2112.05682](https://arxiv.org/abs/2112.05682)<br>`rabe2021selfattention`
+- **Dao et al. (2022).** *FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2205.14135](https://arxiv.org/abs/2205.14135)<br><span class="attn-cite" data-bibkey="dao2022flashattention"><code>dao2022flashattention</code></span>
+- **Dao (2024).** *FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning.* International Conference on Learning Representations (ICLR). [arXiv:2307.08691](https://arxiv.org/abs/2307.08691)<br><span class="attn-cite" data-bibkey="dao2024flashattention2"><code>dao2024flashattention2</code></span>
+- **Milakov and Gimelshein (2018).** *Online normalizer calculation for softmax.* [arXiv:1805.02867](https://arxiv.org/abs/1805.02867)<br><span class="attn-cite" data-bibkey="milakov2018online"><code>milakov2018online</code></span>
+- **Rabe and Staats (2021).** *Self-attention Does Not Need $O(n^2)$ Memory.* [arXiv:2112.05682](https://arxiv.org/abs/2112.05682)<br><span class="attn-cite" data-bibkey="rabe2021selfattention"><code>rabe2021selfattention</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 4 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="dao2022flashattention">
+<pre class="attn-bib__src"><code>@inproceedings{dao2022flashattention,
+  title     = {{FlashAttention}: Fast and Memory-Efficient Exact Attention with {IO}-Awareness},
+  author    = {Dao, Tri and Fu, Daniel Y. and Ermon, Stefano and Rudra, Atri and R{\'e}, Christopher},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {35},
+  year      = {2022},
+  eprint    = {2205.14135},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="dao2024flashattention2">
+<pre class="attn-bib__src"><code>@inproceedings{dao2024flashattention2,
+  title={{FlashAttention-2}: Faster Attention with Better Parallelism and Work Partitioning},
+  author={Dao, Tri},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2024}, eprint={2307.08691}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="milakov2018online">
+<pre class="attn-bib__src"><code>@misc{milakov2018online,
+  title={Online normalizer calculation for softmax},
+  author={Milakov, Maxim and Gimelshein, Natalia},
+  year={2018}, eprint={1805.02867}, archivePrefix={arXiv}, primaryClass={cs.PF}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="rabe2021selfattention">
+<pre class="attn-bib__src"><code>@misc{rabe2021selfattention,
+  title={Self-attention Does Not Need $O(n^2)$ Memory},
+  author={Rabe, Markus N. and Staats, Charles},
+  year={2021}, eprint={2112.05682}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

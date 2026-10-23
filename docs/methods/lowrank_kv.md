@@ -152,15 +152,59 @@ invariant W: 0.0
 {'output_error': 0.92801, 'distributional_error': 0.67869, 'value_error': 0.6605, 'tv': 0.30813}
 ```
 
-## Others in `compress`
+## Related methods
 
-[`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`gqa`](gqa.md), [`linformer`](linformer.md), [`merge_kv`](merge_kv.md), [`mla`](mla.md), [`quantkv`](quantkv.md) — see [the taxonomy](../taxonomy.md#compress).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `lowrank_kv` removed.
+
+changes the same object — [`compress`](../taxonomy.md#compress)
+:   [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`gqa`](gqa.md), [`linformer`](linformer.md), [`merge_kv`](merge_kv.md), [`mla`](mla.md), [`quantkv`](quantkv.md) &nbsp;·&nbsp; [browse the bank, compress only](index.md?category=compress)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`lowprec`](lowprec.md), [`lsh_sample`](lsh_sample.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`sink_window`](sink_window.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `lowrank_kv` selected](index.md?compare=lowrank_kv) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Xu et al. (2025).** *ThinK: Thinner Key Cache by Query-Driven Pruning.* International Conference on Learning Representations (ICLR). [arXiv:2407.21018](https://arxiv.org/abs/2407.21018)<br>`xu2025think`
-- **Chang et al. (2025).** *Palu: Compressing KV-Cache with Low-Rank Projection.* International Conference on Learning Representations (ICLR). [arXiv:2407.21118](https://arxiv.org/abs/2407.21118)<br>`chang2025palu`
-- **Wang et al. (2025).** *SVD-LLM: Truncation-aware Singular Value Decomposition for Large Language Model Compression.* International Conference on Learning Representations (ICLR). [arXiv:2403.07378](https://arxiv.org/abs/2403.07378)<br>`wang2025svdllm`
+- **Xu et al. (2025).** *ThinK: Thinner Key Cache by Query-Driven Pruning.* International Conference on Learning Representations (ICLR). [arXiv:2407.21018](https://arxiv.org/abs/2407.21018)<br><span class="attn-cite" data-bibkey="xu2025think"><code>xu2025think</code></span>
+- **Chang et al. (2025).** *Palu: Compressing KV-Cache with Low-Rank Projection.* International Conference on Learning Representations (ICLR). [arXiv:2407.21118](https://arxiv.org/abs/2407.21118)<br><span class="attn-cite" data-bibkey="chang2025palu"><code>chang2025palu</code></span>
+- **Wang et al. (2025).** *SVD-LLM: Truncation-aware Singular Value Decomposition for Large Language Model Compression.* International Conference on Learning Representations (ICLR). [arXiv:2403.07378](https://arxiv.org/abs/2403.07378)<br><span class="attn-cite" data-bibkey="wang2025svdllm"><code>wang2025svdllm</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="xu2025think">
+<pre class="attn-bib__src"><code>@inproceedings{xu2025think,
+  title = {{ThinK: Thinner Key Cache by Query-Driven Pruning}},
+  author = {Yuhui Xu and Zhanming Jie and Hanze Dong and Lei Wang and Xudong Lu and Aojun Zhou and Amrita Saha and Caiming Xiong and Doyen Sahoo},
+  year = {2025},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  eprint = {2407.21018},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="chang2025palu">
+<pre class="attn-bib__src"><code>@inproceedings{chang2025palu,
+  title = {{Palu: Compressing KV-Cache with Low-Rank Projection}},
+  author = {Chi-Chih Chang and Wei-Cheng Lin and Chien-Yu Lin and Chong-Yan Chen and Yu-Fang Hu and Pei-Shuo Wang and Ning-Chi Huang and Luis Ceze and Mohamed S. Abdelfattah and Kai-Chiang Wu},
+  year = {2025},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  eprint = {2407.21118},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="wang2025svdllm">
+<pre class="attn-bib__src"><code>@inproceedings{wang2025svdllm,
+  title = {{SVD-LLM: Truncation-aware Singular Value Decomposition for Large Language Model Compression}},
+  author = {Xin Wang and Yu Zheng and Zhongwei Wan and Mi Zhang},
+  year = {2025},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  eprint = {2403.07378},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

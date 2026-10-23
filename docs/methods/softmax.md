@@ -124,13 +124,33 @@ invariant W: 0.0
 max |y - y_softmax|: 0.0
 ```
 
-## Others in `exact`
+## Related methods
 
-[`flash`](flash.md), [`lowprec`](lowprec.md), [`splitk`](splitk.md) — see [the taxonomy](../taxonomy.md#exact).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `softmax` removed.
+
+changes the same object — [`exact`](../taxonomy.md#exact)
+:   [`flash`](flash.md), [`lowprec`](lowprec.md), [`splitk`](splitk.md) &nbsp;·&nbsp; [browse the bank, exact only](index.md?category=exact)
+
+[Open the browser with `softmax` selected](index.md?compare=softmax) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Vaswani et al. (2017).** *Attention Is All You Need.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:1706.03762](https://arxiv.org/abs/1706.03762)<br>`vaswani2017attention`
+- **Vaswani et al. (2017).** *Attention Is All You Need.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:1706.03762](https://arxiv.org/abs/1706.03762)<br><span class="attn-cite" data-bibkey="vaswani2017attention"><code>vaswani2017attention</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 1 entry, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="vaswani2017attention">
+<pre class="attn-bib__src"><code>@inproceedings{vaswani2017attention,
+  title={Attention Is All You Need},
+  author={Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, {\L}ukasz and Polosukhin, Illia},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2017},
+  eprint={1706.03762}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

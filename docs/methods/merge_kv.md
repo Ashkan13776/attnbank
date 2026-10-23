@@ -164,15 +164,59 @@ invariant W: 0.0
 {'output_error': 0.72675, 'distributional_error': 0.72675, 'value_error': 0.0, 'tv': 0.34538}
 ```
 
-## Others in `compress`
+## Related methods
 
-[`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`gqa`](gqa.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`mla`](mla.md), [`quantkv`](quantkv.md) — see [the taxonomy](../taxonomy.md#compress).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `merge_kv` removed.
+
+changes the same object — [`compress`](../taxonomy.md#compress)
+:   [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`gqa`](gqa.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`mla`](mla.md), [`quantkv`](quantkv.md) &nbsp;·&nbsp; [browse the bank, compress only](index.md?category=compress)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`lowprec`](lowprec.md), [`lsh_sample`](lsh_sample.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`sink_window`](sink_window.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `merge_kv` selected](index.md?compare=merge_kv) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Bolya et al. (2023).** *Token Merging: Your ViT But Faster.* International Conference on Learning Representations (ICLR). [arXiv:2210.09461](https://arxiv.org/abs/2210.09461)<br>`bolya2023token`
-- **Wang et al. (2024).** *Model Tells You Where to Merge: Adaptive KV Cache Merging for LLMs on Long-Context Tasks.* [arXiv:2407.08454](https://arxiv.org/abs/2407.08454)<br>`wang2024model`
-- **Nawrot et al. (2024).** *Dynamic Memory Compression: Retrofitting LLMs for Accelerated Inference.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2403.09636](https://arxiv.org/abs/2403.09636)<br>`nawrot2024dynamic`
+- **Bolya et al. (2023).** *Token Merging: Your ViT But Faster.* International Conference on Learning Representations (ICLR). [arXiv:2210.09461](https://arxiv.org/abs/2210.09461)<br><span class="attn-cite" data-bibkey="bolya2023token"><code>bolya2023token</code></span>
+- **Wang et al. (2024).** *Model Tells You Where to Merge: Adaptive KV Cache Merging for LLMs on Long-Context Tasks.* [arXiv:2407.08454](https://arxiv.org/abs/2407.08454)<br><span class="attn-cite" data-bibkey="wang2024model"><code>wang2024model</code></span>
+- **Nawrot et al. (2024).** *Dynamic Memory Compression: Retrofitting LLMs for Accelerated Inference.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2403.09636](https://arxiv.org/abs/2403.09636)<br><span class="attn-cite" data-bibkey="nawrot2024dynamic"><code>nawrot2024dynamic</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="bolya2023token">
+<pre class="attn-bib__src"><code>@inproceedings{bolya2023token,
+  title = {{Token Merging: Your ViT But Faster}},
+  author = {Daniel Bolya and Cheng-Yang Fu and Xiaoliang Dai and Peizhao Zhang and Christoph Feichtenhofer and Judy Hoffman},
+  year = {2023},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  eprint = {2210.09461},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="wang2024model">
+<pre class="attn-bib__src"><code>@misc{wang2024model,
+  title = {{Model Tells You Where to Merge: Adaptive KV Cache Merging for LLMs on Long-Context Tasks}},
+  author = {Zheng Wang and Boxiao Jin and Zhongzhi Yu and Minjia Zhang},
+  year = {2024},
+  howpublished = {arXiv preprint arXiv:2407.08454},
+  eprint = {2407.08454},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="nawrot2024dynamic">
+<pre class="attn-bib__src"><code>@inproceedings{nawrot2024dynamic,
+  title = {{Dynamic Memory Compression: Retrofitting LLMs for Accelerated Inference}},
+  author = {Piotr Nawrot and Adrian Łańcucki and Marcin Chochowski and David Tarjan and Edoardo M. Ponti},
+  year = {2024},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  eprint = {2403.09636},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

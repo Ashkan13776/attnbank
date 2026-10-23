@@ -162,15 +162,62 @@ invariant W: 0.0
 {'output_error': 0.15591, 'distributional_error': 0.08556, 'value_error': 0.12244, 'tv': 0.02758}
 ```
 
-## Others in `compress`
+## Related methods
 
-[`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`gqa`](gqa.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`mla`](mla.md) — see [the taxonomy](../taxonomy.md#compress).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `quantkv` removed.
+
+changes the same object — [`compress`](../taxonomy.md#compress)
+:   [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`gqa`](gqa.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`mla`](mla.md) &nbsp;·&nbsp; [browse the bank, compress only](index.md?category=compress)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`lowprec`](lowprec.md), [`lsh_sample`](lsh_sample.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`sink_window`](sink_window.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `quantkv` selected](index.md?compare=quantkv) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Liu et al. (2024).** *KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2402.02750](https://arxiv.org/abs/2402.02750)<br>`liu2024kivi`
-- **Hooper et al. (2024).** *KVQuant: Towards 10 Million Context Length LLM Inference with KV Cache Quantization.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2401.18079](https://arxiv.org/abs/2401.18079)<br>`hooper2024kvquant`
-- **Liu et al. (2024).** *IntactKV: Improving Large Language Model Quantization by Keeping Pivot Tokens Intact.* Findings of the Association for Computational Linguistics: ACL 2024. [arXiv:2403.01241](https://arxiv.org/abs/2403.01241)<br>`liu2024intactkv`
+- **Liu et al. (2024).** *KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2402.02750](https://arxiv.org/abs/2402.02750)<br><span class="attn-cite" data-bibkey="liu2024kivi"><code>liu2024kivi</code></span>
+- **Hooper et al. (2024).** *KVQuant: Towards 10 Million Context Length LLM Inference with KV Cache Quantization.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2401.18079](https://arxiv.org/abs/2401.18079)<br><span class="attn-cite" data-bibkey="hooper2024kvquant"><code>hooper2024kvquant</code></span>
+- **Liu et al. (2024).** *IntactKV: Improving Large Language Model Quantization by Keeping Pivot Tokens Intact.* Findings of the Association for Computational Linguistics: ACL 2024. [arXiv:2403.01241](https://arxiv.org/abs/2403.01241)<br><span class="attn-cite" data-bibkey="liu2024intactkv"><code>liu2024intactkv</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="liu2024kivi">
+<pre class="attn-bib__src"><code>@inproceedings{liu2024kivi,
+  title     = {{KIVI}: A Tuning-Free Asymmetric 2bit Quantization for {KV} Cache},
+  author    = {Liu, Zirui and Yuan, Jiayi and Jin, Hongye and Zhong, Shaochen and Xu, Zhaozhuo and Braverman, Vladimir and Chen, Beidi and Hu, Xia},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {235},
+  year      = {2024},
+  eprint    = {2402.02750},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="hooper2024kvquant">
+<pre class="attn-bib__src"><code>@inproceedings{hooper2024kvquant,
+  title     = {{KVQuant}: Towards 10 Million Context Length {LLM} Inference with {KV} Cache Quantization},
+  author    = {Hooper, Coleman and Kim, Sehoon and Mohammadzadeh, Hiva and Mahoney, Michael W. and Shao, Yakun Sophia and Keutzer, Kurt and Gholami, Amir},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {37},
+  year      = {2024},
+  eprint    = {2401.18079},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="liu2024intactkv">
+<pre class="attn-bib__src"><code>@inproceedings{liu2024intactkv,
+  title = {{IntactKV: Improving Large Language Model Quantization by Keeping Pivot Tokens Intact}},
+  author = {Ruikang Liu and Haoli Bai and Haokun Lin and Yuening Li and Han Gao and Zhengzhuo Xu and Lu Hou and Jun Yao and Chun Yuan},
+  year = {2024},
+  booktitle = {Findings of the Association for Computational Linguistics: ACL 2024},
+  eprint = {2403.01241},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

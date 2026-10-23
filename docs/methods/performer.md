@@ -156,15 +156,59 @@ invariant W: 0.0
 {'output_error': 1.55857, 'distributional_error': 1.55857, 'value_error': 0.0, 'tv': 0.4355}
 ```
 
-## Others in `interaction`
+## Related methods
 
-[`cosformer`](cosformer.md), [`linear_elu`](linear_elu.md), [`nystrom`](nystrom.md), [`trigrff`](trigrff.md) — see [the taxonomy](../taxonomy.md#interaction).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `performer` removed.
+
+changes the same object — [`interaction`](../taxonomy.md#interaction)
+:   [`cosformer`](cosformer.md), [`linear_elu`](linear_elu.md), [`nystrom`](nystrom.md), [`trigrff`](trigrff.md) &nbsp;·&nbsp; [browse the bank, interaction only](index.md?category=interaction)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`lsh_sample`](lsh_sample.md), [`merge_kv`](merge_kv.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`quantkv`](quantkv.md), [`sink_window`](sink_window.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `performer` selected](index.md?compare=performer) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Choromanski et al. (2021).** *Rethinking Attention with Performers.* International Conference on Learning Representations (ICLR). [arXiv:2009.14794](https://arxiv.org/abs/2009.14794)<br>`choromanski2021rethinking`
-- **Yu et al. (2016).** *Orthogonal Random Features.* Advances in Neural Information Processing Systems 29 (NIPS). [arXiv:1610.09072](https://arxiv.org/abs/1610.09072)<br>`yu2016orthogonal`
-- **Likhosherstov et al. (2022).** *Chefs' Random Tables: Non-Trigonometric Random Features.* Advances in Neural Information Processing Systems 35 (NeurIPS). [arXiv:2205.15317](https://arxiv.org/abs/2205.15317)<br>`likhosherstov2022chefs`
+- **Choromanski et al. (2021).** *Rethinking Attention with Performers.* International Conference on Learning Representations (ICLR). [arXiv:2009.14794](https://arxiv.org/abs/2009.14794)<br><span class="attn-cite" data-bibkey="choromanski2021rethinking"><code>choromanski2021rethinking</code></span>
+- **Yu et al. (2016).** *Orthogonal Random Features.* Advances in Neural Information Processing Systems 29 (NIPS). [arXiv:1610.09072](https://arxiv.org/abs/1610.09072)<br><span class="attn-cite" data-bibkey="yu2016orthogonal"><code>yu2016orthogonal</code></span>
+- **Likhosherstov et al. (2022).** *Chefs' Random Tables: Non-Trigonometric Random Features.* Advances in Neural Information Processing Systems 35 (NeurIPS). [arXiv:2205.15317](https://arxiv.org/abs/2205.15317)<br><span class="attn-cite" data-bibkey="likhosherstov2022chefs"><code>likhosherstov2022chefs</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="choromanski2021rethinking">
+<pre class="attn-bib__src"><code>@inproceedings{choromanski2021rethinking,
+  title     = {Rethinking Attention with Performers},
+  author    = {Choromanski, Krzysztof and Likhosherstov, Valerii and Dohan, David and Song, Xingyou and Gane, Andreea and Sarlos, Tamas and Hawkins, Peter and Davis, Jared and Mohiuddin, Afroz and Kaiser, Lukasz and Belanger, David and Colwell, Lucy and Weller, Adrian},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021},
+  eprint    = {2009.14794},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="yu2016orthogonal">
+<pre class="attn-bib__src"><code>@inproceedings{yu2016orthogonal,
+  title={Orthogonal Random Features},
+  author={Yu, Felix X. and Suresh, Ananda Theertha and Choromanski, Krzysztof and Holtmann-Rice, Daniel and Kumar, Sanjiv},
+  booktitle={Advances in Neural Information Processing Systems 29 (NIPS)},
+  year={2016},
+  eprint={1610.09072},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="likhosherstov2022chefs">
+<pre class="attn-bib__src"><code>@inproceedings{likhosherstov2022chefs,
+  title={Chefs' Random Tables: Non-Trigonometric Random Features},
+  author={Likhosherstov, Valerii and Choromanski, Krzysztof and Dubey, Avinava and Liu, Frederick and Sarlos, Tamas and Weller, Adrian},
+  booktitle={Advances in Neural Information Processing Systems 35 (NeurIPS)},
+  year={2022},
+  eprint={2205.15317},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

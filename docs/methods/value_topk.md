@@ -183,15 +183,59 @@ invariant W: 0.0
 {'output_error': 0.82577, 'distributional_error': 0.82577, 'value_error': 0.0, 'tv': 0.42706}
 ```
 
-## Others in `restrict`
+## Related methods
 
-[`blocktopk`](blocktopk.md), [`lsh_sample`](lsh_sample.md), [`sink_window`](sink_window.md), [`topk`](topk.md), [`window`](window.md) — see [the taxonomy](../taxonomy.md#restrict).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `value_topk` removed.
+
+changes the same object — [`restrict`](../taxonomy.md#restrict)
+:   [`blocktopk`](blocktopk.md), [`lsh_sample`](lsh_sample.md), [`sink_window`](sink_window.md), [`topk`](topk.md), [`window`](window.md) &nbsp;·&nbsp; [browse the bank, restrict only](index.md?category=restrict)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`clustered`](clustered.md), [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`quantkv`](quantkv.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`trigrff`](trigrff.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `value_topk` selected](index.md?compare=value_topk) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Ribar et al. (2024).** *SparQ Attention: Bandwidth-Efficient LLM Inference.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2312.04985](https://arxiv.org/abs/2312.04985)<br>`ribar2024sparq`
-- **Feng et al. (2025).** *CriticalKV: Optimizing KV Cache Eviction from an Output Perturbation Perspective.* [arXiv:2502.03805](https://arxiv.org/abs/2502.03805)<br>`feng2025criticalkv`
-- **Gupta et al. (2021).** *Memory-efficient Transformers via Top-k Attention.* Proceedings of the Second Workshop on Simple and Efficient Natural Language Processing (SustaiNLP). [arXiv:2106.06899](https://arxiv.org/abs/2106.06899)<br>`gupta2021memory`
+- **Ribar et al. (2024).** *SparQ Attention: Bandwidth-Efficient LLM Inference.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2312.04985](https://arxiv.org/abs/2312.04985)<br><span class="attn-cite" data-bibkey="ribar2024sparq"><code>ribar2024sparq</code></span>
+- **Feng et al. (2025).** *CriticalKV: Optimizing KV Cache Eviction from an Output Perturbation Perspective.* [arXiv:2502.03805](https://arxiv.org/abs/2502.03805)<br><span class="attn-cite" data-bibkey="feng2025criticalkv"><code>feng2025criticalkv</code></span>
+- **Gupta et al. (2021).** *Memory-efficient Transformers via Top-k Attention.* Proceedings of the Second Workshop on Simple and Efficient Natural Language Processing (SustaiNLP). [arXiv:2106.06899](https://arxiv.org/abs/2106.06899)<br><span class="attn-cite" data-bibkey="gupta2021memory"><code>gupta2021memory</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="ribar2024sparq">
+<pre class="attn-bib__src"><code>@inproceedings{ribar2024sparq,
+  title = {{SparQ Attention: Bandwidth-Efficient LLM Inference}},
+  author = {Ribar, Luka and Chelombiev, Ivan and Hudlass-Galley, Luke and Blake, Charlie and Luschi, Carlo and Orr, Douglas},
+  year = {2024},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  eprint = {2312.04985},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="feng2025criticalkv">
+<pre class="attn-bib__src"><code>@misc{feng2025criticalkv,
+  title = {{CriticalKV: Optimizing KV Cache Eviction from an Output Perturbation Perspective}},
+  author = {Yuan Feng and Junlin Lv and Haoyu Guo and Yukun Cao and S Kevin Zhou and Xike Xie},
+  year = {2025},
+  howpublished = {arXiv preprint arXiv:2502.03805},
+  eprint = {2502.03805},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="gupta2021memory">
+<pre class="attn-bib__src"><code>@inproceedings{gupta2021memory,
+  title     = {Memory-efficient Transformers via Top-k Attention},
+  author    = {Gupta, Ankit and Dar, Guy and Goodman, Shaya and Ciprut, David and Berant, Jonathan},
+  booktitle = {Proceedings of the Second Workshop on Simple and Efficient Natural Language Processing (SustaiNLP)},
+  year      = {2021},
+  eprint    = {2106.06899},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

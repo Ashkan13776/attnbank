@@ -150,13 +150,37 @@ row_stochastic = True | first row sums: [1.0, 1.0, 1.0, 1.0]
 extras: ['latent', 'latent_width', 'r']
 ```
 
-## Others in `compress`
+## Related methods
 
-[`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`gqa`](gqa.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`quantkv`](quantkv.md) — see [the taxonomy](../taxonomy.md#compress).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `mla` removed.
+
+changes the same object — [`compress`](../taxonomy.md#compress)
+:   [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`gqa`](gqa.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`quantkv`](quantkv.md) &nbsp;·&nbsp; [browse the bank, compress only](index.md?category=compress)
+
+judged the same way — `modify`, beyond the ones above
+:   [`cosformer`](cosformer.md), [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`latent_stochastic`](latent_stochastic.md), [`linear_elu`](linear_elu.md), [`linear_rnn`](linear_rnn.md), [`lowrank_ot`](lowrank_ot.md), [`sinkhorn`](sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+
+[Open the browser with `mla` selected](index.md?compare=mla) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **DeepSeek-AI (2024).** *DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model.* [arXiv:2405.04434](https://arxiv.org/abs/2405.04434)<br>`deepseekai2024deepseekv2`
+- **DeepSeek-AI (2024).** *DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model.* [arXiv:2405.04434](https://arxiv.org/abs/2405.04434)<br><span class="attn-cite" data-bibkey="deepseekai2024deepseekv2"><code>deepseekai2024deepseekv2</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 1 entry, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="deepseekai2024deepseekv2">
+<pre class="attn-bib__src"><code>@misc{deepseekai2024deepseekv2,
+  title = {{DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model}},
+  author = {{DeepSeek-AI}},
+  year = {2024},
+  howpublished = {arXiv preprint arXiv:2405.04434},
+  eprint = {2405.04434},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

@@ -161,16 +161,59 @@ row_stochastic = True | first row sums: [1.0, 1.0, 1.0, 1.0]
 extras: ['col_marginal', 'f', 'g', 'gamma', 'marginal_error', 'n_iter', 'potential', 'row_marginal', 'target_col', 'target_row']
 ```
 
-## Others in `coupling`
+## Related methods
 
-[`lowrank_ot`](lowrank_ot.md) — see [the taxonomy](../taxonomy.md#coupling).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `sinkhorn` removed.
+
+changes the same object — [`coupling`](../taxonomy.md#coupling)
+:   [`lowrank_ot`](lowrank_ot.md) &nbsp;·&nbsp; [browse the bank, coupling only](index.md?category=coupling)
+
+judged the same way — `modify`, beyond the ones above
+:   [`cosformer`](cosformer.md), [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`gqa`](gqa.md), [`latent_stochastic`](latent_stochastic.md), [`linear_elu`](linear_elu.md), [`linear_rnn`](linear_rnn.md), [`mla`](mla.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+
+[Open the browser with `sinkhorn` selected](index.md?compare=sinkhorn) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Cuturi (2013).** *Sinkhorn Distances: Lightspeed Computation of Optimal Transportation Distances.* Advances in Neural Information Processing Systems 26 (NIPS). [arXiv:1306.0895](https://arxiv.org/abs/1306.0895)<br>`cuturi2013sinkhorn`
-- **Sinkhorn (1964).** *A relationship between arbitrary positive matrices and doubly stochastic matrices.* The Annals of Mathematical Statistics.<br>`sinkhorn1964relationship`
-- **Sander et al. (2022).** *Sinkformers: Transformers with Doubly Stochastic Attention.* Proceedings of the 25th International Conference on Artificial Intelligence and Statistics (AISTATS). [arXiv:2110.11773](https://arxiv.org/abs/2110.11773)<br>`sander2022sinkformers`
-- **Peyre and Cuturi (2019).** *Computational Optimal Transport.* Foundations and Trends in Machine Learning. [arXiv:1803.00567](https://arxiv.org/abs/1803.00567)<br>`peyre2019computational`
+- **Cuturi (2013).** *Sinkhorn Distances: Lightspeed Computation of Optimal Transportation Distances.* Advances in Neural Information Processing Systems 26 (NIPS). [arXiv:1306.0895](https://arxiv.org/abs/1306.0895)<br><span class="attn-cite" data-bibkey="cuturi2013sinkhorn"><code>cuturi2013sinkhorn</code></span>
+- **Sinkhorn (1964).** *A relationship between arbitrary positive matrices and doubly stochastic matrices.* The Annals of Mathematical Statistics.<br><span class="attn-cite" data-bibkey="sinkhorn1964relationship"><code>sinkhorn1964relationship</code></span>
+- **Sander et al. (2022).** *Sinkformers: Transformers with Doubly Stochastic Attention.* Proceedings of the 25th International Conference on Artificial Intelligence and Statistics (AISTATS). [arXiv:2110.11773](https://arxiv.org/abs/2110.11773)<br><span class="attn-cite" data-bibkey="sander2022sinkformers"><code>sander2022sinkformers</code></span>
+- **Peyre and Cuturi (2019).** *Computational Optimal Transport.* Foundations and Trends in Machine Learning. [arXiv:1803.00567](https://arxiv.org/abs/1803.00567)<br><span class="attn-cite" data-bibkey="peyre2019computational"><code>peyre2019computational</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 4 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="cuturi2013sinkhorn">
+<pre class="attn-bib__src"><code>@inproceedings{cuturi2013sinkhorn,
+  title={Sinkhorn Distances: Lightspeed Computation of Optimal Transportation Distances},
+  author={Cuturi, Marco}, booktitle={Advances in Neural Information Processing Systems 26 (NIPS)}, pages={2292--2300}, year={2013},
+  eprint={1306.0895}, archivePrefix={arXiv}}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="sinkhorn1964relationship">
+<pre class="attn-bib__src"><code>@article{sinkhorn1964relationship,
+  title={A relationship between arbitrary positive matrices and doubly stochastic matrices},
+  author={Sinkhorn, Richard}, journal={The Annals of Mathematical Statistics}, volume={35}, pages={876--879}, year={1964}}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="sander2022sinkformers">
+<pre class="attn-bib__src"><code>@inproceedings{sander2022sinkformers,
+  title         = {Sinkformers: Transformers with Doubly Stochastic Attention},
+  author        = {Sander, Michael E. and Ablin, Pierre and Blondel, Mathieu and Peyr{\'e}, Gabriel},
+  booktitle     = {Proceedings of the 25th International Conference on Artificial Intelligence and Statistics (AISTATS)},
+  series        = {PMLR},
+  volume        = {151},
+  year          = {2022},
+  eprint        = {2110.11773},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="peyre2019computational">
+<pre class="attn-bib__src"><code>@article{peyre2019computational,
+  title={Computational Optimal Transport}, author={Peyr{\'e}, Gabriel and Cuturi, Marco},
+  journal={Foundations and Trends in Machine Learning}, volume={11}, number={5-6}, pages={355--607}, year={2019},
+  eprint={1803.00567}, archivePrefix={arXiv}}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

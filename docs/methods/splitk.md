@@ -134,15 +134,48 @@ invariant W: 4.172325134277344e-07
 max |y - y_softmax|: 4.172325134277344e-07
 ```
 
-## Others in `exact`
+## Related methods
 
-[`flash`](flash.md), [`lowprec`](lowprec.md), [`softmax`](softmax.md) — see [the taxonomy](../taxonomy.md#exact).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `splitk` removed.
+
+changes the same object — [`exact`](../taxonomy.md#exact)
+:   [`flash`](flash.md), [`lowprec`](lowprec.md), [`softmax`](softmax.md) &nbsp;·&nbsp; [browse the bank, exact only](index.md?category=exact)
+
+[Open the browser with `splitk` selected](index.md?compare=splitk) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Dao et al. (2023).** *Flash-Decoding for long-context inference.* Stanford CRFM blog, \urlhttps://crfm.stanford.edu/2023/10/12/flashdecoding.html.<br>`dao2023flash`
-- **Sanovar et al. (2024).** *Lean Attention: Hardware-Aware Scalable Attention Mechanism for the Decode-Phase of Transformers.* [arXiv:2405.10480](https://arxiv.org/abs/2405.10480)<br>`sanovar2024lean`
-- **Shyam et al. (2024).** *Tree Attention: Topology-aware Decoding for Long-Context Attention on GPU clusters.* [arXiv:2408.04093](https://arxiv.org/abs/2408.04093)<br>`shyam2024tree`
+- **Dao et al. (2023).** *Flash-Decoding for long-context inference.* Stanford CRFM blog, \urlhttps://crfm.stanford.edu/2023/10/12/flashdecoding.html.<br><span class="attn-cite" data-bibkey="dao2023flash"><code>dao2023flash</code></span>
+- **Sanovar et al. (2024).** *Lean Attention: Hardware-Aware Scalable Attention Mechanism for the Decode-Phase of Transformers.* [arXiv:2405.10480](https://arxiv.org/abs/2405.10480)<br><span class="attn-cite" data-bibkey="sanovar2024lean"><code>sanovar2024lean</code></span>
+- **Shyam et al. (2024).** *Tree Attention: Topology-aware Decoding for Long-Context Attention on GPU clusters.* [arXiv:2408.04093](https://arxiv.org/abs/2408.04093)<br><span class="attn-cite" data-bibkey="shyam2024tree"><code>shyam2024tree</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="dao2023flash">
+<pre class="attn-bib__src"><code>@misc{dao2023flash,
+  title={Flash-Decoding for long-context inference},
+  author={Dao, Tri and Haziza, Daniel and Massa, Francisco and Sizov, Grigory},
+  year={2023}, howpublished={Stanford CRFM blog, \url{https://crfm.stanford.edu/2023/10/12/flashdecoding.html}},
+  note={Accessed October 2026}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="sanovar2024lean">
+<pre class="attn-bib__src"><code>@misc{sanovar2024lean,
+  title={Lean Attention: Hardware-Aware Scalable Attention Mechanism for the Decode-Phase of Transformers},
+  author={Sanovar, Rya and Bharadwaj, Srikant and St. Amant, Renee and R{\&quot;u}hle, Victor and Rajmohan, Saravan},
+  year={2024}, eprint={2405.10480}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="shyam2024tree">
+<pre class="attn-bib__src"><code>@misc{shyam2024tree,
+  title={Tree Attention: Topology-aware Decoding for Long-Context Attention on {GPU} clusters},
+  author={Shyam, Vasudev and Pilault, Jonathan and Shepperd, Emily and Anthony, Quentin and Millidge, Beren},
+  year={2024}, eprint={2408.04093}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

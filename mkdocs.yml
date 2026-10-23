@@ -47,6 +47,12 @@ theme:
   icon:
     repo: fontawesome/brands/github
 
+# docs/tex_source.py stamps each display formula's LaTeX source onto its element so
+# the copy control can hand it over; MathJax replaces the source with SVG, so this has
+# to happen here rather than in the browser.
+hooks:
+  - docs/tex_source.py
+
 plugins:
   - search
   - mkdocstrings:
@@ -108,6 +114,7 @@ extra_javascript:
   - javascripts/tex-svg.js
   - javascripts/bank.js
   - javascripts/attnbank.js
+  - javascripts/clip.js
 
 nav:
   - Home: index.md

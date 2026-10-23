@@ -163,16 +163,63 @@ invariant W: 0.0
 {'output_error': 0.01213, 'distributional_error': 0.0085, 'value_error': 0.0074, 'tv': 0.00273}
 ```
 
-## Others in `exact`
+## Related methods
 
-[`flash`](flash.md), [`softmax`](softmax.md), [`splitk`](splitk.md) — see [the taxonomy](../taxonomy.md#exact).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `lowprec` removed.
+
+changes the same object — [`exact`](../taxonomy.md#exact)
+:   [`flash`](flash.md), [`softmax`](softmax.md), [`splitk`](splitk.md) &nbsp;·&nbsp; [browse the bank, exact only](index.md?category=exact)
+
+judged the same way — `approximate`, beyond the ones above
+:   [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`lsh_sample`](lsh_sample.md), [`merge_kv`](merge_kv.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`quantkv`](quantkv.md), [`sink_window`](sink_window.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+
+[Open the browser with `lowprec` selected](index.md?compare=lowprec) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Shah et al. (2024).** *FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2407.08608](https://arxiv.org/abs/2407.08608)<br>`shah2024flashattention3`
-- **Zhang et al. (2025).** *SageAttention: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration.* International Conference on Learning Representations (ICLR). [arXiv:2410.02367](https://arxiv.org/abs/2410.02367)<br>`zhang2025sageattention`
-- **Micikevicius et al. (2022).** *FP8 Formats for Deep Learning.* [arXiv:2209.05433](https://arxiv.org/abs/2209.05433)<br>`micikevicius2022fp8`
-- **Chen et al. (2024).** *INT-FlashAttention: Enabling Flash Attention for INT8 Quantization.* [arXiv:2409.16997](https://arxiv.org/abs/2409.16997)<br>`chen2024intflashattention`
+- **Shah et al. (2024).** *FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2407.08608](https://arxiv.org/abs/2407.08608)<br><span class="attn-cite" data-bibkey="shah2024flashattention3"><code>shah2024flashattention3</code></span>
+- **Zhang et al. (2025).** *SageAttention: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration.* International Conference on Learning Representations (ICLR). [arXiv:2410.02367](https://arxiv.org/abs/2410.02367)<br><span class="attn-cite" data-bibkey="zhang2025sageattention"><code>zhang2025sageattention</code></span>
+- **Micikevicius et al. (2022).** *FP8 Formats for Deep Learning.* [arXiv:2209.05433](https://arxiv.org/abs/2209.05433)<br><span class="attn-cite" data-bibkey="micikevicius2022fp8"><code>micikevicius2022fp8</code></span>
+- **Chen et al. (2024).** *INT-FlashAttention: Enabling Flash Attention for INT8 Quantization.* [arXiv:2409.16997](https://arxiv.org/abs/2409.16997)<br><span class="attn-cite" data-bibkey="chen2024intflashattention"><code>chen2024intflashattention</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 4 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="shah2024flashattention3">
+<pre class="attn-bib__src"><code>@inproceedings{shah2024flashattention3,
+  title={{FlashAttention-3}: Fast and Accurate Attention with Asynchrony and Low-precision},
+  author={Shah, Jay and Bikshandi, Ganesh and Zhang, Ying and Thakkar, Vijay and Ramani, Pradeep and Dao, Tri},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2024}, eprint={2407.08608}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="zhang2025sageattention">
+<pre class="attn-bib__src"><code>@inproceedings{zhang2025sageattention,
+  title={{SageAttention}: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration},
+  author={Zhang, Jintao and Wei, Jia and Huang, Haofeng and Zhang, Pengle and Zhu, Jun and Chen, Jianfei},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2025}, eprint={2410.02367}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="micikevicius2022fp8">
+<pre class="attn-bib__src"><code>@misc{micikevicius2022fp8,
+  title = {{FP8 Formats for Deep Learning}},
+  author = {Paulius Micikevicius and Dusan Stosic and Neil Burgess and Marius Cornea and Pradeep Dubey and Richard Grisenthwaite and Sangwon Ha and Alexander Heinecke and Patrick Judd and John Kamalu and Naveen Mellempudi and Stuart Oberman and Mohammad Shoeybi and Michael Siu and Hao Wu},
+  year = {2022},
+  howpublished = {arXiv preprint arXiv:2209.05433},
+  eprint = {2209.05433},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="chen2024intflashattention">
+<pre class="attn-bib__src"><code>@misc{chen2024intflashattention,
+  title={{INT-FlashAttention}: Enabling Flash Attention for {INT8} Quantization},
+  author={Chen, Shimao and Liu, Zirui and Wu, Zhiying and Zheng, Ce and Cong, Peizhuang and Jiang, Zihan and others},
+  year={2024}, eprint={2409.16997}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

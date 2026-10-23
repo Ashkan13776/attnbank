@@ -145,14 +145,48 @@ row_stochastic = True | first row sums: [1.0, 1.0, 1.0, 1.0]
 extras: ['Z_hat', 'decay', 'g_hat']
 ```
 
-## Others in `interaction`
+## Related methods
 
-[`linear_elu`](linear_elu.md), [`nystrom`](nystrom.md), [`performer`](performer.md), [`trigrff`](trigrff.md) — see [the taxonomy](../taxonomy.md#interaction).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `cosformer` removed.
+
+changes the same object — [`interaction`](../taxonomy.md#interaction)
+:   [`linear_elu`](linear_elu.md), [`nystrom`](nystrom.md), [`performer`](performer.md), [`trigrff`](trigrff.md) &nbsp;·&nbsp; [browse the bank, interaction only](index.md?category=interaction)
+
+judged the same way — `modify`, beyond the ones above
+:   [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`gqa`](gqa.md), [`latent_stochastic`](latent_stochastic.md), [`linear_rnn`](linear_rnn.md), [`lowrank_ot`](lowrank_ot.md), [`mla`](mla.md), [`sinkhorn`](sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+
+[Open the browser with `cosformer` selected](index.md?compare=cosformer) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Qin et al. (2022).** *cosFormer: Rethinking Softmax in Attention.* International Conference on Learning Representations (ICLR). [arXiv:2202.08791](https://arxiv.org/abs/2202.08791)<br>`qin2022cosformer`
-- **Qin et al. (2022).** *The Devil in Linear Transformer.* Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing (EMNLP). [arXiv:2210.10340](https://arxiv.org/abs/2210.10340)<br>`qin2022devil`
+- **Qin et al. (2022).** *cosFormer: Rethinking Softmax in Attention.* International Conference on Learning Representations (ICLR). [arXiv:2202.08791](https://arxiv.org/abs/2202.08791)<br><span class="attn-cite" data-bibkey="qin2022cosformer"><code>qin2022cosformer</code></span>
+- **Qin et al. (2022).** *The Devil in Linear Transformer.* Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing (EMNLP). [arXiv:2210.10340](https://arxiv.org/abs/2210.10340)<br><span class="attn-cite" data-bibkey="qin2022devil"><code>qin2022devil</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 2 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="qin2022cosformer">
+<pre class="attn-bib__src"><code>@inproceedings{qin2022cosformer,
+  title={{cosFormer}: Rethinking Softmax in Attention},
+  author={Qin, Zhen and Sun, Weixuan and Deng, Hui and Li, Dongxu and Wei, Yunshen and Lv, Baohong and Yan, Junjie and Kong, Lingpeng and Zhong, Yiran},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2022},
+  eprint={2202.08791},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="qin2022devil">
+<pre class="attn-bib__src"><code>@inproceedings{qin2022devil,
+  title={The Devil in Linear Transformer},
+  author={Qin, Zhen and Han, Xiaodong and Sun, Weixuan and Li, Dongxu and Kong, Lingpeng and Barnes, Nick and Zhong, Yiran},
+  booktitle={Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  year={2022},
+  eprint={2210.10340},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 

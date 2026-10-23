@@ -159,16 +159,73 @@ row_stochastic = True | first row sums: [1.0, 1.0, 1.0, 1.0]
 extras: ['a', 'b', 'latent_keys', 'latent_values', 'r']
 ```
 
-## Others in `factorize`
+## Related methods
 
-[`clustered`](clustered.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`svd_oracle`](svd_oracle.md) *(oracle)* — see [the taxonomy](../taxonomy.md#factorize).
+Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `latent_stochastic` removed.
+
+changes the same object — [`factorize`](../taxonomy.md#factorize)
+:   [`clustered`](clustered.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`svd_oracle`](svd_oracle.md) *(oracle)* &nbsp;·&nbsp; [browse the bank, factorize only](index.md?category=factorize)
+
+judged the same way — `modify`, beyond the ones above
+:   [`cosformer`](cosformer.md), [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`gqa`](gqa.md), [`linear_elu`](linear_elu.md), [`linear_rnn`](linear_rnn.md), [`lowrank_ot`](lowrank_ot.md), [`mla`](mla.md), [`sinkhorn`](sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+
+[Open the browser with `latent_stochastic` selected](index.md?compare=latent_stochastic) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Ma et al. (2021).** *Luna: Linear Unified Nested Attention.* Advances in Neural Information Processing Systems 34 (NeurIPS). [arXiv:2106.01540](https://arxiv.org/abs/2106.01540)<br>`ma2021luna`
-- **Dolga et al. (2024).** *Latte: Latent Attention for Linear Time Transformers.* [arXiv:2402.17512](https://arxiv.org/abs/2402.17512)<br>`dolga2024latte`
-- **Peng et al. (2022).** *ABC: Attention with Bounded-memory Control.* Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL). [arXiv:2110.02488](https://arxiv.org/abs/2110.02488) [doi:10.18653/v1/2022.acl-long.515](https://doi.org/10.18653/v1/2022.acl-long.515)<br>`peng2022abc`
-- **Lee et al. (2019).** *Set Transformer: A Framework for Attention-based Permutation-Invariant Neural Networks.* Proceedings of the 36th International Conference on Machine Learning (ICML). [arXiv:1810.00825](https://arxiv.org/abs/1810.00825)<br>`lee2019set`
+- **Ma et al. (2021).** *Luna: Linear Unified Nested Attention.* Advances in Neural Information Processing Systems 34 (NeurIPS). [arXiv:2106.01540](https://arxiv.org/abs/2106.01540)<br><span class="attn-cite" data-bibkey="ma2021luna"><code>ma2021luna</code></span>
+- **Dolga et al. (2024).** *Latte: Latent Attention for Linear Time Transformers.* [arXiv:2402.17512](https://arxiv.org/abs/2402.17512)<br><span class="attn-cite" data-bibkey="dolga2024latte"><code>dolga2024latte</code></span>
+- **Peng et al. (2022).** *ABC: Attention with Bounded-memory Control.* Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL). [arXiv:2110.02488](https://arxiv.org/abs/2110.02488) [doi:10.18653/v1/2022.acl-long.515](https://doi.org/10.18653/v1/2022.acl-long.515)<br><span class="attn-cite" data-bibkey="peng2022abc"><code>peng2022abc</code></span>
+- **Lee et al. (2019).** *Set Transformer: A Framework for Attention-based Permutation-Invariant Neural Networks.* Proceedings of the 36th International Conference on Machine Learning (ICML). [arXiv:1810.00825](https://arxiv.org/abs/1810.00825)<br><span class="attn-cite" data-bibkey="lee2019set"><code>lee2019set</code></span>
+
+<details class="attn-bib no-copy">
+<summary>BibTeX — 4 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="ma2021luna">
+<pre class="attn-bib__src"><code>@inproceedings{ma2021luna,
+  title         = {Luna: Linear Unified Nested Attention},
+  author        = {Ma, Xuezhe and Kong, Xiang and Wang, Sinong and Zhou, Chunting and May, Jonathan and Ma, Hao and Zettlemoyer, Luke},
+  booktitle     = {Advances in Neural Information Processing Systems 34 (NeurIPS)},
+  year          = {2021},
+  eprint        = {2106.01540},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="dolga2024latte">
+<pre class="attn-bib__src"><code>@misc{dolga2024latte,
+  title         = {Latte: Latent Attention for Linear Time Transformers},
+  author        = {Dolga, Rares and Maystre, Lucas and Cobzarenco, Marius and Barber, David},
+  year          = {2024},
+  eprint        = {2402.17512},
+  archivePrefix = {arXiv},
+  note          = {Later versions (v5, 2025) retitled ``Unifying Linear-Time Attention via Latent Probabilistic Modelling''}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="peng2022abc">
+<pre class="attn-bib__src"><code>@inproceedings{peng2022abc,
+  title         = {{ABC}: Attention with Bounded-memory Control},
+  author        = {Peng, Hao and Kasai, Jungo and Pappas, Nikolaos and Yogatama, Dani and Wu, Zhaofeng and Kong, Lingpeng and Schwartz, Roy and Smith, Noah A.},
+  booktitle     = {Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL)},
+  year          = {2022},
+  doi           = {10.18653/v1/2022.acl-long.515},
+  eprint        = {2110.02488},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="lee2019set">
+<pre class="attn-bib__src"><code>@inproceedings{lee2019set,
+  title         = {Set Transformer: A Framework for Attention-based Permutation-Invariant Neural Networks},
+  author        = {Lee, Juho and Lee, Yoonho and Kim, Jungtaek and Kosiorek, Adam R. and Choi, Seungjin and Teh, Yee Whye},
+  booktitle     = {Proceedings of the 36th International Conference on Machine Learning (ICML)},
+  series        = {PMLR},
+  volume        = {97},
+  year          = {2019},
+  eprint        = {1810.00825},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
 
 The bibliography is packaged with the library (`attnbank/references.bib`) and `tests/test_conformance.py` fails if a method cites a key that is not in it.
 
