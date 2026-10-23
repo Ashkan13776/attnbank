@@ -1,32 +1,35 @@
 # Dense softmax attention
 
-<p class="tx-regkey"><code>softmax</code> &middot; <code>ab.build("softmax")</code></p>
+<p class="attn-standfirst" markdown="span">The reference operator, y(q) = sum_j pi_q(j) v_j.</p>
 
-**Dense softmax attention: the reference operator, y(q) = sum_j pi_q(j) v_j.**
+<div class="attn-facts" data-cat="exact" markdown="1">
+
+key
+:   `softmax` &middot; `ab.build("softmax")`
 
 category
-:   [`exact`](../taxonomy.md#exact) — one of the seven objects in $y(q)=\int v\,\mathrm{d}\pi_q$ a method can change
+:   [`exact`](../taxonomy.md#exact)
 
 objective
 :   `accelerate` — same operator, exact up to floating point; only the evaluation changes
 
 class
-:   `attnbank.SoftmaxAttention`, [`attnbank/reference.py`](https://github.com/Ashkan13776/attnbank/blob/main/attnbank/reference.py)
+:   `attnbank.SoftmaxAttention` &middot; [`attnbank/reference.py`](https://github.com/Ashkan13776/attnbank/blob/main/attnbank/reference.py)
 
 monograph
 :   `sec:found`
 
+</div>
+
 ## What it changes
 
-Changes nothing in $y(q)=\int v\,\mathrm{d}\pi_q$. The integrand, the measure and the normaliser are the reference operator's; only the order of arithmetic changes.
+<div class="attn-changes" markdown="1">
+
+Every category in the bank changes one object in the reference operator $y(q)=\int v\,\mathrm{d}\pi_q$; this method changes nothing in $y(q)=\int v\,\mathrm{d}\pi_q$. The integrand, the measure and the normaliser are the reference operator's; only the order of arithmetic changes.
 
 It pursues **acceleration**: the operator is the reference operator, exact up to floating point. The only question worth asking of it is *where* exactness stops.
 
-## In the paper's notation
-
-pi_q(j) = exp(beta <q, k_j>) / sum_i exp(beta <q, k_i>),   beta = 1/sqrt(d)
-
-Everything in the library is compared against this.  Section `sec:found`.
+</div>
 
 ## What it declares
 
@@ -44,44 +47,15 @@ Each row is a commitment the conformance suite tests, not a description.
 
 </div>
 
-## Configuration
-
-| parameter | default |
-|---|---|
-| `sdpa_kernel` | `None` |
-
-`sdpa_kernel`: pin the SDPA sub-backend (`flash` / `mem_efficient` /
-`math`) instead of letting torch choose. Ignored by other backends.
-
-```python
-ab.describe("softmax")     # the same keys, with everything else it declares
-```
-
 ## Correctness anchor
 
 This method is **exact as built**: the conformance suite instantiates it at its default config and requires both `y` and the weights to match `softmax`. `limit_config()` returns `{}` — the empty dict, not `None`: there is a limit and no setting has to be changed to reach it.
 
-## Backends
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-| `sdpa` | `torch.nn.functional.scaled_dot_product_attention` -- on CUDA, FlashAttention-2 or the memory-efficient kernel |
-| `flash_attn` | the `flash-attn` package (CUDA, fp16/bf16) |
-
-Each non-`reference` entry is a claim that the path is **equal** to the reference, and `tests/test_conformance.py::test_backend_equivalence` checks it on five shapes, both causal settings, float32 and float64. See [Backends](../backends.md).
-
 ## Cost model
 
-Analytic, per `(batch, head)`, declared by the method itself:
+Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ and `bytes_per_el=2`, against the reference operator at the same shape:
 
-```python
-def cost(self, m, n, d, dv, bytes_per_el=2):
-    return {"flops": 2 * m * n * (d + dv), "state_bytes": n * (d + dv) * bytes_per_el,
-            "bytes_moved": (m * d + n * (d + dv) + m * dv + 2 * m * n) * bytes_per_el}
-```
-
-At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ and `bytes_per_el=2`, against the reference operator at the same shape:
+<div class="attn-tab" markdown="1">
 
 | quantity | this method | `softmax` | ratio |
 |---|---:|---:|---:|
@@ -89,10 +63,51 @@ At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ and `bytes_per_el=2`, against the
 | `state_bytes` | 262,144 | 262,144 | 1× |
 | `bytes_moved` | 4,718,592 | 4,718,592 | 1× |
 
+</div>
+
+The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
+
+```python
+def cost(self, m, n, d, dv, bytes_per_el=2):
+    return {"flops": 2 * m * n * (d + dv), "state_bytes": n * (d + dv) * bytes_per_el,
+            "bytes_moved": (m * d + n * (d + dv) + m * dv + 2 * m * n) * bytes_per_el}
+```
+
 !!! note "A cost model is not a benchmark"
     These are counted operations and resident bytes, not measured time.
     They are what the monograph's capacity arguments are made of;
     `examples/08_cost_and_capacity.py` walks through the comparison properly.
+
+## Backends
+
+<div class="attn-tab" markdown="1">
+
+| backend | what it is |
+|---|---|
+| `reference` | plain PyTorch; the correctness anchor and the default |
+| `sdpa` | `torch.nn.functional.scaled_dot_product_attention` -- on CUDA, FlashAttention-2 or the memory-efficient kernel |
+| `flash_attn` | the `flash-attn` package (CUDA, fp16/bf16) |
+
+</div>
+
+Each non-`reference` entry is a claim that the path is **equal** to the reference, and `tests/test_conformance.py::test_backend_equivalence` checks it on five shapes, both causal settings, float32 and float64. See [Backends](../backends.md).
+
+## Configuration
+
+<div class="attn-tab" markdown="1">
+
+| parameter | default |
+|---|---|
+| `sdpa_kernel` | `None` |
+
+</div>
+
+`sdpa_kernel`: pin the SDPA sub-backend (`flash` / `mem_efficient` /
+`math`) instead of letting torch choose. Ignored by other backends.
+
+```python
+ab.describe("softmax")     # the same keys, with everything else it declares
+```
 
 ## Run it
 
@@ -117,6 +132,8 @@ y_ref = ab.attend("softmax", q, k, v, causal=True)
 print("max |y - y_softmax|:", float((out.y - y_ref).abs().max()))
 ```
 
+<div class="attn-out" markdown="1">
+
 ```text
 SoftmaxAttention(name='softmax', category='exact', objective='accelerate', backend='reference', sdpa_kernel=None)
 AttentionOutput(y=[1, 2, 64, 32], weights=[1, 2, 64, 64], v_hat=None, extras={}, dtype=float32, device=cpu)
@@ -124,89 +141,39 @@ invariant W: 0.0
 max |y - y_softmax|: 0.0
 ```
 
-## Related methods
+</div>
 
-Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `softmax` removed.
+## In the paper's notation
+
+<div class="attn-notation" markdown="1">
+
+pi_q(j) = exp(beta <q, k_j>) / sum_i exp(beta <q, k_i>),   beta = 1/sqrt(d)
+
+Everything in the library is compared against this.  Section `sec:found`.
+
+</div>
+
+## Related methods
 
 changes the same object — [`exact`](../taxonomy.md#exact)
 :   [`flash`](flash.md), [`lowprec`](lowprec.md), [`splitk`](splitk.md) &nbsp;·&nbsp; [browse the bank, exact only](index.md?category=exact)
 
-[Open the browser with `softmax` selected](index.md?compare=softmax) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
+Both lists are `ab.available(...)` with `softmax` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `softmax` selected](index.md?compare=softmax) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
-- **vaswani2017attention (n.d.).** *Atom: Low-Bit Quantization for Efficient and Accurate LLM Serving.*<br><span class="attn-cite" data-bibkey="vaswani2017attention"><code>vaswani2017attention</code></span>
+<div class="attn-refs" markdown="1">
+
+- *Attention Is All You Need.*<br><span class="attn-cite" data-bibkey="vaswani2017attention"><code>vaswani2017attention</code></span>
+
+</div>
 
 <details class="attn-bib no-copy">
 <summary>BibTeX — 1 entry, verbatim from <code>attnbank/references.bib</code></summary>
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="vaswani2017attention">
 <pre class="attn-bib__src"><code>@inproceedings{vaswani2017attention,
-  title={Attention Is All You Need}
-
-@inproceedings{vyas2020fast,
-  title         = {Fast Transformers with Clustered Attention}
-
-@misc{wang2020linformer,
-  title = {{Linformer: Self-Attention with Linear Complexity}}
-
-@misc{wang2024model,
-  title = {{Model Tells You Where to Merge: Adaptive KV Cache Merging for LLMs on Long-Context Tasks}}
-
-@inproceedings{wang2025svdllm,
-  title = {{SVD-LLM: Truncation-aware Singular Value Decomposition for Large Language Model Compression}}
-
-@inproceedings{widrow1960adaptive,
-  title={Adaptive Switching Circuits}
-
-@inproceedings{williams2001using,
-  title     = {Using the {N}ystr{\&quot;o}m Method to Speed Up Kernel Machines}
-
-@inproceedings{xiao2024efficient,
-  title = {{Efficient Streaming Language Models with Attention Sinks}}
-
-@inproceedings{xiao2024infllm,
-  title={{InfLLM}: Training-Free Long-Context Extrapolation for {LLMs} with an Efficient Context Memory}
-
-@inproceedings{xiong2021nystromformer,
-  title     = {Nystr{\&quot;o}mformer: A Nystr{\&quot;o}m-Based Algorithm for Approximating Self-Attention}
-
-@inproceedings{xu2025think,
-  title = {{ThinK: Thinner Key Cache by Query-Driven Pruning}}
-
-@inproceedings{yang2024gated,
-  title={Gated Linear Attention Transformers with Hardware-Efficient Training}
-
-@inproceedings{yang2024parallelizing,
-  title={Parallelizing Linear Transformers with the Delta Rule over Sequence Length}
-
-@inproceedings{yang2025gated,
-  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule}
-
-@inproceedings{yu2016orthogonal,
-  title={Orthogonal Random Features}
-
-@inproceedings{zaheer2020bigbird,
-  title = {{Big Bird: Transformers for Longer Sequences}}
-
-@inproceedings{zandieh2025qjl,
-  title     = {{QJL}: 1-Bit Quantized {JL} Transform for {KV} Cache Quantization with Zero Overhead}
-
-@inproceedings{zhang2023h2o,
-  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models}
-
-@inproceedings{zhang2024cam,
-  title = {{CaM}: Cache Merging for Memory-efficient {LLMs} Inference}
-
-@inproceedings{zhang2024hedgehog,
-  title     = {The Hedgehog \&amp; the Porcupine: Expressive Linear Attentions with Softmax Mimicry}
-
-@inproceedings{zhang2025sageattention,
-  title={{SageAttention}: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration}
-
-@inproceedings{zhao2024atom,
-  title     = {{Atom}: Low-Bit Quantization for Efficient and Accurate {LLM} Serving}
-</code></pre>
+  title={Attention Is All You Need}</code></pre>
 </div>
 </div>
 </details>
@@ -215,4 +182,8 @@ The bibliography is packaged with the library (`attnbank/references.bib`) and `t
 
 ---
 
-*Generated by `docs/gen_methods.py` from the registry and from the module docstring of [`attnbank/reference.py`](https://github.com/Ashkan13776/attnbank/blob/main/attnbank/reference.py); the example above was executed to produce its output. Regenerate with `python docs/gen_methods.py`.*
+<div class="attn-colophon" markdown="1">
+
+Generated by `docs/gen_methods.py` from the registry and from the module docstring of [`attnbank/reference.py`](https://github.com/Ashkan13776/attnbank/blob/main/attnbank/reference.py); the example above was executed to produce its output. Regenerate with `python docs/gen_methods.py`.
+
+</div>

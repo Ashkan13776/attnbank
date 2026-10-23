@@ -35,7 +35,8 @@
       { key: "objective", label: "objective", kind: "code" },
       { key: "paper_section", label: "monograph", kind: "code" }
     ] },
-    { title: "what it declares — every row is a commitment the conformance suite tests",
+    { title: "what it declares",
+      sub: "every row is a commitment the conformance suite tests",
       props: [
         { key: "supports_causal", label: "supports_causal", kind: "flag" },
         { key: "expresses_weights", label: "expresses_weights", kind: "flag" },
@@ -119,7 +120,13 @@
     var count = root.querySelector("#bank-count");
     var empty = root.querySelector("#bank-empty");
     var tbody = root.querySelector("#bank-rows");
-    var rows = Array.prototype.slice.call(tbody.querySelectorAll("tr"));
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll("tr[data-name]"));
+    /* the category section rows: server-rendered, so the taxonomy grouping is there
+     * with scripting off; this file only hides them while a non-default sort is on
+     * and keeps their counts honest while filters are */
+    var groupRows = Array.prototype.slice.call(tbody.querySelectorAll("tr.bank-group"));
+    var kids = Array.prototype.slice.call(tbody.children);   // server order, groups interleaved
+    var catOrder = groupRows.map(function (g) { return g.dataset.cat; });
     var chips = Array.prototype.slice.call(root.querySelectorAll(".bank-chip[data-filter]"));
     var headers = Array.prototype.slice.call(root.querySelectorAll("th[data-sort]"));
     var total = rows.length;
@@ -128,7 +135,7 @@
     var panelTable = root.querySelector("#bank-compare-table");
     var panelHint = root.querySelector("#bank-compare-hint");
     var panelNote = root.querySelector("#bank-compare-note");
-    var sameToggle = root.querySelector("#bank-compare-same");
+    var copyLink = root.querySelector("#bank-compare-link");
     var clearPicks = root.querySelector("#bank-compare-clear");
     var pickHint = root.querySelector("#bank-pick-hint");
     var blob = root.querySelector("#bank-data");
@@ -171,6 +178,30 @@
       return (input.value || "").toLowerCase().split(/\s+/).filter(Boolean);
     }
 
+    /* The section rows show whenever the table is in the server's taxonomy order --
+     * no sort, or category ascending, which is the same order. Any other sort
+     * interleaves the categories, so the sections would lie, and they hide. */
+    function groupsShown() {
+      return !sortField || (sortField === "category" && !sortDesc);
+    }
+
+    function syncGroups() {
+      var show = groupsShown();
+      groupRows.forEach(function (g) {
+        var cat = g.dataset.cat;
+        var all = Number(g.dataset.n) || 0;
+        var vis = 0;
+        rows.forEach(function (row) {
+          if (row.dataset.category === cat && !row.hidden) vis += 1;
+        });
+        g.hidden = !show || vis === 0;
+        var label = g.querySelector(".bank-group__n");
+        if (label) {
+          label.textContent = (vis === all ? all : vis + " of " + all) + " methods";
+        }
+      });
+    }
+
     function apply() {
       var by = active();
       var words = terms();
@@ -188,6 +219,7 @@
         ? total + " of " + total + " methods"
         : shown + " of " + total + " methods" + (shown ? "" : " — nothing matches");
       empty.hidden = shown !== 0;
+      syncGroups();
       pushUrl();
     }
 
@@ -218,6 +250,7 @@
     function reset() {
       input.value = "";
       chips.forEach(function (chip) { chip.setAttribute("aria-pressed", "false"); });
+      applySort(null, false);          // back to the taxonomy order, sections shown
       apply();
     }
     Array.prototype.forEach.call(root.querySelectorAll(".bank-reset[data-reset], #bank-reset"),
@@ -229,27 +262,38 @@
       // the first column leads with the human name, so that is what sorting it means
       if (field === "name") return row.dataset.title || row.dataset.name;
       if (field === "backends") return row.dataset.backends;
+      if (field === "category") {
+        // taxonomy order, not alphabetical: "category ascending" means the order the
+        // taxonomy gives the categories, which is also the server's default order
+        var i = catOrder.indexOf(row.dataset.category);
+        return i < 0 ? "99" : ("0" + i).slice(-2);
+      }
       return (row.dataset[field] || "") + " " + row.dataset.name;
     }
 
     function applySort(field, desc) {
-      sortField = field;
+      sortField = field || null;
       sortDesc = !!desc;
       headers.forEach(function (h) {
-        if (h.dataset.sort === field) {
+        if (field && h.dataset.sort === field) {
           h.setAttribute("aria-sort", desc ? "descending" : "ascending");
         } else {
           h.removeAttribute("aria-sort");
         }
       });
-      rows.slice()
-        .sort(function (a, b) {
-          if (!field) return a.dataset.order - b.dataset.order;
-          var x = key(a, field), y = key(b, field);
-          if (x === y) return a.dataset.order - b.dataset.order;
-          return (x < y ? -1 : 1) * (desc ? -1 : 1);
-        })
-        .forEach(function (row) { tbody.appendChild(row); });
+      if (groupsShown()) {
+        // the server's order, section rows interleaved where they belong
+        kids.forEach(function (node) { tbody.appendChild(node); });
+      } else {
+        rows.slice()
+          .sort(function (a, b) {
+            var x = key(a, field), y = key(b, field);
+            if (x === y) return a.dataset.order - b.dataset.order;
+            return (x < y ? -1 : 1) * (desc ? -1 : 1);
+          })
+          .forEach(function (row) { tbody.appendChild(row); });
+      }
+      syncGroups();
       pushUrl();
     }
 
@@ -296,23 +340,103 @@
         if (byName[name]) byName[name].dataset.picked = on ? "1" : "0";
       });
       render();
+      updateTray();
       pushUrl();
     }
 
     if (clearPicks) {
       clearPicks.addEventListener("click", function () { picked = []; syncPicks(); });
     }
-    if (sameToggle) {
-      sameToggle.addEventListener("click", function () {
-        showSame = !showSame;
-        sameToggle.setAttribute("aria-pressed", String(showSame));
-        render();
+
+    /* The whole view — search, filters, sort, picks — is already in the address bar;
+     * this button only makes that fact visible and puts it on the clipboard. */
+    if (copyLink) {
+      copyLink.addEventListener("click", function () {
+        writeUrl();                       // flush the debounce so the URL is current
+        function done(ok) {
+          copyLink.textContent = ok ? "copied" : "copy failed — use the address bar";
+          setTimeout(function () { copyLink.textContent = "copy link"; }, 2000);
+        }
+        function fallback() {             // non-HTTPS and other clipboard-API refusals
+          var scratch = el("textarea");
+          scratch.value = location.href;
+          scratch.setAttribute("readonly", "");
+          scratch.style.position = "fixed";
+          scratch.style.opacity = "0";
+          document.body.appendChild(scratch);
+          scratch.select();
+          var ok = false;
+          try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+          document.body.removeChild(scratch);
+          done(ok);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(location.href).then(
+            function () { done(true); }, fallback);
+        } else {
+          fallback();
+        }
       });
+    }
+
+    /* ---- the tray -------------------------------------------------------
+     * Ticking a checkbox sixty rows down must change something the reader can see,
+     * and the panel it fills is at the top of the page. A small fixed tray holds the
+     * picks while the panel is off-screen, and gets out of the way once it is not.
+     * Created here, so with scripting off it does not exist.
+     */
+
+    var tray = el("div", "bank-tray");
+    tray.hidden = true;
+    var trayChips = el("span", "bank-tray__chips");
+    var trayStatus = el("span", "bank-tray__status");
+    var trayView = el("a", "bank-tray__view", "view ↑");
+    trayView.href = "#bank-compare";
+    var trayClear = el("button", "bank-reset", "clear");
+    trayClear.type = "button";
+    trayClear.addEventListener("click", function () { picked = []; syncPicks(); });
+    tray.appendChild(el("span", "bank-tray__label", "side by side"));
+    tray.appendChild(trayChips);
+    tray.appendChild(trayStatus);
+    tray.appendChild(trayView);
+    tray.appendChild(trayClear);
+    root.appendChild(tray);
+
+    var panelOnScreen = false;
+    if (panel && typeof IntersectionObserver !== "undefined") {
+      new IntersectionObserver(function (entries) {
+        panelOnScreen = entries[0].isIntersecting;
+        updateTray();
+      }).observe(panel);
+    }
+
+    function updateTray() {
+      var ready = picked.length >= MIN_PICK;
+      tray.hidden = !picked.length || (ready && panelOnScreen);
+      trayChips.textContent = "";
+      picked.forEach(function (name) {
+        var m = data.methods[name];
+        var chip = el("span", "bank-tray__chip");
+        chip.appendChild(el("span", null, m ? m.title : name));
+        var x = el("button", "bank-tray__x", "×");
+        x.type = "button";
+        x.setAttribute("aria-label", "remove " + name + " from the comparison");
+        x.addEventListener("click", function () {
+          picked = picked.filter(function (n) { return n !== name; });
+          syncPicks();
+        });
+        chip.appendChild(x);
+        trayChips.appendChild(chip);
+      });
+      trayStatus.textContent = !picked.length ? ""
+        : picked.length < MIN_PICK ? "tick one more to compare"
+        : picked.length + " of " + MAX_PICK;
+      trayView.hidden = !ready;
     }
 
     /* ---- the side-by-side table ----------------------------------------- */
 
-    function cellFor(prop, value, ref) {
+    function cellFor(prop, value, ref, max) {
       var td = el("td");
       td.dataset.kind = prop.kind;
       if (prop.kind === "flag") {
@@ -330,10 +454,22 @@
           });
         }
       } else if (prop.kind === "num") {
-        td.appendChild(el("span", "bank-cmp__num", num(value)));
+        // The bar is linear in the quantity itself, and the longest bar in a row is
+        // the largest *selected* value -- columns are equal width (table-layout:
+        // fixed), so equal percentages are equal lengths. The number is still the
+        // declaration; the bar only ranks it.
+        if (max > 0) {
+          var track = el("span", "bank-cmp__track");
+          track.setAttribute("aria-hidden", "true");
+          var fill = el("span", "bank-cmp__fill");
+          fill.style.width = Math.max(100 * value / max, 0.5).toFixed(2) + "%";
+          track.appendChild(fill);
+          td.appendChild(track);
+        }
         if (ref) {
           td.appendChild(el("span", "bank-cmp__ratio", g3(value / ref) + "×"));
         }
+        td.appendChild(el("span", "bank-cmp__num", num(value)));
       } else {
         td.textContent = String(value);
       }
@@ -344,6 +480,9 @@
       var m = data.methods[name];
       var th = el("th");
       th.scope = "col";
+      // the category hue, as a rule over the column -- the same hue this category
+      // carries in every monograph figure; never behind text
+      if (m.category) th.dataset.cat = m.category;
       var link = el("a", "bank-cmp__name", m.title);
       link.href = name + "/";
       th.appendChild(link);
@@ -379,10 +518,7 @@
           picked.length + " ticked, side by side below." +
             (picked.length === MAX_PICK ? " Four is the most that fits in columns." : "");
       }
-      if (picked.length < MIN_PICK) {
-        if (sameToggle) sameToggle.hidden = true;
-        return;
-      }
+      if (picked.length < MIN_PICK) return;
 
       var mats = picked.map(function (n) { return data.methods[n]; });
       var refCost = data.methods.softmax || {};
@@ -397,6 +533,7 @@
       var tbodyC = el("tbody");
       var nSame = 0, nDiff = 0;
       var undeclared = [];
+      var hasCost = false;
 
       GROUPS.forEach(function (group) {
         var body = [];
@@ -431,18 +568,29 @@
           keys.forEach(function (k) { freq[k] = (freq[k] || 0) + 1; });
           var top = Math.max.apply(null, keys.map(function (k) { return freq[k]; }));
 
+          var max = group.cost ? Math.max.apply(null, vals.map(Number)) : 0;
           vals.forEach(function (value, i) {
-            var td = cellFor(prop, value, group.cost ? refCost[prop.key] : 0);
-            if (!agree && freq[keys[i]] < top) td.dataset.odd = "1";
+            var td = cellFor(prop, value, group.cost ? refCost[prop.key] : 0, max);
+            // the bar takes the method's category hue, resolved by [data-cat];
+            // numeric rows get no odd-one-out mark -- the bars already rank them,
+            // and "odd" is a categorical idea, not a quantitative one
+            if (group.cost) td.dataset.cat = mats[i].category;
+            if (!agree && prop.kind !== "num" && freq[keys[i]] < top) td.dataset.odd = "1";
             tr.appendChild(td);
           });
           body.push(tr);
         });
         if (!body.length) return;
+        if (group.cost) hasCost = true;
         var head = el("tr", "bank-cmp__group");
-        var hcell = el("th", null, group.cost
-          ? group.title + " — at " + shapeText() + ", × against softmax"
-          : group.title);
+        var hcell = el("th");
+        hcell.appendChild(el("span", "bank-cmp__gt", group.title));
+        var sub = group.cost
+          ? "analytic, per (batch, head), at " + shapeText() +
+            (data.bytes_per_el ? ", bytes_per_el = " + data.bytes_per_el : "") +
+            " — × against softmax"
+          : group.sub;
+        if (sub) hcell.appendChild(el("span", "bank-cmp__gs", sub));
         hcell.colSpan = picked.length + 1;
         hcell.scope = "colgroup";
         head.appendChild(hcell);
@@ -452,28 +600,53 @@
         body.forEach(function (r) { tbodyC.appendChild(r); });
       });
 
-      panelTable.appendChild(tbodyC);
-      // Nothing differs: there is no difference to leave behind, so the agreed rows
-      // are the whole answer and folding them would empty the table.
+      // The fold lives where the folded rows are: a diff-style expander row at the
+      // foot of the table, like an elided hunk. Nothing differs => the agreed rows
+      // are the whole answer, so they are forced visible and there is no expander.
       var forced = nDiff === 0;
-      panelTable.dataset.showSame = (showSame || forced) ? "1" : "0";
-
-      if (sameToggle) {
-        sameToggle.hidden = nSame === 0 || forced;
-        sameToggle.textContent = (showSame ? "hide " : "show ") + nSame +
-          " row" + (nSame === 1 ? "" : "s") + " they agree on";
-        sameToggle.setAttribute("aria-pressed", String(showSame));
+      if (nSame && !forced) {
+        var fold = el("tr", "bank-cmp__fold");
+        var foldCell = el("td");
+        foldCell.colSpan = picked.length + 1;
+        var foldBtn = el("button", "bank-cmp__foldbtn");
+        // the label is sticky inside the scroll container, so it stays readable
+        // when four columns force a horizontal scroll
+        foldBtn.appendChild(el("span", "bank-cmp__foldtxt", showSame
+          ? "hide the " + nSame + " row" + (nSame === 1 ? "" : "s") + " all " +
+            picked.length + " agree on"
+          : "⋯ " + nSame + " row" + (nSame === 1 ? "" : "s") + " all " +
+            picked.length + " agree on — show " + (nSame === 1 ? "it" : "them")));
+        foldBtn.type = "button";
+        foldBtn.setAttribute("aria-expanded", String(showSame));
+        foldBtn.addEventListener("click", function () {
+          showSame = !showSame;
+          render();
+          var next = panelTable.querySelector(".bank-cmp__foldbtn");
+          if (next) next.focus();
+        });
+        foldCell.appendChild(foldBtn);
+        fold.appendChild(foldCell);
+        tbodyC.appendChild(fold);
       }
+      panelTable.appendChild(tbodyC);
+      panelTable.dataset.showSame = (showSame || forced) ? "1" : "0";
+      panelTable.dataset.cols = picked.length;
+
       if (panelNote) {
         var bits = [];
-        bits.push(nDiff
-          ? nDiff + " row" + (nDiff === 1 ? "" : "s") + " differ" + (nDiff === 1 ? "s" : "") +
-            "; " + nSame + " fold" + (nSame === 1 ? "s" : "") + " away because all " +
-            picked.length + " declare the same thing."
-          : "All " + picked.length + " declare the same thing on every row compared.");
-        bits.push("A marked cell is the odd one out — a value fewer of the selected " +
-                  "methods declare than the most common one; an even split is left " +
-                  "unmarked.");
+        if (forced) {
+          bits.push("All " + picked.length +
+                    " declare the same thing on every row compared.");
+        } else {
+          bits.push(nDiff + " of " + (nDiff + nSame) + " rows differ.");
+          bits.push("A marked cell is the odd one out — a value fewer of the " +
+                    "selected methods declare than the most common one; an even " +
+                    "split is left unmarked.");
+        }
+        if (hasCost) {
+          bits.push("Cost bars are linear in each quantity, longest = largest " +
+                    "selected; the × is against softmax at the same shape.");
+        }
         if (undeclared.length) {
           bits.push("Not shown, because not every selected method declares it: " +
                     undeclared.join(", ") + ".");
