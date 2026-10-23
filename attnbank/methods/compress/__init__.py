@@ -1,14 +1,22 @@
-"""Methods in category 'compress': the stored (mu, k, v) is replaced by a cheaper one."""
-from . import (  # noqa: F401
-    evict_h2o,
-    evict_snapkv,
-    gqa,
-    linformer,
-    lowrank_kv,
-    merge_kv,
-    mla,
-    quantkv,
-)
+"""Methods in category 'compress': the stored context (mu, k, v) is made cheaper.
 
-__all__ = ["evict_h2o", "evict_snapkv", "gqa", "linformer", "lowrank_kv", "merge_kv",
-           "mla", "quantkv"]
+Modules are discovered rather than listed: dropping a new ``<name>.py`` into
+this directory registers it. The explicit import list this replaces was a file
+every contributor had to edit, which made it the one guaranteed merge conflict
+when several methods were added at once.
+"""
+from __future__ import annotations
+
+import importlib as _importlib
+import pkgutil as _pkgutil
+
+__all__: list[str] = []
+
+for _info in _pkgutil.iter_modules(__path__):
+    if _info.name.startswith("_"):
+        continue
+    _importlib.import_module(f"{__name__}.{_info.name}")
+    __all__.append(_info.name)
+
+__all__.sort()
+del _importlib, _pkgutil, _info
