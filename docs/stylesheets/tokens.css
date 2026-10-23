@@ -1,0 +1,72 @@
+/* Design tokens: the one place a colour, a size or a duration is chosen.
+ *
+ * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
+ * Every colour, size and duration in here comes from a token in tokens.css.
+ */
+
+/* The front matter: the operator plate (home + taxonomy), the taxonomy tree, and
+ * the naming in the method browser.
+ *
+ * Nothing here is fetched. The faces are system stacks -- mkdocs.yml sets
+ * `font: false` so Material does not pull Roboto from Google Fonts, which is what
+ * makes "no third-party requests" true rather than nearly true.
+ *
+ * The seven category hues are `attnbank.plotting.style.CATEGORICAL` verbatim, so a
+ * category is the same colour on this page as in every figure in the monograph. They
+ * are used for rules, ticks and underlines only -- never as text colour and never as
+ * a fill behind text, because the amber and the green do not clear 4.5:1 either way
+ * round. Selection is shown with full-strength ink plus a coloured rule instead.
+ *
+ * Material always stamps `data-md-color-scheme` on <html> server-side, so the two
+ * blocks below are the complete set of states; there is no unstamped case to guard.
+ */
+
+:root {
+  /* STIX Two is the monograph's face; the rest of the stack is the same shape of
+   * Times that a TeX installation or a plain desktop will already have. */
+  --ab-serif: "STIX Two Text", "STIX Two Math", "TeX Gyre Termes", "Nimbus Roman",
+              "Liberation Serif", Times, "Times New Roman", serif;
+  --ab-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas,
+             "DejaVu Sans Mono", "Liberation Mono", monospace;
+
+  --ab-plate: #ffffff;
+  --ab-sunk: #f4f6fa;
+  --ab-rule: #d9dfe8;
+  --ab-rule-soft: #eaeef4;
+  --ab-faint: #8c94a2;
+
+  --c-exact: #52514e;
+  --c-interaction: #2a78d6;
+  --c-restrict: #eb6834;
+  --c-compress: #1baf7a;
+  --c-factorize: #4a3aa7;
+  --c-coupling: #eda100;
+  --c-recurrent: #e34948;
+}
+
+[data-md-color-scheme="slate"] {
+  --ab-plate: #1a1f28;
+  --ab-sunk: #15191f;
+  --ab-rule: #2e3642;
+  --ab-rule-soft: #242b35;
+  --ab-faint: #78818f;
+
+  /* lifted for the dark ground; same hue, same order */
+  --c-exact: #9aa3b0;
+  --c-interaction: #68a8f2;
+  --c-restrict: #f58a5c;
+  --c-compress: #3fcb97;
+  --c-factorize: #8f80e0;
+  --c-coupling: #f0bb3d;
+  --c-recurrent: #f0706f;
+}
+
+/* one hue per category, resolved from the data attribute so nothing is inlined */
+[data-cat="exact"]       { --hl: var(--c-exact); }
+[data-cat="interaction"] { --hl: var(--c-interaction); }
+[data-cat="restrict"]    { --hl: var(--c-restrict); }
+[data-cat="compress"]    { --hl: var(--c-compress); }
+[data-cat="factorize"]   { --hl: var(--c-factorize); }
+[data-cat="coupling"]    { --hl: var(--c-coupling); }
+[data-cat="recurrent"]   { --hl: var(--c-recurrent); }
+

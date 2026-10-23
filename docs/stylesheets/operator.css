@@ -1,0 +1,253 @@
+/* The operator plate: the formula, the seven category keys, the readout.
+ *
+ * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
+ * Every colour, size and duration in here comes from a token in tokens.css.
+ */
+
+/* ---- the operator plate ------------------------------------------------- */
+
+.op-plate {
+  position: relative;
+  margin: 1.6rem 0 0;
+  padding: 1.9rem 1.1rem 1.4rem;
+  background: var(--ab-plate);
+  border: 1px solid var(--ab-rule);
+}
+
+/* the corner label of a figure plate, sitting in the top rule */
+.op-plate::before {
+  content: attr(data-plate);
+  position: absolute;
+  top: -0.46rem;
+  left: 1.1rem;
+  padding: 0 0.45rem;
+  background: var(--ab-plate);
+  font-family: var(--ab-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+}
+
+.op-formula {
+  font-family: var(--ab-serif);
+  text-align: center;
+  line-height: 1.6;
+  color: var(--md-default-fg-color);
+  overflow-x: auto;
+  padding: 0.2rem 0 0.1rem;
+}
+
+.op-line {
+  display: block;
+  white-space: nowrap;
+  font-size: clamp(1.3rem, 4.4vw, 2.1rem);
+}
+
+.op-line--sub { font-size: clamp(1.05rem, 3.4vw, 1.62rem); }
+.op-rel { padding: 0 0.3em; color: var(--ab-faint); }
+.op-formula i { font-style: italic; }
+
+/* a built fraction rather than a solidus: this is the paper's display, and the
+ * numerator and denominator are two different things a method can reach for */
+.op-frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.84em;
+}
+
+/* the fraction has no baseline to share, so the line centres its boxes instead */
+.op-line--sub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.op-num { padding: 0 0.3em 0.06em; border-bottom: 1px solid currentcolor; }
+.op-den { padding: 0.06em 0.3em 0; }
+
+.sym {
+  display: inline-block;
+  padding: 0.06em 0.14em;
+  margin: 0 -0.04em;
+  border-bottom: 2px solid transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+/* Selection is ink plus a coloured rule. A hue fill behind text would fail
+ * contrast for coupling and compress in light mode, in both directions. */
+.sym.is-lit {
+  background: color-mix(in srgb, var(--hl) 15%, transparent);
+  border-bottom-color: var(--hl);
+}
+
+/* everything the chosen category leaves alone recedes */
+.op-formula.is-focused .sym:not(.is-lit) { opacity: 0.32; }
+
+/* `exact` changes no symbol, so the figure rules off the whole operator instead of
+ * lighting part of it -- the asymmetry is the answer, not a missing state. */
+.op-formula.is-framed {
+  outline: 1px dashed var(--hl);
+  outline-offset: 0.7rem;
+}
+
+.op-formula.is-framed .sym { opacity: 1; }
+
+.op-replacement {
+  font-family: var(--ab-serif);
+  font-size: clamp(0.98rem, 2.6vw, 1.3rem);
+  text-align: center;
+  color: var(--md-default-fg-color--light);
+  margin: 0.45rem 0 0;
+}
+
+.md-typeset .op-replacement .note {
+  font-family: var(--md-text-font-family, sans-serif);
+  font-size: 0.72rem;
+  color: var(--ab-faint);
+  white-space: nowrap;
+}
+
+/* ---- the category keys -------------------------------------------------- */
+
+.op-keys[hidden],
+.op-prompt[hidden],
+.op-panel[hidden] { display: none; }
+
+.op-keys {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem;
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--ab-rule-soft);
+}
+
+.op-key {
+  font: inherit;
+  font-family: var(--ab-mono);
+  font-size: 0.72rem;
+  line-height: 1.3;
+  padding: 0.34rem 0.6rem;
+  cursor: pointer;
+  color: var(--md-default-fg-color--light);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid var(--ab-rule);
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.op-key:hover {
+  color: var(--md-default-fg-color);
+  border-bottom-color: var(--ab-faint);
+}
+
+.op-key[aria-pressed="true"] {
+  color: var(--md-default-fg-color);
+  background: color-mix(in srgb, var(--hl) 13%, transparent);
+  border-bottom-color: var(--hl);
+}
+
+.op-key:focus-visible,
+.tx-toggle:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: 2px;
+}
+
+/* ---- the readout under the keys ----------------------------------------- */
+
+.op-readout { margin-top: 1.1rem; max-width: 38rem; }
+
+@media screen and (min-width: 45em) {
+  .op-readout { min-height: 7rem; }
+}
+
+/* the plate's caption: revealed by JavaScript, because with scripting off there
+ * are no keys and a sentence about choosing one would be a lie */
+.md-typeset .op-prompt {
+  margin: 1rem 0 0;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--ab-faint);
+}
+
+.md-typeset .op-panel > dl {
+  display: grid;
+  grid-template-columns: 6.2rem 1fr;
+  gap: 0.35rem 1.1rem;
+  align-items: baseline;
+  font-size: 0.76rem;
+  margin: 0;
+}
+
+/* With scripting off every panel is shown, stacked and ruled apart, so the plate
+ * reads as a list of the seven categories rather than as a dead widget. */
+.md-typeset .op-panel + .op-panel {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--ab-rule-soft);
+}
+
+.md-typeset .op-panel > dl > dt {
+  font-family: var(--ab-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+  padding-top: 0.12rem;
+}
+
+.md-typeset .op-panel > dl > dd {
+  margin: 0;
+  color: var(--md-default-fg-color--light);
+}
+
+/* the first fact is what the category changes: ink, with the category's own rule */
+.md-typeset .op-panel > dl > dd:first-of-type {
+  color: var(--md-default-fg-color);
+  box-shadow: inset 2px 0 0 var(--hl);
+  padding-left: 0.6rem;
+  margin-left: -0.6rem;
+}
+
+.md-typeset ul.op-methods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.md-typeset ul.op-methods li { margin: 0; }
+
+.md-typeset .op-methods a {
+  display: inline-block;
+  font-family: var(--ab-mono);
+  font-size: 0.68rem;
+  padding: 0.08rem 0.4rem;
+  color: var(--md-default-fg-color--light);
+  background: var(--ab-sunk);
+  border-bottom: 1px solid var(--ab-rule);
+  text-decoration: none;
+}
+
+.md-typeset .op-methods a:hover {
+  color: var(--md-default-fg-color);
+  border-bottom-color: var(--hl);
+}
+
+.md-typeset .op-methods a[data-oracle] { border-bottom-style: dashed; }
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .op-panel > dl { grid-template-columns: 1fr; gap: 0.1rem; }
+  .md-typeset .op-panel > dl > dt { padding-top: 0.6rem; }
+  .md-typeset .op-panel > dl > dd:first-of-type {
+    box-shadow: none;
+    padding-left: 0;
+    margin-left: 0;
+  }
+}
+

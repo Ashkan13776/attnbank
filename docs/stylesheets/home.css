@@ -1,0 +1,131 @@
+/* The landing page.
+ *
+ * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
+ * Every colour, size and duration in here comes from a token in tokens.css.
+ */
+
+/* ---- home: quiet ruled sections ----------------------------------------- */
+
+/* running text stays near 70 characters even when the page is wide */
+.md-typeset .ab-measure { max-width: 33rem; }
+
+.md-typeset .ab-split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0 2rem;
+}
+
+.md-typeset .ab-claim {
+  font-family: var(--ab-serif);
+  font-size: 1.12rem;
+  line-height: 1.5;
+  color: var(--md-default-fg-color);
+  max-width: 32rem;
+}
+
+/* the invariant, which the whole library rests on: one rule, one line of code */
+.md-typeset .ab-invariant {
+  margin: 1.2rem 0;
+  padding: 0.9rem 0 0.9rem 1rem;
+  border-left: 2px solid var(--c-interaction);
+  background: var(--ab-sunk);
+}
+
+.md-typeset .ab-invariant code {
+  display: block;
+  background: none;
+  padding: 0;
+  font-size: 0.86rem;
+  color: var(--md-default-fg-color);
+  overflow-x: auto;
+}
+
+.md-typeset .ab-invariant p {
+  margin: 0.5rem 0 0;
+  font-size: 0.74rem;
+  color: var(--ab-faint);
+}
+
+/* the eleven conformance checks: a numbered list, because they are a checklist and
+ * the count is the claim */
+.md-typeset ol.ab-checks {
+  list-style: none;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  columns: 2;
+  column-gap: 2rem;
+  font-size: 0.74rem;
+}
+
+.md-typeset ol.ab-checks li {
+  break-inside: avoid;
+  margin: 0 0 0.3rem;
+  padding-left: 1.6rem;
+  text-indent: -1.6rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset ol.ab-checks li::before {
+  content: counter(ab-check, decimal-leading-zero) "  ";
+  counter-increment: ab-check;
+  font-family: var(--ab-mono);
+  font-size: 0.86em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ab-faint);
+}
+
+.md-typeset ol.ab-checks { counter-reset: ab-check; }
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset ol.ab-checks { columns: 1; }
+}
+
+/* the two ways an approximation can be wrong */
+.md-typeset .ab-split-table table {
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.md-typeset .ab-split-table th:not(:first-child),
+.md-typeset .ab-split-table td:not(:first-child) { text-align: right; }
+
+/* the bold cell is the mechanism at fault, which is the whole point of the split */
+.md-typeset .ab-split-table strong {
+  font-weight: 600;
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset .ab-split-table td { color: var(--md-default-fg-color--light); }
+
+
+/* ---- where to go next: a ruled two-column list, no icons -----------------
+ * The sidebar already enumerates every page; this list exists to say why you
+ * would open one, so each entry is a destination plus a reason and nothing else.
+ */
+.md-typeset .ab-split > dl,
+.md-typeset dl.ab-split {
+  columns: 2;
+  column-gap: 2.4rem;
+  margin: 1rem 0 0;
+}
+
+.md-typeset .ab-split dt {
+  break-after: avoid;
+  margin: 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--ab-rule-soft);
+  font-weight: 500;
+}
+
+.md-typeset .ab-split dd {
+  break-inside: avoid;
+  margin: 0.15rem 0 0.9rem;
+  font-size: 0.74rem;
+  color: var(--md-default-fg-color--light);
+}
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .ab-split > dl,
+  .md-typeset dl.ab-split { columns: 1; }
+}
+

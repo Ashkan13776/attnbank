@@ -5,7 +5,7 @@
 The page is a tree: the operator at the top and seven branches hanging off a trunk,
 one per object of ``y(q) = int v dpi_q`` that a method can change. Opening a branch
 lights the symbol it reaches for. All of that is progressive enhancement --
-``docs/javascripts/attnbank.js`` collapses branches that are open in the HTML -- and
+``docs/javascripts/taxonomy.js`` collapses branches that are open in the HTML -- and
 the complete table of every method follows underneath, so with scripting off the page
 is the whole taxonomy with nothing to click and nothing missing.
 

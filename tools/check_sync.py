@@ -104,15 +104,22 @@ def main() -> int:
             continue
         text = p.read_text()
         cats = {row["category"] for row in table}
-        for m in re.finditer(r"\b(\d{2,4})\s+methods\b", text):
-            if int(m.group(1)) == n_methods:
+        # "78 methods", and also "all 78" / "every one of the 78", which is how the
+        # count gets written when the noun is already in the heading. The second
+        # form is the one that went stale unnoticed: the home page said "held by
+        # all 32" for the whole first expansion.
+        for m in re.finditer(
+                r"\b(\d{2,4})\s+methods\b|\ball\s+(\d{2,4})\b", text):
+            got = int(m.group(1) or m.group(2))
+            if got == n_methods:
                 continue
             # a per-category count is not a claim about the library; the generated
             # taxonomy page legitimately says "18 methods" of compress.
             ctx = text[max(0, m.start() - 160):m.end() + 160]
             if any(re.search(rf"\b{c}\b", ctx) for c in cats):
                 continue
-            stale.append(f"{rel} says {m.group(1)} methods, registry has {n_methods}")
+            stale.append(f"{rel} says {got} methods ({m.group(0)!r}), "
+                         f"registry has {n_methods}")
     r.check("method counts in prose", stale)
 
     # ---- 5. paper_section labels exist in the monograph ------------------------

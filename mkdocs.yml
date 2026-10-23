@@ -19,7 +19,7 @@ theme:
   # is the theme's one call to a third-party host.
   custom_dir: overrides
   # Material links fonts.googleapis.com unless this is false. The site makes no
-  # third-party requests, so the faces are system stacks; docs/stylesheets/attnbank.css
+  # third-party requests, so the faces are system stacks; docs/stylesheets/base.css
   # names them.
   font: false
   features:
@@ -101,9 +101,21 @@ markdown_extensions:
   - pymdownx.arithmatex: { generic: true }
 
 extra_css:
-  # everything the site loads is vendored: the front matter and the method browser
-  - stylesheets/attnbank.css
-  - stylesheets/bank.css
+  # Twelve stylesheets, one per aspect of the site, in cascade order: tokens first
+  # because everything reads them, chrome and motion last because they adjust what
+  # the others set. lib/SITE_DESIGN.md records who owns which; nobody edits two.
+  - stylesheets/tokens.css
+  - stylesheets/base.css
+  - stylesheets/home.css
+  - stylesheets/operator.css
+  - stylesheets/taxonomy.css
+  - stylesheets/browse.css
+  - stylesheets/compare.css
+  - stylesheets/method.css
+  - stylesheets/gallery.css
+  - stylesheets/prose.css
+  - stylesheets/chrome.css
+  - stylesheets/motion.css
 
 extra_javascript:
   # MathJax 3.2.2, vendored. The SVG build is used rather than CHTML because
@@ -113,8 +125,11 @@ extra_javascript:
   - javascripts/mathjax.js
   - javascripts/tex-svg.js
   - javascripts/bank.js
-  - javascripts/attnbank.js
+  # operator.js publishes window.AttnOperator; taxonomy.js consumes it.
+  - javascripts/operator.js
+  - javascripts/taxonomy.js
   - javascripts/clip.js
+  - javascripts/motion.js
 
 nav:
   - Home: index.md

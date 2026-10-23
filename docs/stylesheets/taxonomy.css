@@ -1,0 +1,297 @@
+/* The taxonomy tree and the static table beneath it.
+ *
+ * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
+ * Every colour, size and duration in here comes from a token in tokens.css.
+ */
+
+/* ---- the taxonomy tree -------------------------------------------------- */
+
+/* The trunk: one vertical hairline the seven branches hang off. A taxonomy drawn
+ * as a dendrogram, which is what a taxonomy is. */
+.tx-tree {
+  position: relative;
+  margin: 1.8rem 0 0;
+  padding-left: 1.6rem;
+}
+
+.tx-tree::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1.7rem;
+  bottom: 1.7rem;
+  width: 1px;
+  background: var(--ab-rule);
+}
+
+.tx-node { position: relative; }
+
+/* the branch tick into the trunk, in the category's own colour */
+.tx-node::before {
+  content: "";
+  position: absolute;
+  left: -1.6rem;
+  top: 1.72rem;
+  width: 1.1rem;
+  height: 2px;
+  background: var(--hl);
+}
+
+/* The heading is a row: category, what it changes, how many methods. The control
+ * JavaScript builds wraps those three and inherits the same row, so the branch looks
+ * the same whether or not it can be clicked. */
+.md-typeset .tx-node > h2,
+.md-typeset .tx-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 1rem;
+  font-weight: 400;
+  font-family: var(--md-text-font-family, sans-serif);
+  letter-spacing: 0;
+}
+
+.md-typeset .tx-node > h2 {
+  margin: 0;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--ab-rule-soft);
+}
+
+.md-typeset .tx-node:first-child > h2 { border-top: 0; }
+
+.md-typeset .tx-toggle {
+  flex: 1;
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  padding: 0;
+  margin: -0.85rem 0;        /* the button takes the heading's own padding back */
+  padding-block: 0.85rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+.md-typeset .tx-node > h2 code {
+  font-size: 0.82em;
+  background: none;
+  padding: 0;
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset .tx-node .tx-changes {
+  font-size: 0.74rem;
+  color: var(--ab-faint);
+  flex: 1;
+}
+
+.md-typeset .tx-node .tx-n {
+  font-family: var(--ab-mono);
+  font-size: 0.62rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ab-faint);
+}
+
+.md-typeset .tx-toggle:hover .tx-changes,
+.md-typeset .tx-toggle[aria-expanded="true"] .tx-changes {
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .tx-toggle[aria-expanded="true"] code {
+  box-shadow: inset 0 -2px 0 var(--hl);
+}
+
+.md-typeset .tx-body {
+  padding: 0 0 0.9rem;
+  max-width: 38rem;
+}
+
+.md-typeset .tx-node[data-open="false"] > .tx-body { display: none; }
+
+.md-typeset .tx-facts > dl {
+  display: grid;
+  grid-template-columns: 6.2rem 1fr;
+  gap: 0.4rem 1.1rem;
+  align-items: baseline;
+  font-size: 0.76rem;
+  margin: 0 0 0.9rem;
+}
+
+.md-typeset .tx-facts dt {
+  font-family: var(--ab-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+  padding-top: 0.12rem;
+}
+
+.md-typeset .tx-facts dd {
+  margin: 0;
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .tx-facts dd:first-of-type {
+  color: var(--md-default-fg-color);
+  box-shadow: inset 2px 0 0 var(--hl);
+  padding-left: 0.6rem;
+  margin-left: -0.6rem;
+}
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .tx-facts > dl { grid-template-columns: 1fr; gap: 0.1rem; }
+  .md-typeset .tx-facts dt { padding-top: 0.55rem; }
+  .md-typeset .tx-facts dd:first-of-type { box-shadow: none; padding-left: 0; margin-left: 0; }
+  .md-typeset .tx-node > h2,
+  .md-typeset .tx-toggle { flex-wrap: wrap; gap: 0.2rem 0.5rem; }
+  .md-typeset .tx-node .tx-changes { flex-basis: 100%; }
+  .tx-tree { padding-left: 1rem; }
+  .tx-node::before { left: -1rem; width: 0.6rem; }
+}
+
+/* The operator keeps its place while the branches below it are opened -- without
+ * that, choosing a branch lights a symbol you cannot see, which is the whole
+ * mechanism. It is smaller here than on the home page: there it is the hero, here
+ * it is the legend. */
+.tx-sticky { padding: 1.7rem 1.1rem 1.1rem; }
+
+/* the label moves inside the box: when the plate is pinned under the header, a
+ * label sitting on the top rule would be behind it */
+.tx-sticky::before { top: 0.45rem; left: 0.9rem; padding: 0; }
+.tx-sticky .op-line { font-size: clamp(1.15rem, 3.2vw, 1.6rem); }
+.tx-sticky .op-line--sub { font-size: clamp(0.95rem, 2.6vw, 1.26rem); }
+
+@media screen and (min-width: 76.25em) and (prefers-reduced-motion: no-preference) {
+  .tx-sticky { position: sticky; top: var(--md-header-height, 2.4rem); z-index: 1; }
+}
+
+/* ---- the full static table under the tree ------------------------------- */
+
+.md-typeset .tx-all-wrap { overflow-x: auto; }
+
+/* Material turns tables into their own scroll wrapper with JavaScript; without it
+ * the bare table collapses its last columns, so the display is set here and the
+ * wrapper above does the scrolling in both cases -- a safety net for the phone
+ * layout, where no six-column table fits anything. */
+.md-typeset .tx-all-wrap table:not([class]) {
+  display: table;
+  width: 100%;
+  font-size: 0.68rem;
+}
+
+/* The three declaration booleans used to be three columns, and their three headers
+ * -- CAUSAL WEIGHTS STOCHASTIC, uppercase and letter-spaced -- were most of the
+ * ~220px by which the table overran the page. They are one `declares` column now;
+ * everything to the right of the sentence still takes only what it needs. */
+.md-typeset .tx-all-wrap th:nth-child(n+3),
+.md-typeset .tx-all-wrap td:nth-child(n+3) {
+  width: 1%;
+  min-width: 0;                 /* Material puts 5rem on every cell */
+  white-space: nowrap;
+}
+
+/* the sentence takes whatever the other five leave, and this is the floor it wraps
+ * down to -- low enough that the table still fits the tablet layout, where there is
+ * no table of contents but no sidebar gutter either */
+.md-typeset .tx-all-wrap th:nth-child(2),
+.md-typeset .tx-all-wrap td:nth-child(2) { min-width: 12rem; }
+
+/* With scripting on, Material wraps the table in a scroller of its own that bleeds
+ * 0.6rem into the content padding on each side. Inside our overflow box that bleed
+ * is a dozen pixels of scroll range with no content in it -- the wrapper scrolling
+ * when there is nothing to scroll to. The table here is already sized to the column,
+ * so take the bleed back. */
+.md-typeset .tx-all-wrap .md-typeset__scrollwrap { margin-left: 0; margin-right: 0; }
+.md-typeset .tx-all-wrap .md-typeset__table { padding: 0; }
+
+/* `backends` is the one remaining wide column, and only because one method in
+ * thirty-two claims three paths. Letting it wrap costs that row a second line and
+ * returns the width to the sentence. */
+.md-typeset .tx-all-wrap td:last-child {
+  white-space: normal;
+  min-width: 5rem;
+}
+
+.md-typeset .tx-all-wrap th,
+.md-typeset .tx-all-wrap td {
+  padding: 0.4em 0.7em;
+  vertical-align: top;
+}
+
+.md-typeset .tx-all-wrap thead th {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  font-weight: 400;
+  color: var(--ab-faint);
+  background: none;
+  white-space: nowrap;
+}
+
+.md-typeset .tx-all-wrap td:first-child {
+  width: 1%;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+/* ---- the `declares` column, and the key that sits above it ---------------
+ * Letters rather than ticks and crosses: a tick and a cross are the same glyph to
+ * anyone who cannot tell the two colours apart, whereas `c` `w` `s` name themselves
+ * once the key has been read -- and the key is one line above the table, not in the
+ * notes below it. Every row carries all three slots, declared or not, so scanning
+ * the column is reading positions rather than looking things up. */
+.md-typeset .tx-dec,
+.md-typeset abbr.tx-dec {
+  font-family: var(--ab-mono);
+  border-bottom: 0;             /* Material's dotted underline on <abbr> */
+  text-decoration: none;
+  cursor: help;
+}
+
+.md-typeset .tx-all-wrap .tx-dec { margin-right: 0.45em; }
+.md-typeset .tx-all-wrap .tx-dec:last-child { margin-right: 0; }
+
+/* the one place the table says no. Struck *and* faint, so it survives both a
+ * greyscale print and a reader who has turned colour down. The side padding is
+ * load-bearing: a line-through paints across the whole inline box, and without it
+ * the rule stops at the glyph -- a struck `c` is then a passable euro sign. With
+ * the line running past both sides it reads as a letter crossed out. */
+.md-typeset .tx-struck {
+  color: var(--ab-faint);
+  text-decoration: line-through;
+  text-decoration-thickness: from-font;
+}
+
+/* Drawn as a background rule rather than `line-through`, because a line-through
+ * stops at the glyph and a bar drawn exactly across a lowercase `c` is a euro sign.
+ * This one runs the full width of the box, padding included, so it reads as a letter
+ * crossed out at any size. */
+.md-typeset .tx-dec[data-no] {
+  color: var(--ab-faint);
+  cursor: default;
+  padding: 0 0.3em;
+  background-image: linear-gradient(to bottom, transparent 0 46%,
+                                    currentcolor 46% 54%, transparent 54% 100%);
+  background-repeat: no-repeat;
+}
+
+.md-typeset .tx-legend {
+  margin: 0 0 0.6rem;
+  font-size: 0.68rem;
+  line-height: 1.6;
+  color: var(--ab-faint);
+}
+
+.md-typeset .tx-legend strong,
+.md-typeset .tx-legend code { color: var(--md-default-fg-color); }
+
+/* a rule in the category's colour, so the static table is keyed to the tree */
+.md-typeset .tx-all-wrap td [data-cat] {
+  display: inline-block;
+  padding-left: 0.5em;
+  box-shadow: inset 2px 0 0 var(--hl);
+  white-space: nowrap;
+}
+

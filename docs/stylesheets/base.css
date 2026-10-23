@@ -1,0 +1,26 @@
+/* Base typography and the idioms every page shares.
+ *
+ * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
+ * Every colour, size and duration in here comes from a token in tokens.css.
+ */
+
+/* ---- shared idioms ------------------------------------------------------ */
+
+.md-typeset .ab-eyebrow {
+  font-family: var(--ab-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+  margin: 0 0 0.5rem;
+}
+
+/* The page title is set in the monograph's face. Only h1, so the API pages keep
+ * Material's sans for their long identifier headings. */
+.md-typeset h1 {
+  font-family: var(--ab-serif);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--md-default-fg-color);
+}
+

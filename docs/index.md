@@ -115,7 +115,7 @@ every method here declares which it is — and the test suite reads the declarat
 
 ---
 
-## One invariant, held by all 32
+## One invariant, held by all 78
 
 <div class="ab-measure" markdown="1">
 Every method realises, explicitly or implicitly, a measure $\widehat\pi_q$ over context

@@ -144,7 +144,7 @@ Errors are expected to teach:
 ```pycon
 >>> ab.build("topkk")
 UnknownMethodError: unknown method 'topkk'. Did you mean: 'topk'? ab.available() lists
-all 32 registered methods; ab.list_methods() prints them grouped by category.
+all 78 registered methods; ab.list_methods() prints them grouped by category.
 
 >>> ab.build("sinkhorn")(q, k, v, causal=True)
 CausalNotSupportedError: 'sinkhorn' does not support causal attention: it declares
