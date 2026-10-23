@@ -9,6 +9,8 @@ from __future__ import annotations
 import pathlib
 import re
 
+from gen_methods import oracle_names
+
 import attnbank as ab
 
 BLURB = {
@@ -74,6 +76,10 @@ rather than skipping it.
     The tables below come from the live registry, so they cannot drift from the code.
     Regenerate with `python docs/gen_taxonomy.py`; `ab.list_methods()` prints the same
     thing in a terminal.
+
+Every method name links to its own page. To search and filter the whole bank at once —
+by category, objective, causal support, backend — use
+[**Browse the bank**](methods/index.md).
 """
 
 FOOTER = r"""
@@ -98,7 +104,8 @@ is not a dense softmax over a mask. See [Backends](backends.md).
 
 ## Oracles
 
-Three methods — `value_topk`, `nmf_oracle`, `svd_oracle` — are not practical. They are
+Three methods — [`value_topk`](methods/value_topk.md), [`nmf_oracle`](methods/nmf_oracle.md),
+[`svd_oracle`](methods/svd_oracle.md) — are not practical. They are
 **upper bounds on what a mechanism can achieve**, which is exactly what several of the
 monograph's arguments need: you cannot show that top-$k$ selection is suboptimal
 without computing what the optimal selection would have been.
@@ -106,6 +113,7 @@ without computing what the optimal selection would have been.
 
 
 def main() -> None:
+    oracles = oracle_names()
     lines = [HEADER]
     for cat, blurb in BLURB.items():
         lines += [f"\n## `{cat}`\n",
@@ -115,8 +123,12 @@ def main() -> None:
                   "|---|---|---|---|---|---|---|"]
         for r in ab.list_methods(cat):
             flag = lambda b: "yes" if b else "—"       # noqa: E731
+            # the oracles are upper bounds, not methods; say so in every table they
+            # appear in, not only in the section at the foot of the page
+            name = (f"[`{r['name']}`](methods/{r['name']}.md)"
+                    + (" **(oracle)**" if r["name"] in oracles else ""))
             lines.append(
-                f"| `{r['name']}` | {r['objective']} | {flag(r['causal'])} | "
+                f"| {name} | {r['objective']} | {flag(r['causal'])} | "
                 f"{flag(r['expresses_weights'])} | {flag(r['row_stochastic'])} | "
                 f"{', '.join(r['backends'])} | {r['summary']} |")
         lines.append("")

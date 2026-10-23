@@ -163,7 +163,7 @@ FIG_HEIGHT = {
     "fig_rff_bias_variance": 3.48,      # caption 3.34 in
     "fig_roofline": 3.65,               # caption 3.17 in
     "fig_selection_raw_error": 5.35,    # caption 1.46 in
-    "fig_state_scaling": 3.80,          # caption 3.08 in
+    "fig_state_scaling": 3.75,          # caption 3.04 in
     "fig_value_aware_selection": 4.55,  # caption 2.25 in
 }
 

@@ -77,6 +77,7 @@ and float64, is the subject of its own page.
 
 - :material-rocket-launch: **[Quickstart](quickstart.md)** — five minutes, three functions.
 - :material-sitemap: **[The taxonomy](taxonomy.md)** — what each category means and which methods are in it.
+- :material-magnify: **[Browse the bank](methods/index.md)** — all 32, searchable, one page each.
 - :material-check-decagram: **[The invariant](invariant.md)** — the property everything else rests on.
 - :material-test-tube: **[Conformance](conformance.md)** — the eleven checks every method passes.
 - :material-rocket: **[Backends](backends.md)** — `reference`, `sdpa`, `flash_attn`, and why most methods declare only the first.

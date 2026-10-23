@@ -577,7 +577,7 @@ def tab_state_scaling() -> Path:
     nseeds = max(r["n_seeds"] for r in s["recall_grid"])
     nmax, xmax = max(meta["N_grid"]), max(meta["N_grid_extension"])
     slope_txt = "; ".join(
-        f"{REC_PRETTY[m]} {ci(fx[m], 2)}" for m in ("linear_rnn", "delta_rnn"))
+        f"{REC_PRETTY[m]} {ci(fits[m], 2)}" for m in ("linear_rnn", "delta_rnn"))
     body = rf"""\begin{{table}}[tbp]
 \centering
 \caption{{The collapse point against the state rank, under two constructions
@@ -591,18 +591,20 @@ queries, float64, a query gain holding the matched softmax logit at
 feature map $\varphi(k)=\mathrm{{elu}}(k)+1$ on standard Gaussian keys, (b) uses
 $\varphi=\mathrm{{id}}$ on orthonormal keys (the polar factor of a Gaussian, unit-norm
 rows: exactly orthonormal for $N\le d_\varphi$, a unit-norm tight frame beyond it).
-A dash means recall never fell below 0.5 over $N\le{intc(nmax)}$.  In (a) the collapse
-point is flat: $N/S$ at collapse has median {cr6['median']:g} (IQR {cr6['q1']:g} to
-{cr6['q3']:g}, $n={cr6['n']}$) and a {max(ds) // min(ds)}$\times$ larger state buys
+A dash means recall never fell below 0.5 over $N\le{intc(nmax)}$; the one softmax
+entry in (a) is the $d_\varphi=8$ saturation of the Gaussian key code reported in
+\cref{{tab:finite-state}}, which is the embedding and not the operator.  In (a) the
+collapse point is flat: $N/S$ at collapse has median {cr6['median']:.3g} (IQR {cr6['q1']:.3g} to
+{cr6['q3']:.3g}, $n={cr6['n']}$) and a {max(ds) // min(ds)}$\times$ larger state buys
 nothing.  In (b) it tracks the rank one-for-one --- a log--log slope of
 {slope_txt} --- at a load of $N/S$ median {cr['median']:g} (IQR {cr['q1']:g} to
-{cr['q3']:g}, $n={cr['n']}$), so the $O(S)$ scaling of \cref{{prop:memory-rank}} is
+{cr['q3']:g}, $n={cr['n']}$), fitted on the pre-registered grid, so the $O(S)$ scaling
+of \cref{{prop:memory-rank}} is
 exhibited, with a constant above~1 that the proposition does not fix.  Daggered cells
 in (b) come from a labelled post-hoc extension to $N\le{intc(xmax)}$, run only because
 the collapse point at $d_\varphi\ge128$ lies above the pre-registered grid; no
-pre-registered quantity in this table or in \cref{{fig:state-scaling}} uses them, and
-the slope on the pre-registered grid alone is {ci(fits['linear_rnn'], 2)} for the
-linear RNN.  Softmax is the control in both blocks and never collapses
+pre-registered quantity in this table or in \cref{{fig:state-scaling}} uses them;
+including them the linear RNN's slope is {ci(fx['linear_rnn'], 2)}.  Softmax is the control in both blocks and never collapses
 (median recall {num(sc['median'], 2)} in (b)).}}
 \label{{tab:state-scaling}}
 \begin{{tabular}}{{@{{}}l{'r' * len(ds)}@{{}}}}
@@ -1133,34 +1135,30 @@ def cap_fig_state_scaling() -> Path:
     nseeds = max(r["n_seeds"] for r in s["recall_grid"])
     nmax, xmax = max(meta["N_grid"]), max(meta["N_grid_extension"])
     cap = rf"""\textbf{{With the feature map and the key geometry fixed, the collapse
-point tracks the state rank.}}  Panel for panel this is
-\cref{{fig:finite-state-recall}}, on the same construction-form multi-query
-associative recall with exactly two changes: identity features in place of
-$\mathrm{{elu}}(k)+1$, and orthonormal keys in place of Gaussian ones
-(\cref{{tab:state-scaling}} gives the construction and the side-by-side collapse
-points).  Nothing is trained and no real activations are involved, so this is
-capacity and not optimisation.  \emph{{Varied:}} the stored pairs
-$N\in\{{{min(meta['N_grid'])},\dots,{intc(nmax)}\}}$ and the state rank
-$d_\varphi\in\{{{min(ds)},\dots,{max(ds)}\}}$, a state of $d_\varphi\times d_v$ numbers
-with $d_v={meta['dv']}$.  \emph{{Fixed:}} a query gain holding the matched softmax
-logit at {num(meta['matched_logit'], 0)}, up to {meta['max_queries']} queries per
-configuration, float64, seed {meta['seed']}, {nseeds} seeds per cell.
-(a) Median recall with the interquartile band over the {len(ds)} state sizes.  The
-band is wide here precisely because the curves now move with the state; in
+point tracks the state rank.}}  The construction of \cref{{fig:finite-state-recall}}
+with exactly two changes --- identity features in place of $\mathrm{{elu}}(k)+1$, and
+orthonormal keys in place of Gaussian ones; \cref{{tab:state-scaling}} gives it in full
+and sets the two side by side.  Nothing is trained and no real activations are
+involved, so this is capacity and not optimisation.  \emph{{Varied:}}
+$N\in\{{{min(meta['N_grid'])},\dots,{intc(nmax)}\}}$ stored pairs and the state rank
+$d_\varphi\in\{{{min(ds)},\dots,{max(ds)}\}}$ ($d_\varphi\times d_v$ numbers,
+$d_v={meta['dv']}$).  \emph{{Fixed:}} a query gain holding the matched softmax logit at
+{num(meta['matched_logit'], 0)}, up to {meta['max_queries']} queries per configuration,
+float64, seed {meta['seed']}, {nseeds} seeds per cell.
+(a) Median recall with the interquartile band over the {len(ds)} state sizes; the band
+is wide because the curves now move with the state, where in
 \cref{{fig:finite-state-recall}}(a) they lay on top of one another.
-(b) The same sweep for the linear RNN resolved by rank, on the sequential ramp because
-rank is ordered.  Each doubling of $d_\varphi$ shifts the curve one octave to the
-right; plotted against the load $N/S$ the six curves agree to {num(rs, 2)} in recall.
-(c) The collapse point --- the smallest $N$ at which median recall falls below 0.5 ---
-against the rank, with the $N=d_\varphi$ line of \cref{{prop:memory-rank}}.  The fitted
-log--log slope is {ci(fit, 2)} on the pre-registered grid and {ci(fx, 2)} including the
-open markers, which are a labelled post-hoc extension to $N\le{intc(xmax)}$ run only
-because the collapse point at the two largest ranks lies above the pre-registered
-grid.  Collapse occurs at a load of $N/S$ median {cr['median']:g} (IQR {cr['q1']:g} to
-{cr['q3']:g}, $n={cr['n']}$), i.e.\ \emph{{above}} the $N=d_\varphi$ line: recall here
-is scored by nearest stored value, which tolerates interference that exact retrieval
-would not, so what is attained is the proposition's scaling in $S$ and not its
-constant.  Softmax is the control throughout and never collapses (median recall
+(b) The linear RNN by rank, on the sequential ramp because rank is ordered: each
+doubling of $d_\varphi$ shifts the curve one octave, and against the load $N/S$ the six
+curves agree to {num(rs, 2)} in recall.
+(c) The collapse point against the rank, with the $N=d_\varphi$ line of
+\cref{{prop:memory-rank}}: slope {ci(fit, 2)} on the pre-registered grid and
+{ci(fx, 2)} including the open markers, a labelled post-hoc extension to
+$N\le{intc(xmax)}$ run only because the two largest ranks collapse above that grid.
+Collapse is at load $N/S$ median {cr['median']:g} (IQR {cr['q1']:g} to {cr['q3']:g},
+$n={cr['n']}$), i.e.\ \emph{{above}} the line: nearest-value scoring tolerates
+interference that exact retrieval would not, so what is attained is the scaling in $S$
+and not the constant.  Softmax is the control and never collapses (median recall
 {num(sc['median'], 2)}).  Log $x$ in (a) and (b); log--log in (c)."""
     return _figure("cap_fig_state_scaling", "fig:state-scaling", cap,
                    "S9_state_scaling", meta["git_short"])
