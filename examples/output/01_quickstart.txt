@@ -1,0 +1,10 @@
+attend       (2, 4, 256, 64)
+build        AttentionOutput(y=[2, 4, 256, 64], weights=[2, 4, 256, 256], v_hat=None, extras=[chi2, eps, k_realized, scores, support], dtype=float32, device=cpu)
+extras       ['chi2', 'eps', 'k_realized', 'scores', 'support']
+
+method        output err  distributional     value
+softmax         0.00e+00        0.00e+00  0.00e+00
+flash           2.47e-07        1.97e-07  0.00e+00
+topk            7.20e-01        7.20e-01  0.00e+00
+window          1.74e+00        1.74e+00  0.00e+00
+performer       2.20e+00        2.20e+00  0.00e+00

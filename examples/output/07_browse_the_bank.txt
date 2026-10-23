@@ -1,0 +1,63 @@
+THE TAXONOMY -- what each category changes in y(q) = int v dpi_q
+
+  exact        nothing changes but the evaluation: tiling, chunking, precision
+  interaction  the interaction g(q, x) is replaced by a cheaper surrogate
+  restrict     the support of pi_q is restricted to a subset S_q of positions
+  compress     the stored context (mu, k, v) is replaced by a smaller one
+  factorize    pi_q is factored through r latents: pi_q = a(q, .) b(., x)
+  coupling     normalisation stops being per-query; queries are coupled
+  recurrent    the operator itself becomes a finite-state recurrence
+
+
+THE TABLE -- grouped, with the declaration columns that drive the test suite
+factorize -- pi_q is factored through r latents: pi_q = a(q, .) b(., x)
+----------------------------------------------------------------------------------------------------
+method             objective    causal  weights  stoch.  backends   summary
+----------------------------------------------------------------------------------------------------
+clustered          approximate  -       yes      yes     reference  One attention row per query centroid, shared within the cluster.
+latent_stochastic  modify       -       yes      yes     reference  pi_hat = A B with both factors row-stochastic (two-hop attention).
+nmf_oracle         approximate  -       yes      yes     reference  Best nonnegative rank-r factorization of P, renormalized. Oracle.
+svd_oracle         approximate  -       yes      -       reference  Truncated SVD of P: the best signed rank-r factorization. Oracle.
+
+4 methods.  ab.describe(name) for one of them; ab.build(name, **config) to use it.
+
+
+FILTERS -- every question about the bank is one call
+  causal + row-stochastic: ['blocktopk', 'cosformer', 'evict_h2o', 'flash', 'gqa', 'linear_elu', 'lowprec', 'lsh_sample', 'mla', 'performer', 'quantkv', 'sink_window', 'softmax', 'splitk', 'topk', 'value_topk', 'window']
+  a different operator:    ['cosformer', 'decay_rnn', 'delta_rnn', 'gqa', 'latent_stochastic', 'linear_elu', 'linear_rnn', 'lowrank_ot', 'mla', 'sinkhorn']
+  cannot express weights:  []
+
+
+ONE METHOD IN FULL
+
+nystrom  --  interaction / approximate
+======================================
+Landmark Nystrom factorization of the softmax matrix; signed weights.
+
+changes      the interaction g(q, x) is replaced by a cheaper surrogate
+objective    targets fidelity to dense softmax; judged by output error
+causal       no
+weights      yes
+stochastic   no
+heads        independent
+trainable    no
+anchor       limit_config = {'r': None}
+backends     reference   (reference only: no equivalent kernel exists for this operator)
+
+build        ab.build('nystrom', r=16)
+section      sec:kernel
+references   xiong2021nystromformer, williams2001using
+
+
+AND THE CONTRACT, ON DEMAND
+
+nystrom: (r=8) 6 checks passed, 0 failed, 3 not applicable
+  [pass] shapes -- AttentionOutput(y=[2, 2, 6, 6], weights=[2, 2, 6, 12], v_hat=None, extras=[min_weight, n_landmarks, row_sum], dtype=float64, device=cpu)
+  [pass] invariant W -- max |y - W v| = 0.00e+00
+  [n/a ] row stochastic -- row_stochastic = False, by declaration
+  [n/a ] no causal leakage -- supports_causal = False, by declaration
+  [pass] finite at large logits -- q, k scaled by 10
+  [pass] inputs not mutated
+  [pass] reproducible -- two builds agree bit for bit
+  [pass] cost model -- {'flops': 5056, 'state_bytes': 224, 'bytes_moved': 728}
+  [n/a ] exact limit -- skipped (explicit config given)

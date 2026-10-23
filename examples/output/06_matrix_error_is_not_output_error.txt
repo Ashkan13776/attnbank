@@ -1,0 +1,14 @@
+method          ||P-P_hat||_F  ||(P-P_hat)V||  output err
+topk                   1.9747         15.9184      1.3960
+performer              3.9516         30.5337      2.3712
+blocktopk              3.6964         29.7924      2.5930
+sink_window            4.1122         32.0507      2.6565
+window                 4.2208         33.4105      2.7049
+nystrom                4.3802         35.0203      2.8258
+
+ranked by Frobenius: topk < blocktopk < performer < sink_window < window < nystrom
+ranked by output:    topk < performer < blocktopk < sink_window < window < nystrom
+
+Spearman between the two rankings is what study S1 reports across configurations;
+`metrics.spearman` computes it, and `matrix_AV_fro` is the matrix-level norm that
+does control the output.

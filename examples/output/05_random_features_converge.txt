@@ -1,0 +1,10 @@
+     r   performer (approximate)   linear_elu (modify)
+     8                    0.2903                0.0828
+    32                    0.1580                0.0828
+   128                    0.1000                0.0828
+   512                    0.0613                0.0828
+  2048                    0.0317                0.0828
+
+The left column is an approximation converging; the right one is a different
+operator, measured against a target it never claimed. ab.describe('linear_elu')
+says so in the 'objective' field, and the suite exempts it from the anchor.

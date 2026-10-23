@@ -1,0 +1,53 @@
+WHAT THIS MACHINE CAN RUN
+
+attnbank backends on this machine (torch 2.10.0+cu128, cuda yes)
+----------------------------------------------------------------
+reference   available    plain PyTorch; always available; the correctness anchor
+            version: 2.10.0+cu128
+sdpa        available    torch SDPA; CUDA dispatches to FlashAttention-2 or mem-efficient
+            version: 2.10.0+cu128
+flash_attn  unavailable  the flash-attn package; CUDA, fp16/bf16 only
+            reason: the flash_attn package is not installed
+            fix:    pip install 'attnbank[flash]'   # needs CUDA and a C++ toolchain
+xformers    unavailable  memory-efficient attention; detected, deliberately unused
+            reason: no method declares it: torch >= 2.2 already routes `sdpa` to the same memory-efficient kernel, so a second path would add a dependency and a second thing to keep equal to the reference
+            fix:    pip install 'attnbank[xformers]'
+triton      unavailable  hand-written kernels; detected, deliberately unused
+            reason: no method declares it: the bank ships no hand-written kernel, because these implementations are read against the paper (DESIGN.md Sec. 6)  (the package IS installed here)
+
+default: 'reference'.  ab.build(name, backend=...) to choose; ab.backend_matrix() for which method supports which.
+
+
+WHO DECLARES WHAT
+
+  flash       reference, sdpa
+  gqa         reference, sdpa
+  mla         reference, sdpa
+  softmax     reference, sdpa, flash_attn
+
+  reference only (28): blocktopk, clustered, cosformer, decay_rnn, delta_rnn, evict_h2o, evict_snapkv, latent_stochastic, linear_elu, linear_rnn, linformer, lowprec, lowrank_kv, lowrank_ot, lsh_sample, merge_kv, nmf_oracle, nystrom, performer, quantkv, sink_window, sinkhorn, splitk, svd_oracle, topk, trigrff, value_topk, window
+
+  Not a gap in the library -- a fact about the operators. `nmf_oracle` is an
+  oracle factorisation, `merge_kv` is a clustering step, `topk` needs the full
+  score matrix for the omitted mass it reports. None of them is a kernel call.
+
+
+EQUALITY, ON DEMAND
+
+  flash     sdpa        max |y - y_reference| = 8.88e-16
+  gqa       sdpa        max |y - y_reference| = 4.44e-16
+  mla       sdpa        max |y - y_reference| = 1.11e-16
+  softmax   sdpa        max |y - y_reference| = 5.55e-16
+  softmax   flash_attn  skipped: the flash_attn package is not installed
+
+
+NOTHING IS SILENT
+
+  explicit request for an undeclared backend -> BackendNotSupportedError
+    'topk' does not support backend 'sdpa'. It declares: 'reference'. ab.backend_matrix() shows the whole matrix; a method that declares 'reference' only  ...
+
+  asking a fused kernel for the attention weights -> BackendFallbackWarning
+    'softmax': backend 'sdpa' cannot materialise the attention weights; this call falls back to 'reference'. The result is identical -- only the speed is 
+
+  The default is 'reference', and the eight studies pin it explicitly, so no
+  published number can move because a faster path appeared: 'reference'

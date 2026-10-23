@@ -1,0 +1,10 @@
+ budget k        topk  value_topk   ratio
+        2   2.982e+00   2.632e+00    1.13x
+        4   1.841e+00   1.619e+00    1.14x
+        8   9.851e-01   8.258e-01    1.19x
+       16   3.530e-01   2.905e-01    1.22x
+
+Same budget, same inputs, strictly smaller error -- so the selection rule, not
+the budget, is what is being measured. Both are oracles: they see the true
+scores. A deployable selector (blocktopk, lsh_sample, evict_h2o) can only do
+worse than `topk`, which is why `topk` is the right upper bound to quote.

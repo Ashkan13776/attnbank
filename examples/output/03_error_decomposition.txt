@@ -1,0 +1,16 @@
+method                         total  distributional     value
+topk k=16                  1.031e+00       1.031e+00 0.000e+00
+window w=16                2.358e+00       2.358e+00 0.000e+00
+quantkv bits_k=16,bits_v=2 7.239e-01       2.753e-05 7.239e-01
+quantkv bits_k=2,bits_v=16 6.133e-01       6.133e-01 3.566e-05
+mla r=16                   1.563e+00       1.150e+00 9.908e-01
+
+Read the columns, not the totals. Restriction is purely distributional: it keeps the
+values exactly and only moves mass. Quantising values is purely value error.
+Quantising keys produces distributional error instead -- the same total can come from
+two completely different mechanisms, and only the split tells you which.
+
+Which of the two hurts more is a property of the activations, not of the method; on
+real GPT-2 / Qwen2.5 activations it is the keys (study S4, prop:compress-sensitivity).
+On the Gaussian inputs above the two are comparable, which is exactly why the paper
+runs that study on captured activations rather than on torch.randn.
