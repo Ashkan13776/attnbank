@@ -15,7 +15,7 @@ Conventions, applied uniformly:
   is meaningful -- correlations near 1, and the tightness ratios.
 * Fitted exponents carry a 95% CI and the window they were fitted over.
 * Each file is a bare ``table``/``tabular`` for ``\\input``; no section, no float
-  placement beyond ``[t]``, and a ``\\label`` the prose can reference.
+  placement beyond ``[tbp]``, and a ``\\label`` the prose can reference.
 
 Run: ``python -m attnbank.studies.tables``
 """
@@ -91,10 +91,25 @@ def ci(block, nd: int = 3, dash: str = "---") -> str:
     return f"${s:+.{nd}f}$ $[{lo:+.{nd}f}, {hi:+.{nd}f}]$"
 
 
+# The Foundations and Trends text block is 118mm (~4.65in) wide -- a good deal
+# narrower than the 6.5in these tables were first laid out for, and every one of
+# them overflowed it.  Rather than scale the tables (which would put the digits
+# below legibility) each ``tabular`` is emitted at ``\\footnotesize`` with a
+# tightened ``\\tabcolsep``.  Only the type size changes; no cell, column or
+# number is touched, so the provenance of every figure is unaffected.
+_TAB_OPEN = "{\\footnotesize\\setlength{\\tabcolsep}{4pt}%\n\\begin{tabular}"
+
+
+def fit_narrow(body: str) -> str:
+    """Wrap every ``tabular`` in the body so it fits the FnT text block."""
+    return (body.replace("\\begin{tabular}", _TAB_OPEN)
+                .replace("\\end{tabular}", "\\end{tabular}}"))
+
+
 def write(name: str, body: str, src: str, commit: str) -> Path:
     OUT.mkdir(parents=True, exist_ok=True)
     path = OUT / f"{name}.tex"
-    path.write_text(HEADER.format(src=src, commit=commit) + body)
+    path.write_text(HEADER.format(src=src, commit=commit) + fit_narrow(body))
     return path
 
 
@@ -132,7 +147,7 @@ def tab_matrix_vs_output() -> Path:
                    if m in sp["mechanisms"]]
     n_pres = len(sp["mechanisms"]) - len(compressing)
     comp_tex = ", ".join(r"\texttt{" + m.replace("_", r"\_") + "}" for m in compressing)
-    body = rf"""\begin{{table}}[t]
+    body = rf"""\begin{{table}}[tbp]
 \centering
 \caption{{How well each matrix norm predicts the output error (S1).  Spearman
 $\rho$ between the norm and $\|Y-\widehat Y\|_F$ over
@@ -200,7 +215,7 @@ def tab_selection() -> Path:
     lines = lines[:-1]
     ex = s["exhaustive_check"]
     idn = s["identity"]
-    body = rf"""\begin{{table}}[t]
+    body = rf"""\begin{{table}}[tbp]
 \centering
 \caption{{Output-aware selection at equal budget (S2).  Every row is paired against
 score top-$k$ at the \emph{{same}} $k$ and the same (layer, head, passage), so the ratio
@@ -239,7 +254,7 @@ def tab_omitted_mass() -> Path:
         rows.append(f"{k} & {num(d['median'], 3)} & {num(d['q1'], 3)} & "
                     f"{num(d['q3'], 3)} & {sci(d['p05'])} & {num(d['p95'], 2)} & "
                     f"{sci(d['ratio_p95_p05'], 1)} \\\\")
-    body = rf"""\begin{{table}}[t]
+    body = rf"""\begin{{table}}[tbp]
 \centering
 \caption{{Heterogeneity of the omitted mass $\varepsilon_q$ across heads (S2).
 One value per (layer, head, passage) unit, {intc(sp[sorted(sp, key=int)[0]]['n'])}
@@ -284,7 +299,7 @@ def tab_rff_exponents() -> Path:
             f"{num(f['sd_slope_asymptotic'].get('r2'), 3)} \\\\")
     neg = s["trigrff_negative_normaliser"]
     xo = s["logit_scale"]["crossover"]["gpt2/wikitext103"]["performer_orth"]
-    body = rf"""\begin{{table}}[t]
+    body = rf"""\begin{{table}}[tbp]
 \centering
 \caption{{Measured rates for the FAVOR+ ratio estimator (S3), ``performer'' with
 orthogonal features.  Bias and standard deviation of $\widehat y - y$ over
@@ -349,7 +364,7 @@ def tab_quant_grid() -> Path:
         blocks.append(r"\addlinespace")
     blocks = blocks[:-1]
     t = s["tanh_bound"]
-    body = rf"""\begin{{table}}[t]
+    body = rf"""\begin{{table}}[tbp]
 \centering
 \caption{{The $b_K\times b_V$ quantisation grid (S4): median relative output error
 $\|y-\widehat y\|/\|y\|$ over (layer, head, passage) units, per-token grouping with
@@ -406,7 +421,7 @@ def tab_factorization() -> Path:
         rrows.append(f"{pretty[m]} & " + " & ".join(cells) + r" \\")
     excl = sorted({int(r) for src in gap
                    for r in gap[src].get("r_excluded_exact_reconstruction", [])})
-    body = rf"""\begin{{table}}[t]
+    body = rf"""\begin{{table}}[tbp]
 \centering
 \caption{{The nonnegative-rank penalty (S5).  Top: the ratio of the NMF oracle's
 Frobenius residual $\|P-WH\|_F$ to the SVD oracle's at the same latent dimension $r$,
@@ -478,7 +493,7 @@ def tab_finite_state() -> Path:
     tr_N = sorted({r["N"] for r in tr})
     tr_small = float(np.median([r["recall"] for r in tr if r["N"] == tr_N[0]]))
     tr_large = float(np.median([r["recall"] for r in tr if r["N"] == tr_N[-1]]))
-    body = rf"""\begin{{table}}[t]
+    body = rf"""\begin{{table}}[tbp]
 \centering
 \caption{{Where recall collapses (S6).  Each cell is the smallest number of stored
 key--value pairs $N$ at which median recall falls below 0.5, for a state of rank
@@ -534,7 +549,7 @@ def tab_ot_tilt() -> Path:
             f"{num(d['output_error']['median'], 2)} & {intc(d['tv_vs_softmax']['n'])} \\\\")
     pot = s["potential"]
     ti = s["tilt_identity"]
-    body = rf"""\begin{{table}}[t]
+    body = rf"""\begin{{table}}[tbp]
 \centering
 \caption{{Entropic-OT attention as a tilt of softmax (S7).  Sinkhorn run to
 convergence with uniform marginals on $n=m=256$ non-causal slices of GPT-2 small and
@@ -589,7 +604,7 @@ def tab_cost_model() -> Path:
             f"{intc(r['bytes_per_token'])} & {num(v.get('bytes_x_MHA16'), 3)} & "
             f"{intc(r['flops_decode'])} & {num(r['intensity_decode'], 2)} \\\\")
     roofs = s["roofs"]
-    body = rf"""\begin{{table}}[t]
+    body = rf"""\begin{{table}}[tbp]
 \centering
 \caption{{Analytic KV-cache cost model (S8), from \texttt{{cost()}}: $H={meta['heads']}$
 heads, $d={meta['d']}$, $d_v={meta['dv']}$, context $n={intc(base['n'])}$, one layer.
@@ -653,7 +668,7 @@ def tab_roofline() -> Path:
         f"{pct(sd['decode_cache_resident']['frac_of_bandwidth_roof']['q3'])} \\\\",
     ]
     aiu = s["arithmetic_is_unchanged"]
-    body = rf"""\begin{{table}}[t]
+    body = rf"""\begin{{table}}[tbp]
 \centering
 \caption{{Measured roofline position of \texttt{{F.scaled\_dot\_product\_attention}}
 (S8).  One GPU ({roofs['gpu_name']}), bf16, $H={meta['heads']}$, $d=d_v={meta['d']}$,
@@ -729,7 +744,7 @@ def _figure(name: str, label: str, caption: str, src: str, commit: str,
             width: str = r"\textwidth") -> Path:
     FIGCAP.mkdir(parents=True, exist_ok=True)
     body = (FIG_HEADER.format(src=src, commit=commit, name=name)
-            + "\\begin{figure}[t]\n\\centering\n"
+            + "\\begin{figure}[tbp]\n\\centering\n"
             f"\\includegraphics[width={width}]{{{name.replace('cap_', '')}}}\n"
             f"\\caption{{{caption.strip()}}}\n\\label{{{label}}}\n\\end{{figure}}\n")
     path = FIGCAP / f"{name}.tex"
@@ -796,7 +811,9 @@ $k={k0}$ the middle 90\% of the {intc(spk['n'])} heads spans
 (b) \cref{{prop:sparse-identity}} on the diagonal: measured $\|y-\widehat y\|$ against
 the predicted $\|\varepsilon_q(m_{{S^c}}-m_S)\|$, one point per (head, $k$).  The worst
 residual over {intc(idn['n_rows'])} queries is {sci(idn['max_residual_over_y'])} of
-$\|y\|$ and the median {sci(idn['median_residual_over_y'])}, i.e.\ float64 roundoff.
+$\|y\|$ and the median {sci(idn['median_residual_over_y'])}, i.e.\ float64 roundoff;
+the identity was checked at a tolerance of {sci(idn['tolerance'])} and held in every
+one of the {intc(idn['n_checks'])} checks.
 The panel is clipped on the left at $10^{{-14}}$, where $\varepsilon_q$ has underflowed
 and both sides are noise; the count of points outside is printed in the panel.  Both
 axes logarithmic."""
@@ -869,8 +886,8 @@ layers, two passages each) and a matched Gaussian control ---
 {_slices(meta)['n_slices']} slices, {_slices(meta)['n_units']} heads.
 (a) and (b) plot the RMS over heads of the per-seed standard deviation and of the
 bias, with the power law fitted over the pre-registered asymptotic window
-$r\ge{meta['r_fit_min']}$ drawn dashed and the fitted exponent with its 95\% CI
-annotated.  On the Gaussian control the variance exponent is
+$r\ge{meta['r_fit_min']}$ drawn dashed and the fitted exponent annotated; its
+95\% CI is in \cref{{tab:rff-exponents}}.  On the Gaussian control the variance exponent is
 {num(syn['slope'], 3)} against the predicted $-1/2$ ($R^2$ {num(syn['r2'], 4)}); on
 GPT-2 small it is {num(g2['slope'], 3)}, because the FAVOR+ relative variance
 $e^{{\|\tilde q+\tilde k\|^2}}$ is heavy-tailed on trained activations and no affordable
@@ -968,6 +985,9 @@ def cap_fig_finite_state_recall() -> Path:
     el = s["embedding_limit"]
     sc = s["softmax_control"]
     ds = list(meta["d_grid"])
+    # panel (b) drops the smallest state rank (see S6_finite_state_recall), so its
+    # span is not the span of the whole sweep -- the two disagreed in print.
+    ds_shown = [d for d in ds if d != min(ds)]
     cap = rf"""\textbf{{Finite state bounds recall --- but the bound is not attained.}}
 Multi-query associative recall in the \emph{{construction}} form, so that the result is
 about capacity and not about optimisation: $N$ key--value pairs are embedded as random
@@ -990,8 +1010,10 @@ throughout; at $d_\varphi=8$ softmax itself falls to
 {num(el['by_d']['8']['min_recall'], 2)}, which measures the embedding and not the
 operator, so that column is excluded from the control.
 (b) The same sweep for the linear RNN resolved by state size, on the sequential ramp
-because state size is an ordered variable.  The curves do not separate: a
-{max(ds) // min(ds)}$\times$ larger state buys no extra associations here.
+because state size is an ordered variable; $d_\varphi={min(ds)}$ is omitted because the
+random key code is not separable there even for softmax, so a low recall would measure
+the embedding rather than the operator.  The curves do not separate: a
+{max(ds) // min(ds_shown)}$\times$ larger state buys no extra associations here.
 (c) Why that matters.  The collapse point --- the smallest $N$ at which median recall
 falls below 0.5 --- is flat in $d_\varphi$ while the $N=d_\varphi$ bound of
 \cref{{prop:memory-rank}} rises {max(ds) // min(ds)}$\times$ across the sweep.  The
