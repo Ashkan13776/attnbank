@@ -129,8 +129,12 @@ class MethodInfo:
             + ("" if self.expresses_weights else
                "   (excluded from the error decomposition, by declaration)"),
             f"stochastic   {_FLAG[self.row_stochastic]}",
+            # Why the heads are coupled differs by method -- gqa and mla share K/V
+            # across query heads, evict_adakv splits one eviction budget between
+            # them and shares nothing -- so the line states the declaration and
+            # leaves the mechanism to the method's own docstring.
             "heads        " + ("independent" if self.head_independent
-                               else "coupled (shares K/V across query heads)"),
+                               else "coupled (not computed one head at a time)"),
             f"trainable    {_FLAG[self.trainable]}",
             f"anchor       {anchor}",
             f"backends     {', '.join(self.backends)}"
