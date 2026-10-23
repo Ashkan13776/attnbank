@@ -1,4 +1,6 @@
-# `gqa`
+# Grouped-query attention
+
+<p class="tx-regkey"><code>gqa</code> &middot; <code>ab.build("gqa")</code></p>
 
 **Grouped-query attention: K and V shared across groups of query heads.**
 

@@ -1,4 +1,6 @@
-# `softmax`
+# Dense softmax attention
+
+<p class="tx-regkey"><code>softmax</code> &middot; <code>ab.build("softmax")</code></p>
 
 **Dense softmax attention: the reference operator, y(q) = sum_j pi_q(j) v_j.**
 

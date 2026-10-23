@@ -1,4 +1,6 @@
-# `blocktopk`
+# Quest-style page / block selection
+
+<p class="tx-regkey"><code>blocktopk</code> &middot; <code>ab.build("blocktopk")</code></p>
 
 **Quest-style page / block selection: restriction at block granularity.**
 

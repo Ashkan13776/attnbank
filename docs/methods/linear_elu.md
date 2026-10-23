@@ -1,4 +1,6 @@
-# `linear_elu`
+# Linear transformer
+
+<p class="tx-regkey"><code>linear_elu</code> &middot; <code>ab.build("linear_elu")</code></p>
 
 **Linear transformer: the fixed feature map `phi(u) = elu(u) + 1`.**
 

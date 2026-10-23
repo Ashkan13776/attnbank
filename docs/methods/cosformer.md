@@ -1,4 +1,6 @@
-# `cosformer`
+# cosFormer
+
+<p class="tx-regkey"><code>cosformer</code> &middot; <code>ab.build("cosformer")</code></p>
 
 **CosFormer: ReLU features with a cosine re-weighting.**
 

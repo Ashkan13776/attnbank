@@ -1,4 +1,6 @@
-# `flash`
+# FlashAttention
+
+<p class="tx-regkey"><code>flash</code> &middot; <code>ab.build("flash")</code></p>
 
 **FlashAttention: tiled online softmax (`sec:exact`, `sec:exact-tiling`).**
 

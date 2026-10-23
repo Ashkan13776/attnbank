@@ -1,4 +1,6 @@
-# `lowrank_kv`
+# Hidden-dimension low rank
+
+<p class="tx-regkey"><code>lowrank_kv</code> &middot; <code>ab.build("lowrank_kv")</code></p>
 
 **Hidden-dimension low rank: truncated SVD of the key and value channel matrices.**
 

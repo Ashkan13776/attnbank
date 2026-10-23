@@ -1,4 +1,6 @@
-# `linear_rnn`
+# Linear attention as a recurrence
+
+<p class="tx-regkey"><code>linear_rnn</code> &middot; <code>ab.build("linear_rnn")</code></p>
 
 **Linear attention as a recurrence: H_t = H_{t-1} + psi(k_t) v_t^T.**
 

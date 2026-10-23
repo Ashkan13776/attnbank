@@ -1,4 +1,6 @@
-# `performer`
+# Performer / FAVOR+
+
+<p class="tx-regkey"><code>performer</code> &middot; <code>ab.build("performer")</code></p>
 
 **Performer / FAVOR+: positive random features for the exponential kernel.**
 

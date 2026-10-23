@@ -1,4 +1,6 @@
-# `lsh_sample`
+# LSH importance sampling
+
+<p class="tx-regkey"><code>lsh_sample</code> &middot; <code>ab.build("lsh_sample")</code></p>
 
 **LSH importance sampling: MagicPIG-style key sampling with unbiased reweighting.**
 

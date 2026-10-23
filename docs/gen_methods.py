@@ -160,10 +160,30 @@ def _dashes(text: str) -> str:
     return "`".join(parts)
 
 
+#: Any Sphinx role, not only ``:class:`` -- the docstrings also use ``:func:``,
+#: ``:mod:``, ``:meth:`` and ``:attr:``. The leading ``~`` (Sphinx's "print only the
+#: last component") is dropped rather than honoured: the surrounding prose names the
+#: object the way the docstring wrote it, so the full dotted path is what belongs in
+#: the code span.
+_ROLE = re.compile(r":\w+:`~?([^`]+)`")
+
+
+def strip_roles(text: str) -> str:
+    """Sphinx roles to plain code spans, the one definition of that translation.
+
+    These pages are not the only ones rendered from these docstrings: the API
+    reference is produced by mkdocstrings straight from the source, and its numpy
+    parser has no idea what an RST role is. ``docs/griffe_roles.py`` imports this
+    function and runs it over every docstring as griffe loads it, so the API pages
+    say what these pages say. Keep it here, and keep it the only copy -- two
+    substitutions would be two renderings of the same docstring.
+    """
+    return _ROLE.sub(r"`\1`", text)
+
+
 def rst_to_md(text: str) -> str:
     text = re.sub(r"``([^`]+)``", r"`\1`", text)
-    # any Sphinx role, not only :class: -- the method docstrings also use :func:
-    text = re.sub(r":\w+:`~?([^`]+)`", r"`\1`", text)
+    text = strip_roles(text)
     text = re.sub(r"::\s*$", ":", text, flags=re.M)
     text = _enumerations(text)
     return _dashes(_fence_blocks(text))
@@ -520,7 +540,11 @@ def page(name: str, bib: dict, oracles: tuple) -> str:
     extras = extras_keys(name)
     is_oracle = name in oracles
 
-    out = [f"# `{name}`", ""]
+    # H1 is the human name, matching the sidebar and the browser; the registry key
+    # follows immediately, because that is the string you pass to ab.build().
+    out = [f"# {display_name(name)}", "",
+           f'<p class="tx-regkey"><code>{name}</code> &middot; '
+           f'<code>ab.build("{name}")</code></p>', ""]
     if is_oracle:
         out += [
             '!!! danger "Oracle — an upper bound, not a method"',
@@ -884,6 +908,19 @@ def _escape(text: str) -> str:
 # ---------------------------------------------------------------------------
 # nav
 # ---------------------------------------------------------------------------
+def _yaml_key(label: str) -> str:
+    """A nav label as a YAML mapping key, quoted only when it has to be.
+
+    ``display_name`` returns the head of the docstring lede, so in practice the names
+    are plain -- but a future method is free to be called something with a colon in
+    it, and a generator that can emit a broken ``mkdocs.yml`` is a generator that
+    will.
+    """
+    if re.search(r":(\s|$)|\s#|^[-?:,\[\]{}#&*!|>'\"%@`]", label):
+        return '"' + label.replace("\\", "\\\\").replace('"', '\\"') + '"'
+    return label
+
+
 def rewrite_nav(oracles: tuple) -> None:
     path = ROOT / "mkdocs.yml"
     text = path.read_text()
@@ -896,9 +933,16 @@ def rewrite_nav(oracles: tuple) -> None:
         if not names:
             continue
         block.append(f"      - {cat}:")
-        for n in names:
-            label = f"{n} (oracle)" if n in oracles else n
-            block.append(f"          - {label}: methods/{n}.md")
+        # the name a reader would say, as on the page's own heading and in the
+        # browser -- not the registry key. The key stays in the URL: it is what goes
+        # into ``ab.build(...)``, it is what the monograph links to, and it is printed
+        # under the name on every page that shows one. ``ab.available`` sorts by key,
+        # which is no longer the order these read in, so sort by what is shown.
+        for n in sorted(names, key=lambda k: display_name(k).lower()):
+            label = display_name(n)
+            if n in oracles:
+                label += " (oracle)"
+            block.append(f"          - {_yaml_key(label)}: methods/{n}.md")
     head, _, rest = text.partition(NAV_BEGIN)
     _, _, tail = rest.partition(NAV_END)
     path.write_text(head + NAV_BEGIN + "\n" + "\n".join(block) + "\n" + NAV_END + tail)

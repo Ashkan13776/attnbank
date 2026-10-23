@@ -1,4 +1,6 @@
-# `trigrff`
+# Random Fourier features for attention
+
+<p class="tx-regkey"><code>trigrff</code> &middot; <code>ab.build("trigrff")</code></p>
 
 **Random Fourier features for attention: the trigonometric (signed) estimator.**
 

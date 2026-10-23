@@ -1,4 +1,6 @@
-# `latent_stochastic`
+# Latent stochastic factorization
+
+<p class="tx-regkey"><code>latent_stochastic</code> &middot; <code>ab.build("latent_stochastic")</code></p>
 
 **Latent stochastic factorization: two Markov kernels through r latents.**
 

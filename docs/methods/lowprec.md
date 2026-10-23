@@ -1,4 +1,6 @@
-# `lowprec`
+# Low-precision attention
+
+<p class="tx-regkey"><code>lowprec</code> &middot; <code>ab.build("lowprec")</code></p>
 
 **Low-precision attention: simulated FP8 / INT8 logits and values.**
 

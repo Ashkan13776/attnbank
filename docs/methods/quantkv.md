@@ -1,4 +1,6 @@
-# `quantkv`
+# KV-cache quantization
+
+<p class="tx-regkey"><code>quantkv</code> &middot; <code>ab.build("quantkv")</code></p>
 
 **KV-cache quantization: uniform affine (asymmetric) quantization of keys and values.**
 

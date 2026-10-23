@@ -1,4 +1,6 @@
-# `evict_h2o`
+# H2O
+
+<p class="tx-regkey"><code>evict_h2o</code> &middot; <code>ab.build("evict_h2o")</code></p>
 
 **H2O: accumulated-attention heavy-hitter eviction plus a recent window.**
 

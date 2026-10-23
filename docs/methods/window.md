@@ -1,4 +1,6 @@
-# `window`
+# Sliding-window (banded) attention
+
+<p class="tx-regkey"><code>window</code> &middot; <code>ab.build("window")</code></p>
 
 **Sliding-window (banded) attention: a query-position-dependent, content-free support.**
 

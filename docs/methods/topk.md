@@ -1,4 +1,6 @@
-# `topk`
+# Oracle top-k restriction
+
+<p class="tx-regkey"><code>topk</code> &middot; <code>ab.build("topk")</code></p>
 
 **Oracle top-k restriction: the `k` largest true scores, renormalized.**
 

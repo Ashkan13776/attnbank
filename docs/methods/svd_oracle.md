@@ -1,4 +1,6 @@
-# `svd_oracle`
+# Signed rank bound
+
+<p class="tx-regkey"><code>svd_oracle</code> &middot; <code>ab.build("svd_oracle")</code></p>
 
 !!! danger "Oracle — an upper bound, not a method"
     `svd_oracle` is not deployable and is not meant to be. It uses information no

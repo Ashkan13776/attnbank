@@ -54,6 +54,12 @@ plugins:
         python:
           paths: [.]
           options:
+            # The docstrings are RST and stay RST -- they are read against the
+            # monograph. numpy parsing does not translate ``:func:`x``` and friends,
+            # so this extension does, reusing gen_methods.strip_roles so the API
+            # pages and the generated method pages render a role the same way.
+            extensions:
+              - docs/griffe_roles.py:SphinxRoles
             docstring_style: numpy
             show_source: true
             show_root_heading: true
@@ -111,44 +117,44 @@ nav:
   - Browse the bank:
       - methods/index.md
       - exact:
-          - flash: methods/flash.md
-          - lowprec: methods/lowprec.md
-          - softmax: methods/softmax.md
-          - splitk: methods/splitk.md
+          - Dense softmax attention: methods/softmax.md
+          - FlashAttention: methods/flash.md
+          - Low-precision attention: methods/lowprec.md
+          - Split-K / Flash-Decoding: methods/splitk.md
       - interaction:
-          - cosformer: methods/cosformer.md
-          - linear_elu: methods/linear_elu.md
-          - nystrom: methods/nystrom.md
-          - performer: methods/performer.md
-          - trigrff: methods/trigrff.md
+          - cosFormer: methods/cosformer.md
+          - Linear transformer: methods/linear_elu.md
+          - Nystromformer: methods/nystrom.md
+          - Performer / FAVOR+: methods/performer.md
+          - Random Fourier features for attention: methods/trigrff.md
       - restrict:
-          - blocktopk: methods/blocktopk.md
-          - lsh_sample: methods/lsh_sample.md
-          - sink_window: methods/sink_window.md
-          - topk: methods/topk.md
-          - value_topk (oracle): methods/value_topk.md
-          - window: methods/window.md
+          - LSH importance sampling: methods/lsh_sample.md
+          - Oracle top-k restriction: methods/topk.md
+          - Output-aware selection (oracle): methods/value_topk.md
+          - Quest-style page / block selection: methods/blocktopk.md
+          - Sliding-window (banded) attention: methods/window.md
+          - StreamingLLM: methods/sink_window.md
       - compress:
-          - evict_h2o: methods/evict_h2o.md
-          - evict_snapkv: methods/evict_snapkv.md
-          - gqa: methods/gqa.md
-          - linformer: methods/linformer.md
-          - lowrank_kv: methods/lowrank_kv.md
-          - merge_kv: methods/merge_kv.md
-          - mla: methods/mla.md
-          - quantkv: methods/quantkv.md
+          - Grouped-query attention: methods/gqa.md
+          - H2O: methods/evict_h2o.md
+          - Hidden-dimension low rank: methods/lowrank_kv.md
+          - KV-cache quantization: methods/quantkv.md
+          - Linformer: methods/linformer.md
+          - Multi-head latent attention: methods/mla.md
+          - SnapKV: methods/evict_snapkv.md
+          - Token merging: methods/merge_kv.md
       - factorize:
-          - clustered: methods/clustered.md
-          - latent_stochastic: methods/latent_stochastic.md
-          - nmf_oracle (oracle): methods/nmf_oracle.md
-          - svd_oracle (oracle): methods/svd_oracle.md
+          - Clustered attention: methods/clustered.md
+          - Latent stochastic factorization: methods/latent_stochastic.md
+          - Nonnegative rank bound (oracle): methods/nmf_oracle.md
+          - Signed rank bound (oracle): methods/svd_oracle.md
       - coupling:
-          - lowrank_ot: methods/lowrank_ot.md
-          - sinkhorn: methods/sinkhorn.md
+          - LOTFormer-style factored coupling: methods/lowrank_ot.md
+          - Sinkhorn / entropic-OT attention: methods/sinkhorn.md
       - recurrent:
-          - decay_rnn: methods/decay_rnn.md
-          - delta_rnn: methods/delta_rnn.md
-          - linear_rnn: methods/linear_rnn.md
+          - Decayed linear recurrence: methods/decay_rnn.md
+          - DeltaNet: methods/delta_rnn.md
+          - Linear attention as a recurrence: methods/linear_rnn.md
   # --- end generated ---
   - The invariant: invariant.md
   - Conformance: conformance.md

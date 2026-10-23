@@ -1,4 +1,6 @@
-# `merge_kv`
+# Token merging
+
+<p class="tx-regkey"><code>merge_kv</code> &middot; <code>ab.build("merge_kv")</code></p>
 
 **Token merging: a pushforward compression of the context measure.**
 

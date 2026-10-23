@@ -242,60 +242,66 @@ rather than skipping it.
 
 All 32 of them, grouped by the object they change. This is the same content as the branches above, flattened — regenerated from `ab.list_methods()`, and the view that works whatever your browser is doing.
 
+<p class="tx-legend" markdown="1">**`declares`** &mdash; <abbr class="tx-dec" title="causal">c</abbr>&#8201;causal, <abbr class="tx-dec" title="names its weights on the original positions">w</abbr>&#8201;names its weights on the original positions, <abbr class="tx-dec" title="row-stochastic">s</abbr>&#8201;row-stochastic. A letter <span class="tx-struck">struck through</span> is the method declaring it does <em>not</em>.</p>
+
 <div class="tx-all-wrap" markdown="1">
 
-| method | what it is | category | objective | causal | weights | stochastic | backends |
-|---|---|---|---|---|---|---|---|
-| [`flash`](methods/flash.md) | Single-pass left fold of the online-softmax monoid over key blocks. | <span data-cat="exact">`exact`</span> | accelerate | yes | yes | yes | reference, sdpa |
-| [`lowprec`](methods/lowprec.md) | Quantize--dequantize `q, k, v` (and optionally `P`) inside the kernel. | <span data-cat="exact">`exact`</span> | approximate | yes | yes | yes | reference |
-| [`softmax`](methods/softmax.md) | Dense softmax attention (Vaswani et al., 2017); the reference operator. | <span data-cat="exact">`exact`</span> | accelerate | yes | yes | yes | reference, sdpa, flash_attn |
-| [`splitk`](methods/splitk.md) | Two-level reduction: per-chunk states, then one merge. | <span data-cat="exact">`exact`</span> | accelerate | yes | yes | yes | reference |
-| [`cosformer`](methods/cosformer.md) | `relu` features times `cos(pi (i - j) / 2M)`. | <span data-cat="interaction">`interaction`</span> | modify | yes | yes | yes | reference |
-| [`linear_elu`](methods/linear_elu.md) | `phi(u) = elu(u) + 1`, normalized separable attention. | <span data-cat="interaction">`interaction`</span> | modify | yes | yes | yes | reference |
-| [`nystrom`](methods/nystrom.md) | Landmark Nystrom factorization of the softmax matrix; signed weights. | <span data-cat="interaction">`interaction`</span> | approximate | — | yes | — | reference |
-| [`performer`](methods/performer.md) | FAVOR+ positive random features, optionally orthogonal. | <span data-cat="interaction">`interaction`</span> | approximate | yes | yes | yes | reference |
-| [`trigrff`](methods/trigrff.md) | Rahimi--Recht trigonometric random features; signed, unnormalized measure. | <span data-cat="interaction">`interaction`</span> | approximate | yes | yes | — | reference |
-| [`blocktopk`](methods/blocktopk.md) | Page-level selection by an upper bound on the page's scores. | <span data-cat="restrict">`restrict`</span> | approximate | yes | yes | yes | reference |
-| [`lsh_sample`](methods/lsh_sample.md) | Self-normalized importance sampling over a score-monotone proposal. | <span data-cat="restrict">`restrict`</span> | approximate | yes | yes | yes | reference |
-| [`sink_window`](methods/sink_window.md) | `s` initial sinks plus a left window of width `w`. | <span data-cat="restrict">`restrict`</span> | approximate | yes | yes | yes | reference |
-| [`topk`](methods/topk.md) | Exact top-k selection on the true scores (an oracle for proxy selectors). | <span data-cat="restrict">`restrict`</span> | approximate | yes | yes | yes | reference |
-| [`value_topk`](methods/value_topk.md) **(oracle)** | Greedy (or exhaustive) output-aware support selection. Oracle. | <span data-cat="restrict">`restrict`</span> | approximate | yes | yes | yes | reference |
-| [`window`](methods/window.md) | Left sliding window of width `w`, always including the diagonal. | <span data-cat="restrict">`restrict`</span> | approximate | yes | yes | yes | reference |
-| [`evict_h2o`](methods/evict_h2o.md) | Online heavy-hitter eviction with a protected recent window. | <span data-cat="compress">`compress`</span> | approximate | yes | yes | yes | reference |
-| [`evict_snapkv`](methods/evict_snapkv.md) | Observation-window scoring with pooled, budgeted selection. | <span data-cat="compress">`compress`</span> | approximate | — | yes | yes | reference |
-| [`gqa`](methods/gqa.md) | Mean-pool K and V within groups of query heads. | <span data-cat="compress">`compress`</span> | modify | yes | yes | yes | reference, sdpa |
-| [`linformer`](methods/linformer.md) | Random (or identity) sequence-axis projections of K and V. | <span data-cat="compress">`compress`</span> | approximate | — | yes | — | reference |
-| [`lowrank_kv`](methods/lowrank_kv.md) | Truncated SVD of the key and/or value channel matrices. | <span data-cat="compress">`compress`</span> | approximate | — | yes | yes | reference |
-| [`merge_kv`](methods/merge_kv.md) | Cluster keys and values, merge with proportional (pushforward) mass. | <span data-cat="compress">`compress`</span> | approximate | — | yes | yes | reference |
-| [`mla`](methods/mla.md) | Joint low-rank KV latent shared by all heads. | <span data-cat="compress">`compress`</span> | modify | yes | yes | yes | reference, sdpa |
-| [`quantkv`](methods/quantkv.md) | Uniform affine quantization of the key and value caches. | <span data-cat="compress">`compress`</span> | approximate | yes | yes | yes | reference |
-| [`clustered`](methods/clustered.md) | One attention row per query centroid, shared within the cluster. | <span data-cat="factorize">`factorize`</span> | approximate | — | yes | yes | reference |
-| [`latent_stochastic`](methods/latent_stochastic.md) | pi_hat = A B with both factors row-stochastic (two-hop attention). | <span data-cat="factorize">`factorize`</span> | modify | — | yes | yes | reference |
-| [`nmf_oracle`](methods/nmf_oracle.md) **(oracle)** | Best nonnegative rank-r factorization of P, renormalized. Oracle. | <span data-cat="factorize">`factorize`</span> | approximate | — | yes | yes | reference |
-| [`svd_oracle`](methods/svd_oracle.md) **(oracle)** | Truncated SVD of P: the best signed rank-r factorization. Oracle. | <span data-cat="factorize">`factorize`</span> | approximate | — | yes | — | reference |
-| [`lowrank_ot`](methods/lowrank_ot.md) | Doubly stochastic, rank-<= r attention through a pivot measure. | <span data-cat="coupling">`coupling`</span> | modify | — | yes | yes | reference |
-| [`sinkhorn`](methods/sinkhorn.md) | Entropic-OT attention: Sinkhorn normalization of exp(s) to prescribed marginals. | <span data-cat="coupling">`coupling`</span> | modify | — | yes | yes | reference |
-| [`decay_rnn`](methods/decay_rnn.md) | Fixed exponential decay on the recurrent state. | <span data-cat="recurrent">`recurrent`</span> | modify | yes | yes | — | reference |
-| [`delta_rnn`](methods/delta_rnn.md) | Delta-rule (Widrow--Hoff) fast-weight memory. | <span data-cat="recurrent">`recurrent`</span> | modify | yes | yes | — | reference |
-| [`linear_rnn`](methods/linear_rnn.md) | Additive linear recurrence with an unnormalized readout. | <span data-cat="recurrent">`recurrent`</span> | modify | yes | yes | — | reference |
+| method | what it is | category | objective | declares | backends |
+|---|---|---|---|---|---|
+| [`flash`](methods/flash.md) | Single-pass left fold of the online-softmax monoid over key blocks. | <span data-cat="exact">`exact`</span> | accelerate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference, sdpa |
+| [`lowprec`](methods/lowprec.md) | Quantize--dequantize `q, k, v` (and optionally `P`) inside the kernel. | <span data-cat="exact">`exact`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`softmax`](methods/softmax.md) | Dense softmax attention (Vaswani et al., 2017); the reference operator. | <span data-cat="exact">`exact`</span> | accelerate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference, sdpa, flash_attn |
+| [`splitk`](methods/splitk.md) | Two-level reduction: per-chunk states, then one merge. | <span data-cat="exact">`exact`</span> | accelerate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`cosformer`](methods/cosformer.md) | `relu` features times `cos(pi (i - j) / 2M)`. | <span data-cat="interaction">`interaction`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`linear_elu`](methods/linear_elu.md) | `phi(u) = elu(u) + 1`, normalized separable attention. | <span data-cat="interaction">`interaction`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`nystrom`](methods/nystrom.md) | Landmark Nystrom factorization of the softmax matrix; signed weights. | <span data-cat="interaction">`interaction`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`performer`](methods/performer.md) | FAVOR+ positive random features, optionally orthogonal. | <span data-cat="interaction">`interaction`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`trigrff`](methods/trigrff.md) | Rahimi--Recht trigonometric random features; signed, unnormalized measure. | <span data-cat="interaction">`interaction`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`blocktopk`](methods/blocktopk.md) | Page-level selection by an upper bound on the page's scores. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`lsh_sample`](methods/lsh_sample.md) | Self-normalized importance sampling over a score-monotone proposal. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`sink_window`](methods/sink_window.md) | `s` initial sinks plus a left window of width `w`. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`topk`](methods/topk.md) | Exact top-k selection on the true scores (an oracle for proxy selectors). | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`value_topk`](methods/value_topk.md) **(oracle)** | Greedy (or exhaustive) output-aware support selection. Oracle. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`window`](methods/window.md) | Left sliding window of width `w`, always including the diagonal. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`evict_h2o`](methods/evict_h2o.md) | Online heavy-hitter eviction with a protected recent window. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`evict_snapkv`](methods/evict_snapkv.md) | Observation-window scoring with pooled, budgeted selection. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`gqa`](methods/gqa.md) | Mean-pool K and V within groups of query heads. | <span data-cat="compress">`compress`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference, sdpa |
+| [`linformer`](methods/linformer.md) | Random (or identity) sequence-axis projections of K and V. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`lowrank_kv`](methods/lowrank_kv.md) | Truncated SVD of the key and/or value channel matrices. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`merge_kv`](methods/merge_kv.md) | Cluster keys and values, merge with proportional (pushforward) mass. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`mla`](methods/mla.md) | Joint low-rank KV latent shared by all heads. | <span data-cat="compress">`compress`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference, sdpa |
+| [`quantkv`](methods/quantkv.md) | Uniform affine quantization of the key and value caches. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`clustered`](methods/clustered.md) | One attention row per query centroid, shared within the cluster. | <span data-cat="factorize">`factorize`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`latent_stochastic`](methods/latent_stochastic.md) | pi_hat = A B with both factors row-stochastic (two-hop attention). | <span data-cat="factorize">`factorize`</span> | modify | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`nmf_oracle`](methods/nmf_oracle.md) **(oracle)** | Best nonnegative rank-r factorization of P, renormalized. Oracle. | <span data-cat="factorize">`factorize`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`svd_oracle`](methods/svd_oracle.md) **(oracle)** | Truncated SVD of P: the best signed rank-r factorization. Oracle. | <span data-cat="factorize">`factorize`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`lowrank_ot`](methods/lowrank_ot.md) | Doubly stochastic, rank-<= r attention through a pivot measure. | <span data-cat="coupling">`coupling`</span> | modify | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`sinkhorn`](methods/sinkhorn.md) | Entropic-OT attention: Sinkhorn normalization of exp(s) to prescribed marginals. | <span data-cat="coupling">`coupling`</span> | modify | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`decay_rnn`](methods/decay_rnn.md) | Fixed exponential decay on the recurrent state. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`delta_rnn`](methods/delta_rnn.md) | Delta-rule (Widrow--Hoff) fast-weight memory. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`linear_rnn`](methods/linear_rnn.md) | Additive linear recurrence with an unnormalized readout. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
 
 </div>
 
 
 ## Reading the columns
 
-**`weights`** — can the method name its measure $\widehat\pi_q$ on the *original* $n$
-positions? A `—` means it genuinely cannot, and the method is then excluded from the
-error-decomposition studies **by declaration, not by accident**. See
-[the invariant](invariant.md).
+**`declares`** is three fixed slots, in this order, and a letter
+<span class="tx-struck">struck through</span> is the method declaring *no* — which on
+this page is never an omission and always a claim.
 
-**`stochastic`** — are those weights nonnegative and summing to one? `nystrom`,
-`linformer` and the unnormalised recurrences say no, and say it in an attribute rather
-than in a footnote.
+**<span class="tx-dec">w</span>, weights** — can the method name its measure
+$\widehat\pi_q$ on the *original* $n$ positions? A struck-through `w` means it
+genuinely cannot, and the method is then excluded from the error-decomposition studies
+**by declaration, not by accident**. See [the invariant](invariant.md).
 
-**`causal`** — a `—` is a statement about the operator. Sinkhorn normalises across
-queries; there is no causal version of that, and asking for one raises an error that
-says so.
+**<span class="tx-dec">s</span>, row-stochastic** — are those weights nonnegative and
+summing to one? `nystrom`, `linformer` and the unnormalised recurrences say no, and
+say it in an attribute rather than in a footnote.
+
+**<span class="tx-dec">c</span>, causal** — a struck-through `c` is a statement about
+the operator. Sinkhorn normalises across queries; there is no causal version of that,
+and asking for one raises an error that says so.
 
 **`backends`** — the execution paths this method claims are equal to the reference.
 Most of the bank is `reference` only, which is the correct answer for an operator that

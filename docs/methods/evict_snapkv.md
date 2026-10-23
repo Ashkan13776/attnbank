@@ -1,4 +1,6 @@
-# `evict_snapkv`
+# SnapKV
+
+<p class="tx-regkey"><code>evict_snapkv</code> &middot; <code>ab.build("evict_snapkv")</code></p>
 
 **SnapKV: prompt-token scores pooled over an observation window.**
 

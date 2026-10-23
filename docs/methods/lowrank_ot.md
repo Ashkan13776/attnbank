@@ -1,4 +1,6 @@
-# `lowrank_ot`
+# LOTFormer-style factored coupling
+
+<p class="tx-regkey"><code>lowrank_ot</code> &middot; <code>ab.build("lowrank_ot")</code></p>
 
 **LOTFormer-style factored coupling: transport through r pivots.**
 

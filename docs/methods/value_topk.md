@@ -1,4 +1,6 @@
-# `value_topk`
+# Output-aware selection
+
+<p class="tx-regkey"><code>value_topk</code> &middot; <code>ab.build("value_topk")</code></p>
 
 !!! danger "Oracle — an upper bound, not a method"
     `value_topk` is not deployable and is not meant to be. It uses information no

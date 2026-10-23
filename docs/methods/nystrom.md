@@ -1,4 +1,6 @@
-# `nystrom`
+# Nystromformer
+
+<p class="tx-regkey"><code>nystrom</code> &middot; <code>ab.build("nystrom")</code></p>
 
 **Nystromformer: landmark Nystrom approximation of the row-stochastic matrix.**
 

@@ -1,4 +1,6 @@
-# `mla`
+# Multi-head latent attention
+
+<p class="tx-regkey"><code>mla</code> &middot; <code>ab.build("mla")</code></p>
 
 **Multi-head latent attention: one joint low-rank KV latent, per-head up-projection.**
 

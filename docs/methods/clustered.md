@@ -1,4 +1,6 @@
-# `clustered`
+# Clustered attention
+
+<p class="tx-regkey"><code>clustered</code> &middot; <code>ab.build("clustered")</code></p>
 
 **Clustered attention: route queries through r query centroids.**
 

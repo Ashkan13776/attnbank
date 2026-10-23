@@ -1,4 +1,6 @@
-# `delta_rnn`
+# DeltaNet
+
+<p class="tx-regkey"><code>delta_rnn</code> &middot; <code>ab.build("delta_rnn")</code></p>
 
 **DeltaNet: the delta-rule update on a fast-weight memory.**
 

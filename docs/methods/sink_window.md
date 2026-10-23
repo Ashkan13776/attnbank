@@ -1,4 +1,6 @@
-# `sink_window`
+# StreamingLLM
+
+<p class="tx-regkey"><code>sink_window</code> &middot; <code>ab.build("sink_window")</code></p>
 
 **StreamingLLM: the first `s` "attention sink" positions plus a sliding window.**
 

@@ -1,4 +1,6 @@
-# `sinkhorn`
+# Sinkhorn / entropic-OT attention
+
+<p class="tx-regkey"><code>sinkhorn</code> &middot; <code>ab.build("sinkhorn")</code></p>
 
 **Sinkhorn / entropic-OT attention: prescribe the column marginal too.**
 

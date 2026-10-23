@@ -1,4 +1,6 @@
-# `splitk`
+# Split-K / Flash-Decoding
+
+<p class="tx-regkey"><code>splitk</code> &middot; <code>ab.build("splitk")</code></p>
 
 **Split-K / Flash-Decoding: partition the keys, attend independently, merge by LSE.**
 

@@ -1,4 +1,6 @@
-# `linformer`
+# Linformer
+
+<p class="tx-regkey"><code>linformer</code> &middot; <code>ab.build("linformer")</code></p>
 
 **Linformer: a fixed linear projection of K and V along the *sequence* axis.**
 

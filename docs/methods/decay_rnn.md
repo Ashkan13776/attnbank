@@ -1,4 +1,6 @@
-# `decay_rnn`
+# Decayed linear recurrence
+
+<p class="tx-regkey"><code>decay_rnn</code> &middot; <code>ab.build("decay_rnn")</code></p>
 
 **Decayed linear recurrence: H_t = gamma H_{t-1} + psi(k_t) v_t^T.**
 
