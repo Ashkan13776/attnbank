@@ -1,13 +1,24 @@
+<nav class="ab-path" aria-label="The path through these pages">
+  <ol>
+    <li><a href="../quickstart/"><b>01</b>Quickstart</a></li>
+    <li aria-current="page"><b>02</b>The invariant</li>
+    <li><a href="../conformance/"><b>03</b>Conformance</a></li>
+    <li><a href="../backends/"><b>04</b>Backends</a></li>
+  </ol>
+</nav>
+
 # Invariant W
 
-```python
-y == weights @ (v_hat if v_hat is not None else value)
-```
+<div class="ab-property">
+<code>y == weights @ (v_hat if v_hat is not None else value)</code>
+<span class="ab-property-note">Checked for every registered method, causal and
+non-causal, in float64 — check 2 of <a href="../conformance/">the conformance
+suite</a>.</span>
+</div>
 
-Every registered method satisfies this, in float32 and float64, causal and
-non-causal, on every shape the conformance suite throws at it. It is the single most
-important property in the library, and the reason the library exists in the form it
-does.
+<p class="ab-lead">Every registered method satisfies this. It is the single most
+important property in the library, and the reason the library exists in the form
+it does.</p>
 
 ## What it says
 
@@ -43,7 +54,8 @@ approximately.
 from attnbank import build, metrics
 
 ref = build("softmax")(q, k, v, causal=True, return_weights=True)
-out = build("quantkv", bits_k=4, bits_v=4)(q, k, v, causal=True, return_weights=True)
+out = build("quantkv", bits_k=4, bits_v=4)(q, k, v, causal=True,
+                                           return_weights=True)
 metrics.error_decomposition(ref.weights, out.weights, v, out.v_hat)
 # {'distributional': …, 'value': …, 'total': …}
 ```
@@ -69,14 +81,16 @@ expresses_weights = False
 
 and return `weights=None`. They are then excluded from the decomposition studies **by
 declaration, not by accident** — and the conformance suite checks the declaration in
-both directions:
+both directions. This is the check, verbatim from `tests/test_conformance.py`:
 
 ```python
-if not method.expresses_weights:
-    assert out.weights is None    # declared False, so it had better not return any
-else:
-    assert out.weights is not None
-    assert torch.allclose(out.y, out.weights @ (out.v_hat or v), atol=1e-9)
+if not meth.expresses_weights:
+    assert out.weights is None, f"{name} declares expresses_weights=False but returned weights"
+    return
+assert out.weights is not None, f"{name} declares expresses_weights=True but returned None"
+recon = out.weights @ (out.v_hat if out.v_hat is not None else v)
+assert torch.allclose(out.y, recon, atol=1e-9, rtol=0), \
+    f"{name}: max |y - W v| = {(out.y - recon).abs().max():.3e}"
 ```
 
 Setting the flag to `False` to dodge the invariant is the one thing that will get a
@@ -86,8 +100,8 @@ measured it.
 ## Checking it yourself
 
 ```python
-ab.check_invariant(output, value)        # -> max |y - weights @ v_hat|, raises if too large
-ab.check_conformance("topk")             # -> a printable report including this check
+ab.check_invariant(output, value)   # max |y - weights @ v_hat|; raises if too large
+ab.check_conformance("topk")        # a printable report including this check
 ```
 
 ```text
@@ -103,7 +117,22 @@ topk: 9 checks passed, 0 failed
   [pass] exact limit -- limit_config={'k': None}, max |y - softmax| = 4.44e-16
 ```
 
-Tolerances: `1e-10` in float64, `1e-5` in float32. The suite runs the check in float64,
-where there is nowhere for an error to hide.
+Tolerances: the suite runs the check in float64 at `1e-9`, where there is nowhere for
+a floating-point error to hide. At runtime, `ab.check_invariant` defaults to `1e-10`
+in float64 and `1e-5` in float32 — the tolerances of `DESIGN.md` Sec. 1.
 
-See the full gallery entry: [Invariant W across the whole bank](examples/02_the_invariant.md).
+See the invariant held across the whole bank, with the measure each method implies
+drawn out: [Invariant W, the gallery entry](examples/02_the_invariant.md).
+
+<nav class="ab-next" aria-label="Continue reading">
+  <a href="../conformance/">
+    <span class="ab-next-kicker">Next · 03 of 04</span>
+    <span class="ab-next-title">Conformance</span>
+    <span class="ab-next-desc">Eleven checks, read from each method's own
+    declarations — how the invariant, and everything around it, is enforced rather
+    than hoped for.</span>
+  </a>
+  <p class="ab-next-also">Also from here:
+  <a href="../examples/02_the_invariant/">Invariant W across the whole bank</a> ·
+  <a href="../examples/03_error_decomposition/">the error decomposition, run</a>.</p>
+</nav>

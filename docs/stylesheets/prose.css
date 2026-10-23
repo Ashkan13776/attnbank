@@ -2,6 +2,247 @@
  *
  * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
  * Every colour, size and duration in here comes from a token in tokens.css.
+ *
+ * These four pages are a path -- install it, meet the one property, see the
+ * property enforced, see it executed honestly -- and the apparatus here exists
+ * to make the path legible: a station strip above each title, a single
+ * "next" pointer at each foot, and a set-off plate for the one formula the
+ * library exists to defend. The register is the scientific instrument:
+ * hairlines, the mono overline voice base.css establishes, no fills, no
+ * motion. Base typography (measure, headings, links, code, tables) is agent
+ * 1's and is not restated here.
+ *
+ * Everything below either targets an .ab-* class that only these four pages
+ * emit, or is scoped through `.md-content:has(.ab-path)` -- so the file is
+ * inert on every other page, and on a browser without :has() the pages
+ * simply render with base typography alone. Content is complete with
+ * JavaScript off; nothing here depends on a script.
  */
 
-/* Empty: this aspect is unstarted. */
+/* ---- the path strip ------------------------------------------------------ */
+/* Four stations above the title, in the site's overline voice. The current
+ * station is full ink over an accent rule; the rest are quiet links. */
+
+.md-typeset .ab-path {
+  margin: 0 0 var(--ab-space-6);
+}
+
+.md-typeset .ab-path ol {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  row-gap: var(--ab-space-2);
+  margin: 0;
+  padding: 0;
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+}
+
+.md-typeset .ab-path li {
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* the connector between stations */
+.md-typeset .ab-path li + li::before {
+  content: "\2192";               /* -> */
+  margin: 0 var(--ab-space-3);
+  color: var(--ab-rule);
+}
+
+/* the station number */
+.md-typeset .ab-path li > :first-child b,
+.md-typeset .ab-path li > b {
+  font-weight: 400;
+  color: var(--ab-faint);
+  margin-right: 0.45em;
+}
+
+.md-typeset .ab-path a {
+  color: var(--ab-ink-muted);
+  text-decoration: none;
+}
+
+.md-typeset .ab-path a:hover,
+.md-typeset .ab-path a:focus-visible {
+  color: var(--ab-ink);
+  text-decoration: underline;
+  text-decoration-thickness: var(--ab-rule-width);
+  text-underline-offset: 0.35em;
+}
+
+.md-typeset .ab-path [aria-current="page"] {
+  color: var(--ab-ink);
+  border-bottom: var(--ab-rule-width-strong) solid var(--ab-accent);
+  padding-bottom: 0.2em;
+}
+
+/* ---- the foot: one clear next step --------------------------------------- */
+/* A quiet block link closing each page: kicker, destination, one line of
+ * what it holds. The whole block is the target. */
+
+.md-typeset .ab-next {
+  margin-top: var(--ab-space-8);
+  border-top: var(--ab-rule-width) solid var(--ab-rule);
+  padding-top: var(--ab-space-5);
+  max-width: 34rem;               /* the prose measure base.css sets */
+}
+
+.md-typeset .ab-next > a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.md-typeset .ab-next .ab-next-kicker {
+  display: block;
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+  margin-bottom: var(--ab-space-2);
+}
+
+.md-typeset .ab-next .ab-next-title {
+  font-family: var(--ab-display);
+  font-size: var(--ab-step-2);
+  font-weight: 550;
+  color: var(--ab-ink);
+}
+
+.md-typeset .ab-next .ab-next-title::after {
+  content: "\2002\2192";          /* en-space, -> */
+  color: var(--ab-ink-muted);
+}
+
+.md-typeset .ab-next > a:hover .ab-next-title,
+.md-typeset .ab-next > a:focus-visible .ab-next-title {
+  text-decoration: underline;
+  text-decoration-color: var(--ab-accent);
+  text-decoration-thickness: var(--ab-rule-width-strong);
+  text-underline-offset: 0.2em;
+}
+
+.md-typeset .ab-next .ab-next-desc {
+  display: block;
+  margin-top: var(--ab-space-2);
+  color: var(--ab-ink-muted);
+}
+
+/* lateral pointers under the main one: a plain list, smaller */
+.md-typeset .ab-next-also {
+  margin-top: var(--ab-space-4);
+  font-size: var(--ab-step--1);
+  color: var(--ab-ink-muted);
+}
+
+/* ---- the property plate --------------------------------------------------- */
+/* Invariant W, set off as the object the page defends: hairlines above and
+ * below, centred, no well -- a displayed formula that happens to be code. */
+
+.md-typeset .ab-property {
+  margin: var(--ab-space-6) 0;
+  padding: var(--ab-space-5) var(--ab-space-4);
+  border-top: var(--ab-rule-width) solid var(--ab-rule);
+  border-bottom: var(--ab-rule-width) solid var(--ab-rule);
+  text-align: center;
+}
+
+.md-typeset .ab-property code {
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  font-size: var(--ab-step-1);
+  color: var(--ab-ink);
+  word-break: normal;
+  overflow-wrap: break-word;      /* the line may fold on a phone; never clip */
+}
+
+.md-typeset .ab-property .ab-property-note {
+  display: block;
+  margin-top: var(--ab-space-3);
+  font-size: var(--ab-step--1);
+  color: var(--ab-ink-muted);
+}
+
+/* ---- the instrument readout ----------------------------------------------- */
+/* A row of verified figures (conformance: checks, methods, tests). Numbers in
+ * full ink, labels recessive; hairline-separated like a panel of dials. */
+
+.md-typeset .ab-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ab-space-2) 0;
+  margin: var(--ab-space-5) 0 var(--ab-space-6);
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--1);
+  color: var(--ab-ink-muted);
+  max-width: none;
+}
+
+.md-typeset .ab-stats span {
+  white-space: nowrap;
+}
+
+.md-typeset .ab-stats span + span::before {
+  content: "";
+  display: inline-block;
+  width: var(--ab-rule-width);
+  height: 0.9em;
+  background: var(--ab-rule);
+  margin: 0 var(--ab-space-4);
+  vertical-align: -0.1em;
+}
+
+.md-typeset .ab-stats b {
+  font-weight: 600;
+  color: var(--ab-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- long-form tables ------------------------------------------------------ */
+/* Scoped to the four path pages. Material lets `code` break mid-word inside
+ * table cells (`supports_caus / al`); identifiers never break. The scroll
+ * container Material already provides absorbs any resulting width. */
+
+.md-content:has(.ab-path) .md-typeset table:not([class]) code {
+  word-break: normal;
+  white-space: nowrap;
+}
+
+/* The checks table: its number column is a dial, not a datum. */
+.md-content:has(.ab-path) .md-typeset .ab-checks table:not([class]) td:first-child {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  color: var(--ab-faint);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- section rhythm -------------------------------------------------------- */
+/* A hairline under each h2 helps a long page scan as numbered apparatus;
+ * only on the four path pages so dense generated pages stay untouched. */
+
+.md-content:has(.ab-path) .md-typeset h2 {
+  padding-bottom: var(--ab-space-2);
+  border-bottom: var(--ab-rule-width) solid var(--ab-rule-soft);
+}
+
+/* ---- stillness -------------------------------------------------------------- */
+/* Nothing above animates; base.css link transitions are the only movement,
+ * and they go still with the user's preference. */
+
+@media (prefers-reduced-motion: reduce) {
+  .md-typeset .ab-path a,
+  .md-typeset .ab-next a,
+  .md-typeset .ab-next .ab-next-title {
+    transition: none;
+  }
+}

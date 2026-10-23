@@ -1,8 +1,18 @@
+<nav class="ab-path" aria-label="The path through these pages">
+  <ol>
+    <li><a href="../quickstart/"><b>01</b>Quickstart</a></li>
+    <li><a href="../invariant/"><b>02</b>The invariant</a></li>
+    <li><a href="../conformance/"><b>03</b>Conformance</a></li>
+    <li aria-current="page"><b>04</b>Backends</li>
+  </ol>
+</nav>
+
 # Backends
 
-A method in this bank is two things that are easy to confuse: an **operator** — the
-mathematics, one readable file — and an **execution path**. The operator never changes
-with the backend. The execution path does, and you choose it.
+<p class="ab-lead">A method in this bank is two things that are easy to confuse: an
+<strong>operator</strong> — the mathematics, one readable file — and an
+<strong>execution path</strong>. The operator never changes with the backend. The
+execution path does, and you choose it.</p>
 
 ```python
 print(ab.backends())                    # what runs here, and why anything does not
@@ -34,7 +44,7 @@ these implementations exist to be read against the monograph.
  'mla': ('reference', 'sdpa'),
  'softmax': ('reference', 'sdpa', 'flash_attn')}
 >>> sum(len(b) == 1 for b in ab.backend_matrix().values())
-28
+74
 ```
 
 **Seventy-four of seventy-eight methods declare `reference` only, and that is the correct
@@ -125,9 +135,9 @@ Declaring a backend is a claim, and
 `tests/test_conformance.py::test_backend_equivalence` is where it is checked: every
 method, every declared backend, both causal settings, float32 and float64, on five
 shapes including `m < n`, `n == 1` and logits scaled by 10. Tolerances are `1e-5`
-(fp32) and `1e-10` (fp64), scaled by $\lVert y\rVert_\infty$. On a CUDA machine the
-same comparison runs again on device, where `sdpa` dispatches to a genuinely fused
-kernel.
+(fp32) and `1e-10` (fp64), scaled by $\max(1, \lVert y\rVert_\infty)$. On a CUDA
+machine the same comparison runs again on device, where `sdpa` dispatches to a
+genuinely fused kernel.
 
 ## The studies are pinned
 
@@ -144,3 +154,16 @@ set_default_backend(REFERENCE)
 A published figure must not be able to move because the library grew a faster path.
 `tests/test_backends.py` asserts the pin in a subprocess, and separately greps the
 eight study modules for a backend override.
+
+<nav class="ab-next" aria-label="Continue reading">
+  <a href="../methods/">
+    <span class="ab-next-kicker">End of the path · browse the bank</span>
+    <span class="ab-next-title">The methods</span>
+    <span class="ab-next-desc">That was the whole contract: one convention, one
+    property, one suite, one honest execution story. The bank itself is next — every
+    method, held to all of it.</span>
+  </a>
+  <p class="ab-next-also">Also from here:
+  <a href="../examples/10_backends/">backends, the gallery entry</a> ·
+  <a href="../api/top-level/">the API reference</a>.</p>
+</nav>
