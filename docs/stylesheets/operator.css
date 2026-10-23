@@ -1,17 +1,29 @@
 /* The operator plate: the formula, the seven category keys, the readout.
  *
  * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
- * Every colour, size and duration in here comes from a token in tokens.css.
+ * Every colour, size and duration comes from tokens.css; the motion vars keep
+ * local fallbacks only so the plate degrades sanely if tokens load late.
+ *
+ * The grammar of the plate, in one place:
+ *   .is-focused   a category that touches part of the operator -- the touched
+ *                 symbols underline and carry an index tick, the rest recede
+ *   .is-framed    `exact`, which touches nothing -- a reticle of four corner
+ *                 brackets closes around the whole operator instead
+ *   .is-replaced  `recurrent`, which touches everything -- the operator recedes
+ *                 as a whole and the recurrence it is replaced by becomes the
+ *                 loud line
+ * The states are set by operator.js/taxonomy.js; everything below only reads them.
  */
 
-/* ---- the operator plate ------------------------------------------------- */
-
 .op-plate {
+  --op-fast: var(--ab-motion-fast, 160ms);
+  --op-slow: var(--ab-motion-slow, 420ms);
+  --op-ease: var(--ab-ease, cubic-bezier(0.2, 0.7, 0.2, 1));
   position: relative;
-  margin: 1.6rem 0 0;
-  padding: 1.9rem 1.1rem 1.4rem;
+  margin: var(--ab-space-6) 0 0;
+  padding: var(--ab-space-7) var(--ab-space-5) var(--ab-space-5);
   background: var(--ab-plate);
-  border: 1px solid var(--ab-rule);
+  border: var(--ab-rule-width, 1px) solid var(--ab-rule);
 }
 
 /* the corner label of a figure plate, sitting in the top rule */
@@ -23,28 +35,68 @@
   padding: 0 0.45rem;
   background: var(--ab-plate);
   font-family: var(--ab-mono);
-  font-size: 0.56rem;
+  font-size: var(--ab-step--2);
   letter-spacing: 0.17em;
   text-transform: uppercase;
   color: var(--ab-faint);
 }
 
+/* ---- the category readout, mirroring the plate label in the top rule ------ */
+
+.op-cat {
+  position: absolute;
+  top: -0.46rem;
+  right: 1.1rem;
+  padding: 0 0.45rem;
+  background: var(--ab-plate);
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--ab-ink);
+  box-shadow: inset 0 calc(-1 * var(--ab-rule-width-strong, 2px)) 0 var(--hl);
+  animation: op-chip-in var(--op-fast) var(--op-ease);
+}
+
+.op-cat[hidden] { display: none; }
+
+@keyframes op-chip-in {
+  from { opacity: 0; transform: translateY(0.15rem); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* when the taxonomy pins the plate under the header, agent 4 moves the plate
+ * label inside the box (taxonomy.css); the readout mirrors it on the right */
+.tx-sticky .op-cat { top: 0.45rem; right: 0.9rem; padding: 0; }
+
+/* ---- the formula ---------------------------------------------------------- */
+
 .op-formula {
+  position: static;         /* .op-cat positions against the plate, not this box */
   font-family: var(--ab-serif);
   text-align: center;
   line-height: 1.6;
-  color: var(--md-default-fg-color);
+  color: var(--ab-ink);
   overflow-x: auto;
-  padding: 0.2rem 0 0.1rem;
+  /* the padding is the room the reticle brackets and index ticks draw in;
+   * overflow-x: auto clips vertically too, so it cannot be a margin */
+  padding: 0.9rem 0.9rem 0.8rem;
+}
+
+/* shrink-wraps the two lines so the reticle hugs the operator, not the box */
+.op-core {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
 }
 
 .op-line {
   display: block;
   white-space: nowrap;
-  font-size: clamp(1.3rem, 4.4vw, 2.1rem);
+  font-size: clamp(1.3rem, 4.4vw, 2.2rem);
 }
 
-.op-line--sub { font-size: clamp(1.05rem, 3.4vw, 1.62rem); }
+.op-line--sub { font-size: clamp(1.05rem, 3.4vw, 1.68rem); }
 .op-rel { padding: 0 0.3em; color: var(--ab-faint); }
 .op-formula i { font-style: italic; }
 
@@ -67,49 +119,151 @@
 .op-num { padding: 0 0.3em 0.06em; border-bottom: 1px solid currentcolor; }
 .op-den { padding: 0.06em 0.3em 0; }
 
+/* ---- the symbols: each one an annotation site ------------------------------
+ * A touched symbol is annotated, never highlighted: full ink, the category's
+ * rule drawn beneath it, an index tick above it. There is no hue fill behind
+ * text -- it would fail contrast for coupling and compress in light mode, in
+ * both directions, and a filled box reads as selection, not annotation.
+ */
+
 .sym {
+  position: relative;
   display: inline-block;
+  /* the box hugs the glyphs so the rule below and the tick above sit close to
+   * the symbol, not at the reaches of the line's 1.6 leading */
+  line-height: 1.2;
   padding: 0.06em 0.14em;
   margin: 0 -0.04em;
-  border-bottom: 2px solid transparent;
-  transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+  transition: opacity var(--op-fast) var(--op-ease);
 }
 
-/* Selection is ink plus a coloured rule. A hue fill behind text would fail
- * contrast for coupling and compress in light mode, in both directions. */
-.sym.is-lit {
-  background: color-mix(in srgb, var(--hl) 15%, transparent);
-  border-bottom-color: var(--hl);
+/* the rule under a touched symbol, drawn rather than switched on: it sweeps in
+ * left to right, each symbol after the one before it (--i is reading order,
+ * set in the include), so choosing a category reads as the category reaching
+ * across the operator */
+.sym::after {
+  content: "";
+  position: absolute;
+  left: 0.1em;
+  right: 0.1em;
+  bottom: -1px;
+  height: var(--ab-rule-width-strong, 2px);
+  background: var(--hl);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--op-fast) var(--op-ease);
 }
 
-/* everything the chosen category leaves alone recedes */
-.op-formula.is-focused .sym:not(.is-lit) { opacity: 0.32; }
+/* the index tick over a touched symbol: a calibration mark, not a highlight */
+.sym::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -0.3em;
+  width: 1px;
+  height: 0.26em;
+  background: var(--hl);
+  opacity: 0;
+  transition: opacity var(--op-fast) var(--op-ease);
+}
 
-/* `exact` changes no symbol, so the figure rules off the whole operator instead of
- * lighting part of it -- the asymmetry is the answer, not a missing state. */
-.op-formula.is-framed {
-  outline: 1px dashed var(--hl);
-  outline-offset: 0.7rem;
+.sym.is-lit::after {
+  transform: scaleX(1);
+  transition-delay: calc(var(--i, 0) * 45ms);
+}
+
+.sym.is-lit::before {
+  opacity: 1;
+  transition-delay: calc(var(--i, 0) * 45ms + 60ms);
+}
+
+/* everything the chosen category leaves alone recedes -- the fraction bar with
+ * it, so a lit symbol's rule is never read against a full-ink bar */
+.op-formula.is-focused .sym:not(.is-lit) { opacity: 0.3; }
+.op-formula.is-focused .op-num { border-bottom-color: color-mix(in srgb, currentcolor 35%, transparent); }
+
+/* ---- `exact`: the reticle --------------------------------------------------
+ * The category that changes nothing cannot light a symbol, so the figure closes
+ * four corner brackets around the whole operator instead -- the asymmetry is
+ * the answer, not a missing state. The brackets exist in the HTML but have no
+ * size until .is-framed, so with scripting off nothing of them is visible.
+ */
+
+.op-bk {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  border: 0 solid var(--hl);
+}
+
+/* each bracket converges from outside its own corner */
+.op-bk--tl { top: -0.6rem; left: -0.75rem; --bk-x: -0.3rem; --bk-y: -0.3rem; }
+.op-bk--tr { top: -0.6rem; right: -0.75rem; --bk-x: 0.3rem; --bk-y: -0.3rem; }
+.op-bk--bl { bottom: -0.6rem; left: -0.75rem; --bk-x: -0.3rem; --bk-y: 0.3rem; }
+.op-bk--br { bottom: -0.6rem; right: -0.75rem; --bk-x: 0.3rem; --bk-y: 0.3rem; }
+
+.op-formula.is-framed .op-bk {
+  width: 0.85rem;
+  height: 0.85rem;
+  opacity: 1;
+  animation: op-bk-in var(--op-slow) var(--op-ease);
+}
+
+.op-formula.is-framed .op-bk--tl { border-top-width: var(--ab-rule-width-strong, 2px); border-left-width: var(--ab-rule-width-strong, 2px); }
+.op-formula.is-framed .op-bk--tr { border-top-width: var(--ab-rule-width-strong, 2px); border-right-width: var(--ab-rule-width-strong, 2px); }
+.op-formula.is-framed .op-bk--bl { border-bottom-width: var(--ab-rule-width-strong, 2px); border-left-width: var(--ab-rule-width-strong, 2px); }
+.op-formula.is-framed .op-bk--br { border-bottom-width: var(--ab-rule-width-strong, 2px); border-right-width: var(--ab-rule-width-strong, 2px); }
+
+@keyframes op-bk-in {
+  from { opacity: 0; transform: translate(var(--bk-x, 0), var(--bk-y, 0)); }
+  to   { opacity: 1; transform: none; }
 }
 
 .op-formula.is-framed .sym { opacity: 1; }
 
-.op-replacement {
+/* ---- `recurrent`: the operator replaced ------------------------------------
+ * The data lights every symbol -- recurrence touches all of it -- so the sweep
+ * runs the full width; the formula then recedes as a whole and the recurrence
+ * becomes the loud line below it.
+ */
+
+/* recede by inherited colour, not opacity: the glyphs and the fraction bar drop
+ * to faint ink while the seven underlines -- the statement that recurrence
+ * touches all of it -- keep their full hue */
+.op-formula.is-replaced .op-core { color: var(--ab-faint); transition: color var(--op-fast) var(--op-ease); }
+
+.md-typeset .op-replacement {
+  /* a plate keeps the full width; the prose measure base.css puts on p is for prose */
+  max-width: none;
   font-family: var(--ab-serif);
-  font-size: clamp(0.98rem, 2.6vw, 1.3rem);
+  font-size: clamp(1.05rem, 2.8vw, 1.45rem);
   text-align: center;
-  color: var(--md-default-fg-color--light);
-  margin: 0.45rem 0 0;
+  color: var(--ab-ink);
+  margin: var(--ab-space-3) 0 0;
+  animation: op-rise var(--op-slow) var(--op-ease);
+}
+
+.op-replacement[hidden] { display: none; }
+
+@keyframes op-rise {
+  from { opacity: 0; transform: translateY(0.35rem); }
+  to   { opacity: 1; transform: none; }
 }
 
 .md-typeset .op-replacement .note {
   font-family: var(--md-text-font-family, sans-serif);
-  font-size: 0.72rem;
+  font-size: var(--ab-step--1);
   color: var(--ab-faint);
   white-space: nowrap;
 }
 
-/* ---- the category keys -------------------------------------------------- */
+/* ---- the category keys ----------------------------------------------------
+ * Seven keys on one rail. Each key carries its category's tick -- the same hue
+ * the category has in the tree, the browser and every figure of the monograph --
+ * and the hue never becomes the text or the ground: identity is the tick, state
+ * is ink plus the rule.
+ */
 
 .op-keys[hidden],
 .op-prompt[hidden],
@@ -119,40 +273,62 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.3rem;
-  margin-top: 1.5rem;
-  padding-top: 1.2rem;
-  border-top: 1px solid var(--ab-rule-soft);
+  gap: var(--ab-space-1);
+  margin-top: var(--ab-space-6);
+  padding-top: var(--ab-space-5);
+  border-top: var(--ab-rule-width, 1px) solid var(--ab-rule-soft);
 }
 
 .op-key {
+  position: relative;
   font: inherit;
   font-family: var(--ab-mono);
-  font-size: 0.72rem;
+  font-size: var(--ab-step--1);
   line-height: 1.3;
-  padding: 0.34rem 0.6rem;
+  padding: 0.38rem 0.65rem;
   cursor: pointer;
-  color: var(--md-default-fg-color--light);
+  color: var(--ab-ink-soft);
   background: transparent;
   border: 0;
-  border-bottom: 2px solid var(--ab-rule);
-  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  border-bottom: var(--ab-rule-width-strong, 2px) solid var(--ab-rule);
+  transition: color var(--ab-motion-fast, 160ms) var(--ab-ease, ease),
+              background-color var(--ab-motion-fast, 160ms) var(--ab-ease, ease);
 }
 
-.op-key:hover {
-  color: var(--md-default-fg-color);
-  border-bottom-color: var(--ab-faint);
+/* the category's tick, drawn in the key's rule; it widens when the key is down */
+.op-key::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: calc(-1 * var(--ab-rule-width-strong, 2px));
+  height: var(--ab-rule-width-strong, 2px);
+  background: var(--hl);
+  transition: right var(--ab-motion-fast, 160ms) var(--ab-ease, ease);
 }
+
+.op-key::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: calc(-1 * var(--ab-rule-width-strong, 2px));
+  width: 0.55rem;
+  height: var(--ab-rule-width-strong, 2px);
+  background: var(--hl);
+}
+
+.op-key:hover { color: var(--ab-ink); }
 
 .op-key[aria-pressed="true"] {
-  color: var(--md-default-fg-color);
+  color: var(--ab-ink);
   background: color-mix(in srgb, var(--hl) 13%, transparent);
-  border-bottom-color: var(--hl);
 }
+
+.op-key[aria-pressed="true"]::after { right: 0; }
 
 .op-key:focus-visible,
 .tx-toggle:focus-visible {
-  outline: 2px solid var(--md-accent-fg-color);
+  outline: 2px solid var(--ab-accent, var(--md-accent-fg-color));
   outline-offset: 2px;
 }
 
@@ -167,9 +343,10 @@
 /* the plate's caption: revealed by JavaScript, because with scripting off there
  * are no keys and a sentence about choosing one would be a lie */
 .md-typeset .op-prompt {
-  margin: 1rem 0 0;
+  max-width: none;                /* centred under the full plate, not the measure */
+  margin: var(--ab-space-4) 0 0;
   text-align: center;
-  font-size: 0.72rem;
+  font-size: var(--ab-step--1);
   color: var(--ab-faint);
 }
 
@@ -178,8 +355,14 @@
   grid-template-columns: 6.2rem 1fr;
   gap: 0.35rem 1.1rem;
   align-items: baseline;
-  font-size: 0.76rem;
+  font-size: var(--ab-step--1);
   margin: 0;
+}
+
+/* a chosen panel rises in under the plate; with scripting off nothing is hidden,
+ * so this also plays once on load, as a settle rather than an entrance */
+.md-typeset .op-panel:not([hidden]) {
+  animation: op-rise var(--ab-motion-fast, 160ms) var(--ab-ease, ease-out);
 }
 
 /* With scripting off every panel is shown, stacked and ruled apart, so the plate
@@ -187,12 +370,12 @@
 .md-typeset .op-panel + .op-panel {
   margin-top: 0.9rem;
   padding-top: 0.9rem;
-  border-top: 1px solid var(--ab-rule-soft);
+  border-top: var(--ab-rule-width, 1px) solid var(--ab-rule-soft);
 }
 
 .md-typeset .op-panel > dl > dt {
   font-family: var(--ab-mono);
-  font-size: 0.58rem;
+  font-size: var(--ab-step--2);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ab-faint);
@@ -201,13 +384,13 @@
 
 .md-typeset .op-panel > dl > dd {
   margin: 0;
-  color: var(--md-default-fg-color--light);
+  color: var(--ab-ink-soft);
 }
 
 /* the first fact is what the category changes: ink, with the category's own rule */
 .md-typeset .op-panel > dl > dd:first-of-type {
-  color: var(--md-default-fg-color);
-  box-shadow: inset 2px 0 0 var(--hl);
+  color: var(--ab-ink);
+  box-shadow: inset var(--ab-rule-width-strong, 2px) 0 0 var(--hl);
   padding-left: 0.6rem;
   margin-left: -0.6rem;
 }
@@ -226,16 +409,16 @@
 .md-typeset .op-methods a {
   display: inline-block;
   font-family: var(--ab-mono);
-  font-size: 0.68rem;
+  font-size: var(--ab-step--1);
   padding: 0.08rem 0.4rem;
-  color: var(--md-default-fg-color--light);
+  color: var(--ab-ink-soft);
   background: var(--ab-sunk);
-  border-bottom: 1px solid var(--ab-rule);
+  border-bottom: var(--ab-rule-width, 1px) solid var(--ab-rule);
   text-decoration: none;
 }
 
 .md-typeset .op-methods a:hover {
-  color: var(--md-default-fg-color);
+  color: var(--ab-ink);
   border-bottom-color: var(--hl);
 }
 
@@ -251,3 +434,16 @@
   }
 }
 
+/* ---- motion is an enhancement, never the message ------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .op-plate *,
+  .op-plate *::before,
+  .op-plate *::after,
+  .op-cat,
+  .op-replacement,
+  .md-typeset .op-panel:not([hidden]) {
+    transition: none !important;
+    animation: none !important;
+  }
+}

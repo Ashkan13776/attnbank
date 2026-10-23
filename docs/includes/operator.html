@@ -6,10 +6,21 @@
 
      data-tex is the same operator in the notation the monograph sets it in. It is
      here rather than in the stylesheet or the script because this file is the one
-     place the operator is written down; docs/javascripts/clip.js only copies it. -->
+     place the operator is written down; docs/javascripts/clip.js only copies it.
+
+     Lines are kept flat and unindented because the include lands inside a
+     markdown="1" container, where indentation is significant.
+
+     - style="--i:n" is the symbol's position in reading order, used only to stagger
+       the underline sweep; which symbols light is still data-syms on the panels.
+     - .op-core exists so the `exact` reticle can hug the formula rather than the
+       box: its four corner brackets (.op-bk) are inert until JavaScript sets
+       .is-framed, so with scripting off nothing of them is visible.
+     - .op-cat is the plate's category readout, top right; it is filled by
+       operator.js (or taxonomy.js through the same `show`), so it starts hidden. -->
 <div class="op-formula"
      data-tex="y(q) \;=\; \int v \,\mathrm{d}\pi_q, \qquad \pi_q \;=\; \frac{g(q,\cdot)\,\mu}{Z(q)}">
-  <span class="op-line"><span class="sym" data-s="y"><i>y</i>(<i>q</i>)</span><span class="op-rel">=</span><span class="sym" data-s="int">&#8747;</span><span class="sym" data-s="v"><i>v</i></span><span class="sym" data-s="pi">&#8202;d&#960;<sub><i>q</i></sub></span></span>
-  <span class="op-line op-line--sub"><span class="sym" data-s="pi">&#960;<sub><i>q</i></sub></span><span class="op-rel">=</span><span class="op-frac"><span class="op-num"><span class="sym" data-s="g"><i>g</i>(<i>q</i>,&#8201;&#183;)</span><span class="sym" data-s="mu">&#956;</span></span><span class="op-den"><span class="sym" data-s="Z"><i>Z</i>(<i>q</i>)</span></span></span></span>
+<span class="op-cat" aria-hidden="true" hidden></span>
+<span class="op-core"><i class="op-bk op-bk--tl" aria-hidden="true"></i><i class="op-bk op-bk--tr" aria-hidden="true"></i><i class="op-bk op-bk--bl" aria-hidden="true"></i><i class="op-bk op-bk--br" aria-hidden="true"></i><span class="op-line"><span class="sym" data-s="y" style="--i:0"><i>y</i>(<i>q</i>)</span><span class="op-rel">=</span><span class="sym" data-s="int" style="--i:1">&#8747;</span><span class="sym" data-s="v" style="--i:2"><i>v</i></span><span class="sym" data-s="pi" style="--i:3">&#8202;d&#960;<sub><i>q</i></sub></span></span><span class="op-line op-line--sub"><span class="sym" data-s="pi" style="--i:4">&#960;<sub><i>q</i></sub></span><span class="op-rel">=</span><span class="op-frac"><span class="op-num"><span class="sym" data-s="g" style="--i:5"><i>g</i>(<i>q</i>,&#8201;&#183;)</span><span class="sym" data-s="mu" style="--i:6">&#956;</span></span><span class="op-den"><span class="sym" data-s="Z" style="--i:7"><i>Z</i>(<i>q</i>)</span></span></span></span></span>
 </div>
 <p class="op-replacement" hidden><i>H</i><sub><i>t</i></sub> = <i>H</i><sub><i>t</i>&#8722;1</sub> + &#968;(<i>k</i><sub><i>t</i></sub>)&#8202;<i>v</i><sub><i>t</i></sub><sup>&#8868;</sup> <span class="note">&mdash; a different operator, not an approximation</span></p>
