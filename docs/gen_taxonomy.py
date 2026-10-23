@@ -20,6 +20,24 @@ import re
 
 from gen_methods import oracle_names
 
+_COUNT_WORD = {1: "One method —", 2: "Two methods —", 3: "Three methods —",
+               4: "Four methods —", 5: "Five methods —", 6: "Six methods —"}
+
+
+def _oracle_sentence() -> str:
+    """Name the oracles from the registry, so the prose cannot fall behind it.
+
+    This sentence used to list three method names by hand. The expansion added a
+    fourth and the generator's own consistency guard caught it -- which is the
+    guard working, but the sentence should not have been hand-written at all.
+    """
+    names = sorted(oracle_names())
+    links = [f"[`{n}`](methods/{n}.md)" for n in names]
+    lead = _COUNT_WORD.get(len(names), f"{len(names)} methods —")
+    if len(links) == 1:
+        return f"{lead} {links[0]} —"
+    return f"{lead} {', '.join(links[:-1])} and {links[-1]} —"
+
 import attnbank as ab
 
 #: The phrase that completes "this category changes ___", for the branch header. Kept
@@ -204,8 +222,7 @@ is not a dense softmax over a mask. See [Backends](backends.md).
 
 ## Oracles
 
-Three methods — [`value_topk`](methods/value_topk.md), [`nmf_oracle`](methods/nmf_oracle.md),
-[`svd_oracle`](methods/svd_oracle.md) — are not practical. They are
+{_oracle_sentence()} are not practical. They are
 **upper bounds on what a mechanism can achieve**, which is exactly what several of the
 monograph's arguments need: you cannot show that top-$k$ selection is suboptimal
 without computing what the optimal selection would have been.

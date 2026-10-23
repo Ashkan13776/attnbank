@@ -398,10 +398,21 @@ def example_source(name: str, info) -> str:
             "# objective = modify: this is a different operator and fidelity to softmax",
             "# is not its goal, so there is no error to quote. What it *is* doing shows",
             "# up in its own diagnostics.",
-            'print("row_stochastic =", attn.row_stochastic, "| first row sums:",',
-            "      [round(x, 4) for x in out.weights.sum(-1)[0, 0, :4].tolist()])",
-            'print("extras:", sorted(out.extras))',
         ]
+        if cls.expresses_weights:
+            src += [
+                'print("row_stochastic =", attn.row_stochastic, "| first row sums:",',
+                "      [round(x, 4) for x in out.weights.sum(-1)[0, 0, :4].tolist()])",
+            ]
+        else:
+            # expresses_weights = False: there is no measure over the n positions to
+            # print, and that refusal is the interesting fact about the method.
+            src += [
+                'print("expresses_weights =", attn.expresses_weights,',
+                '      "-- no measure over the original positions exists,",',
+                '      "so weights is", out.weights)',
+            ]
+        src += ['print("extras:", sorted(out.extras))']
     return "\n".join(src)
 
 
@@ -1131,18 +1142,18 @@ def rewrite_nav(oracles: tuple) -> None:
 def oracle_names() -> tuple:
     """The methods whose own module docstring opens with ``ORACLE:``.
 
-    Derived rather than listed, so a fourth oracle cannot be added to the library and
-    forgotten here. The assertion pins it to the three the taxonomy page names.
+    Derived from the docstrings, so adding an oracle to the library is enough and
+    nothing has to be remembered here.
+
+    This used to carry a hardcoded tuple of the three oracles then in the bank and
+    exit if detection disagreed, because the taxonomy page named them in prose. The
+    expansion added a fourth and the guard fired -- correctly, but the real defect
+    was the hand-written sentence. That sentence now derives from this function, so
+    the two cannot disagree and the guard has nothing left to protect.
     """
-    found = tuple(n for n in ab.available()
-                  if (sys.modules[ab.get_class(n).__module__].__doc__ or "")
-                  .lstrip().startswith("ORACLE:"))
-    expected = ("nmf_oracle", "svd_oracle", "value_topk")
-    if tuple(sorted(found)) != expected:
-        raise SystemExit(
-            f"oracle detection found {found}, but docs/taxonomy.md names {expected}. "
-            "One of the two is now wrong; fix before regenerating.")
-    return found
+    return tuple(n for n in ab.available()
+                 if (sys.modules[ab.get_class(n).__module__].__doc__ or "")
+                 .lstrip().startswith("ORACLE:"))
 
 
 def main() -> int:

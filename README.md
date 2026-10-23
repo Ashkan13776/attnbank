@@ -171,7 +171,7 @@ ab.backend_matrix()                      # method -> declared backends
 | `flash_attn` | the `flash-attn` package | CUDA, fp16/bf16, `pip install attnbank[flash]` |
 | `xformers`, `triton` | detected and reported, **declared by nothing** — and `ab.backends()` says why | — |
 
-Twenty-eight of thirty-two methods declare `reference` only, and that is the correct
+Seventy-four of seventy-eight methods declare `reference` only, and that is the correct
 answer: `nmf_oracle` is a factorisation, `merge_kv` is a clustering step, `topk` needs
 the full score matrix for the omitted mass it reports. None of them is a kernel call.
 
@@ -301,7 +301,7 @@ useful in your work, please cite the monograph:
 
 ## Status
 
-Pre-release. The library is complete and tested — 32 methods, 1254 tests — but
+Pre-release. The library is complete and tested — 78 methods, 2838 tests — but
 three pieces of public infrastructure are not up yet, which is why this README
 carries no badges for them:
 

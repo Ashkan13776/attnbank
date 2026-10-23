@@ -165,63 +165,246 @@ extras: ['beta', 'mass', 'state_rank']
 Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `delta_rnn` removed.
 
 changes the same object — [`recurrent`](../taxonomy.md#recurrent)
-:   [`decay_rnn`](decay_rnn.md), [`linear_rnn`](linear_rnn.md) &nbsp;·&nbsp; [browse the bank, recurrent only](index.md?category=recurrent)
+:   [`decay_rnn`](decay_rnn.md), [`gla`](gla.md), [`hgrn2`](hgrn2.md), [`hyena`](hyena.md), [`linear_rnn`](linear_rnn.md), [`lru`](lru.md), [`mega`](mega.md), [`mlstm`](mlstm.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md) &nbsp;·&nbsp; [browse the bank, recurrent only](index.md?category=recurrent)
 
 judged the same way — `modify`, beyond the ones above
-:   [`cosformer`](cosformer.md), [`gqa`](gqa.md), [`latent_stochastic`](latent_stochastic.md), [`linear_elu`](linear_elu.md), [`lowrank_ot`](lowrank_ot.md), [`mla`](mla.md), [`sinkhorn`](sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+:   [`cosformer`](cosformer.md), [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`espformer`](espformer.md), [`gqa`](gqa.md), [`isab`](isab.md), [`latent_stochastic`](latent_stochastic.md), [`latte`](latte.md), [`linear_elu`](linear_elu.md), [`lowrank_ot`](lowrank_ot.md), [`mla`](mla.md), [`otke`](otke.md), [`perceiver`](perceiver.md), [`polaformer`](polaformer.md), [`rebased`](rebased.md), [`sinkhorn`](sinkhorn.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
 [Open the browser with `delta_rnn` selected](index.md?compare=delta_rnn) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Schlag et al. (2021).** *Linear Transformers Are Secretly Fast Weight Programmers.* Proceedings of the 38th International Conference on Machine Learning (ICML). [arXiv:2102.11174](https://arxiv.org/abs/2102.11174)<br><span class="attn-cite" data-bibkey="schlag2021linear"><code>schlag2021linear</code></span>
-- **Yang et al. (2024).** *Parallelizing Linear Transformers with the Delta Rule over Sequence Length.* Advances in Neural Information Processing Systems 37 (NeurIPS). [arXiv:2406.06484](https://arxiv.org/abs/2406.06484)<br><span class="attn-cite" data-bibkey="yang2024parallelizing"><code>yang2024parallelizing</code></span>
-- **Widrow and Hoff (1960).** *Adaptive Switching Circuits.* IRE WESCON Convention Record.<br><span class="attn-cite" data-bibkey="widrow1960adaptive"><code>widrow1960adaptive</code></span>
-- **Yang et al. (2025).** *Gated Delta Networks: Improving Mamba2 with Delta Rule.* International Conference on Learning Representations (ICLR). [arXiv:2412.06464](https://arxiv.org/abs/2412.06464)<br><span class="attn-cite" data-bibkey="yang2025gated"><code>yang2025gated</code></span>
+- **schlag2021linear (n.d.).** *Atom: Low-Bit Quantization for Efficient and Accurate LLM Serving.*<br><span class="attn-cite" data-bibkey="schlag2021linear"><code>schlag2021linear</code></span>
+- **yang2024parallelizing (n.d.).** *Atom: Low-Bit Quantization for Efficient and Accurate LLM Serving.*<br><span class="attn-cite" data-bibkey="yang2024parallelizing"><code>yang2024parallelizing</code></span>
+- **widrow1960adaptive (n.d.).** *Atom: Low-Bit Quantization for Efficient and Accurate LLM Serving.*<br><span class="attn-cite" data-bibkey="widrow1960adaptive"><code>widrow1960adaptive</code></span>
+- **yang2025gated (n.d.).** *Atom: Low-Bit Quantization for Efficient and Accurate LLM Serving.*<br><span class="attn-cite" data-bibkey="yang2025gated"><code>yang2025gated</code></span>
 
 <details class="attn-bib no-copy">
 <summary>BibTeX — 4 entries, verbatim from <code>attnbank/references.bib</code></summary>
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="schlag2021linear">
 <pre class="attn-bib__src"><code>@inproceedings{schlag2021linear,
-  title={Linear Transformers Are Secretly Fast Weight Programmers},
-  author={Schlag, Imanol and Irie, Kazuki and Schmidhuber, J{\&quot;u}rgen},
-  booktitle={Proceedings of the 38th International Conference on Machine Learning (ICML)},
-  series={PMLR},
-  volume={139},
-  pages={9355--9366},
-  year={2021},
-  eprint={2102.11174},
-  archivePrefix={arXiv}
-}</code></pre>
+  title={Linear Transformers Are Secretly Fast Weight Programmers}
+
+@misc{sejourne2022unbalanced,
+  title={Unbalanced Optimal Transport, from Theory to Numerics}
+
+@inproceedings{shah2024flashattention3,
+  title={{FlashAttention-3}: Fast and Accurate Attention with Asynchrony and Low-precision}
+
+@inproceedings{shahbazi2025espformer,
+  title={{ESPFormer}: Doubly-Stochastic Attention with Expected Sliced Transport Plans}
+
+@misc{shahbazi2025lotformer,
+  title         = {{LOTFormer}: Doubly-Stochastic Linear Attention via Low-Rank Optimal Transport}
+
+@misc{shahbazi2026oval,
+  title = {{OVAL: Output-Aware Local Page Bases for KV Cache Retrieval}}
+
+@misc{shazeer2019fast,
+  title = {{Fast Transformer Decoding: One Write-Head is All You Need}}
+
+@misc{shyam2024tree,
+  title={Tree Attention: Topology-aware Decoding for Long-Context Attention on {GPU} clusters}
+
+@inproceedings{singhania2024loki,
+  title = {{Loki: Low-rank Keys for Efficient Sparse Attention}}
+
+@article{sinkhorn1964relationship,
+  title={A relationship between arbitrary positive matrices and doubly stochastic matrices}
+
+@inproceedings{smith2023simplified,
+  title     = {Simplified State Space Layers for Sequence Modeling}
+
+@misc{sun2023retentive,
+  title={Retentive Network: A Successor to Transformer for Large Language Models}
+
+@misc{sun2024learning,
+  title={Learning to (Learn at Test Time): {RNN}s with Expressive Hidden States}
+
+@inproceedings{tang2024quest,
+  title     = {{Quest}: Query-Aware Sparsity for Efficient Long-Context {LLM} Inference}
+
+@inproceedings{vaswani2017attention,
+  title={Attention Is All You Need}
+
+@inproceedings{vyas2020fast,
+  title         = {Fast Transformers with Clustered Attention}
+
+@misc{wang2020linformer,
+  title = {{Linformer: Self-Attention with Linear Complexity}}
+
+@misc{wang2024model,
+  title = {{Model Tells You Where to Merge: Adaptive KV Cache Merging for LLMs on Long-Context Tasks}}
+
+@inproceedings{wang2025svdllm,
+  title = {{SVD-LLM: Truncation-aware Singular Value Decomposition for Large Language Model Compression}}
+
+@inproceedings{widrow1960adaptive,
+  title={Adaptive Switching Circuits}
+
+@inproceedings{williams2001using,
+  title     = {Using the {N}ystr{\&quot;o}m Method to Speed Up Kernel Machines}
+
+@inproceedings{xiao2024efficient,
+  title = {{Efficient Streaming Language Models with Attention Sinks}}
+
+@inproceedings{xiao2024infllm,
+  title={{InfLLM}: Training-Free Long-Context Extrapolation for {LLMs} with an Efficient Context Memory}
+
+@inproceedings{xiong2021nystromformer,
+  title     = {Nystr{\&quot;o}mformer: A Nystr{\&quot;o}m-Based Algorithm for Approximating Self-Attention}
+
+@inproceedings{xu2025think,
+  title = {{ThinK: Thinner Key Cache by Query-Driven Pruning}}
+
+@inproceedings{yang2024gated,
+  title={Gated Linear Attention Transformers with Hardware-Efficient Training}
+
+@inproceedings{yang2024parallelizing,
+  title={Parallelizing Linear Transformers with the Delta Rule over Sequence Length}
+
+@inproceedings{yang2025gated,
+  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule}
+
+@inproceedings{yu2016orthogonal,
+  title={Orthogonal Random Features}
+
+@inproceedings{zaheer2020bigbird,
+  title = {{Big Bird: Transformers for Longer Sequences}}
+
+@inproceedings{zandieh2025qjl,
+  title     = {{QJL}: 1-Bit Quantized {JL} Transform for {KV} Cache Quantization with Zero Overhead}
+
+@inproceedings{zhang2023h2o,
+  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models}
+
+@inproceedings{zhang2024cam,
+  title = {{CaM}: Cache Merging for Memory-efficient {LLMs} Inference}
+
+@inproceedings{zhang2024hedgehog,
+  title     = {The Hedgehog \&amp; the Porcupine: Expressive Linear Attentions with Softmax Mimicry}
+
+@inproceedings{zhang2025sageattention,
+  title={{SageAttention}: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration}
+
+@inproceedings{zhao2024atom,
+  title     = {{Atom}: Low-Bit Quantization for Efficient and Accurate {LLM} Serving}
+</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="yang2024parallelizing">
 <pre class="attn-bib__src"><code>@inproceedings{yang2024parallelizing,
-  title={Parallelizing Linear Transformers with the Delta Rule over Sequence Length},
-  author={Yang, Songlin and Wang, Bailin and Zhang, Yu and Shen, Yikang and Kim, Yoon},
-  booktitle={Advances in Neural Information Processing Systems 37 (NeurIPS)},
-  year={2024},
-  eprint={2406.06484},
-  archivePrefix={arXiv}
-}</code></pre>
+  title={Parallelizing Linear Transformers with the Delta Rule over Sequence Length}
+
+@inproceedings{yang2025gated,
+  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule}
+
+@inproceedings{yu2016orthogonal,
+  title={Orthogonal Random Features}
+
+@inproceedings{zaheer2020bigbird,
+  title = {{Big Bird: Transformers for Longer Sequences}}
+
+@inproceedings{zandieh2025qjl,
+  title     = {{QJL}: 1-Bit Quantized {JL} Transform for {KV} Cache Quantization with Zero Overhead}
+
+@inproceedings{zhang2023h2o,
+  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models}
+
+@inproceedings{zhang2024cam,
+  title = {{CaM}: Cache Merging for Memory-efficient {LLMs} Inference}
+
+@inproceedings{zhang2024hedgehog,
+  title     = {The Hedgehog \&amp; the Porcupine: Expressive Linear Attentions with Softmax Mimicry}
+
+@inproceedings{zhang2025sageattention,
+  title={{SageAttention}: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration}
+
+@inproceedings{zhao2024atom,
+  title     = {{Atom}: Low-Bit Quantization for Efficient and Accurate {LLM} Serving}
+</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="widrow1960adaptive">
 <pre class="attn-bib__src"><code>@inproceedings{widrow1960adaptive,
-  title={Adaptive Switching Circuits},
-  author={Widrow, Bernard and Hoff, Marcian E.},
-  booktitle={IRE WESCON Convention Record},
-  pages={96--104},
-  year={1960}
-}</code></pre>
+  title={Adaptive Switching Circuits}
+
+@inproceedings{williams2001using,
+  title     = {Using the {N}ystr{\&quot;o}m Method to Speed Up Kernel Machines}
+
+@inproceedings{xiao2024efficient,
+  title = {{Efficient Streaming Language Models with Attention Sinks}}
+
+@inproceedings{xiao2024infllm,
+  title={{InfLLM}: Training-Free Long-Context Extrapolation for {LLMs} with an Efficient Context Memory}
+
+@inproceedings{xiong2021nystromformer,
+  title     = {Nystr{\&quot;o}mformer: A Nystr{\&quot;o}m-Based Algorithm for Approximating Self-Attention}
+
+@inproceedings{xu2025think,
+  title = {{ThinK: Thinner Key Cache by Query-Driven Pruning}}
+
+@inproceedings{yang2024gated,
+  title={Gated Linear Attention Transformers with Hardware-Efficient Training}
+
+@inproceedings{yang2024parallelizing,
+  title={Parallelizing Linear Transformers with the Delta Rule over Sequence Length}
+
+@inproceedings{yang2025gated,
+  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule}
+
+@inproceedings{yu2016orthogonal,
+  title={Orthogonal Random Features}
+
+@inproceedings{zaheer2020bigbird,
+  title = {{Big Bird: Transformers for Longer Sequences}}
+
+@inproceedings{zandieh2025qjl,
+  title     = {{QJL}: 1-Bit Quantized {JL} Transform for {KV} Cache Quantization with Zero Overhead}
+
+@inproceedings{zhang2023h2o,
+  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models}
+
+@inproceedings{zhang2024cam,
+  title = {{CaM}: Cache Merging for Memory-efficient {LLMs} Inference}
+
+@inproceedings{zhang2024hedgehog,
+  title     = {The Hedgehog \&amp; the Porcupine: Expressive Linear Attentions with Softmax Mimicry}
+
+@inproceedings{zhang2025sageattention,
+  title={{SageAttention}: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration}
+
+@inproceedings{zhao2024atom,
+  title     = {{Atom}: Low-Bit Quantization for Efficient and Accurate {LLM} Serving}
+</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="yang2025gated">
 <pre class="attn-bib__src"><code>@inproceedings{yang2025gated,
-  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule},
-  author={Yang, Songlin and Kautz, Jan and Hatamizadeh, Ali},
-  booktitle={International Conference on Learning Representations (ICLR)},
-  year={2025},
-  eprint={2412.06464}, archivePrefix={arXiv}
-}</code></pre>
+  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule}
+
+@inproceedings{yu2016orthogonal,
+  title={Orthogonal Random Features}
+
+@inproceedings{zaheer2020bigbird,
+  title = {{Big Bird: Transformers for Longer Sequences}}
+
+@inproceedings{zandieh2025qjl,
+  title     = {{QJL}: 1-Bit Quantized {JL} Transform for {KV} Cache Quantization with Zero Overhead}
+
+@inproceedings{zhang2023h2o,
+  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models}
+
+@inproceedings{zhang2024cam,
+  title = {{CaM}: Cache Merging for Memory-efficient {LLMs} Inference}
+
+@inproceedings{zhang2024hedgehog,
+  title     = {The Hedgehog \&amp; the Porcupine: Expressive Linear Attentions with Softmax Mimicry}
+
+@inproceedings{zhang2025sageattention,
+  title={{SageAttention}: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration}
+
+@inproceedings{zhao2024atom,
+  title     = {{Atom}: Low-Bit Quantization for Efficient and Accurate {LLM} Serving}
+</code></pre>
 </div>
 </div>
 </details>

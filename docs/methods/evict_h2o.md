@@ -155,53 +155,444 @@ invariant W: 0.0
 Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `evict_h2o` removed.
 
 changes the same object — [`compress`](../taxonomy.md#compress)
-:   [`evict_snapkv`](evict_snapkv.md), [`gqa`](gqa.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`mla`](mla.md), [`quantkv`](quantkv.md) &nbsp;·&nbsp; [browse the bank, compress only](index.md?category=compress)
+:   [`atom`](atom.md), [`evict_adakv`](evict_adakv.md), [`evict_pyramidkv`](evict_pyramidkv.md), [`evict_snapkv`](evict_snapkv.md), [`evict_tova`](evict_tova.md), [`gqa`](gqa.md), [`kivi`](kivi.md), [`kvquant`](kvquant.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_cam`](merge_cam.md), [`merge_kv`](merge_kv.md), [`merge_tome`](merge_tome.md), [`mla`](mla.md), [`qjl`](qjl.md), [`quantkv`](quantkv.md), [`zipcache`](zipcache.md) &nbsp;·&nbsp; [browse the bank, compress only](index.md?category=compress)
 
 judged the same way — `approximate`, beyond the ones above
-:   [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`lowprec`](lowprec.md), [`lsh_sample`](lsh_sample.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`sink_window`](sink_window.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+:   [`abc`](abc.md), [`based`](based.md), [`bigbird`](bigbird.md), [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`favorpp`](favorpp.md), [`favorsharp`](favorsharp.md), [`hedgehog`](hedgehog.md), [`hyperattention`](hyperattention.md), [`longformer`](longformer.md), [`lowprec`](lowprec.md), [`lowrank_logit`](lowrank_logit.md) *(oracle)*, [`lsh_sample`](lsh_sample.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`oval`](oval.md), [`page_pca`](page_pca.md), [`performer`](performer.md), [`polysketch`](polysketch.md), [`reformer`](reformer.md), [`routing`](routing.md), [`shifted_window`](shifted_window.md), [`sink_window`](sink_window.md), [`skyformer`](skyformer.md), [`strided`](strided.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
 
 [Open the browser with `evict_h2o` selected](index.md?compare=evict_h2o) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Zhang et al. (2023).** *H2O: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2306.14048](https://arxiv.org/abs/2306.14048)<br><span class="attn-cite" data-bibkey="zhang2023h2o"><code>zhang2023h2o</code></span>
-- **Liu et al. (2023).** *Scissorhands: Exploiting the Persistence of Importance Hypothesis for LLM KV Cache Compression at Test Time.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2305.17118](https://arxiv.org/abs/2305.17118)<br><span class="attn-cite" data-bibkey="liu2023scissorhands"><code>liu2023scissorhands</code></span>
-- **Oren et al. (2024).** *Transformers are Multi-State RNNs.* Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP). [arXiv:2401.06104](https://arxiv.org/abs/2401.06104)<br><span class="attn-cite" data-bibkey="oren2024transformers"><code>oren2024transformers</code></span>
+- **zhang2023h2o (n.d.).** *Atom: Low-Bit Quantization for Efficient and Accurate LLM Serving.*<br><span class="attn-cite" data-bibkey="zhang2023h2o"><code>zhang2023h2o</code></span>
+- **liu2023scissorhands (n.d.).** *Atom: Low-Bit Quantization for Efficient and Accurate LLM Serving.*<br><span class="attn-cite" data-bibkey="liu2023scissorhands"><code>liu2023scissorhands</code></span>
+- **oren2024transformers (n.d.).** *Atom: Low-Bit Quantization for Efficient and Accurate LLM Serving.*<br><span class="attn-cite" data-bibkey="oren2024transformers"><code>oren2024transformers</code></span>
 
 <details class="attn-bib no-copy">
 <summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="zhang2023h2o">
 <pre class="attn-bib__src"><code>@inproceedings{zhang2023h2o,
-  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models},
-  author    = {Zhang, Zhenyu and Sheng, Ying and Zhou, Tianyi and Chen, Tianlong and Zheng, Lianmin and Cai, Ruisi and Song, Zhao and Tian, Yuandong and R{\'e}, Christopher and Barrett, Clark and Wang, Zhangyang and Chen, Beidi},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  volume    = {36},
-  year      = {2023},
-  eprint    = {2306.14048},
-  archivePrefix = {arXiv}
-}</code></pre>
+  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models}
+
+@inproceedings{zhang2024cam,
+  title = {{CaM}: Cache Merging for Memory-efficient {LLMs} Inference}
+
+@inproceedings{zhang2024hedgehog,
+  title     = {The Hedgehog \&amp; the Porcupine: Expressive Linear Attentions with Softmax Mimicry}
+
+@inproceedings{zhang2025sageattention,
+  title={{SageAttention}: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration}
+
+@inproceedings{zhao2024atom,
+  title     = {{Atom}: Low-Bit Quantization for Efficient and Accurate {LLM} Serving}
+</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="liu2023scissorhands">
 <pre class="attn-bib__src"><code>@inproceedings{liu2023scissorhands,
-  title     = {Scissorhands: Exploiting the Persistence of Importance Hypothesis for {LLM} {KV} Cache Compression at Test Time},
-  author    = {Liu, Zichang and Desai, Aditya and Liao, Fangshuo and Wang, Weitao and Xie, Victor and Xu, Zhaozhuo and Kyrillidis, Anastasios and Shrivastava, Anshumali},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  volume    = {36},
-  year      = {2023},
-  eprint    = {2305.17118},
-  archivePrefix = {arXiv}
-}</code></pre>
+  title     = {Scissorhands: Exploiting the Persistence of Importance Hypothesis for {LLM} {KV} Cache Compression at Test Time}
+
+@inproceedings{liu2024intactkv,
+  title = {{IntactKV: Improving Large Language Model Quantization by Keeping Pivot Tokens Intact}}
+
+@inproceedings{liu2024kivi,
+  title     = {{KIVI}: A Tuning-Free Asymmetric 2bit Quantization for {KV} Cache}
+
+@inproceedings{liu2025expected,
+  title={Expected Sliced Transport Plans}
+
+@inproceedings{ma2021luna,
+  title         = {Luna: Linear Unified Nested Attention}
+
+@inproceedings{ma2023mega,
+  title     = {Mega: Moving Average Equipped Gated Attention}
+
+@inproceedings{meng2025polaformer,
+  title     = {{PolaFormer}: Polarity-aware Linear Attention for Vision Transformers}
+
+@inproceedings{mialon2021trainable,
+  title={A Trainable Optimal Transport Embedding for Feature Aggregation and its Relationship to Attention}
+
+@misc{micikevicius2022fp8,
+  title = {{FP8 Formats for Deep Learning}}
+
+@misc{milakov2018online,
+  title={Online normalizer calculation for softmax}
+
+@inproceedings{naderializadeh2021pooling,
+  title={Pooling by Sliced-{W}asserstein Embedding}
+
+@inproceedings{nawrot2024dynamic,
+  title = {{Dynamic Memory Compression: Retrofitting LLMs for Accelerated Inference}}
+
+@inproceedings{oren2024transformers,
+  title = {{Transformers are Multi-State RNNs}}
+
+@inproceedings{orvieto2023resurrecting,
+  title     = {Resurrecting Recurrent Neural Networks for Long Sequences}
+
+@book{owen2013monte,
+  title     = {Monte Carlo Theory, Methods and Examples}
+
+@inproceedings{peng2021random,
+  title     = {Random Feature Attention}
+
+@inproceedings{peng2022abc,
+  title         = {{ABC}: Attention with Bounded-memory Control}
+
+@inproceedings{peng2023rwkv,
+  title={{RWKV}: Reinventing {RNN}s for the Transformer Era}
+
+@inproceedings{peng2024eagle,
+  title={Eagle and Finch: {RWKV} with Matrix-Valued States and Dynamic Recurrence}
+
+@article{peyre2019computational,
+  title={Computational Optimal Transport}
+
+@inproceedings{pham2013fast,
+  title={Fast and Scalable Polynomial Kernels via Explicit Feature Maps}
+
+@inproceedings{poli2023hyena,
+  title     = {Hyena Hierarchy: Towards Larger Convolutional Language Models}
+
+@inproceedings{prillo2020softsort,
+  title={{SoftSort}: A Continuous Relaxation for the argsort Operator}
+
+@inproceedings{qin2022cosformer,
+  title={{cosFormer}: Rethinking Softmax in Attention}
+
+@inproceedings{qin2022devil,
+  title={The Devil in Linear Transformer}
+
+@inproceedings{qin2023hgrn,
+  title={Hierarchically Gated Recurrent Neural Network for Sequence Modeling}
+
+@inproceedings{qin2024hgrn2,
+  title={{HGRN2}: Gated Linear {RNN}s with State Expansion}
+
+@inproceedings{qiu2020blockwise,
+  title = {{Blockwise Self-Attention for Long Document Understanding}}
+
+@misc{rabe2021selfattention,
+  title={Self-attention Does Not Need $O(n^2)$ Memory}
+
+@inproceedings{rahimi2007random,
+  title     = {Random Features for Large-Scale Kernel Machines}
+
+@inproceedings{ribar2024sparq,
+  title = {{SparQ Attention: Bandwidth-Efficient LLM Inference}}
+
+@inproceedings{romero2022ckconv,
+  title     = {CKConv: Continuous Kernel Convolution For Sequential Data}
+
+@article{roy2021routing,
+  title = {Efficient Content-Based Sparse Attention with Routing Transformers}
+
+@inproceedings{sander2022sinkformers,
+  title         = {Sinkformers: Transformers with Doubly Stochastic Attention}
+
+@misc{sanovar2024lean,
+  title={Lean Attention: Hardware-Aware Scalable Attention Mechanism for the Decode-Phase of Transformers}
+
+@inproceedings{sarlin2020superglue,
+  title={{SuperGlue}: Learning Feature Matching with Graph Neural Networks}
+
+@inproceedings{scetbon2021lowrank,
+  title         = {Low-Rank {S}inkhorn Factorization}
+
+@inproceedings{schlag2021linear,
+  title={Linear Transformers Are Secretly Fast Weight Programmers}
+
+@misc{sejourne2022unbalanced,
+  title={Unbalanced Optimal Transport, from Theory to Numerics}
+
+@inproceedings{shah2024flashattention3,
+  title={{FlashAttention-3}: Fast and Accurate Attention with Asynchrony and Low-precision}
+
+@inproceedings{shahbazi2025espformer,
+  title={{ESPFormer}: Doubly-Stochastic Attention with Expected Sliced Transport Plans}
+
+@misc{shahbazi2025lotformer,
+  title         = {{LOTFormer}: Doubly-Stochastic Linear Attention via Low-Rank Optimal Transport}
+
+@misc{shahbazi2026oval,
+  title = {{OVAL: Output-Aware Local Page Bases for KV Cache Retrieval}}
+
+@misc{shazeer2019fast,
+  title = {{Fast Transformer Decoding: One Write-Head is All You Need}}
+
+@misc{shyam2024tree,
+  title={Tree Attention: Topology-aware Decoding for Long-Context Attention on {GPU} clusters}
+
+@inproceedings{singhania2024loki,
+  title = {{Loki: Low-rank Keys for Efficient Sparse Attention}}
+
+@article{sinkhorn1964relationship,
+  title={A relationship between arbitrary positive matrices and doubly stochastic matrices}
+
+@inproceedings{smith2023simplified,
+  title     = {Simplified State Space Layers for Sequence Modeling}
+
+@misc{sun2023retentive,
+  title={Retentive Network: A Successor to Transformer for Large Language Models}
+
+@misc{sun2024learning,
+  title={Learning to (Learn at Test Time): {RNN}s with Expressive Hidden States}
+
+@inproceedings{tang2024quest,
+  title     = {{Quest}: Query-Aware Sparsity for Efficient Long-Context {LLM} Inference}
+
+@inproceedings{vaswani2017attention,
+  title={Attention Is All You Need}
+
+@inproceedings{vyas2020fast,
+  title         = {Fast Transformers with Clustered Attention}
+
+@misc{wang2020linformer,
+  title = {{Linformer: Self-Attention with Linear Complexity}}
+
+@misc{wang2024model,
+  title = {{Model Tells You Where to Merge: Adaptive KV Cache Merging for LLMs on Long-Context Tasks}}
+
+@inproceedings{wang2025svdllm,
+  title = {{SVD-LLM: Truncation-aware Singular Value Decomposition for Large Language Model Compression}}
+
+@inproceedings{widrow1960adaptive,
+  title={Adaptive Switching Circuits}
+
+@inproceedings{williams2001using,
+  title     = {Using the {N}ystr{\&quot;o}m Method to Speed Up Kernel Machines}
+
+@inproceedings{xiao2024efficient,
+  title = {{Efficient Streaming Language Models with Attention Sinks}}
+
+@inproceedings{xiao2024infllm,
+  title={{InfLLM}: Training-Free Long-Context Extrapolation for {LLMs} with an Efficient Context Memory}
+
+@inproceedings{xiong2021nystromformer,
+  title     = {Nystr{\&quot;o}mformer: A Nystr{\&quot;o}m-Based Algorithm for Approximating Self-Attention}
+
+@inproceedings{xu2025think,
+  title = {{ThinK: Thinner Key Cache by Query-Driven Pruning}}
+
+@inproceedings{yang2024gated,
+  title={Gated Linear Attention Transformers with Hardware-Efficient Training}
+
+@inproceedings{yang2024parallelizing,
+  title={Parallelizing Linear Transformers with the Delta Rule over Sequence Length}
+
+@inproceedings{yang2025gated,
+  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule}
+
+@inproceedings{yu2016orthogonal,
+  title={Orthogonal Random Features}
+
+@inproceedings{zaheer2020bigbird,
+  title = {{Big Bird: Transformers for Longer Sequences}}
+
+@inproceedings{zandieh2025qjl,
+  title     = {{QJL}: 1-Bit Quantized {JL} Transform for {KV} Cache Quantization with Zero Overhead}
+
+@inproceedings{zhang2023h2o,
+  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models}
+
+@inproceedings{zhang2024cam,
+  title = {{CaM}: Cache Merging for Memory-efficient {LLMs} Inference}
+
+@inproceedings{zhang2024hedgehog,
+  title     = {The Hedgehog \&amp; the Porcupine: Expressive Linear Attentions with Softmax Mimicry}
+
+@inproceedings{zhang2025sageattention,
+  title={{SageAttention}: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration}
+
+@inproceedings{zhao2024atom,
+  title     = {{Atom}: Low-Bit Quantization for Efficient and Accurate {LLM} Serving}
+</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="oren2024transformers">
 <pre class="attn-bib__src"><code>@inproceedings{oren2024transformers,
-  title = {{Transformers are Multi-State RNNs}},
-  author = {Matanel Oren and Michael Hassid and Nir Yarden and Yossi Adi and Roy Schwartz},
-  year = {2024},
-  booktitle = {Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
-  eprint = {2401.06104},
-  archivePrefix = {arXiv}
-}</code></pre>
+  title = {{Transformers are Multi-State RNNs}}
+
+@inproceedings{orvieto2023resurrecting,
+  title     = {Resurrecting Recurrent Neural Networks for Long Sequences}
+
+@book{owen2013monte,
+  title     = {Monte Carlo Theory, Methods and Examples}
+
+@inproceedings{peng2021random,
+  title     = {Random Feature Attention}
+
+@inproceedings{peng2022abc,
+  title         = {{ABC}: Attention with Bounded-memory Control}
+
+@inproceedings{peng2023rwkv,
+  title={{RWKV}: Reinventing {RNN}s for the Transformer Era}
+
+@inproceedings{peng2024eagle,
+  title={Eagle and Finch: {RWKV} with Matrix-Valued States and Dynamic Recurrence}
+
+@article{peyre2019computational,
+  title={Computational Optimal Transport}
+
+@inproceedings{pham2013fast,
+  title={Fast and Scalable Polynomial Kernels via Explicit Feature Maps}
+
+@inproceedings{poli2023hyena,
+  title     = {Hyena Hierarchy: Towards Larger Convolutional Language Models}
+
+@inproceedings{prillo2020softsort,
+  title={{SoftSort}: A Continuous Relaxation for the argsort Operator}
+
+@inproceedings{qin2022cosformer,
+  title={{cosFormer}: Rethinking Softmax in Attention}
+
+@inproceedings{qin2022devil,
+  title={The Devil in Linear Transformer}
+
+@inproceedings{qin2023hgrn,
+  title={Hierarchically Gated Recurrent Neural Network for Sequence Modeling}
+
+@inproceedings{qin2024hgrn2,
+  title={{HGRN2}: Gated Linear {RNN}s with State Expansion}
+
+@inproceedings{qiu2020blockwise,
+  title = {{Blockwise Self-Attention for Long Document Understanding}}
+
+@misc{rabe2021selfattention,
+  title={Self-attention Does Not Need $O(n^2)$ Memory}
+
+@inproceedings{rahimi2007random,
+  title     = {Random Features for Large-Scale Kernel Machines}
+
+@inproceedings{ribar2024sparq,
+  title = {{SparQ Attention: Bandwidth-Efficient LLM Inference}}
+
+@inproceedings{romero2022ckconv,
+  title     = {CKConv: Continuous Kernel Convolution For Sequential Data}
+
+@article{roy2021routing,
+  title = {Efficient Content-Based Sparse Attention with Routing Transformers}
+
+@inproceedings{sander2022sinkformers,
+  title         = {Sinkformers: Transformers with Doubly Stochastic Attention}
+
+@misc{sanovar2024lean,
+  title={Lean Attention: Hardware-Aware Scalable Attention Mechanism for the Decode-Phase of Transformers}
+
+@inproceedings{sarlin2020superglue,
+  title={{SuperGlue}: Learning Feature Matching with Graph Neural Networks}
+
+@inproceedings{scetbon2021lowrank,
+  title         = {Low-Rank {S}inkhorn Factorization}
+
+@inproceedings{schlag2021linear,
+  title={Linear Transformers Are Secretly Fast Weight Programmers}
+
+@misc{sejourne2022unbalanced,
+  title={Unbalanced Optimal Transport, from Theory to Numerics}
+
+@inproceedings{shah2024flashattention3,
+  title={{FlashAttention-3}: Fast and Accurate Attention with Asynchrony and Low-precision}
+
+@inproceedings{shahbazi2025espformer,
+  title={{ESPFormer}: Doubly-Stochastic Attention with Expected Sliced Transport Plans}
+
+@misc{shahbazi2025lotformer,
+  title         = {{LOTFormer}: Doubly-Stochastic Linear Attention via Low-Rank Optimal Transport}
+
+@misc{shahbazi2026oval,
+  title = {{OVAL: Output-Aware Local Page Bases for KV Cache Retrieval}}
+
+@misc{shazeer2019fast,
+  title = {{Fast Transformer Decoding: One Write-Head is All You Need}}
+
+@misc{shyam2024tree,
+  title={Tree Attention: Topology-aware Decoding for Long-Context Attention on {GPU} clusters}
+
+@inproceedings{singhania2024loki,
+  title = {{Loki: Low-rank Keys for Efficient Sparse Attention}}
+
+@article{sinkhorn1964relationship,
+  title={A relationship between arbitrary positive matrices and doubly stochastic matrices}
+
+@inproceedings{smith2023simplified,
+  title     = {Simplified State Space Layers for Sequence Modeling}
+
+@misc{sun2023retentive,
+  title={Retentive Network: A Successor to Transformer for Large Language Models}
+
+@misc{sun2024learning,
+  title={Learning to (Learn at Test Time): {RNN}s with Expressive Hidden States}
+
+@inproceedings{tang2024quest,
+  title     = {{Quest}: Query-Aware Sparsity for Efficient Long-Context {LLM} Inference}
+
+@inproceedings{vaswani2017attention,
+  title={Attention Is All You Need}
+
+@inproceedings{vyas2020fast,
+  title         = {Fast Transformers with Clustered Attention}
+
+@misc{wang2020linformer,
+  title = {{Linformer: Self-Attention with Linear Complexity}}
+
+@misc{wang2024model,
+  title = {{Model Tells You Where to Merge: Adaptive KV Cache Merging for LLMs on Long-Context Tasks}}
+
+@inproceedings{wang2025svdllm,
+  title = {{SVD-LLM: Truncation-aware Singular Value Decomposition for Large Language Model Compression}}
+
+@inproceedings{widrow1960adaptive,
+  title={Adaptive Switching Circuits}
+
+@inproceedings{williams2001using,
+  title     = {Using the {N}ystr{\&quot;o}m Method to Speed Up Kernel Machines}
+
+@inproceedings{xiao2024efficient,
+  title = {{Efficient Streaming Language Models with Attention Sinks}}
+
+@inproceedings{xiao2024infllm,
+  title={{InfLLM}: Training-Free Long-Context Extrapolation for {LLMs} with an Efficient Context Memory}
+
+@inproceedings{xiong2021nystromformer,
+  title     = {Nystr{\&quot;o}mformer: A Nystr{\&quot;o}m-Based Algorithm for Approximating Self-Attention}
+
+@inproceedings{xu2025think,
+  title = {{ThinK: Thinner Key Cache by Query-Driven Pruning}}
+
+@inproceedings{yang2024gated,
+  title={Gated Linear Attention Transformers with Hardware-Efficient Training}
+
+@inproceedings{yang2024parallelizing,
+  title={Parallelizing Linear Transformers with the Delta Rule over Sequence Length}
+
+@inproceedings{yang2025gated,
+  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule}
+
+@inproceedings{yu2016orthogonal,
+  title={Orthogonal Random Features}
+
+@inproceedings{zaheer2020bigbird,
+  title = {{Big Bird: Transformers for Longer Sequences}}
+
+@inproceedings{zandieh2025qjl,
+  title     = {{QJL}: 1-Bit Quantized {JL} Transform for {KV} Cache Quantization with Zero Overhead}
+
+@inproceedings{zhang2023h2o,
+  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models}
+
+@inproceedings{zhang2024cam,
+  title = {{CaM}: Cache Merging for Memory-efficient {LLMs} Inference}
+
+@inproceedings{zhang2024hedgehog,
+  title     = {The Hedgehog \&amp; the Porcupine: Expressive Linear Attentions with Softmax Mimicry}
+
+@inproceedings{zhang2025sageattention,
+  title={{SageAttention}: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration}
+
+@inproceedings{zhao2024atom,
+  title     = {{Atom}: Low-Bit Quantization for Efficient and Accurate {LLM} Serving}
+</code></pre>
 </div>
 </div>
 </details>

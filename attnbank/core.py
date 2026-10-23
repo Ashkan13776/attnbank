@@ -37,8 +37,8 @@ class Category(str, Enum):
     >>> Category.RESTRICT.value
     'restrict'
     >>> import attnbank as ab
-    >>> ab.available(Category.COUPLING)
-    ['lowrank_ot', 'sinkhorn']
+    >>> 'sinkhorn' in ab.available(Category.COUPLING)
+    True
     """
 
     EXACT = "exact"              # same operator, different execution

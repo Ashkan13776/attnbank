@@ -37,7 +37,7 @@ these implementations exist to be read against the monograph.
 28
 ```
 
-**Twenty-eight of thirty-two methods declare `reference` only, and that is the correct
+**Seventy-four of seventy-eight methods declare `reference` only, and that is the correct
 answer.** `sdpa` computes exactly $\mathrm{softmax}(\beta\langle q,k\rangle + \text{mask})\,v$.
 Four methods in the bank are that, once their own preprocessing is done: `softmax`,
 `flash`, and — after pooling or reconstructing the cache — `gqa` and `mla`. The rest

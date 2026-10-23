@@ -129,39 +129,85 @@ nav:
           - Low-precision attention: methods/lowprec.md
           - Split-K / Flash-Decoding: methods/splitk.md
       - interaction:
+          - Based: methods/based.md
           - cosFormer: methods/cosformer.md
+          - FAVOR#: methods/favorsharp.md
+          - FAVOR++: methods/favorpp.md
+          - Hedgehog: methods/hedgehog.md
           - Linear transformer: methods/linear_elu.md
+          - Low-rank logits (oracle): methods/lowrank_logit.md
           - Nystromformer: methods/nystrom.md
           - Performer / FAVOR+: methods/performer.md
+          - PolaFormer: methods/polaformer.md
+          - Polynomial sketch: methods/polysketch.md
           - Random Fourier features for attention: methods/trigrff.md
+          - ReBased: methods/rebased.md
+          - Skyformer: methods/skyformer.md
       - restrict:
+          - BigBird: methods/bigbird.md
+          - HyperAttention: methods/hyperattention.md
+          - Longformer: methods/longformer.md
           - LSH importance sampling: methods/lsh_sample.md
           - Oracle top-k restriction: methods/topk.md
           - Output-aware selection (oracle): methods/value_topk.md
+          - OVAL: methods/oval.md
+          - Page-local key PCA: methods/page_pca.md
           - Quest-style page / block selection: methods/blocktopk.md
+          - Reformer LSH attention: methods/reformer.md
+          - Routing Transformer: methods/routing.md
           - Sliding-window (banded) attention: methods/window.md
+          - Sparse Transformer: methods/strided.md
           - StreamingLLM: methods/sink_window.md
+          - Swin-style shifted local windows: methods/shifted_window.md
       - compress:
+          - Ada-KV: methods/evict_adakv.md
+          - Atom: methods/atom.md
+          - CaM: methods/merge_cam.md
           - Grouped-query attention: methods/gqa.md
           - H2O: methods/evict_h2o.md
           - Hidden-dimension low rank: methods/lowrank_kv.md
+          - KIVI: methods/kivi.md
           - KV-cache quantization: methods/quantkv.md
+          - KVQuant: methods/kvquant.md
           - Linformer: methods/linformer.md
           - Multi-head latent attention: methods/mla.md
+          - PyramidKV: methods/evict_pyramidkv.md
+          - QJL: methods/qjl.md
           - SnapKV: methods/evict_snapkv.md
           - Token merging: methods/merge_kv.md
+          - ToMe: methods/merge_tome.md
+          - TOVA: methods/evict_tova.md
+          - ZipCache: methods/zipcache.md
       - factorize:
+          - ABC: methods/abc.md
           - Clustered attention: methods/clustered.md
+          - ISAB: methods/isab.md
           - Latent stochastic factorization: methods/latent_stochastic.md
+          - Latte: methods/latte.md
           - Nonnegative rank bound (oracle): methods/nmf_oracle.md
+          - Perceiver / Perceiver IO: methods/perceiver.md
           - Signed rank bound (oracle): methods/svd_oracle.md
       - coupling:
+          - ESPFormer: methods/espformer.md
           - LOTFormer-style factored coupling: methods/lowrank_ot.md
+          - OTKE: methods/otke.md
+          - Partial-assignment attention: methods/dustbin_sinkhorn.md
           - Sinkhorn / entropic-OT attention: methods/sinkhorn.md
+          - Unbalanced entropic OT attention: methods/unbalanced_sinkhorn.md
       - recurrent:
           - Decayed linear recurrence: methods/decay_rnn.md
           - DeltaNet: methods/delta_rnn.md
+          - Gated linear attention: methods/gla.md
+          - HGRN2: methods/hgrn2.md
+          - Hyena: methods/hyena.md
           - Linear attention as a recurrence: methods/linear_rnn.md
+          - LRU: methods/lru.md
+          - Mega: methods/mega.md
+          - mLSTM (xLSTM): methods/mlstm.md
+          - Retention (RetNet): methods/retnet.md
+          - RWKV-5/6 time mixing: methods/rwkv.md
+          - S4D: methods/s4d.md
+          - S5: methods/s5.md
   # --- end generated ---
   - The invariant: invariant.md
   - Conformance: conformance.md

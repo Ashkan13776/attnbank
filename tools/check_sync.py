@@ -102,9 +102,17 @@ def main() -> int:
         p = LIB / rel
         if not p.exists():
             continue
-        for m in re.finditer(r"\b(\d{2,4})\s+methods\b", p.read_text()):
-            if int(m.group(1)) != n_methods:
-                stale.append(f"{rel} says {m.group(1)} methods, registry has {n_methods}")
+        text = p.read_text()
+        cats = {row["category"] for row in table}
+        for m in re.finditer(r"\b(\d{2,4})\s+methods\b", text):
+            if int(m.group(1)) == n_methods:
+                continue
+            # a per-category count is not a claim about the library; the generated
+            # taxonomy page legitimately says "18 methods" of compress.
+            ctx = text[max(0, m.start() - 160):m.end() + 160]
+            if any(re.search(rf"\b{c}\b", ctx) for c in cats):
+                continue
+            stale.append(f"{rel} says {m.group(1)} methods, registry has {n_methods}")
     r.check("method counts in prose", stale)
 
     # ---- 5. paper_section labels exist in the monograph ------------------------

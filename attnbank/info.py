@@ -160,8 +160,8 @@ class MethodTable(list):
     --------
     >>> import attnbank as ab
     >>> table = ab.list_methods("restrict")
-    >>> sorted(r["name"] for r in table)[:3]
-    ['blocktopk', 'lsh_sample', 'sink_window']
+    >>> all(r["category"] == "restrict" for r in table)
+    True
     >>> print(table)                                     # doctest: +ELLIPSIS
     restrict -- the support of pi_q is restricted...
     ...

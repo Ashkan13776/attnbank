@@ -162,41 +162,135 @@ invariant W: 0.0
 Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are `ab.available(...)` with `blocktopk` removed.
 
 changes the same object — [`restrict`](../taxonomy.md#restrict)
-:   [`lsh_sample`](lsh_sample.md), [`sink_window`](sink_window.md), [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, restrict only](index.md?category=restrict)
+:   [`bigbird`](bigbird.md), [`hyperattention`](hyperattention.md), [`longformer`](longformer.md), [`lsh_sample`](lsh_sample.md), [`oval`](oval.md), [`page_pca`](page_pca.md), [`reformer`](reformer.md), [`routing`](routing.md), [`shifted_window`](shifted_window.md), [`sink_window`](sink_window.md), [`strided`](strided.md), [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, restrict only](index.md?category=restrict)
 
 judged the same way — `approximate`, beyond the ones above
-:   [`clustered`](clustered.md), [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`merge_kv`](merge_kv.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`quantkv`](quantkv.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`trigrff`](trigrff.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+:   [`abc`](abc.md), [`atom`](atom.md), [`based`](based.md), [`clustered`](clustered.md), [`evict_adakv`](evict_adakv.md), [`evict_h2o`](evict_h2o.md), [`evict_pyramidkv`](evict_pyramidkv.md), [`evict_snapkv`](evict_snapkv.md), [`evict_tova`](evict_tova.md), [`favorpp`](favorpp.md), [`favorsharp`](favorsharp.md), [`hedgehog`](hedgehog.md), [`kivi`](kivi.md), [`kvquant`](kvquant.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`lowrank_logit`](lowrank_logit.md) *(oracle)*, [`merge_cam`](merge_cam.md), [`merge_kv`](merge_kv.md), [`merge_tome`](merge_tome.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`polysketch`](polysketch.md), [`qjl`](qjl.md), [`quantkv`](quantkv.md), [`skyformer`](skyformer.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`trigrff`](trigrff.md), [`zipcache`](zipcache.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
 
 [Open the browser with `blocktopk` selected](index.md?compare=blocktopk) and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.
 
 ## References
 
-- **Tang et al. (2024).** *Quest: Query-Aware Sparsity for Efficient Long-Context LLM Inference.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2406.10774](https://arxiv.org/abs/2406.10774)<br><span class="attn-cite" data-bibkey="tang2024quest"><code>tang2024quest</code></span>
-- **Xiao et al. (2024).** *InfLLM: Training-Free Long-Context Extrapolation for LLMs with an Efficient Context Memory.* Advances in Neural Information Processing Systems (NeurIPS). [doi:10.52202/079017-3801](https://doi.org/10.52202/079017-3801)<br><span class="attn-cite" data-bibkey="xiao2024infllm"><code>xiao2024infllm</code></span>
+- **tang2024quest (n.d.).** *Atom: Low-Bit Quantization for Efficient and Accurate LLM Serving.*<br><span class="attn-cite" data-bibkey="tang2024quest"><code>tang2024quest</code></span>
+- **xiao2024infllm (n.d.).** *Atom: Low-Bit Quantization for Efficient and Accurate LLM Serving.*<br><span class="attn-cite" data-bibkey="xiao2024infllm"><code>xiao2024infllm</code></span>
 
 <details class="attn-bib no-copy">
 <summary>BibTeX — 2 entries, verbatim from <code>attnbank/references.bib</code></summary>
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="tang2024quest">
 <pre class="attn-bib__src"><code>@inproceedings{tang2024quest,
-  title     = {{Quest}: Query-Aware Sparsity for Efficient Long-Context {LLM} Inference},
-  author    = {Tang, Jiaming and Zhao, Yilong and Zhu, Kan and Xiao, Guangxuan and Kasikci, Baris and Han, Song},
-  booktitle = {Proceedings of the 41st International Conference on Machine Learning (ICML)},
-  series    = {Proceedings of Machine Learning Research},
-  volume    = {235},
-  year      = {2024},
-  eprint    = {2406.10774},
-  archivePrefix = {arXiv}
-}</code></pre>
+  title     = {{Quest}: Query-Aware Sparsity for Efficient Long-Context {LLM} Inference}
+
+@inproceedings{vaswani2017attention,
+  title={Attention Is All You Need}
+
+@inproceedings{vyas2020fast,
+  title         = {Fast Transformers with Clustered Attention}
+
+@misc{wang2020linformer,
+  title = {{Linformer: Self-Attention with Linear Complexity}}
+
+@misc{wang2024model,
+  title = {{Model Tells You Where to Merge: Adaptive KV Cache Merging for LLMs on Long-Context Tasks}}
+
+@inproceedings{wang2025svdllm,
+  title = {{SVD-LLM: Truncation-aware Singular Value Decomposition for Large Language Model Compression}}
+
+@inproceedings{widrow1960adaptive,
+  title={Adaptive Switching Circuits}
+
+@inproceedings{williams2001using,
+  title     = {Using the {N}ystr{\&quot;o}m Method to Speed Up Kernel Machines}
+
+@inproceedings{xiao2024efficient,
+  title = {{Efficient Streaming Language Models with Attention Sinks}}
+
+@inproceedings{xiao2024infllm,
+  title={{InfLLM}: Training-Free Long-Context Extrapolation for {LLMs} with an Efficient Context Memory}
+
+@inproceedings{xiong2021nystromformer,
+  title     = {Nystr{\&quot;o}mformer: A Nystr{\&quot;o}m-Based Algorithm for Approximating Self-Attention}
+
+@inproceedings{xu2025think,
+  title = {{ThinK: Thinner Key Cache by Query-Driven Pruning}}
+
+@inproceedings{yang2024gated,
+  title={Gated Linear Attention Transformers with Hardware-Efficient Training}
+
+@inproceedings{yang2024parallelizing,
+  title={Parallelizing Linear Transformers with the Delta Rule over Sequence Length}
+
+@inproceedings{yang2025gated,
+  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule}
+
+@inproceedings{yu2016orthogonal,
+  title={Orthogonal Random Features}
+
+@inproceedings{zaheer2020bigbird,
+  title = {{Big Bird: Transformers for Longer Sequences}}
+
+@inproceedings{zandieh2025qjl,
+  title     = {{QJL}: 1-Bit Quantized {JL} Transform for {KV} Cache Quantization with Zero Overhead}
+
+@inproceedings{zhang2023h2o,
+  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models}
+
+@inproceedings{zhang2024cam,
+  title = {{CaM}: Cache Merging for Memory-efficient {LLMs} Inference}
+
+@inproceedings{zhang2024hedgehog,
+  title     = {The Hedgehog \&amp; the Porcupine: Expressive Linear Attentions with Softmax Mimicry}
+
+@inproceedings{zhang2025sageattention,
+  title={{SageAttention}: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration}
+
+@inproceedings{zhao2024atom,
+  title     = {{Atom}: Low-Bit Quantization for Efficient and Accurate {LLM} Serving}
+</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="xiao2024infllm">
 <pre class="attn-bib__src"><code>@inproceedings{xiao2024infllm,
-  title={{InfLLM}: Training-Free Long-Context Extrapolation for {LLMs} with an Efficient Context Memory},
-  author={Xiao, Chaojun and Zhang, Pengle and Han, Xu and Xiao, Guangxuan and Lin, Yankai and Zhang, Zhengyan and Liu, Zhiyuan and Sun, Maosong},
-  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
-  year={2024},
-  doi={10.52202/079017-3801}
-}</code></pre>
+  title={{InfLLM}: Training-Free Long-Context Extrapolation for {LLMs} with an Efficient Context Memory}
+
+@inproceedings{xiong2021nystromformer,
+  title     = {Nystr{\&quot;o}mformer: A Nystr{\&quot;o}m-Based Algorithm for Approximating Self-Attention}
+
+@inproceedings{xu2025think,
+  title = {{ThinK: Thinner Key Cache by Query-Driven Pruning}}
+
+@inproceedings{yang2024gated,
+  title={Gated Linear Attention Transformers with Hardware-Efficient Training}
+
+@inproceedings{yang2024parallelizing,
+  title={Parallelizing Linear Transformers with the Delta Rule over Sequence Length}
+
+@inproceedings{yang2025gated,
+  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule}
+
+@inproceedings{yu2016orthogonal,
+  title={Orthogonal Random Features}
+
+@inproceedings{zaheer2020bigbird,
+  title = {{Big Bird: Transformers for Longer Sequences}}
+
+@inproceedings{zandieh2025qjl,
+  title     = {{QJL}: 1-Bit Quantized {JL} Transform for {KV} Cache Quantization with Zero Overhead}
+
+@inproceedings{zhang2023h2o,
+  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models}
+
+@inproceedings{zhang2024cam,
+  title = {{CaM}: Cache Merging for Memory-efficient {LLMs} Inference}
+
+@inproceedings{zhang2024hedgehog,
+  title     = {The Hedgehog \&amp; the Porcupine: Expressive Linear Attentions with Softmax Mimicry}
+
+@inproceedings{zhang2025sageattention,
+  title={{SageAttention}: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration}
+
+@inproceedings{zhao2024atom,
+  title     = {{Atom}: Low-Bit Quantization for Efficient and Accurate {LLM} Serving}
+</code></pre>
 </div>
 </div>
 </details>

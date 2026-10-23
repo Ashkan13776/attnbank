@@ -135,19 +135,78 @@ changes the same object — [`exact`](../taxonomy.md#exact)
 
 ## References
 
-- **Vaswani et al. (2017).** *Attention Is All You Need.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:1706.03762](https://arxiv.org/abs/1706.03762)<br><span class="attn-cite" data-bibkey="vaswani2017attention"><code>vaswani2017attention</code></span>
+- **vaswani2017attention (n.d.).** *Atom: Low-Bit Quantization for Efficient and Accurate LLM Serving.*<br><span class="attn-cite" data-bibkey="vaswani2017attention"><code>vaswani2017attention</code></span>
 
 <details class="attn-bib no-copy">
 <summary>BibTeX — 1 entry, verbatim from <code>attnbank/references.bib</code></summary>
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="vaswani2017attention">
 <pre class="attn-bib__src"><code>@inproceedings{vaswani2017attention,
-  title={Attention Is All You Need},
-  author={Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, {\L}ukasz and Polosukhin, Illia},
-  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
-  year={2017},
-  eprint={1706.03762}, archivePrefix={arXiv}
-}</code></pre>
+  title={Attention Is All You Need}
+
+@inproceedings{vyas2020fast,
+  title         = {Fast Transformers with Clustered Attention}
+
+@misc{wang2020linformer,
+  title = {{Linformer: Self-Attention with Linear Complexity}}
+
+@misc{wang2024model,
+  title = {{Model Tells You Where to Merge: Adaptive KV Cache Merging for LLMs on Long-Context Tasks}}
+
+@inproceedings{wang2025svdllm,
+  title = {{SVD-LLM: Truncation-aware Singular Value Decomposition for Large Language Model Compression}}
+
+@inproceedings{widrow1960adaptive,
+  title={Adaptive Switching Circuits}
+
+@inproceedings{williams2001using,
+  title     = {Using the {N}ystr{\&quot;o}m Method to Speed Up Kernel Machines}
+
+@inproceedings{xiao2024efficient,
+  title = {{Efficient Streaming Language Models with Attention Sinks}}
+
+@inproceedings{xiao2024infllm,
+  title={{InfLLM}: Training-Free Long-Context Extrapolation for {LLMs} with an Efficient Context Memory}
+
+@inproceedings{xiong2021nystromformer,
+  title     = {Nystr{\&quot;o}mformer: A Nystr{\&quot;o}m-Based Algorithm for Approximating Self-Attention}
+
+@inproceedings{xu2025think,
+  title = {{ThinK: Thinner Key Cache by Query-Driven Pruning}}
+
+@inproceedings{yang2024gated,
+  title={Gated Linear Attention Transformers with Hardware-Efficient Training}
+
+@inproceedings{yang2024parallelizing,
+  title={Parallelizing Linear Transformers with the Delta Rule over Sequence Length}
+
+@inproceedings{yang2025gated,
+  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule}
+
+@inproceedings{yu2016orthogonal,
+  title={Orthogonal Random Features}
+
+@inproceedings{zaheer2020bigbird,
+  title = {{Big Bird: Transformers for Longer Sequences}}
+
+@inproceedings{zandieh2025qjl,
+  title     = {{QJL}: 1-Bit Quantized {JL} Transform for {KV} Cache Quantization with Zero Overhead}
+
+@inproceedings{zhang2023h2o,
+  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models}
+
+@inproceedings{zhang2024cam,
+  title = {{CaM}: Cache Merging for Memory-efficient {LLMs} Inference}
+
+@inproceedings{zhang2024hedgehog,
+  title     = {The Hedgehog \&amp; the Porcupine: Expressive Linear Attentions with Softmax Mimicry}
+
+@inproceedings{zhang2025sageattention,
+  title={{SageAttention}: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration}
+
+@inproceedings{zhao2024atom,
+  title     = {{Atom}: Low-Bit Quantization for Efficient and Accurate {LLM} Serving}
+</code></pre>
 </div>
 </div>
 </details>

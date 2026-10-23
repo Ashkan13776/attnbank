@@ -54,7 +54,7 @@ Nothing in the formula changes — only how it is evaluated. Tiling, chunking, r
 
 <section class="tx-node" data-cat="interaction" data-syms="g" markdown="1">
 
-## `interaction` <span class="tx-changes">changes the interaction <i>g</i></span><span class="tx-n">5 methods</span> {: #interaction data-toc-label="interaction" }
+## `interaction` <span class="tx-changes">changes the interaction <i>g</i></span><span class="tx-n">14 methods</span> {: #interaction data-toc-label="interaction" }
 
 <div class="tx-body" markdown="1">
 
@@ -69,7 +69,7 @@ Error term
 :   **Distributional only.** <i>v</i>&#770; = <i>v</i>, so every bit of the error is in the measure. For random features it shrinks with the feature count; for a fixed feature map it does not shrink at all, because there is nothing it is converging to.
 
 Methods
-:   <ul class="op-methods"><li><a href="methods/cosformer/">cosformer</a></li> <li><a href="methods/linear_elu/">linear_elu</a></li> <li><a href="methods/nystrom/">nystrom</a></li> <li><a href="methods/performer/">performer</a></li> <li><a href="methods/trigrff/">trigrff</a></li></ul>
+:   <ul class="op-methods"><li><a href="methods/based/">based</a></li> <li><a href="methods/cosformer/">cosformer</a></li> <li><a href="methods/favorpp/">favorpp</a></li> <li><a href="methods/favorsharp/">favorsharp</a></li> <li><a href="methods/hedgehog/">hedgehog</a></li> <li><a href="methods/linear_elu/">linear_elu</a></li> <li><a href="methods/lowrank_logit/" data-oracle="" title="an oracle: an upper bound, not a practical method">lowrank_logit</a></li> <li><a href="methods/nystrom/">nystrom</a></li> <li><a href="methods/performer/">performer</a></li> <li><a href="methods/polaformer/">polaformer</a></li> <li><a href="methods/polysketch/">polysketch</a></li> <li><a href="methods/rebased/">rebased</a></li> <li><a href="methods/skyformer/">skyformer</a></li> <li><a href="methods/trigrff/">trigrff</a></li></ul>
 
 </div>
 
@@ -81,7 +81,7 @@ The interaction <i>g</i>(<i>q</i>,&#8201;<i>x</i>) is replaced by a cheaper surr
 
 <section class="tx-node" data-cat="restrict" data-syms="int" markdown="1">
 
-## `restrict` <span class="tx-changes">changes the support of &#960;<sub><i>q</i></sub></span><span class="tx-n">6 methods</span> {: #restrict data-toc-label="restrict" }
+## `restrict` <span class="tx-changes">changes the support of &#960;<sub><i>q</i></sub></span><span class="tx-n">15 methods</span> {: #restrict data-toc-label="restrict" }
 
 <div class="tx-body" markdown="1">
 
@@ -96,7 +96,7 @@ Error term
 :   **Distributional only**, and in closed form: the omitted mass &#949;<sub><i>q</i></sub> times the contrast between the omitted and the retained conditional means. Minimising &#949;<sub><i>q</i></sub> is not the same as minimising the error, which is what `value_topk` exists to show.
 
 Methods
-:   <ul class="op-methods"><li><a href="methods/blocktopk/">blocktopk</a></li> <li><a href="methods/lsh_sample/">lsh_sample</a></li> <li><a href="methods/sink_window/">sink_window</a></li> <li><a href="methods/topk/">topk</a></li> <li><a href="methods/value_topk/" data-oracle="" title="an oracle: an upper bound, not a practical method">value_topk</a></li> <li><a href="methods/window/">window</a></li></ul>
+:   <ul class="op-methods"><li><a href="methods/bigbird/">bigbird</a></li> <li><a href="methods/blocktopk/">blocktopk</a></li> <li><a href="methods/hyperattention/">hyperattention</a></li> <li><a href="methods/longformer/">longformer</a></li> <li><a href="methods/lsh_sample/">lsh_sample</a></li> <li><a href="methods/oval/">oval</a></li> <li><a href="methods/page_pca/">page_pca</a></li> <li><a href="methods/reformer/">reformer</a></li> <li><a href="methods/routing/">routing</a></li> <li><a href="methods/shifted_window/">shifted_window</a></li> <li><a href="methods/sink_window/">sink_window</a></li> <li><a href="methods/strided/">strided</a></li> <li><a href="methods/topk/">topk</a></li> <li><a href="methods/value_topk/" data-oracle="" title="an oracle: an upper bound, not a practical method">value_topk</a></li> <li><a href="methods/window/">window</a></li></ul>
 
 </div>
 
@@ -108,7 +108,7 @@ The support of &#960;<sub><i>q</i></sub> shrinks to a subset <i>S</i><sub><i>q</
 
 <section class="tx-node" data-cat="compress" data-syms="mu v" markdown="1">
 
-## `compress` <span class="tx-changes">changes the stored context (&#956;,&#8201;<i>k</i>,&#8201;<i>v</i>)</span><span class="tx-n">8 methods</span> {: #compress data-toc-label="compress" }
+## `compress` <span class="tx-changes">changes the stored context (&#956;,&#8201;<i>k</i>,&#8201;<i>v</i>)</span><span class="tx-n">18 methods</span> {: #compress data-toc-label="compress" }
 
 <div class="tx-body" markdown="1">
 
@@ -123,7 +123,7 @@ Error term
 :   **Both.** A distributional term through the keys and a value term through <i>v</i>&#770; &#8800; <i>v</i> — the only category that routinely produces the second. Key error passes through the softmax; value error is only reweighted, so keys cost more per bit.
 
 Methods
-:   <ul class="op-methods"><li><a href="methods/evict_h2o/">evict_h2o</a></li> <li><a href="methods/evict_snapkv/">evict_snapkv</a></li> <li><a href="methods/gqa/">gqa</a></li> <li><a href="methods/linformer/">linformer</a></li> <li><a href="methods/lowrank_kv/">lowrank_kv</a></li> <li><a href="methods/merge_kv/">merge_kv</a></li> <li><a href="methods/mla/">mla</a></li> <li><a href="methods/quantkv/">quantkv</a></li></ul>
+:   <ul class="op-methods"><li><a href="methods/atom/">atom</a></li> <li><a href="methods/evict_adakv/">evict_adakv</a></li> <li><a href="methods/evict_h2o/">evict_h2o</a></li> <li><a href="methods/evict_pyramidkv/">evict_pyramidkv</a></li> <li><a href="methods/evict_snapkv/">evict_snapkv</a></li> <li><a href="methods/evict_tova/">evict_tova</a></li> <li><a href="methods/gqa/">gqa</a></li> <li><a href="methods/kivi/">kivi</a></li> <li><a href="methods/kvquant/">kvquant</a></li> <li><a href="methods/linformer/">linformer</a></li> <li><a href="methods/lowrank_kv/">lowrank_kv</a></li> <li><a href="methods/merge_cam/">merge_cam</a></li> <li><a href="methods/merge_kv/">merge_kv</a></li> <li><a href="methods/merge_tome/">merge_tome</a></li> <li><a href="methods/mla/">mla</a></li> <li><a href="methods/qjl/">qjl</a></li> <li><a href="methods/quantkv/">quantkv</a></li> <li><a href="methods/zipcache/">zipcache</a></li></ul>
 
 </div>
 
@@ -135,7 +135,7 @@ The stored context (&#956;,&#8201;<i>k</i>,&#8201;<i>v</i>) is replaced by somet
 
 <section class="tx-node" data-cat="factorize" data-syms="pi" markdown="1">
 
-## `factorize` <span class="tx-changes">changes the shape of &#960;<sub><i>q</i></sub></span><span class="tx-n">4 methods</span> {: #factorize data-toc-label="factorize" }
+## `factorize` <span class="tx-changes">changes the shape of &#960;<sub><i>q</i></sub></span><span class="tx-n">8 methods</span> {: #factorize data-toc-label="factorize" }
 
 <div class="tx-body" markdown="1">
 
@@ -150,7 +150,7 @@ Error term
 :   **Distributional, with a floor set by rank.** No rank-<i>r</i> factorisation beats the truncated SVD, and a nonnegative one cannot reach it. `svd_oracle` is that lower bound and `nmf_oracle` measures the gap.
 
 Methods
-:   <ul class="op-methods"><li><a href="methods/clustered/">clustered</a></li> <li><a href="methods/latent_stochastic/">latent_stochastic</a></li> <li><a href="methods/nmf_oracle/" data-oracle="" title="an oracle: an upper bound, not a practical method">nmf_oracle</a></li> <li><a href="methods/svd_oracle/" data-oracle="" title="an oracle: an upper bound, not a practical method">svd_oracle</a></li></ul>
+:   <ul class="op-methods"><li><a href="methods/abc/">abc</a></li> <li><a href="methods/clustered/">clustered</a></li> <li><a href="methods/isab/">isab</a></li> <li><a href="methods/latent_stochastic/">latent_stochastic</a></li> <li><a href="methods/latte/">latte</a></li> <li><a href="methods/nmf_oracle/" data-oracle="" title="an oracle: an upper bound, not a practical method">nmf_oracle</a></li> <li><a href="methods/perceiver/">perceiver</a></li> <li><a href="methods/svd_oracle/" data-oracle="" title="an oracle: an upper bound, not a practical method">svd_oracle</a></li></ul>
 
 </div>
 
@@ -162,7 +162,7 @@ Methods
 
 <section class="tx-node" data-cat="coupling" data-syms="Z" markdown="1">
 
-## `coupling` <span class="tx-changes">changes the normaliser <i>Z</i></span><span class="tx-n">2 methods</span> {: #coupling data-toc-label="coupling" }
+## `coupling` <span class="tx-changes">changes the normaliser <i>Z</i></span><span class="tx-n">6 methods</span> {: #coupling data-toc-label="coupling" }
 
 <div class="tx-body" markdown="1">
 
@@ -177,7 +177,7 @@ Error term
 :   **Not an approximation error at all.** The result is exactly softmax tilted by one potential per key — a deterministic change of operator, measured against softmax only to say how far it has moved.
 
 Methods
-:   <ul class="op-methods"><li><a href="methods/lowrank_ot/">lowrank_ot</a></li> <li><a href="methods/sinkhorn/">sinkhorn</a></li></ul>
+:   <ul class="op-methods"><li><a href="methods/dustbin_sinkhorn/">dustbin_sinkhorn</a></li> <li><a href="methods/espformer/">espformer</a></li> <li><a href="methods/lowrank_ot/">lowrank_ot</a></li> <li><a href="methods/otke/">otke</a></li> <li><a href="methods/sinkhorn/">sinkhorn</a></li> <li><a href="methods/unbalanced_sinkhorn/">unbalanced_sinkhorn</a></li></ul>
 
 </div>
 
@@ -189,7 +189,7 @@ Normalisation stops being per-query. Sinkhorn balances the whole matrix to presc
 
 <section class="tx-node" data-cat="recurrent" data-syms="y int v pi g mu Z" data-replace markdown="1">
 
-## `recurrent` <span class="tx-changes">changes the operator itself</span><span class="tx-n">3 methods</span> {: #recurrent data-toc-label="recurrent" }
+## `recurrent` <span class="tx-changes">changes the operator itself</span><span class="tx-n">13 methods</span> {: #recurrent data-toc-label="recurrent" }
 
 <div class="tx-body" markdown="1">
 
@@ -204,7 +204,7 @@ Error term
 :   **Not error but capacity.** A fixed-size state must answer every future query, which bounds recall however the model is trained. Fidelity to softmax is not the goal, so quoting an output error against it answers a question nobody asked.
 
 Methods
-:   <ul class="op-methods"><li><a href="methods/decay_rnn/">decay_rnn</a></li> <li><a href="methods/delta_rnn/">delta_rnn</a></li> <li><a href="methods/linear_rnn/">linear_rnn</a></li></ul>
+:   <ul class="op-methods"><li><a href="methods/decay_rnn/">decay_rnn</a></li> <li><a href="methods/delta_rnn/">delta_rnn</a></li> <li><a href="methods/gla/">gla</a></li> <li><a href="methods/hgrn2/">hgrn2</a></li> <li><a href="methods/hyena/">hyena</a></li> <li><a href="methods/linear_rnn/">linear_rnn</a></li> <li><a href="methods/lru/">lru</a></li> <li><a href="methods/mega/">mega</a></li> <li><a href="methods/mlstm/">mlstm</a></li> <li><a href="methods/retnet/">retnet</a></li> <li><a href="methods/rwkv/">rwkv</a></li> <li><a href="methods/s4d/">s4d</a></li> <li><a href="methods/s5/">s5</a></li></ul>
 
 </div>
 
@@ -240,7 +240,7 @@ rather than skipping it.
 
 ## Every method, in one table
 
-All 32 of them, grouped by the object they change. This is the same content as the branches above, flattened — regenerated from `ab.list_methods()`, and the view that works whatever your browser is doing.
+All 78 of them, grouped by the object they change. This is the same content as the branches above, flattened — regenerated from `ab.list_methods()`, and the view that works whatever your browser is doing.
 
 <p class="tx-legend" markdown="1">**`declares`** &mdash; <abbr class="tx-dec" title="causal">c</abbr>&#8201;causal, <abbr class="tx-dec" title="names its weights on the original positions">w</abbr>&#8201;names its weights on the original positions, <abbr class="tx-dec" title="row-stochastic">s</abbr>&#8201;row-stochastic. A letter <span class="tx-struck">struck through</span> is the method declaring it does <em>not</em>.</p>
 
@@ -252,34 +252,80 @@ All 32 of them, grouped by the object they change. This is the same content as t
 | [`lowprec`](methods/lowprec.md) | Quantize--dequantize `q, k, v` (and optionally `P`) inside the kernel. | <span data-cat="exact">`exact`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`softmax`](methods/softmax.md) | Dense softmax attention (Vaswani et al., 2017); the reference operator. | <span data-cat="exact">`exact`</span> | accelerate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference, sdpa, flash_attn |
 | [`splitk`](methods/splitk.md) | Two-level reduction: per-chunk states, then one merge. | <span data-cat="exact">`exact`</span> | accelerate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`based`](methods/based.md) | Second-order (by default) Taylor polynomial of `exp`, normalized. | <span data-cat="interaction">`interaction`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`cosformer`](methods/cosformer.md) | `relu` features times `cos(pi (i - j) / 2M)`. | <span data-cat="interaction">`interaction`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`favorpp`](methods/favorpp.md) | Optimal positive random features (OPRF); FAVOR+ is the case `a = 0`. | <span data-cat="interaction">`interaction`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`favorsharp`](methods/favorsharp.md) | Dense-exponential random features: FAVOR++ per eigendirection of the pair covariance. | <span data-cat="interaction">`interaction`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`hedgehog`](methods/hedgehog.md) | Separable feature map distilled against the softmax weights it replaces. | <span data-cat="interaction">`interaction`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`linear_elu`](methods/linear_elu.md) | `phi(u) = elu(u) + 1`, normalized separable attention. | <span data-cat="interaction">`interaction`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`lowrank_logit`](methods/lowrank_logit.md) **(oracle)** | Truncated SVD of the logit matrix; the softmax of a rank-r interaction. | <span data-cat="interaction">`interaction`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`nystrom`](methods/nystrom.md) | Landmark Nystrom factorization of the softmax matrix; signed weights. | <span data-cat="interaction">`interaction`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
 | [`performer`](methods/performer.md) | FAVOR+ positive random features, optionally orthogonal. | <span data-cat="interaction">`interaction`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`polaformer`](methods/polaformer.md) | Same-signed and opposite-signed interactions, each normalized, on split values. | <span data-cat="interaction">`interaction`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" data-no title="cannot name its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`polysketch`](methods/polysketch.md) | TensorSketch of the degree-P Taylor feature map; `sketch=None` is the control. | <span data-cat="interaction">`interaction`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`rebased`](methods/rebased.md) | `phi(x) = (gamma . LayerNorm(x) + beta)^2`, normalized separable attention. | <span data-cat="interaction">`interaction`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`skyformer`](methods/skyformer.md) | Gaussian-kernel attention, lifted to a PSD Gram matrix, then Nystrom. | <span data-cat="interaction">`interaction`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
 | [`trigrff`](methods/trigrff.md) | Rahimi--Recht trigonometric random features; signed, unnormalized measure. | <span data-cat="interaction">`interaction`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`bigbird`](methods/bigbird.md) | Block-sparse window + global + random support, with a seeded random draw. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`blocktopk`](methods/blocktopk.md) | Page-level selection by an upper bound on the page's scores. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`hyperattention`](methods/hyperattention.md) | Exact on a hashed block, unbiased-with-reweighting on a uniform sample of the rest. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`longformer`](methods/longformer.md) | Dilated sliding window of size w (w//2 positions per side), plus global tokens. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`lsh_sample`](methods/lsh_sample.md) | Self-normalized importance sampling over a score-monotone proposal. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`oval`](methods/oval.md) | Page selection by a rank-r basis built from the joint key-value structure. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`page_pca`](methods/page_pca.md) | Page selection by a rank-r PCA basis of the page's centered keys. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`reformer`](methods/reformer.md) | Support = the keys that share an LSH bucket with the query in some round. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`routing`](methods/routing.md) | Support = the keys routed to the query's centroid. Centroids are trained. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`shifted_window`](methods/shifted_window.md) | Non-overlapping local windows of w positions, displaced by shift (Swin). | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`sink_window`](methods/sink_window.md) | `s` initial sinks plus a left window of width `w`. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`strided`](methods/strided.md) | The union of the two factorized index sets of a Sparse Transformer head. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`topk`](methods/topk.md) | Exact top-k selection on the true scores (an oracle for proxy selectors). | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`value_topk`](methods/value_topk.md) **(oracle)** | Greedy (or exhaustive) output-aware support selection. Oracle. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`window`](methods/window.md) | Left sliding window of width `w`, always including the diagonal. | <span data-cat="restrict">`restrict`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`atom`](methods/atom.md) | Energy-reordered mixed-precision quantization of the key and value caches. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`evict_adakv`](methods/evict_adakv.md) | Head-wise adaptive budget allocation over SnapKV-style observation scores. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`evict_h2o`](methods/evict_h2o.md) | Online heavy-hitter eviction with a protected recent window. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`evict_pyramidkv`](methods/evict_pyramidkv.md) | Layer-wise budget allocation on top of SnapKV's pooled observation-window scores. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`evict_snapkv`](methods/evict_snapkv.md) | Observation-window scoring with pooled, budgeted selection. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`evict_tova`](methods/evict_tova.md) | Greedy one-token-per-step eviction scored by the current query alone. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`gqa`](methods/gqa.md) | Mean-pool K and V within groups of query heads. | <span data-cat="compress">`compress`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference, sdpa |
+| [`kivi`](methods/kivi.md) | Per-channel key / per-token value quantization with a full-precision residual. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`kvquant`](methods/kvquant.md) | Pre-RoPE per-channel keys, non-uniform sensitivity-weighted levels, sparse outliers. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`linformer`](methods/linformer.md) | Random (or identity) sequence-axis projections of K and V. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
 | [`lowrank_kv`](methods/lowrank_kv.md) | Truncated SVD of the key and/or value channel matrices. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`merge_cam`](methods/merge_cam.md) | Streaming eviction whose departing values are merged forward, not discarded. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`merge_kv`](methods/merge_kv.md) | Cluster keys and values, merge with proportional (pushforward) mass. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`merge_tome`](methods/merge_tome.md) | Token merging by bipartite soft matching on the keys, with proportional mass. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`mla`](methods/mla.md) | Joint low-rank KV latent shared by all heads. | <span data-cat="compress">`compress`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference, sdpa |
+| [`qjl`](methods/qjl.md) | One-bit JL sketch of the keys; per-token affine quantization of the values. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`quantkv`](methods/quantkv.md) | Uniform affine quantization of the key and value caches. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`zipcache`](methods/zipcache.md) | Mixed-precision KV quantization with salient tokens chosen by normalised score. | <span data-cat="compress">`compress`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`abc`](methods/abc.md) | Bounded-memory control: pi_hat = a b with b prefix-normalized, so it decodes. | <span data-cat="factorize">`factorize`</span> | approximate | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`clustered`](methods/clustered.md) | One attention row per query centroid, shared within the cluster. | <span data-cat="factorize">`factorize`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`isab`](methods/isab.md) | Two MABs through r inducing points; the block between them is nonlinear. | <span data-cat="factorize">`factorize`</span> | modify | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" data-no title="cannot name its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
 | [`latent_stochastic`](methods/latent_stochastic.md) | pi_hat = A B with both factors row-stochastic (two-hop attention). | <span data-cat="factorize">`factorize`</span> | modify | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`latte`](methods/latte.md) | pi_hat = A B with A = softmax over latents, B = softmax over positions. | <span data-cat="factorize">`factorize`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`nmf_oracle`](methods/nmf_oracle.md) **(oracle)** | Best nonnegative rank-r factorization of P, renormalized. Oracle. | <span data-cat="factorize">`factorize`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`perceiver`](methods/perceiver.md) | Cross-attend into r latents, process them nonlinearly, cross-attend out. | <span data-cat="factorize">`factorize`</span> | modify | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" data-no title="cannot name its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
 | [`svd_oracle`](methods/svd_oracle.md) **(oracle)** | Truncated SVD of P: the best signed rank-r factorization. Oracle. | <span data-cat="factorize">`factorize`</span> | approximate | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`dustbin_sinkhorn`](methods/dustbin_sinkhorn.md) | Sinkhorn with a dustbin row and column: a coupling that allows abstention. | <span data-cat="coupling">`coupling`</span> | modify | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`espformer`](methods/espformer.md) | Doubly stochastic attention in one pass: the expectation of sliced OT plans. | <span data-cat="coupling">`coupling`</span> | modify | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`lowrank_ot`](methods/lowrank_ot.md) | Doubly stochastic, rank-<= r attention through a pivot measure. | <span data-cat="coupling">`coupling`</span> | modify | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`otke`](methods/otke.md) | Sinkhorn transport of the keys onto a trainable reference of p points. | <span data-cat="coupling">`coupling`</span> | modify | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`sinkhorn`](methods/sinkhorn.md) | Entropic-OT attention: Sinkhorn normalization of exp(s) to prescribed marginals. | <span data-cat="coupling">`coupling`</span> | modify | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`unbalanced_sinkhorn`](methods/unbalanced_sinkhorn.md) | Entropic OT attention with a KL-relaxed column marginal: softmax at `lam_col=0`. | <span data-cat="coupling">`coupling`</span> | modify | <abbr class="tx-dec" data-no title="not causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
 | [`decay_rnn`](methods/decay_rnn.md) | Fixed exponential decay on the recurrent state. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
 | [`delta_rnn`](methods/delta_rnn.md) | Delta-rule (Widrow--Hoff) fast-weight memory. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`gla`](methods/gla.md) | GLA: `S_t = Diag(alpha_t) S_{t-1} + k_t v_t^T` with a data-dependent gate. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`hgrn2`](methods/hgrn2.md) | HGRN2: outer-product state expansion with the input gate tied to `1 - f_t`. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`hyena`](methods/hyena.md) | Hyena: order-N implicit long convolutions interleaved with elementwise gating. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" data-no title="cannot name its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
 | [`linear_rnn`](methods/linear_rnn.md) | Additive linear recurrence with an unnormalized readout. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`lru`](methods/lru.md) | Linear Recurrent Unit: a stably parametrised diagonal linear RNN. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" data-no title="cannot name its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`mega`](methods/mega.md) | Mega: multi-dimensional damped EMA on q and k, then chunk-local softmax attention. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" title="row-stochastic">s</abbr> | reference |
+| [`mlstm`](methods/mlstm.md) | mLSTM: exponential input gate, scalar forget gate, matrix memory + normaliser. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`retnet`](methods/retnet.md) | Multi-scale retention: a fixed per-head exponential decay on an r x d_v state. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`rwkv`](methods/rwkv.md) | RWKV-5/6 time mixing: diagonal decay, matrix state, bonus on the current token. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" title="names its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`s4d`](methods/s4d.md) | Diagonal state-space layer (S4D): one SISO SSM per value channel. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" data-no title="cannot name its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
+| [`s5`](methods/s5.md) | Simplified state-space layer (S5): one diagonal MIMO SSM, swept by a parallel scan. | <span data-cat="recurrent">`recurrent`</span> | modify | <abbr class="tx-dec" title="causal">c</abbr><abbr class="tx-dec" data-no title="cannot name its weights on the original positions">w</abbr><abbr class="tx-dec" data-no title="not row-stochastic">s</abbr> | reference |
 
 </div>
 
@@ -309,8 +355,7 @@ is not a dense softmax over a mask. See [Backends](backends.md).
 
 ## Oracles
 
-Three methods — [`value_topk`](methods/value_topk.md), [`nmf_oracle`](methods/nmf_oracle.md),
-[`svd_oracle`](methods/svd_oracle.md) — are not practical. They are
+{_oracle_sentence()} are not practical. They are
 **upper bounds on what a mechanism can achieve**, which is exactly what several of the
 monograph's arguments need: you cannot show that top-$k$ selection is suboptimal
 without computing what the optimal selection would have been.

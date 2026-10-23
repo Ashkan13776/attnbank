@@ -5,7 +5,7 @@ hide:
 
 # Every efficient attention method changes one object in one formula
 
-<p class="ab-eyebrow">attnbank v0.2.0 &middot; 32 methods &middot; one invariant &middot; 1254 tests</p>
+<p class="ab-eyebrow">attnbank v0.3.0 &middot; 78 methods &middot; one invariant &middot; 2838 tests</p>
 
 <div class="ab-measure" markdown="1">
 Attention is a query-conditioned expectation. Efficiency has to come from somewhere,
@@ -213,7 +213,7 @@ the last key, so the same code path serves prefill and decode.
 :   The seven categories as a tree you can open, with what each one preserves and which error term it incurs.
 
 [Browse the bank](methods/index.md)
-:   All 32 methods, searchable by name, category, objective, backend and flag — one generated page each.
+:   All 78 methods, searchable by name, category, objective, backend and flag — one generated page each.
 
 [The invariant](invariant.md)
 :   Why `weights @ v_hat` is the property everything else rests on, and what it costs a method to be unable to supply it.
