@@ -886,8 +886,8 @@ layers, two passages each) and a matched Gaussian control ---
 {_slices(meta)['n_slices']} slices, {_slices(meta)['n_units']} heads.
 (a) and (b) plot the RMS over heads of the per-seed standard deviation and of the
 bias, with the power law fitted over the pre-registered asymptotic window
-$r\ge{meta['r_fit_min']}$ drawn dashed and the fitted exponent annotated; its
-95\% CI is in \cref{{tab:rff-exponents}}.  On the Gaussian control the variance exponent is
+$r\ge{meta['r_fit_min']}$ drawn dashed and the fitted exponent annotated with its
+95\% CI as a symmetric half-width; the full fits are in \cref{{tab:rff-exponents}}.  On the Gaussian control the variance exponent is
 {num(syn['slope'], 3)} against the predicted $-1/2$ ($R^2$ {num(syn['r2'], 4)}); on
 GPT-2 small it is {num(g2['slope'], 3)}, because the FAVOR+ relative variance
 $e^{{\|\tilde q+\tilde k\|^2}}$ is heavy-tailed on trained activations and no affordable

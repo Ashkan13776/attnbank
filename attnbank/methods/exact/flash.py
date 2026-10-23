@@ -15,6 +15,9 @@ states that ``(Sigma, +, 0)`` is a commutative monoid and that the readout of th
 fold over *any* partition is ``y(q)``.  This file folds left-to-right over key
 blocks in one pass, which is what a FlashAttention kernel does.
 
+The monoid itself lives in :mod:`attnbank.components.online_softmax`, shared with
+``splitk``; this file is only the decision to fold it left-to-right in one pass.
+
 Reference: Dao et al. (2022, 2024); Milakov and Gimelshein (2018);
 Rabe and Staats (2021).
 """
@@ -23,23 +26,9 @@ from __future__ import annotations
 import torch
 
 from ...core import AttentionMethod, AttentionOutput, Category, Objective, causal_mask
+from ...components.online_softmax import merge_states, online_state
+from ...components.sdpa import sdpa_attend
 from ...registry import register
-
-
-def online_state(s_block, v_block):
-    """State ``sigma_J`` of one key block from its scaled logits and values."""
-    a = s_block.amax(dim=-1)                                    # [..., m]
-    a = torch.where(torch.isneginf(a), torch.zeros_like(a), a)  # fully masked block
-    p = torch.exp(s_block - a.unsqueeze(-1))
-    return a, p.sum(-1), p @ v_block
-
-
-def merge_states(s1, s2):
-    """The monoid operation ``+`` of ``eq:exact-merge``."""
-    (a1, l1, u1), (a2, l2, u2) = s1, s2
-    a = torch.maximum(a1, a2)
-    w1, w2 = torch.exp(a1 - a), torch.exp(a2 - a)
-    return a, w1 * l1 + w2 * l2, w1.unsqueeze(-1) * u1 + w2.unsqueeze(-1) * u2
 
 
 @register
@@ -55,10 +44,12 @@ class FlashAttention(AttentionMethod):
     references = ("dao2022flashattention", "dao2024flashattention2", "milakov2018online",
                   "rabe2021selfattention")
     paper_section = "sec:exact"
+    backends = ("reference", "sdpa")
 
-    def __init__(self, block_n: int = 16, **kw):
-        super().__init__(block_n=block_n, **kw)
+    def __init__(self, block_n: int = 16, sdpa_kernel: str | None = None, **kw):
+        super().__init__(block_n=block_n, sdpa_kernel=sdpa_kernel, **kw)
         self.block_n = block_n
+        self.sdpa_kernel = sdpa_kernel
 
     def _forward(self, q, k, v, causal, return_weights):
         m, n, d = q.shape[-2], k.shape[-2], q.shape[-1]
@@ -84,6 +75,21 @@ class FlashAttention(AttentionMethod):
                 s = s.masked_fill(~mask, float("-inf"))
             pi = torch.exp(s - extras["lse"].unsqueeze(-1))
         return AttentionOutput(y=y, weights=pi, extras=extras)
+
+    def _forward_sdpa(self, q, k, v, causal, return_weights):
+        """The production form of exactly this algorithm: PyTorch's fused kernel.
+
+        ``flash`` exists to show that the tiled fold is the same operator; ``sdpa`` is
+        that fold written in CUDA by someone else. The block size becomes the kernel's
+        business, so ``block_n`` is reported in ``extras`` but no longer honoured.
+        """
+        if return_weights:
+            return self._fallback_to_reference("materialise the attention weights")(
+                q, k, v, causal, return_weights)
+        y = sdpa_attend(q, k, v, scale=self._scale(q.shape[-1]), causal=causal,
+                        kernel=self.sdpa_kernel)
+        return AttentionOutput(y=y, extras={"backend": "sdpa",
+                                            "sdpa_kernel": self.sdpa_kernel})
 
     def cost(self, m, n, d, dv, bytes_per_el=2):
         # Same arithmetic as dense; intermediate storage is one state per query.

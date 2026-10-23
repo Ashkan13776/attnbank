@@ -300,6 +300,14 @@ def make_figure(recs, summary) -> list[str]:
     plots the ratio against ``r`` so that growth is the result.  Panel (c) reports the
     negative half honestly -- in total variation, which is *not* the objective either
     oracle minimises, the penalty is near 1 over most of the range.
+
+    Layout.  At the monograph's 4.65in block a 1x3 strip leaves 1.55in a panel, and (a)
+    alone carries five inline series labels.  (a) therefore takes a full-width row of
+    its own and (b), (c) share the row below it.  Those two draw the same three
+    sources, and their note already listed each source's median, so the note and the
+    end labels were one list printed twice: the medians now hang off the legend
+    entries and the end labels are gone, which is what buys the half-width panels the
+    room they need.
     """
     from ..plotting import style
     style.use()
@@ -308,7 +316,8 @@ def make_figure(recs, summary) -> list[str]:
     excluded = sorted({int(r) for src in gap
                        for r in gap[src].get("r_excluded_exact_reconstruction", [])})
     keep = [r for r in R_GRID if r not in excluded]
-    fig, axes = style.figure("full-3", 1, 3)
+    fig, axd = style.mosaic("fig_latent_factorization", [["a", "a"], ["b", "c"]])
+    axes = [axd["a"], axd["b"], axd["c"]]
 
     # --- (a) all five factorizations on the primary source --------------------------
     ax = axes[0]
@@ -336,19 +345,19 @@ def make_figure(recs, summary) -> list[str]:
                         linewidth=0,
                         label="nonnegative-rank penalty")
     ax.set_xscale("log", base=2); ax.set_yscale("log")
-    style.log2_ticks(ax, "x", 0, 7, every=2)
-    ax.set_xlim(2 ** -0.4, 2 ** 11.6)
-    ax.set_ylim(bottom=ax.get_ylim()[0] / 22)      # room for the note under the data
+    style.log2_ticks(ax, "x", 0, 7, every=1)
+    ax.set_xlim(2 ** -0.3, 2 ** 9.9)
+    ax.set_ylim(bottom=ax.get_ylim()[0] / 9)       # room for the note under the data
     ax.set_xlabel("latent dimension $r$")
     ax.set_ylabel(r"$\|P-\widehat P\|_F\,/\,\|P\|_F$"
-                  "\n(median over heads, dimensionless)")
+                  "\n(median over heads)")
     style.panel(ax, "a", SOURCE[src0])
     style.label_ends(ax, ends, size=7.5)
     rt = summary["r_to_reach_tv_target"]["by_source"][src0]
-    style.note(ax, "shaded: signed vs. nonneg.\n"
+    style.note(ax, "shaded: signed vs. nonneg.  "
                    f"TV = {summary['r_to_reach_tv_target']['target']:g}: SVD at "
-                   f"$r$={rt['svd_oracle']:.0f},\n"
-                   f"NMF never below $r$={rt['nmf_oracle']:.0f}\n"
+                   f"$r$={rt['svd_oracle']:.0f}, NMF never below "
+                   f"$r$={rt['nmf_oracle']:.0f}\n"
                    f"$r$={', '.join(str(e) for e in excluded)} omitted: exact there",
                loc="lower left", size=7.5)
 
@@ -360,31 +369,38 @@ def make_figure(recs, summary) -> list[str]:
              r"NMF oracle $\div$ SVD oracle" "\n" r"$\mathrm{TV}(\pi,\widehat\pi)$ (dimensionless)")),
             start=1):
         ax = axes[pan]
-        ends = []
+        meds = {src: block.get(src, {}).get("median_ratio", float("nan"))
+                for src in SOURCE_ORDER}
         for i, src in enumerate(SOURCE_ORDER):
             by_r = block.get(src, {}).get("by_r", {})
             rs = [r for r in keep if str(r) in by_r]
             if not rs:
                 continue
             ys = [by_r[str(r)]["ratio"] for r in rs]
+            # the median over r is hung on the legend entry: at half a text block the
+            # same three names cannot be printed twice, once as a key and once as a
+            # list of statistics
             ax.plot(rs, ys, "-o", color=style.series(i), markersize=3.0,
-                    label=SOURCE[src])
-            ends.append((rs[-1], ys[-1], SOURCE[src]))
+                    label=f"{SOURCE[src]}  {meds[src]:.2f}")
         ax.set_xscale("log", base=2); ax.set_yscale("log")
         ax.axhline(1.0, color=style.INK["primary"], linewidth=1.0, zorder=4)
         style.log2_ticks(ax, "x", 0, 7, every=2)
-        ax.set_xlim(2 ** -0.4, 2 ** 11.6)
+        ax.set_xlim(2 ** -0.3, 2 ** 7.4)
+        # (c) keeps a deeper strip under the 1.0 line: it is the only free ground in
+        # that panel, and the two-line note has to clear the curves that sit on 1.0
+        ax.set_ylim(0.38 if letter == "c" else 0.75, ax.get_ylim()[1] ** 1.55)
         style.log_ticks_plain(ax, "y")
         ax.set_xlabel("latent dimension $r$")
         ax.set_ylabel(ylab)
         style.panel(ax, letter, title)
-        style.label_ends(ax, ends, size=7.5)
-        meds = {src: block.get(src, {}).get("median_ratio", float("nan"))
-                for src in SOURCE_ORDER}
-        txt = ["median over $r$:"] + [f"  {SOURCE[s]}  {meds[s]:.2f}" for s in SOURCE_ORDER]
+        ax.legend(loc="upper left", fontsize=7.5, title="median over $r$:",
+                  title_fontsize=7.5, labelspacing=0.3, borderpad=0.2,
+                  handlelength=1.2, alignment="left")
         if letter == "c":
-            txt += ["", "TV is not either oracle's", "objective"]
-        style.note(ax, "\n".join(txt), loc="upper left", size=7.5)
+            # the curves all sit on 1.0; the strip opened up beneath it is the only
+            # place in this panel a two-line note does not land on data
+            style.note(ax, "TV is not either\noracle's objective",
+                       loc="lower left", size=7.5)
     return [str(C.save_fig(fig, "fig_latent_factorization"))]
 
 

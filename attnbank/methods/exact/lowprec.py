@@ -21,6 +21,9 @@ FlashAttention-3's FP8 path.  Optional *smoothing* (``smooth_k=True``) subtracts
 token mean of ``k``, which shifts every logit of a query by one constant and so
 leaves ``pi_q`` exactly invariant (SageAttention).
 
+The quantizers themselves live in :mod:`attnbank.components.quantization`, shared with
+``quantkv``: one implementation, one place where the rounding rule is argued about.
+
 Reference: Shah et al. (2024); Zhang et al. (2025) SageAttention;
 Micikevicius et al. (2022); Chen et al. (2024) INT-FlashAttention.
 """
@@ -30,47 +33,8 @@ import torch
 
 from ...core import (AttentionMethod, AttentionOutput, Category, Objective,
                      make_generator, masked_softmax, scores)
+from ...components.quantization import hadamard, quantize_fp8, quantize_int
 from ...registry import register
-
-_FP8 = {"e4m3": (4, 3, 448.0), "e5m2": (5, 2, 57344.0)}
-
-
-def quantize_int(x, bits, dim=-1):
-    """Symmetric round-to-nearest INT-``bits`` with the scale taken over ``dim``.
-
-    ``dim=-1`` is *per-token* (per-vector) scaling: the scale of token ``j`` depends on
-    token ``j`` alone, which is what makes the quantizer causal and head-independent.
-    """
-    if bits is None:
-        return x
-    qmax = 2 ** (bits - 1) - 1
-    amax = x.abs().amax(dim=dim, keepdim=True)
-    step = (amax / qmax).clamp_min(torch.finfo(x.dtype).tiny)
-    return torch.round(x / step).clamp(-qmax - 1, qmax) * step
-
-
-def quantize_fp8(x, fmt="e4m3", dim=-1):
-    """Round-to-nearest onto the FP8 grid, simulated in the input dtype, scaled over ``dim``."""
-    _, mant, big = _FP8[fmt]
-    amax = x.abs().amax(dim=dim, keepdim=True).clamp_min(torch.finfo(x.dtype).tiny)
-    s = big / amax
-    z = x * s
-    e = torch.floor(torch.log2(z.abs().clamp_min(torch.finfo(x.dtype).tiny)))
-    step = torch.ldexp(torch.ones_like(z), (e - mant).to(torch.int32))
-    return (torch.round(z / step) * step).clamp(-big, big) / s
-
-
-def hadamard(d, device, dtype):
-    """A Hadamard-like orthogonal matrix of size ``d`` (Sylvester, padded by identity)."""
-    h = torch.ones(1, 1, device=device, dtype=dtype)
-    while h.shape[0] * 2 <= d:
-        h = torch.cat([torch.cat([h, h], 1), torch.cat([h, -h], 1)], 0) / 2 ** 0.5
-    if h.shape[0] < d:
-        out = torch.eye(d, device=device, dtype=dtype)
-        out[:h.shape[0], :h.shape[0]] = h
-        return out
-    return h
-
 
 @register
 class LowPrecisionAttention(AttentionMethod):

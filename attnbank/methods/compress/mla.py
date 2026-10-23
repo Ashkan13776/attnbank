@@ -24,6 +24,7 @@ import torch
 
 from ...core import (AttentionMethod, AttentionOutput, Category, Objective,
                      make_generator, masked_softmax, scores)
+from ...components.sdpa import sdpa_attend
 from ...registry import register
 
 
@@ -40,13 +41,17 @@ class MLAAttention(AttentionMethod):
     head_independent = False
     references = ("deepseekai2024deepseekv2",)
     paper_section = "sec:compress"
+    backends = ("reference", "sdpa")
 
-    def __init__(self, r: int | None = 16, seed: int = 0, **kw):
+    def __init__(self, r: int | None = 16, seed: int = 0,
+                 sdpa_kernel: str | None = None, **kw):
         """``r``: latent width; ``None`` uses the full width (the exact limit)."""
-        super().__init__(r=r, seed=seed, **kw)
+        super().__init__(r=r, seed=seed, sdpa_kernel=sdpa_kernel, **kw)
         self.r, self.seed = r, seed
+        self.sdpa_kernel = sdpa_kernel
 
-    def _forward(self, q, k, v, causal, return_weights):
+    def _reconstruct(self, k, v):
+        """Down-project the concatenated KV to ``r`` latents and up-project back."""
         h, d, dv = k.shape[-3], k.shape[-1], v.shape[-1]
         wide = h * (d + dv)
         r = min(self.r or wide, wide)
@@ -55,13 +60,28 @@ class MLAAttention(AttentionMethod):
         g = make_generator(self.seed)
         w_down = (torch.randn(r, wide, generator=g, dtype=torch.float64) / wide ** 0.5)
         w_up = torch.linalg.pinv(w_down)                              # [wide, r]
-        rec = (cat.double() @ w_down.T.to(cat.device) @ w_up.T.to(cat.device)).to(cat.dtype)
+        latent = cat.double() @ w_down.T.to(cat.device)
+        rec = (latent @ w_up.T.to(cat.device)).to(cat.dtype)
         rec = rec.unflatten(-1, (h, d + dv)).transpose(-3, -2)        # [..., h, n, d+dv]
-        k_hat, v_hat = rec[..., :d], rec[..., d:]
-        pi = masked_softmax(scores(q, k_hat, self._scale(d), causal))
+        return rec[..., :d], rec[..., d:], {"r": r, "latent_width": wide,
+                                            "latent": latent}
+
+    def _forward(self, q, k, v, causal, return_weights):
+        k_hat, v_hat, extras = self._reconstruct(k, v)
+        pi = masked_softmax(scores(q, k_hat, self._scale(k.shape[-1]), causal))
         return AttentionOutput(y=pi @ v_hat, weights=pi if return_weights else None,
-                               v_hat=v_hat, extras={"r": r, "latent_width": wide,
-                                                    "latent": cat.double() @ w_down.T.to(cat.device)})
+                               v_hat=v_hat, extras=extras)
+
+    def _forward_sdpa(self, q, k, v, causal, return_weights):
+        """Reconstruct, then the fused kernel: the latent projection is the method."""
+        if return_weights:
+            return self._fallback_to_reference(
+                "materialise the attention weights or v_hat")(q, k, v, causal,
+                                                              return_weights)
+        k_hat, v_hat, extras = self._reconstruct(k, v)
+        y = sdpa_attend(q, k_hat, v_hat, scale=self._scale(k.shape[-1]), causal=causal,
+                        kernel=self.sdpa_kernel)
+        return AttentionOutput(y=y, extras={**extras, "backend": "sdpa"})
 
     def cost(self, m, n, d, dv, bytes_per_el=2, heads: int = 1):
         wide = heads * (d + dv)

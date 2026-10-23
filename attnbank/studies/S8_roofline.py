@@ -405,6 +405,15 @@ def make_figures(summary) -> list[str]:
     up-projection is folded into the attention.  Plotting intensity *against* bytes
     per token puts the cache-sharing variants on one curve and leaves MLA off it,
     which is the honest picture.
+
+    Layout.  Both figures were drawn 6.5in wide and scaled to 72% inside the 4.65in
+    monograph block, which put every annotation at 5.4pt.  They are drawn at the block
+    width now.  The roofline keeps its two panels side by side -- a roofline read off
+    a 4:1 panel has its own diagonal at twenty degrees, and the knee at the ridge
+    point is the whole plot -- and spends the height the caption leaves on taller
+    panels instead.  ``fig_bytes_per_token`` keeps its two panels side by side for the
+    opposite reason: (a) is twenty categorical rows, which need 3in of *height* and
+    almost no width.
     """
     from ..plotting import style
     style.use()
@@ -415,7 +424,7 @@ def make_figures(summary) -> list[str]:
     l2 = roofs["l2_cache_bytes"]
 
     # ---------------------------------------------------------------- roofline ----
-    fig, axes = style.figure((6.5, 3.1), 1, 2, width_ratios=(1.25, 1.0))
+    fig, axes = style.stack("fig_roofline", 1, 2, width_ratios=(1.32, 1.0))
     ax = axes[0]
     xs = np.logspace(-1, 4, 200)
     ax.plot(xs, np.minimum(pk_f, pk_b * xs) / 1e12, color=style.INK["primary"],
@@ -437,21 +446,26 @@ def make_figures(summary) -> list[str]:
                        s=16, marker=mk, color=style.series(i), alpha=0.85,
                        linewidths=0, zorder=3)
     ax.set_xscale("log"); ax.set_yscale("log")
-    ax.set_xlabel("arithmetic intensity (FLOP per byte of DRAM traffic)")
+    # a clear band over the flat roof, so the roof's own label is not in the title
+    ax.set_ylim(top=(pk_f / 1e12) * 3.2)
+    ax.set_xlabel("arithmetic intensity (FLOP per DRAM byte)")
     ax.set_ylabel("achieved throughput (TFLOP/s, bf16)")
     style.panel(ax, "a", "measured roofline")
-    style.direct_label(ax, 4e3, pk_f / 1e12,
-                       f"roof: {pk_f / 1e12:.0f} TFLOP/s, {pk_b / 1e9:.0f} GB/s",
-                       dx=-4, dy=7, ha="right", va="bottom", size=7.5)
+    style.direct_label(ax, 9e3, pk_f / 1e12,
+                       f"roof: {pk_f / 1e12:.0f} TFLOP/s,\n{pk_b / 1e9:.0f} GB/s",
+                       dx=-2, dy=3, ha="right", va="bottom", size=7.5)
     pf, dc = summary["sdpa"]["prefill_large_n"], summary["sdpa"]["decode"]
     # the free area in this panel is the triangle above the roof line, so the note is
     # wrapped short: each line has to clear the diagonal at its own height
-    style.note(ax, "circles prefill, squares decode\n"
-                   f"sdpa decode reaches "
-                   f"{100 * dc['frac_of_bandwidth_roof']['median']:.0f}%\n"
-                   f"of the bandwidth roof\n"
+    # the free ground here is the triangle over the diagonal, which narrows as it
+    # falls, so every line is kept short enough to clear the roof at its own height
+    style.note(ax, "circles prefill,\nsquares decode\n\n"
+                   f"sdpa decode reaches\n"
+                   f"{100 * dc['frac_of_bandwidth_roof']['median']:.0f}% of the "
+                   f"bandwidth roof\n"
                    f"sdpa prefill at $n\\geq$2048\n"
-                   f"reaches {100 * pf['frac_of_flops_roof']['median']:.0f}% of the\n"
+                   f"reaches "
+                   f"{100 * pf['frac_of_flops_roof']['median']:.0f}% of the\n"
                    f"arithmetic roof",
                loc="upper left", size=7.5)
 
@@ -473,13 +487,14 @@ def make_figures(summary) -> list[str]:
     ax.set_xscale("log"); ax.set_yscale("log")
     ax.set_ylim(0.3, 2.4)
     style.log_ticks_plain(ax, "y", [0.3, 0.5, 0.7, 1.0, 1.5, 2.0])
-    ax.set_xlabel("K and V resident per decode step (MB)")
-    ax.set_ylabel("achieved bandwidth $\\div$ measured\nDRAM roof (dimensionless)")
-    style.panel(ax, "b", "decode is bandwidth-bound")
+    ax.set_xlabel("K and V per decode step (MB)")
+    ax.set_ylabel("achieved bandwidth $\\div$\nmeasured DRAM roof")
+    style.panel(ax, "b", "decode: bandwidth-bound")
     dr = summary["sdpa"]["decode_dram_resident"]
-    style.note(ax, "sdpa only; left of the line K and V\n"
-                   "fit in L2, so the roof need not hold\n"
-                   f"right of it: {dr['min_frac']:.2f}-{dr['max_frac']:.2f} "
+    style.note(ax, "sdpa only; left of the line\n"
+                   "K and V fit in L2, so the\n"
+                   "roof need not hold\n"
+                   f"right of it: {dr['min_frac']:.2f}-{dr['max_frac']:.2f}\n"
                    f"of the roof ($n$={dr['n_points']})",
                loc="lower right", size=7.5)
 
@@ -495,7 +510,7 @@ def make_figures(summary) -> list[str]:
     # kept in tab:cost-model but would be three redundant rows here.
     tbl = [r for r in summary["cost_table"] if "quantkv" not in r["variant"]]
     tbl = sorted(tbl, key=lambda r: (-r["bytes_per_token"], r["variant"]))
-    fig, axes = style.figure((6.5, 3.5), 1, 2, width_ratios=(1.0, 1.0))
+    fig, axes = style.stack("fig_bytes_per_token", 1, 2, width_ratios=(1.22, 1.0))
 
     ax = axes[0]
     labels = [f"{r['variant']} {r['bits']}b" for r in tbl]
@@ -544,7 +559,7 @@ def make_figures(summary) -> list[str]:
                 color=style.INK["secondary"])
     ax.set_xscale("log"); ax.set_yscale("log")
     ax.set_ylim(bottom=ax.get_ylim()[0] / 60)     # room for the note under the data
-    ax.set_xlabel("bytes per token per layer, all heads")
+    ax.set_xlabel("bytes per token per layer")
     ax.set_ylabel("decode arithmetic intensity (FLOP/byte)")
     style.panel(ax, "b", "intensity against traffic")
     mla = [r for r in tbl if _family(r["variant"]) == "MLA"]
@@ -552,15 +567,16 @@ def make_figures(summary) -> list[str]:
     style.direct_label(ax, min(r["bytes_per_token"] for r in mla),
                        max(r["intensity_decode"] for r in mla), "MLA (diamonds)",
                        dx=7, dy=0, ha="left", va="center", size=7.5)
-    style.direct_label(ax, max(r["bytes_per_token"] for r in share),
-                       min(r["intensity_decode"] for r in share),
-                       "MHA, GQA, MQA",
-                       dx=-5, dy=9, ha="right", va="bottom", size=7.5)
+    # the cache-sharing family falls on one line from the top left to the bottom
+    # right; the wedge between that line and the ridge rule is the free ground
+    ax.annotate("MHA, GQA, MQA", (0.98, 0.50), xycoords="axes fraction",
+                ha="right", va="center", fontsize=7.5,
+                color=style.INK["secondary"], zorder=6)
     flop_x = (mla[0]["flops_decode"] / summary["cache_intensity"]
               ["baseline_MHA16"]["flops_decode"])
-    style.note(ax, "MHA, GQA, MQA: fewer bytes only\n\n"
-                   f"MLA also does {flop_x:.0f}$\\times$ more decode\n"
-                   "arithmetic, so its intensity is not\ncomparable",
+    style.note(ax, "MHA, GQA, MQA:\nfewer bytes only\n\n"
+                   f"MLA also does {flop_x:.0f}$\\times$ more\n"
+                   "decode arithmetic, so\nits intensity is not\ncomparable",
                loc="lower left", size=7.5)
     paths.append(str(C.save_fig(fig, "fig_bytes_per_token")))
     return paths

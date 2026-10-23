@@ -386,6 +386,12 @@ def make_figure(recs, summary) -> list[str]:
     plots as data only ``quantkv`` -- the one value-compressing mechanism in the
     primary causal sweep, where the omitted ``P_hat(V-V_hat)`` term can and does make
     the norm disagree with the output error.
+
+    Layout.  Three log-log scatters over sixteen decades need a square-ish panel, and
+    a 1x3 strip at the monograph's 4.65in block gives each of them 1.55in.  They are
+    laid out 2x2 instead: (a) and (b) share the top row and the same y axis, (c) takes
+    the bottom left, and the shared colour key -- which used to be a strip under the
+    whole figure -- fills the fourth quadrant, so no space is spent on it.
     """
     from ..plotting import style
     style.use()
@@ -400,7 +406,10 @@ def make_figure(recs, summary) -> list[str]:
     compressing = [m for m in ident["value_compressing"]
                    if any(r["mechanism"] == m for r in rows)]
 
-    fig, axes = style.figure("full-3", 1, 3)
+    fig, axd = style.mosaic("fig_matrix_vs_output", [["a", "b"], ["c", "key"]])
+    axes = [axd["a"], axd["b"], axd["c"]]
+    axd["b"].sharey(axd["a"])
+    axd["b"].tick_params(labelleft=False)
 
     # --- (a) Frobenius, (b) spectral ---------------------------------------------
     sp = summary["output_spread_at_matched_frobenius"]
@@ -415,11 +424,11 @@ def make_figure(recs, summary) -> list[str]:
             ax.axvspan(b0, b1, color=style.INK["primary"], alpha=0.09, zorder=0,
                        linewidth=0)
             import matplotlib.patheffects as pe
-            ax.annotate(f"{sp['ratio_p95_p05']:.0f}$\\times$ output-error spread\n"
-                        f"in the shaded band",
+            ax.annotate(f"{sp['ratio_p95_p05']:.0f}$\\times$ output-error\n"
+                        f"spread in the band",
                         xy=(np.sqrt(b0 * b1), 0.99), xycoords=("data", "axes fraction"),
-                        xytext=(0, -1), textcoords="offset points",
-                        ha="center", va="top", fontsize=7.5,
+                        xytext=(-2, -1), textcoords="offset points",
+                        ha="right", va="top", fontsize=7.5,
                         color=style.INK["secondary"], zorder=6,
                         path_effects=[pe.withStroke(linewidth=2.2,
                                                     foreground=style.INK["surface"])])
@@ -437,6 +446,7 @@ def make_figure(recs, summary) -> list[str]:
         style.panel(ax, letter, title)
     axes[0].set_ylabel(r"output error $\|Y-\widehat Y\|_F$")
     axes[1].set_ylabel("")
+    axes[2].set_ylabel(r"output error $\|Y-\widehat Y\|_F$")
 
     # --- (c) the value-weighted norm, with the identity marked as an identity -----
     ax = axes[2]
@@ -457,9 +467,11 @@ def make_figure(recs, summary) -> list[str]:
     lim = (min(min(av), min(oe)) / 3, max(max(av), max(oe)) * 3)
     ax.set_xlim(lim); ax.set_ylim(lim)
     style.identity_line(ax, linewidth=0.8)
-    style.direct_label(ax, lim[1] / 50, lim[1] / 50,
-                       r"identity when $\widehat V=V$", dx=-4, dy=7, ha="right",
-                       va="bottom", size=7.5)
+    # the data hug the diagonal, so the free ground is the two corners off it: the
+    # note takes the upper left and the identity is named on the line itself
+    style.direct_label(ax, lim[0] * 3e3, lim[0] * 3e3,
+                       r"identity when $\widehat V=V$", dx=4, dy=-4, ha="left",
+                       va="top", size=7.5)
     ax.set_xlabel(r"$\|(P-\widehat P)V\|_F$")
     style.panel(ax, "c", "value-weighted norm")
     md = ident["by_mechanism"]
@@ -468,16 +480,21 @@ def make_figure(recs, summary) -> list[str]:
     n_pres = len({r["mechanism"] for r in rows}) - len(compressing)
     style.note(ax, f"grey: {n_pres} value-preserving\n"
                    f"mechanisms; $\\rho$ = 1.00 is\n"
-                   f"arithmetic, not evidence\n\n"
-                   f"colour: {', '.join(compressing)} compresses $V$\n"
+                   f"arithmetic, not evidence\n"
+                   f"colour: {', '.join(compressing)} compresses $V$,\n"
                    f"departure median {100 * worst:.0f}%, max {100 * wmax:.0f}%",
-               loc="lower right", size=7.5)
+               loc="upper left", size=7.5)
 
+    # the fourth quadrant is the legend: the key used to be a strip under the whole
+    # figure, and a 2x2 leaves a cell exactly the right size for it
     handles = [plt_line(style.method_color(m), m) for m in HIGHLIGHT]
     handles += [plt_line(style.INK["muted"], "other mechanisms")]
-    fig.legend(handles=handles, labels=[h.get_label() for h in handles],
-               loc="outside lower center", ncol=4, frameon=False, fontsize=7.5,
-               handlelength=1.0, columnspacing=1.6, borderaxespad=0.1)
+    key = axd["key"]
+    key.set_axis_off()
+    key.legend(handles=handles, labels=[h.get_label() for h in handles],
+               loc="center", ncol=1, frameon=False, fontsize=8.5,
+               handlelength=1.0, labelspacing=0.8, borderaxespad=0.0,
+               title="mechanism", title_fontsize=8.5)
     return [str(C.save_fig(fig, "fig_matrix_vs_output"))]
 
 

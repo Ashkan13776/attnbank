@@ -25,6 +25,9 @@ default.
 Exact limit: ``bits_k = bits_v = None`` (the identity quantizer).  16-bit affine
 quantization is *not* bit-exact in fp32, so it would be a dishonest anchor.
 
+The quantizer itself is :func:`attnbank.components.quantization.affine_quantize`,
+shared with ``lowprec``; this file is only the decision to apply it to the *cache*.
+
 Reference: Liu et al. (2024) KIVI; Hooper et al. (2024) KVQuant; Liu et al. (2024) IntactKV.
 """
 from __future__ import annotations
@@ -33,38 +36,8 @@ import torch
 
 from ...core import (AttentionMethod, AttentionOutput, Category, Objective,
                      masked_softmax, scores)
+from ...components.quantization import affine_quantize
 from ...registry import register
-
-
-def affine_quantize(x, bits, axis="token", group=None):
-    """Uniform asymmetric quantize--dequantize of ``x`` [..., t, c]."""
-    if bits is None:
-        return x
-    levels = 2 ** bits - 1
-    t, c = x.shape[-2], x.shape[-1]
-    if axis == "token":
-        g = group or c
-        pad = (-c) % g
-        xx = torch.nn.functional.pad(x, (0, pad)) if pad else x
-        blk = xx.unflatten(-1, (xx.shape[-1] // g, g))          # [..., t, ng, g]
-        out = _quant_blocks(blk, levels).flatten(-2)
-        return out[..., :c]
-    if axis == "channel":
-        g = group or t
-        pad = (-t) % g
-        xx = torch.nn.functional.pad(x, (0, 0, 0, pad)) if pad else x
-        blk = xx.unflatten(-2, (xx.shape[-2] // g, g))          # [..., ng, g, c]
-        blk = blk.transpose(-2, -1)                             # [..., ng, c, g]
-        out = _quant_blocks(blk, levels).transpose(-2, -1).flatten(-3, -2)
-        return out[..., :t, :]
-    raise ValueError(f"axis must be 'token' or 'channel', got {axis!r}")
-
-
-def _quant_blocks(blk, levels):
-    lo = blk.amin(-1, keepdim=True)
-    hi = blk.amax(-1, keepdim=True)
-    step = ((hi - lo) / levels).clamp_min(torch.finfo(blk.dtype).tiny)
-    return torch.round((blk - lo) / step) * step + lo
 
 
 @register

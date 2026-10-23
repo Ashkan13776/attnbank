@@ -277,11 +277,21 @@ def make_figure(recs, summary) -> list[str]:
     Gini of the OT column mass is deliberately not plotted: uniform column marginals
     are the Sinkhorn target, so its collapse to zero is the algorithm's definition,
     not a measurement.
+
+    Layout.  This figure has the second-longest caption in the paper (3.8in of the
+    7.1in block), so three panels have to live in 3.05in.  A 1x3 strip is out -- at
+    1.55in a panel, (b)'s two-line x label alone runs into its neighbours -- so (a),
+    whose sixteen decades of y and five-way sweep need the width most, takes a
+    full-width row and (b) and (c) share the row below.  Every legend is turned into a
+    single row or moved onto the curves, because at 1.4in of panel height a stacked
+    five-entry legend is a third of the panel.
     """
     from ..plotting import style
     style.use()
     rows = [{**r["job"], **r["metrics"]} for r in recs if r["_status"] == "ok"]
-    fig, axes = style.figure("full-3", 1, 3)
+    fig, axd = style.mosaic("fig_ot_tilt", [["a", "a"], ["b", "c"]],
+                            height_ratios=(1.12, 1.0), width_ratios=(1.18, 1.0))
+    axes = [axd["a"], axd["b"], axd["c"]]
 
     # --- (a) Sinkhorn convergence, epsilon on the sequential ramp -------------------
     ax = axes[0]
@@ -304,19 +314,26 @@ def make_figure(recs, summary) -> list[str]:
                         color=col, alpha=0.18, linewidth=0)
         ends.append((its[-1], med[-1], rf"$\epsilon$={eps:g}"))
     ax.set_xscale("log", base=2); ax.set_yscale("log")
-    style.log2_ticks(ax, "x", 0, 7, every=2)
-    ax.set_xlim(2 ** -0.4, 2 ** 9.8)
-    ax.set_ylim(top=ax.get_ylim()[1] * 60)   # headroom so the legend clears the curves
+    style.log2_ticks(ax, "x", 0, 7, every=1)
+    ax.set_xlim(2 ** -0.3, 2 ** 7.3)
+    ax.set_ylim(top=ax.get_ylim()[1] * 25)   # one legend row above the curves
     ax.set_xlabel("Sinkhorn iterations")
-    ax.set_ylabel(r"marginal error $\max_j|\Gamma^{\!\top}\mathbf{1}-\bar\mu|$"
-                  "\n(median over heads, dimensionless)")
+    # a rotated axis label is as long as the panel is tall: at 1.6in of panel the
+    # one-line form ran off the top of the figure, so it is set on two short lines
+    ax.set_ylabel("marginal error\n"
+                  r"$\max_j|\Gamma^{\!\top}\mathbf{1}-\bar\mu|$")
     style.panel(ax, "a", "convergence to the marginals")
     ti = summary["tilt_identity"]
-    ax.legend(loc="upper right", fontsize=7.5, labelspacing=0.3, borderpad=0.25,
-              handlelength=1.2)
+    # five entries in one row along the top: stacked they would be a third of a
+    # 1.6in panel, and the ramp reads left to right anyway
+    ax.legend(loc="upper right", fontsize=7.5, borderpad=0.2, ncol=len(epss),
+              columnspacing=1.3, handlelength=1.3)
+    # the curves all fall away to the right, so the bottom left corner is the free one
+    # the long line goes underneath: the free wedge widens towards the floor as the
+    # eps=4 curve bottoms out
     style.note(ax, "band: IQR over heads\n"
-                   "tilt identity exact: residual\n"
-                   f"{ti['max_residual']:.0f} over {ti['n_checks']:,} checks",
+                   f"tilt identity exact: residual {ti['max_residual']:.0f} "
+                   f"over {ti['n_checks']:,} checks",
                loc="lower left", size=7.5)
 
     # --- (b) what the potential is correlated with ----------------------------------
@@ -332,21 +349,27 @@ def make_figure(recs, summary) -> list[str]:
                 markeredgecolor=style.INK["surface"], markeredgewidth=1.0, zorder=5)
     ax.axvline(0, color=style.INK["muted"], linewidth=0.7, zorder=0)
     ax.set_xlim(-1.05, 1.05)
-    ax.set_ylim(0, 1.30)
-    ax.set_xlabel(r"Spearman $\rho$ of the key potential $f_j$"
-                  "\n" r"against the column quantity (per head)")
-    ax.set_ylabel(f"fraction of the {len(conv)} converged\n(head, layer, passage) slices")
+    ax.set_ylim(0, 1.62)                     # a clear band over the curves for the note
+    ax.set_yticks([0.0, 0.5, 1.0])
+    ax.set_xlabel(r"Spearman $\rho$ of $f_j$ against the"
+                  "\n" r"column quantity (per head)")
+    ax.set_ylabel(f"fraction of the\n{len(conv)} converged slices")
     style.panel(ax, "b", "the potential suppresses sinks")
     pot = summary["potential"]
     cm = pot["rho_vs_softmax_column_mass"]
     kn = pot["rho_vs_key_norm"]
     style.note(ax, "median (dot), IQR:\n"
                    f"column mass {cm['median']:+.2f} "
-                   f"[{cm['q1']:+.2f}, {cm['q3']:+.2f}]\n"
+                   f"[{cm['q1']:+.2f},{cm['q3']:+.2f}]\n"
                    f"key norm {kn['median']:+.2f} "
-                   f"[{kn['q1']:+.2f}, {kn['q3']:+.2f}]",
-               loc="upper right", size=7.5)
-    ax.legend(loc="lower right", fontsize=7.5, labelspacing=0.3, borderpad=0.25)
+                   f"[{kn['q1']:+.2f},{kn['q3']:+.2f}]",
+               loc="upper left", size=7.5)
+    # the two steps are named on the curves: a boxed legend would have to sit on one
+    # of them in a panel this short
+    style.direct_label(ax, -0.72, 0.62, "softmax\ncolumn mass", dx=2, dy=0,
+                       ha="left", va="center", size=7.5)
+    style.direct_label(ax, 0.42, 0.55, r"key norm $\|k_j\|$", dx=2, dy=0,
+                       ha="left", va="center", size=7.5)
 
     # --- (c) how far OT moves the operator -------------------------------------------
     ax = axes[2]
@@ -364,21 +387,21 @@ def make_figure(recs, summary) -> list[str]:
         ends.append((eps[-1], med[-1], lab))
     ax.set_xscale("log", base=2); ax.set_yscale("log")
     style.log2_ticks(ax, "x", -2, 2, every=1)
-    ax.set_xlim(2 ** -2.3, 2 ** 6.2)
-    ax.set_ylim(top=ax.get_ylim()[1] * 2.6)
+    ax.set_xlim(2 ** -2.3, 2 ** 4.6)
+    ax.set_ylim(top=ax.get_ylim()[1] * 2.2)
     style.log_ticks_plain(ax, "y")
     ax.set_xlabel(r"entropic regularisation $\epsilon$")
     ax.set_ylabel(r"$\mathrm{TV}(\pi,\pi^{\rm OT})$ at convergence"
-                  "\n(median over heads, dimensionless)")
+                  "\n(median over heads)")
     style.panel(ax, "c", r"how far OT moves $\pi$")
     # the two end labels are set by hand: on one line the lower one runs past the
     # figure's right edge, which would scale the whole figure -- and its type -- down
     (x0, y0, l0), (x1, y1, _) = ends
     style.direct_label(ax, x0, y0, l0, dx=4, size=7.5)
-    style.direct_label(ax, x1, y1, "vs. tempered\nsoftmax", dx=3, dy=6,
+    style.direct_label(ax, x1, y1, "vs. tempered\nsoftmax", dx=3, dy=4,
                        ha="left", va="bottom", size=7.5)
     style.note(ax, "the gap is the tilt alone;\n"
-                   "the curves coincide at $\\epsilon$=1",
+                   "the curves meet at $\\epsilon$=1",
                loc="upper right", size=7.5)
     return [str(C.save_fig(fig, "fig_ot_tilt"))]
 

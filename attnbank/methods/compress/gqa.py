@@ -26,6 +26,7 @@ import torch
 
 from ...core import (AttentionMethod, AttentionOutput, Category, Objective,
                      masked_softmax, scores)
+from ...components.sdpa import sdpa_attend
 from ...registry import register
 
 
@@ -43,26 +44,44 @@ class GQAAttention(AttentionMethod):
     references = ("ainslie2023gqa", "shazeer2019fast")
     paper_section = "sec:compress"
 
-    def __init__(self, group_size: int = 2, **kw):
-        super().__init__(group_size=group_size, **kw)
-        self.group_size = group_size
+    backends = ("reference", "sdpa")
 
-    def _forward(self, q, k, v, causal, return_weights):
-        h = q.shape[-3]
+    def __init__(self, group_size: int = 2, sdpa_kernel: str | None = None, **kw):
+        super().__init__(group_size=group_size, sdpa_kernel=sdpa_kernel, **kw)
+        self.group_size = group_size
+        self.sdpa_kernel = sdpa_kernel
+
+    def _pool(self, k, v):
+        """Mean-pool K and V within groups of query heads; the whole of the method."""
+        h = k.shape[-3]
         g = max(1, min(self.group_size, h))
         if h % g:
             raise ValueError(f"gqa: group_size {g} must divide the head count {h}")
         if g == 1:
-            k_bar, v_bar = k, v
-        else:
-            # [..., h, n, c] -> [..., h/g, g, n, c], average over the group axis (-3)
-            k_bar = k.unflatten(-3, (h // g, g)).mean(-3, keepdim=True).expand(
-                *k.shape[:-3], h // g, g, *k.shape[-2:]).flatten(-4, -3)
-            v_bar = v.unflatten(-3, (h // g, g)).mean(-3, keepdim=True).expand(
-                *v.shape[:-3], h // g, g, *v.shape[-2:]).flatten(-4, -3)
+            return k, v, g
+        pool = lambda t: t.unflatten(-3, (h // g, g)).mean(-3, keepdim=True).expand(
+            *t.shape[:-3], h // g, g, *t.shape[-2:]).flatten(-4, -3)
+        return pool(k), pool(v), g
+
+    def _forward(self, q, k, v, causal, return_weights):
+        h = q.shape[-3]
+        k_bar, v_bar, g = self._pool(k, v)
         pi = masked_softmax(scores(q, k_bar, self._scale(q.shape[-1]), causal))
         return AttentionOutput(y=pi @ v_bar, weights=pi if return_weights else None,
                                v_hat=v_bar, extras={"group_size": g, "n_kv_heads": h // g})
+
+    def _forward_sdpa(self, q, k, v, causal, return_weights):
+        """Pool first, then the fused kernel: the pooling *is* the method, not the kernel."""
+        if return_weights:
+            return self._fallback_to_reference(
+                "materialise the attention weights or v_hat")(q, k, v, causal,
+                                                              return_weights)
+        h = q.shape[-3]
+        k_bar, v_bar, g = self._pool(k, v)
+        y = sdpa_attend(q, k_bar, v_bar, scale=self._scale(q.shape[-1]), causal=causal,
+                        kernel=self.sdpa_kernel)
+        return AttentionOutput(y=y, extras={"group_size": g, "n_kv_heads": h // g,
+                                            "backend": "sdpa"})
 
     def cost(self, m, n, d, dv, bytes_per_el=2):
         g = max(1, self.group_size)

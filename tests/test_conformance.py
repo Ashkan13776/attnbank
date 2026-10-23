@@ -17,7 +17,11 @@ import torch
 import attnbank as ab
 from attnbank.core import Objective
 
-BIB = Path(__file__).resolve().parents[2] / "references.bib"
+# The library ships its own bibliography (``attnbank/references.bib``) so that check 11
+# works in the standalone repository; inside the monograph's tree the full
+# ``references.bib`` sits two levels up and is used as well, so a key may live in either.
+BIBS = [Path(__file__).resolve().parents[1] / "attnbank" / "references.bib",
+        Path(__file__).resolve().parents[2] / "references.bib"]
 METHODS = ab.available()
 
 B, H, M, N, D, DV = 2, 4, 12, 24, 8, 6
@@ -300,8 +304,23 @@ def test_is_deterministic(name):
 # 11. references exist in references.bib
 # ---------------------------------------------------------------------------
 def _bib_keys():
-    text = BIB.read_text(errors="ignore")
-    return set(re.findall(r"^@\w+\{([^,]+),", text, flags=re.M))
+    keys = set()
+    for bib in BIBS:
+        if bib.exists():
+            keys |= set(re.findall(r"^@\w+\{([^,]+),", bib.read_text(errors="ignore"),
+                                   flags=re.M))
+    assert keys, f"no bibliography found; looked in {[str(b) for b in BIBS]}"
+    return keys
+
+
+def test_shipped_bibliography_covers_every_citation():
+    """The packaged ``attnbank/references.bib`` must stand alone, outside the paper repo."""
+    shipped = BIBS[0]
+    assert shipped.exists(), f"{shipped} is missing; check 11 would not survive the split"
+    keys = set(re.findall(r"^@\w+\{([^,]+),", shipped.read_text(errors="ignore"),
+                          flags=re.M))
+    cited = {r for name in METHODS for r in ab.get_class(name).references}
+    assert not cited - keys, f"not packaged: {sorted(cited - keys)}"
 
 
 @pytest.mark.parametrize("name", METHODS)

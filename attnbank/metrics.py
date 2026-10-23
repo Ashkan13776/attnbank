@@ -21,12 +21,40 @@ TINY = 1e-30
 # ---------------------------------------------------------------------------
 
 def output_error(y: Tensor, y_hat: Tensor, relative: bool = False) -> Tensor:
+    """Output error ``||y - y_hat||`` per query; ``relative`` divides by ``||y||``.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> pi_hat = torch.tensor([[0.6, 0.4, 0.0]])
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> y, y_hat = pi @ v, pi_hat @ v
+    >>> metrics.output_error(y, y_hat)
+    tensor([0.3000])
+    >>> metrics.output_error(y, y_hat, relative=True)
+    tensor([0.4286])
+    """
     e = (y - y_hat).norm(dim=-1)
     return e / y.norm(dim=-1).clamp_min(1e-12) if relative else e
 
 
 def error_decomposition(pi: Tensor, pi_hat: Tensor, v: Tensor, v_hat: Tensor | None = None) -> dict:
-    """y - y_hat = (pi - pi_hat) v  +  pi_hat (v - v_hat)   (eq:error_decomposition)."""
+    """y - y_hat = (pi - pi_hat) v  +  pi_hat (v - v_hat)   (eq:error_decomposition).
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> pi_hat = torch.tensor([[0.6, 0.4, 0.0]])
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> v_hat = v + 0.1
+    >>> d = metrics.error_decomposition(pi, pi_hat, v, v_hat)
+    >>> sorted(d)
+    ['distributional', 'total', 'value']
+    >>> torch.allclose(d['total'], (pi @ v - pi_hat @ v_hat).norm(dim=-1), atol=1e-6)
+    True
+    """
     v_hat = v if v_hat is None else v_hat
     dist = (pi - pi_hat) @ v
     val = pi_hat @ (v - v_hat)
@@ -40,6 +68,17 @@ def symmetric_decomposition(pi: Tensor, pi_hat: Tensor, v: Tensor,
 
     The distributional error is measured through the *compressed* values and the
     value error is weighted by the *reference* distribution.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> pi_hat = torch.tensor([[0.6, 0.4, 0.0]])
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> v_hat = v + 0.1
+    >>> d = metrics.symmetric_decomposition(pi, pi_hat, v, v_hat)
+    >>> torch.allclose(d['total'], (pi @ v - pi_hat @ v_hat).norm(dim=-1), atol=1e-6)
+    True
     """
     v_hat = v if v_hat is None else v_hat
     dist = (pi - pi_hat) @ v_hat
@@ -53,7 +92,18 @@ def symmetric_decomposition(pi: Tensor, pi_hat: Tensor, v: Tensor,
 # ---------------------------------------------------------------------------
 
 def total_variation(pi: Tensor, pi_hat: Tensor) -> Tensor:
-    """TV(pi, pi_hat) = 1/2 ||pi - pi_hat||_1."""
+    """TV(pi, pi_hat) = 1/2 ||pi - pi_hat||_1.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> pi_hat = torch.tensor([[0.6, 0.4, 0.0]])
+    >>> metrics.total_variation(pi, pi_hat)
+    tensor([0.2000])
+    >>> metrics.total_variation(pi, pi)
+    tensor([0.])
+    """
     return 0.5 * (pi - pi_hat).abs().sum(-1)
 
 
@@ -65,6 +115,16 @@ def kl(pi: Tensor, pi_hat: Tensor) -> Tensor:
     value: this is how ``KL(pi || pi_hat) = inf`` for a renormalized restriction
     (``prop:sparse-identity``) is reproduced numerically rather than clamped away.
     Terms with ``pi_j == 0`` contribute ``0`` by the usual convention.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> pi_hat = torch.tensor([[0.6, 0.4, 0.0]])
+    >>> metrics.kl(pi_hat, pi)
+    tensor([0.2245])
+    >>> metrics.kl(pi, pi_hat)      # pi_hat drops position 2
+    tensor([inf])
     """
     drops = (pi > 0) & (pi_hat <= 0)
     safe_pi = pi.clamp_min(TINY)
@@ -81,6 +141,16 @@ def chi2(pi_hat: Tensor, pi: Tensor) -> Tensor:
     Returns ``+inf`` where ``pi_hat`` is not absolutely continuous with respect to
     ``pi`` (``pi_j == 0 < pi_hat_j``), matching the definition in Sec. 4, which
     declares chi^2 only for ``pi_hat << pi``.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> pi_hat = torch.tensor([[0.6, 0.4, 0.0]])
+    >>> metrics.chi2(pi_hat, pi)
+    tensor([0.2533])
+    >>> metrics.chi2(pi, pi_hat)    # pi is not absolutely continuous wrt pi_hat
+    tensor([inf])
     """
     bad = (pi <= 0) & (pi_hat > 0)
     num = (pi_hat - pi) ** 2
@@ -94,13 +164,23 @@ def spearman(x: Tensor, y: Tensor, dim: int = -1) -> Tensor:
 
     Ties receive their average rank, so the coefficient equals Pearson's on the
     ranks in all cases.  Used by study S1 to compare matrix norms with output error.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> x = torch.tensor([1.0, 2.0, 3.0, 4.0])
+    >>> metrics.spearman(x, 2 * x + 1)
+    tensor(1.0000, dtype=torch.float64)
+    >>> metrics.spearman(x, -x)
+    tensor(-1.0000, dtype=torch.float64)
     """
     xr, yr = _average_ranks(x, dim), _average_ranks(y, dim)
     return _pearson(xr, yr, dim)
 
 
 def _average_ranks(x: Tensor, dim: int) -> Tensor:
-    """Ranks along the last axis after ``movedim``, ties averaged within each run."""
+    """Ranks along the last axis after ``movedim``, ties averaged within each run.
+    """
     x = x.movedim(dim, -1).double()
     n = x.shape[-1]
     order = x.argsort(dim=-1)
@@ -134,6 +214,13 @@ def value_oscillation(v: Tensor, support: Tensor | None = None) -> Tensor:
     """osc(v) = diam of {v_j} in l2 (optionally over a boolean support [.., m, n]).
 
     Shape [..] without a support and [.., m] with one.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> metrics.value_oscillation(v)
+    tensor(2.)
     """
     if support is None:
         return torch.cdist(v, v).amax(dim=(-1, -2))
@@ -143,14 +230,32 @@ def value_oscillation(v: Tensor, support: Tensor | None = None) -> Tensor:
 
 
 def value_spread(pi: Tensor, v: Tensor) -> Tensor:
-    """sigma_q = E_{pi}||v - y||, the attention-weighted spread of cor:kernel-rel-add."""
+    """sigma_q = E_{pi}||v - y||, the attention-weighted spread of cor:kernel-rel-add.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> metrics.value_spread(pi, v)
+    tensor([0.7000])
+    """
     y = pi @ v
     dev = (v.unsqueeze(-3) - y.unsqueeze(-2)).norm(dim=-1)  # [.., m, n]
     return (pi * dev).sum(-1)
 
 
 def value_covariance_op(pi: Tensor, v: Tensor) -> Tensor:
-    """||Cov_pi(v)||_op^{1/2} per query, the scale in prop:error-chi2."""
+    """||Cov_pi(v)||_op^{1/2} per query, the scale in prop:error-chi2.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> metrics.value_covariance_op(pi, v)
+    tensor([0.7810])
+    """
     y = pi @ v                                   # [.., m, dv]
     c = v.unsqueeze(-3) - y.unsqueeze(-2)        # [.., m, n, dv]
     cov = torch.einsum("...mn,...mna,...mnb->...mab", pi, c, c)
@@ -158,12 +263,30 @@ def value_covariance_op(pi: Tensor, v: Tensor) -> Tensor:
 
 
 def n_eff(pi: Tensor) -> Tensor:
-    """n_eff(pi) = (sum_j pi_j^2)^{-1}, the effective sample size of prop:error-stochastic."""
+    """n_eff(pi) = (sum_j pi_j^2)^{-1}, the effective sample size of prop:error-stochastic.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> metrics.n_eff(torch.tensor([[0.25, 0.25, 0.25, 0.25]]))
+    tensor([4.])
+    >>> metrics.n_eff(torch.tensor([[1.0, 0.0, 0.0, 0.0]]))
+    tensor([1.])
+    """
     return 1.0 / (pi ** 2).sum(-1).clamp_min(TINY)
 
 
 def effective_support(pi: Tensor) -> Tensor:
-    """exp(entropy) of pi_q: effective number of attended tokens (perplexity form)."""
+    """exp(entropy) of pi_q: effective number of attended tokens (perplexity form).
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> metrics.effective_support(torch.tensor([[0.25, 0.25, 0.25, 0.25]]))
+    tensor([4.])
+    >>> metrics.effective_support(torch.tensor([[1.0, 0.0, 0.0, 0.0]]))
+    tensor([1.])
+    """
     h = -(pi * torch.log(pi.clamp_min(TINY))).sum(-1)
     return torch.exp(h)
 
@@ -173,7 +296,19 @@ def effective_support(pi: Tensor) -> Tensor:
 # ---------------------------------------------------------------------------
 
 def tv_osc_bound(pi: Tensor, pi_hat: Tensor, v: Tensor) -> Tensor:
-    """prop:error-tv: ||(pi - pi_hat) v|| <= TV(pi, pi_hat) * osc(v)."""
+    """prop:error-tv: ||(pi - pi_hat) v|| <= TV(pi, pi_hat) * osc(v).
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> pi_hat = torch.tensor([[0.6, 0.4, 0.0]])
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> bound = metrics.tv_osc_bound(pi, pi_hat, v)
+    >>> err = ((pi - pi_hat) @ v).norm(dim=-1)
+    >>> bool((err <= bound + 1e-6).all())
+    True
+    """
     return total_variation(pi, pi_hat) * value_oscillation(v).unsqueeze(-1)
 
 
@@ -185,6 +320,18 @@ def chi2_variance_factor(pi: Tensor, pi_hat: Tensor, v: Tensor) -> dict:
     *standard deviation* of the values", not as a single number: the chi^2 factor is
     the mechanism's, the sd factor the data's.  The bound is attained when ``v - y``
     is proportional to ``dpi_hat/dpi - 1``.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> pi_hat = torch.tensor([[0.6, 0.4, 0.0]])
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> f = metrics.chi2_variance_factor(pi, pi_hat, v)
+    >>> sorted(f)
+    ['bound', 'chi2', 'sd']
+    >>> bool((((pi - pi_hat) @ v).norm(dim=-1) <= f['bound'] + 1e-6).all())
+    True
     """
     c2 = chi2(pi_hat, pi)
     sd = value_covariance_op(pi, v)
@@ -206,6 +353,18 @@ def tanh_tv_bound(s: Tensor, s_hat: Tensor, v: Tensor | None = None) -> dict:
     The sharp constant uses ``delta = osc(s_hat - s)/2`` rather than the pointwise
     max, since a uniform shift of all logits is absorbed by the normalizer; both are
     returned (``delta`` and ``delta_osc``) and the bounds use ``min`` of the two.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> s      = torch.tensor([[0.0, 1.0, 2.0]])
+    >>> b = metrics.tanh_tv_bound(s, s + 0.1, v)
+    >>> sorted(b)
+    ['chi2_bound', 'delta', 'delta_osc', 'kl_bound', 'output_bound', 'tv_bound']
+    >>> tv = metrics.total_variation(torch.softmax(s, -1), torch.softmax(s + 0.1, -1))
+    >>> bool((tv <= b['tv_bound'] + 1e-6).all())
+    True
     """
     delta = logit_error(s, s_hat)
     delta_osc = 0.5 * logit_oscillation(s, s_hat)
@@ -220,14 +379,30 @@ def tanh_tv_bound(s: Tensor, s_hat: Tensor, v: Tensor | None = None) -> dict:
 
 
 def logit_error(s: Tensor, s_hat: Tensor) -> Tensor:
-    """delta_q = max_j |s_hat_j - s_j| over the visible keys, shape [.., m]."""
+    """delta_q = max_j |s_hat_j - s_j| over the visible keys, shape [.., m].
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> s      = torch.tensor([[0.0, 1.0, 2.0]])
+    >>> metrics.logit_error(s, s + torch.tensor([[0.1, -0.3, 0.2]]))
+    tensor([0.3000])
+    """
     d = (s_hat - s).abs()
     d = torch.where(torch.isfinite(d), d, torch.zeros_like(d))  # both -inf => masked out
     return d.amax(-1)
 
 
 def logit_oscillation(s: Tensor, s_hat: Tensor) -> Tensor:
-    """osc_j(s_hat_j - s_j) over the visible keys: max - min, shape [.., m]."""
+    """osc_j(s_hat_j - s_j) over the visible keys: max - min, shape [.., m].
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> s      = torch.tensor([[0.0, 1.0, 2.0]])
+    >>> metrics.logit_oscillation(s, s + torch.tensor([[0.1, -0.3, 0.2]]))
+    tensor([0.5000])
+    """
     d = s_hat - s
     finite = torch.isfinite(d)
     lo = torch.where(finite, d, torch.full_like(d, float("inf"))).amin(-1)
@@ -238,7 +413,17 @@ def logit_oscillation(s: Tensor, s_hat: Tensor) -> Tensor:
 
 def mult_error_bound(pi: Tensor, pi_hat: Tensor, v: Tensor, eps: float) -> Tensor:
     """prop:error-mult: for (1-eps) g <= g_hat <= (1+eps) g,
-    ||y - y_hat|| <= eps / (1 + sqrt(1 - eps^2)) * osc(v)."""
+    ||y - y_hat|| <= eps / (1 + sqrt(1 - eps^2)) * osc(v).
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> pi_hat = torch.tensor([[0.6, 0.4, 0.0]])
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> metrics.mult_error_bound(pi, pi_hat, v, eps=0.1)
+    tensor([0.1003])
+    """
     import math
     c = eps / (1.0 + math.sqrt(max(0.0, 1.0 - eps ** 2)))
     return torch.full_like(total_variation(pi, pi_hat), c) * value_oscillation(v).unsqueeze(-1)
@@ -249,7 +434,15 @@ def mult_error_bound(pi: Tensor, pi_hat: Tensor, v: Tensor, eps: float) -> Tenso
 # ---------------------------------------------------------------------------
 
 def omitted_mass(pi: Tensor, support: Tensor) -> Tensor:
-    """eps_q = pi_q(X \\ S_q) for boolean support [.., m, n]."""
+    """eps_q = pi_q(X \\ S_q) for boolean support [.., m, n].
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> metrics.omitted_mass(pi, torch.tensor([[True, True, False]]))
+    tensor([0.2000])
+    """
     return (pi * (~support)).sum(-1)
 
 
@@ -258,6 +451,17 @@ def restriction_identity(pi: Tensor, support: Tensor, v: Tensor) -> dict:
 
     For ``eps_q == 0`` (full support) ``m_Sc`` is undefined and reported as ``0``; the
     predicted error is then ``0``, which is correct.  Likewise for ``eps_q == 1``.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> S = torch.tensor([[True, True, False]])
+    >>> r = metrics.restriction_identity(pi, S, v)
+    >>> pi_S = (pi * S) / (pi * S).sum(-1, keepdim=True)
+    >>> torch.allclose(pi @ v - pi_S @ v, r['predicted_error'], atol=1e-6)
+    True
     """
     eps = omitted_mass(pi, support)
     inS, outS = pi * support, pi * (~support)
@@ -269,7 +473,16 @@ def restriction_identity(pi: Tensor, support: Tensor, v: Tensor) -> dict:
 
 def single_token_omission(pi: Tensor, v: Tensor) -> Tensor:
     """prop:error-single: removing token j and renormalizing costs
-    p_j / (1 - p_j) * ||v_j - y||.  Returns the cost of every j, shape [.., m, n]."""
+    p_j / (1 - p_j) * ||v_j - y||.  Returns the cost of every j, shape [.., m, n].
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> metrics.single_token_omission(pi, v)
+    tensor([[0.7000, 0.1286, 0.3250]])
+    """
     y = pi @ v
     dev = (v.unsqueeze(-3) - y.unsqueeze(-2)).norm(dim=-1)  # [.., m, n]
     return pi / (1 - pi).clamp_min(TINY) * dev
@@ -286,6 +499,16 @@ def wasserstein1(pi: Tensor, pi_hat: Tensor, positions: Tensor | None = None) ->
     ``W_1 = sum_j |F_j - F_hat_j| * (x_{j+1} - x_j)`` with ``F`` the CDFs, so no LP is
     needed.  ``positions`` defaults to ``0, 1, ..., n-1`` (token index as the ground
     metric), the metric under which merging moves mass by the width of a cluster.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> pi_hat = torch.tensor([[0.6, 0.4, 0.0]])
+    >>> metrics.wasserstein1(pi, pi_hat)
+    tensor([0.3000])
+    >>> metrics.wasserstein1(pi, pi)
+    tensor([0.])
     """
     n = pi.shape[-1]
     if positions is None:
@@ -296,7 +519,15 @@ def wasserstein1(pi: Tensor, pi_hat: Tensor, positions: Tensor | None = None) ->
 
 
 def value_lipschitz(v: Tensor, positions: Tensor | None = None) -> Tensor:
-    """The smallest ``L_v`` with ``||v_i - v_j|| <= L_v |x_i - x_j||``, shape [..]."""
+    """The smallest ``L_v`` with ``||v_i - v_j|| <= L_v |x_i - x_j||``, shape [..].
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> metrics.value_lipschitz(v)
+    tensor(1.)
+    """
     n = v.shape[-2]
     if positions is None:
         positions = torch.arange(n, device=v.device, dtype=v.dtype)
@@ -314,6 +545,16 @@ def wasserstein1_bound(pi: Tensor, pi_hat: Tensor, v: Tensor,
     mass; it is the right bound for merging, clustering and pivot methods, where total
     variation is needlessly pessimistic (Sec. 4.1).  The ground metric is the token
     index unless ``positions`` says otherwise.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> pi_hat = torch.tensor([[0.6, 0.4, 0.0]])
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> bound = metrics.wasserstein1_bound(pi, pi_hat, v)
+    >>> bool((((pi - pi_hat) @ v).norm(dim=-1) <= bound + 1e-6).all())
+    True
     """
     return value_lipschitz(v, positions).unsqueeze(-1) * wasserstein1(pi, pi_hat, positions)
 
@@ -327,6 +568,17 @@ def merge_bound(pi: Tensor, assign: Tensor, v: Tensor, v_hat: Tensor,
     radius term.  Returns
 
         ||y - y_hat|| <= sum_i pi(C_i) ||m_{C_i} - v_hat_i|| + tanh(delta/2) diam{v_hat_i}.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> assign = torch.tensor([0, 0, 1])          # positions 0,1 merge; 2 stays
+    >>> v_hat = torch.tensor([[0.5], [2.0]])
+    >>> b = metrics.merge_bound(pi, assign, v, v_hat, delta=torch.tensor([0.2]))
+    >>> sorted(b)
+    ['bound', 'distributional', 'representation']
     """
     r = int(assign.max()) + 1
     onehot = torch.nn.functional.one_hot(assign, r).to(pi.dtype)      # [n, r]
@@ -348,6 +600,18 @@ def attention_matrix_errors(pi: Tensor, pi_hat: Tensor, v: Tensor) -> dict:
 
     Sec. 4.2 argues these are the wrong target; they are computed so that study S1 can
     show it.  ``AV_fro`` is the one that does control the output.
+
+    Examples
+    --------
+    >>> import torch; from attnbank import metrics
+    >>> pi     = torch.tensor([[0.5, 0.3, 0.2]])
+    >>> pi_hat = torch.tensor([[0.6, 0.4, 0.0]])
+    >>> v      = torch.tensor([[0.0], [1.0], [2.0]])
+    >>> e = metrics.attention_matrix_errors(pi, pi_hat, v)
+    >>> sorted(e)
+    ['AV_fro', 'fro', 'inf_to_inf', 'max_entry', 'spectral']
+    >>> e['AV_fro']
+    tensor(0.3000)
     """
     D = pi - pi_hat
     return {"fro": D.flatten(-2).norm(dim=-1),

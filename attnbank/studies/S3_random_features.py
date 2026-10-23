@@ -468,6 +468,22 @@ def _num(x) -> float:
         return float("nan")
 
 
+def _slope_line(src: str, fit: dict) -> str:
+    """``GPT-2  -0.294 +- 0.011`` -- the exponent with the interval that qualifies it.
+
+    The interval belongs beside the number: an exponent of -0.294 against a theory of
+    -1/2 is only a finding if the reader can see that -1/2 is outside the interval.
+    It was cut when the panel was a third of a 6.5in figure scaled to 72%; at half a
+    text block drawn 1:1 it fits at 7.5pt, so it is back.  ``tab:rff-exponents``
+    carries the same intervals at full precision.
+    """
+    lo, hi = fit["ci95"]
+    # the interval is the Wald t-interval, so it is symmetric about the slope and
+    # "+-h" says the same thing as "[lo, hi]" in two thirds of the width -- which is
+    # what makes it fit a half-block panel at 7.5pt
+    return f"{SHORT.get(src, src)}  {fit['slope']:+.3f} $\\pm$ {(hi - lo) / 2:.3f}"
+
+
 def _fit_line(ax, fit, rs, ys, color, style, lo=R_FIT_MIN):
     """Draw the fitted power law over the window it was fitted on."""
     xs = np.array([r for r in rs if r >= lo], dtype=float)
@@ -487,12 +503,22 @@ def make_figure(rec_r, rec_c, summary) -> list[str]:
     rate now gets its own panel with the *three data sources* as its series, which is
     also where the study's real finding lives: the exponents hold to three figures on
     the Gaussian control and are roughly half as steep on trained activations.
+
+    Layout.  (a) and (b) are the same fit on the same x axis, so they share the top
+    row; (c) asks a different question of a different sweep and takes a full-width
+    row of its own, where its shaded crossover region and three end labels have the
+    room they need.  The two fit panels are half a block wide rather than a third,
+    which is what lets the 95% confidence intervals go back next to the exponents
+    they qualify -- they had been dropped to the table because they would not fit a
+    1.2in panel.
     """
     import matplotlib.patheffects as pe
 
     from ..plotting import style
     style.use()
-    fig, axes = style.figure("full-3", 1, 3)
+    fig, axd = style.mosaic("fig_rff_bias_variance", [["a", "b"], ["c", "c"]],
+                            height_ratios=(1.2, 1.0))
+    axes = [axd["a"], axd["b"], axd["c"]]
     var = "performer_orth"
     srcs = [s for s in SOURCE_ORDER if f"{s}|{var}|c={FIT_REGIME_C}" in summary["fits"]]
 
@@ -510,17 +536,16 @@ def make_figure(rec_r, rec_c, summary) -> list[str]:
     ax.set_xscale("log", base=2); ax.set_yscale("log")
     style.log2_ticks(ax, "x", 3, 12, every=3)
     ax.set_xlim(2 ** 2.6, 2 ** 16.0)
-    ax.set_ylim(top=ax.get_ylim()[1] * 4.5)        # headroom for the fit annotation
+    ax.set_ylim(top=ax.get_ylim()[1] * 22)         # headroom for the fit annotation
     style.label_ends(ax, ends, size=7.5)
     ax.set_xlabel("number of random features $r$")
     ax.set_ylabel(r"s.d. of $\widehat y-y$ over seeds"
                   "\n" r"(RMS over heads, units of $y$)")
     style.panel(ax, "a", r"variance rate, $\mathrm{s.d.}\propto r^{\beta}$")
-    lines = [r"fitted $\beta$ (theory $-1/2$)"]
+    lines = [r"fitted $\beta$ (theory $-1/2$), 95% CI"]
     for src in srcs:
         f = summary["fits"][f"{src}|{var}|c={FIT_REGIME_C}"]["sd_slope_asymptotic"]
-        # the 95% CIs are in tab:rff-exponents; at 7.5pt they do not fit the panel
-        lines.append(f"{SHORT.get(src, src)}  {f['slope']:+.3f}")
+        lines.append(_slope_line(src, f))
     style.note(ax, "\n".join(lines), loc="upper right", size=7.5)
 
     # --- (b) bias ------------------------------------------------------------------
@@ -544,21 +569,25 @@ def make_figure(rec_r, rec_c, summary) -> list[str]:
     ax.set_xscale("log", base=2); ax.set_yscale("log")
     style.log2_ticks(ax, "x", 3, 12, every=3)
     ax.set_xlim(2 ** 2.6, 2 ** 16.0)
-    ax.set_ylim(top=ax.get_ylim()[1] * 9.0)        # headroom for the fit annotation
+    ax.set_ylim(top=ax.get_ylim()[1] * 22)         # headroom for the fit annotation
     style.label_ends(ax, ends, size=7.5)
     ax.set_xlabel("number of random features $r$")
     ax.set_ylabel(r"$|$bias$|$ of $\widehat y$ over seeds"
                   "\n" r"(RMS over heads, units of $y$)")
     style.panel(ax, "b", r"bias rate, $|$bias$|\propto r^{\alpha}$")
-    lines = [r"fitted $\alpha$ (theory $-1$)"]
+    lines = [r"fitted $\alpha$ (theory $-1$), 95% CI"]
     for src in srcs:
         f = summary["fits"][f"{src}|{var}|c={FIT_REGIME_C}"]["bias_slope_asymptotic"]
         if np.isfinite(_num(f.get("slope"))):
-            lines.append(f"{SHORT.get(src, src)}  {f['slope']:+.3f}")
-    if unresolved:
-        lines += ["", "Gaussian control not", "drawn: bias under its",
-                  "Monte-Carlo floor"]
+            lines.append(_slope_line(src, f))
     style.note(ax, "\n".join(lines), loc="upper right", size=7.5)
+    if unresolved:
+        # the two curves fall away to the right, so the floor remark goes in the
+        # bottom left rather than under the fitted exponents it is not about
+        ax.set_ylim(bottom=ax.get_ylim()[0] / 9)     # a clear strip under the curves
+        style.note(ax, "Gaussian control not drawn:\n"
+                       "bias under its Monte-Carlo floor",
+                   loc="lower left", size=7.5)
 
     # --- (c) the crossover with restriction ------------------------------------------
     # The top-k IQR band reaches 1e-8 once the logits are sharp enough for a k=130
@@ -586,7 +615,7 @@ def make_figure(rec_r, rec_c, summary) -> list[str]:
         ends.append((cs[-1], med[-1], labels[mech]))
         lo_m, hi_m = min(lo_m, min(med)), max(hi_m, max(med))
     ax.set_xscale("log", base=2); ax.set_yscale("log")
-    ax.set_ylim(lo_m / 4, hi_m * 30)
+    ax.set_ylim(lo_m / 5, hi_m * 25)
     # the summary's crossover is reported per source; these curves are the two real
     # models pooled, so the annotated value is read off the curves that are drawn
     rf, tk = curves.get(var, {}), curves.get("topk", {})
@@ -595,9 +624,11 @@ def make_figure(rec_r, rec_c, summary) -> list[str]:
     if c_x:
         ax.axvspan(c_x, ax.get_xlim()[1], color=style.INK["primary"], alpha=0.05,
                    linewidth=0, zorder=0)
-        ax.annotate(f"restriction wins\nfrom $c$={c_x:g}", (c_x, 0.52),
+        # inside the shaded region at its top-left corner: at mid height this ran
+        # into both the green curve and the c=1 rule
+        ax.annotate(f"restriction wins from $c$={c_x:g}", (c_x, 0.985),
                     xycoords=("data", "axes fraction"), xytext=(4, 0),
-                    textcoords="offset points", va="center", ha="left",
+                    textcoords="offset points", va="top", ha="left",
                     fontsize=7.5, color=style.INK["secondary"],
                     path_effects=[pe.withStroke(linewidth=2.2,
                                                 foreground=style.INK["surface"])])
@@ -613,7 +644,7 @@ def make_figure(rec_r, rec_c, summary) -> list[str]:
     ax.set_xlabel(r"logit scale $c$ ($q$ and $k$; logits $\propto c^2$)")
     ax.set_ylabel(r"relative output error $\|y-\widehat y\|/\|y\|$")
     style.panel(ax, "c", f"large-logit regime, $r$={C_R}")
-    style.label_ends(ax, ends, size=7.5)
+    style.label_ends(ax, ends, size=7.5, min_gap_frac=0.10)
     style.note(ax, "median, IQR band over heads",
                loc="upper left", size=7.5)
     return [str(C.save_fig(fig, "fig_rff_bias_variance"))]

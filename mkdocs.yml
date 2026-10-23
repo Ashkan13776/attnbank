@@ -1,0 +1,103 @@
+site_name: attnbank
+site_description: >-
+  Every efficient attention method, side by side, organised by what it changes --
+  and held to one invariant.
+site_url: https://attnbank.github.io/attnbank/
+repo_url: https://github.com/attnbank/attnbank
+repo_name: attnbank/attnbank
+edit_uri: edit/main/docs/
+copyright: Apache-2.0
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - content.code.copy
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: black
+      accent: indigo
+      toggle: { icon: material/weather-night, name: Dark mode }
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: indigo
+      toggle: { icon: material/weather-sunny, name: Light mode }
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+          options:
+            docstring_style: numpy
+            show_source: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_signature_annotations: true
+            separate_signature: true
+            members_order: source
+            merge_init_into_class: true
+            filters: ["!^_"]
+            heading_level: 3
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc: { permalink: true }
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed: { alternate_style: true }
+  - pymdownx.highlight: { anchor_linenums: true }
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path: ["."]
+      check_paths: true
+  - pymdownx.arithmatex: { generic: true }
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - The taxonomy: taxonomy.md
+  - The invariant: invariant.md
+  - Conformance: conformance.md
+  - Examples gallery:
+      - examples/index.md
+      - Quickstart: examples/01_quickstart.md
+      - Invariant W: examples/02_the_invariant.md
+      - Error decomposition: examples/03_error_decomposition.md
+      - Top-k is not optimal: examples/04_topk_is_not_output_optimal.md
+      - Random features: examples/05_random_features_converge.md
+      - Matrix vs output error: examples/06_matrix_error_is_not_output_error.md
+      - Browsing the bank: examples/07_browse_the_bank.md
+      - Cost and capacity: examples/08_cost_and_capacity.md
+      - Adding a method: examples/09_add_your_own_method.md
+  - API reference:
+      - api/index.md
+      - Top level: api/top-level.md
+      - Core types: api/core.md
+      - Metrics: api/metrics.md
+      - Conformance: api/conformance.md
+      - Errors: api/errors.md
+  - Contributing: contributing.md
+  - Design contract: design.md
+  - Changelog: changelog.md

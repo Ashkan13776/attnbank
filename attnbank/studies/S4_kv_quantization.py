@@ -267,10 +267,19 @@ def make_figure(recs, summary) -> list[str]:
     passage), with 1.0 drawn as the claim.  Panel (a) keeps the raw magnitudes, where
     the three curves sit within a factor of three of each other and overlapping IQR
     bands would otherwise be the only thing visible.
+
+    Layout.  This was a 1x3 strip, which at the monograph's 4.65in block gives each
+    panel 1.55in -- less than the five-entry legend in (a) or the three end labels in
+    (b) need, and the type was being scaled to 5.4pt to make it fit.  (a) now spans the
+    full block on its own row and (b), (c) share the row beneath it, which is as much
+    width as the 2.7in caption leaves room for.  (b)'s sources are labelled on the
+    curves rather than past their right-hand ends, where at half a block they cost a
+    third of the panel.
     """
     from ..plotting import style
     style.use()
-    fig, axes = style.figure("full-3", 1, 3)
+    fig, axd = style.mosaic("fig_kv_quantization", [["a", "a"], ["b", "c"]])
+    axes = [axd["a"], axd["b"], axd["c"]]
     rows = [r for r in C.explode(recs, ["out_err_head", "dist_head", "value_head",
                                         "tv_head", "delta_head"], "head")
             if r["part"] == "grid" and r["axis"] == FIG_AXIS
@@ -302,24 +311,29 @@ def make_figure(recs, summary) -> list[str]:
             for key, ls, nm in (("dist_head", (0, (4, 2)), "distributional part"),
                                 ("value_head", (0, (1, 2)), "value part")):
                 gg = {x["bits"]: x["median"] for x in C.group_rows(sub, ["bits"], key)}
+                # the dashed/dotted pair is keyed in the note, not the legend: two more
+                # legend rows cost more of a 1.5in-tall panel than the words do
                 ax.plot(bs, [gg[b] for b in bs], linestyle=ls, color=style.series(i),
-                        linewidth=1.0, label=f"both, {nm}")
+                        linewidth=1.0)
     ax.set_xscale("log", base=2); ax.set_yscale("log")
     style.log_ticks_plain(ax, "x", [2, 3, 4, 8, 16])
-    ax.set_xlim(2 ** 0.85, 2 ** 7.0)
-    ax.set_ylim(ax.get_ylim()[0] / 7, ax.get_ylim()[1] * 40)   # room for legend/note
+    ax.set_xlim(2 ** 0.85, 2 ** 4.45)
+    ax.set_ylim(ax.get_ylim()[0] / 3, ax.get_ylim()[1] * 2.5)
     ax.set_xlabel("bit width (bits per stored scalar)")
     ax.set_ylabel(r"output error $\|y-\widehat y\|$"
-                  "\n(median over heads, model units)")
+                  "\n(median, model units)")
     style.panel(ax, "a", "cost of quantising K, V, both")
     # the five curves end within half a decade of each other, so end labels would have
-    # to be displaced further than the gaps they describe; a legend in the empty
-    # upper-left is the honest choice here
-    ax.legend(loc="upper left", fontsize=7.5, labelspacing=0.35, borderpad=0.2)
+    # to be displaced further than the gaps they describe; a legend is the honest
+    # choice here.  The curves run top-left to bottom-right, so it goes upper right,
+    # in two columns -- one column of five entries is a third of the panel's height.
+    ax.legend(loc="upper right", fontsize=7.5, borderpad=0.2, ncol=3,
+              columnspacing=1.4, handlelength=1.4)
     dc = summary["decomposition_check"]
     style.note(ax, "real models pooled; band is IQR\n"
-                   "dashed + dotted sum to 'both'\n"
-                   f"to {dc['max_residual_over_y']:.0e} of " r"$\|y\|$",
+                   "dashed: distributional part, dotted: value part;\n"
+                   f"they sum to 'both' to {dc['max_residual_over_y']:.0e} of "
+                   r"$\|y\|$",
                loc="lower left", size=7.5)
 
     # --- (b) the claim: keys cost more than values at the same bit width ------------
@@ -340,19 +354,25 @@ def make_figure(recs, summary) -> list[str]:
     ax.set_xscale("log", base=2); ax.set_yscale("log")
     ax.axhline(1.0, color=style.INK["primary"], linewidth=1.0, zorder=4)
     style.log_ticks_plain(ax, "x", [2, 3, 4, 8, 16])
-    ax.set_xlim(2 ** 0.85, 2 ** 7.2)
-    ax.set_ylim(bottom=0.84)
-    style.log_ticks_plain(ax, "y")
+    ax.set_xlim(2 ** 0.85, 2 ** 4.45)
+    ax.set_ylim(0.55, 60.0)
+    style.log_ticks_plain(ax, "y", [1, 2, 5, 10, 20])
     ax.set_xlabel("bit width (bits per stored scalar)")
-    ax.set_ylabel("key-only error $\\div$ value-only error\n"
-                  "at the same bit width (dimensionless)")
+    ax.set_ylabel("key-only $\\div$ value-only error\n"
+                  "at the same bit width")
     style.panel(ax, "b", "keys are the sensitive side")
-    style.label_ends(ax, ends, size=7.5)
+    # Half a block is 2.3in; three end labels past the right-hand edge would take a
+    # third of it, so each curve is named where it runs instead.  The three are flat
+    # and a factor apart, so a label sitting just above its own line is unambiguous.
+    for xe, ye, lab in ends:
+        below = ye < 1.2       # the control sits on the 1.0 line; its label goes under
+        style.direct_label(ax, 2.05, ye, lab, dy=-4 if below else 4, ha="left",
+                           va="top" if below else "bottom", size=7.5)
     worse = summary["key_vs_value"][SOURCE_ORDER[0]]["4"]
-    style.note(ax, "band: IQR of the paired ratio\n\n"
+    style.note(ax, "band: IQR of the paired ratio\n"
                    f"at 4 bits keys worse on "
                    f"{100 * worse['key_worse_frac']:.0f}%\n"
-                   f"of {worse['n_pairs']} GPT-2 pairs\n\n"
+                   f"of {worse['n_pairs']} GPT-2 pairs\n"
                    f"pooled median ratio "
                    f"{summary['falsifier']['key_value_error_ratio_median']:.2f}",
                loc="upper left", size=7.5)
@@ -371,8 +391,8 @@ def make_figure(recs, summary) -> list[str]:
         r["bits"] = r["bits_k"] if r["bits_k"] is not None else r["bits_v"]
     ends = []
     for i, (key, lab) in enumerate(
-            (("tightness_delta_median", r"$\tanh(\delta/2)$, as stated in Sec. 4"),
-             ("tightness_sharp_median", r"$\tanh(\mathrm{osc}/4)$, the sharp form"))):
+            (("tightness_delta_median", r"$\tanh(\delta/2)$, Sec. 4"),
+             ("tightness_sharp_median", r"$\tanh(\mathrm{osc}/4)$, sharp"))):
         g = sorted(C.group_rows(cells, ["bits"], key), key=lambda x: x["bits"])
         bs = [x["bits"] for x in g]
         med = [x["median"] for x in g]
@@ -383,20 +403,21 @@ def make_figure(recs, summary) -> list[str]:
     ax.set_xscale("log", base=2)
     ax.axhline(1.0, color=style.INK["primary"], linewidth=1.0, zorder=4)
     style.log_ticks_plain(ax, "x", [2, 3, 4, 8, 16])
-    ax.set_xlim(2 ** 0.85, 2 ** 4.5)
-    ax.set_ylim(-0.13, 1.72)
+    ax.set_xlim(2 ** 0.85, 2 ** 4.45)
+    ax.set_ylim(-0.08, 1.52)
     ax.set_xlabel("key bit width (bits per scalar)")
-    ax.set_ylabel(r"realised $\mathrm{TV}(\pi,\widehat\pi)\div$ predicted bound"
-                  "\n(median over heads, dimensionless)")
+    ax.set_ylabel(r"realised $\mathrm{TV}\div$ predicted bound"
+                  "\n(median over heads)")
     style.panel(ax, "c", "tightness of the TV bound")
     t = summary["tanh_bound"]
     style.note(ax, f"{t['violations_tanh_delta_over_2']} violations in "
-                   f"{t['tightness_tanh_delta']['n']:,} cells\n\n"
-                   f"median {t['tightness_tanh_delta']['median']:.2f} "
-                   f"for $\\tanh(\\delta/2)$,\n"
+                   f"{t['tightness_tanh_delta']['n']:,} cells\n"
+                   f"median {t['tightness_tanh_delta']['median']:.2f} for "
+                   f"$\\tanh(\\delta/2)$,\n"
                    f"{t['tightness_tanh_osc']['median']:.2f} for the sharp form",
                loc="upper left", size=7.5)
-    ax.legend(loc="lower right", fontsize=7.5, labelspacing=0.35, borderpad=0.2)
+    # the curves sit at 0.2 and the bound at 1.0; the empty strip is between them
+    ax.legend(loc="center left", fontsize=7.5, labelspacing=0.3, borderpad=0.2)
     return [str(C.save_fig(fig, "fig_kv_quantization"))]
 
 

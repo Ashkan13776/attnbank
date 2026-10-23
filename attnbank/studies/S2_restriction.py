@@ -595,7 +595,11 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
     paths = []
 
     # --- fig_omitted_mass ----------------------------------------------------------
-    fig, axes = style.figure("full", 1, 2)
+    # Two panels, stacked rather than side by side: at the 4.65in monograph block a
+    # 1x2 row leaves each panel 2.3in, and (a)'s three end labels alone are 0.9in of
+    # that.  The caption here is the second shortest in the paper, so the height is
+    # available and both panels get the full block.
+    fig, axes = style.stack("fig_omitted_mass", 2, 1, height_ratios=(1.2, 1.0))
     eps_rows = C.explode(rec_ident, ["eps_head"], "head")
     sources = sorted({r["source"] for r in eps_rows})
     ax = axes[0]
@@ -611,8 +615,8 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
                            size=7.5, dy=(0 if src == "synthetic" else
                                          (5 if src.startswith("gpt2") else -5)))
     ax.set_xscale("log", base=2); ax.set_yscale("log")
-    style.log2_ticks(ax, "x", 0, 9, every=2)
-    ax.set_xlim(right=2 ** 12.2)                 # room for the end labels
+    style.log2_ticks(ax, "x", 0, 9, every=1)
+    ax.set_xlim(right=2 ** 10.9)                 # room for the end labels
     ax.set_xlabel("budget $k$ (keys kept per query)")
     ax.set_ylabel(r"omitted mass $\varepsilon_q$ (dimensionless)")
     style.panel(ax, "a", "omitted mass vs. budget")
@@ -620,9 +624,9 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
     k_ref = sorted(sp, key=int)[0]
     # spread_at_k is computed on the two real models only; the Gaussian control is
     # excluded there, so the note must not claim it is included
-    style.note(ax, "band: IQR over heads\n\n"
-                   f"real models, $k$={k_ref}: middle 90%\n"
-                   f"of {sp[k_ref]['n']} heads spans "
+    style.note(ax, "band: IQR over heads\n"
+                   f"real models, $k$={k_ref}: middle 90% of "
+                   f"{sp[k_ref]['n']} heads spans "
                    f"{sp[k_ref]['p05']:.1e} to {sp[k_ref]['p95']:.2f}",
                loc="lower left", size=7.5)
 
@@ -648,8 +652,8 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
     style.panel(ax, "b", "the restriction identity")
     idn = summary["identity"]
     style.note(ax, f"max residual $/\\,\\|y\\|$ "
-                   f"{idn['max_residual_over_y']:.1e}\n"
-                   f"median {idn['median_residual_over_y']:.1e} (float64)\n\n"
+                   f"{idn['max_residual_over_y']:.1e}, median "
+                   f"{idn['median_residual_over_y']:.1e} (float64)\n"
                    f"{below:,} points clipped at {floor:.0e}",
                loc="lower right", size=7.5)
     paths.append(str(C.save_fig(fig, "fig_omitted_mass")))
@@ -659,7 +663,10 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
     # the quantity plotted: 1.0 is the claim.  Only the three output-aware selectors
     # appear; the page-level ones answer a different question and are in the secondary
     # figure, which keeps three readable IQR bands instead of five overlapping ones.
-    fig, axes = style.figure("full-3", 1, 3)
+    # A 3x1 column, not a 1x3 strip: all three panels plot the same quantity against
+    # the same budget, so stacking them shares one x axis and one y label and gives
+    # each panel the whole 4.65in block instead of a third of it.
+    fig, axes = style.stack("fig_value_aware_selection", 3, 1, sharex=True, sharey=True)
     sel_rows = [r for r in C.explode(rec_sel, ["out_err_head"], "head")
                 if r.get("skipped") is None]
     sources = [s for s in sorted({r["source"] for r in sel_rows}) if s != "synthetic"]
@@ -690,14 +697,14 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
                 ends.append((ks[-1], med[-1], PRETTY[sel]))
         ax.set_xscale("log", base=2); ax.set_yscale("log")
         ax.axhline(1.0, color=style.INK["primary"], linewidth=1.0, zorder=4)
-        ax.annotate("top-$k$ baseline", (0.02, 1.0), xycoords=("axes fraction", "data"),
-                    xytext=(0, 3), textcoords="offset points", va="bottom",
-                    fontsize=7.5, color=style.INK["secondary"], zorder=6)
-        style.log2_ticks(ax, "x", 2, 8, every=2)
-        ax.set_xlabel("budget $k$ (keys kept per query)")
         if panel_i == 0:
-            ax.set_ylabel(r"output error $\div$ top-$k$ error"
-                          "\n" r"at the same $k$ (dimensionless)")
+            ax.annotate("top-$k$ baseline", (0.99, 1.0),
+                        xycoords=("axes fraction", "data"), xytext=(0, 3),
+                        textcoords="offset points", va="bottom", ha="right",
+                        fontsize=7.5, color=style.INK["secondary"], zorder=6)
+        style.log2_ticks(ax, "x", 2, 8, every=1)
+        if panel_i == len(sources) - 1:
+            ax.set_xlabel("budget $k$ (keys kept per query)")
         style.panel(ax, "abc"[panel_i], SOURCE.get(src, src))
         pv = summary["selection"]["paired_vs_topk"].get(src, {})
         vt = pv.get("value_topk", {})
@@ -714,9 +721,11 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
     # the last panel for its end labels
     for ax in axes:
         ax.set_ylim(lo / 1.35, hi * 1.35)
-        ax.set_xlim(2 ** 1.7, 2 ** 8.3)
-        style.log_ticks_plain(ax, "y")
-    axes[-1].set_xlim(2 ** 1.7, 2 ** 10.8)
+        ax.set_xlim(2 ** 1.7, 2 ** 9.6)        # room on the right for the end labels
+        style.log_ticks_plain(ax, "y", [0.3, 0.5, 1.0, 2.0, 3.0])
+    fig.supylabel(r"output error $\div$ top-$k$ error at the same $k$"
+                  "\n(dimensionless; median and IQR over heads)",
+                  fontsize=8.5, color=style.INK["primary"])
     for kx, my, lab in ends:
         style.direct_label(axes[-1], kx, my, lab, size=7.5)
     paths.append(str(C.save_fig(fig, "fig_value_aware_selection")))
@@ -725,7 +734,10 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
     # Six selectors is past the three-slot all-pairs limit, so this panel is lines with
     # direct labels (the adjacent pairlist, which the palette clears) and no bands: the
     # spread lives in the ratio figure above and in tab:selection.
-    fig, axes = style.figure("full-3", 1, 3)
+    # Six selectors cannot be end-labelled in a third of a 4.65in block -- that was
+    # six labels inside one centimetre.  Stacked, the three panels share one x axis
+    # and one legend set under them all, and no label has to sit beside the data.
+    fig, axes = style.stack("fig_selection_raw_error", 3, 1, sharex=True)
     raw_ends: list = []
     for panel_i, (ax, src) in enumerate(zip(axes, sources)):
         sub = [r for r in sel_rows if r["source"] == src]
@@ -740,11 +752,10 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
             if panel_i == len(sources) - 1:
                 raw_ends.append((g[-1]["k"], g[-1]["median"], PRETTY[sel]))
         ax.set_xscale("log", base=2); ax.set_yscale("log")
-        style.log2_ticks(ax, "x", 2, 8, every=2)
-        ax.set_xlabel("budget $k$ (keys kept per query)")
-        if panel_i == 0:
-            ax.set_ylabel(r"output error $\|y-\widehat y\|$"
-                          "\n(median over heads)")
+        style.log2_ticks(ax, "x", 2, 8, every=1)
+        ax.set_xlim(2 ** 1.8, 2 ** 8.2)
+        if panel_i == len(sources) - 1:
+            ax.set_xlabel("budget $k$ (keys kept per query)")
         style.panel(ax, "abc"[panel_i], SOURCE.get(src, src))
         mult = summary["selection"]["budget_multiplier"].get(src, {}).get("value_oracle", [])
         fin = [_f(m["multiplier"]) for m in mult]
@@ -753,9 +764,21 @@ def make_figures(rec_ident, rec_sel, summary) -> list[str]:
             style.note(ax, f"top-$k$ needs {np.median(fin):.1f}$\\times$ the\n"
                            f"value oracle's budget",
                        loc="lower left", size=7.5)
-    axes[-1].set_xlim(right=2 ** 11.9)
-    for kx, my, lab in _declutter(raw_ends, axes[-1]):
-        style.direct_label(axes[-1], kx, my, lab, size=7.5)
+    fig.supylabel(r"output error $\|y-\widehat y\|$ (median over heads)",
+                  fontsize=8.5, color=style.INK["primary"])
+    handles, labels = axes[0].get_legend_handles_labels()
+    # Six entries on one line are wider than the text block; three to a row keeps the
+    # legend inside it, which is what stops LaTeX scaling the figure (and its type)
+    # down.  A three-column legend fills column-major, so the entries are reordered
+    # into the three kinds of rule -- baseline, output-aware, page-level -- rather
+    # than left to read across the rows in sweep order.
+    order = ["topk", "forward_greedy", "value_topk", "value_oracle",
+             "blocktopk16", "blocktopk64"]
+    rank = {PRETTY[k]: i for i, k in enumerate(order)}
+    hl = sorted(zip(handles, labels), key=lambda t: rank.get(t[1], 99))
+    fig.legend([h for h, _ in hl], [b for _, b in hl], loc="outside lower center",
+               ncol=3, frameon=False, fontsize=7.5, handlelength=1.3,
+               columnspacing=2.0, handletextpad=0.5, borderaxespad=0.1)
     paths.append(str(C.save_fig(fig, "fig_selection_raw_error")))
     return paths
 

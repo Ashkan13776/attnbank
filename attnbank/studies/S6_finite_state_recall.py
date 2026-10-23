@@ -367,6 +367,14 @@ def make_figure(summary) -> list[str]:  # noqa: C901
     ``8 x 64`` or ``256 x 64``, so ``N = S`` is an upper bound that is nowhere near
     attained, while softmax stays at 1.00 to ``N = 512``.  Each panel now makes one of
     those three statements.
+
+    Layout.  This caption is the longest in the paper -- 4.2in of a 7.1in block --
+    which leaves 2.6in for the graphic, and no vertical stack of three panels
+    survives that.  The strip therefore stays 1x3, and the width is bought back
+    instead: (a) and (b) are the same measurement on the same axes, so (b) shares
+    (a)'s y axis and spends the freed half-inch on plotting area.  Every annotation is
+    cut to the ~20 characters a 1.2in panel holds at 7.5pt; the long form is in the
+    caption, which is exactly the trade the house style asks for.
     """
     from ..plotting import style
     style.use()
@@ -375,7 +383,9 @@ def make_figure(summary) -> list[str]:  # noqa: C901
     ds = sorted({r["d"] for r in rows})
     Ns = sorted({r["N"] for r in rows})
     clean = summary.get("embedding_limit", {}).get("d_where_embedding_is_clean") or ds
-    fig, axes = style.figure("full-3", 1, 3)
+    fig, axes = style.stack("fig_finite_state_recall", 1, 3, sharey=False,
+                            width_ratios=(1.25, 1.2, 1.25))
+    axes[1].sharey(axes[0])
 
     # --- (a) every operator, pooled over state size ---------------------------------
     ax = axes[0]
@@ -399,16 +409,18 @@ def make_figure(summary) -> list[str]:  # noqa: C901
     ends.append((Ns[-1], soft[-1], "softmax"))
     ax.set_xscale("log", base=2)
     style.log2_ticks(ax, "x", 2, 9, every=2)
-    ax.set_xlim(2 ** 1.7, 2 ** 12.8)
-    ax.set_ylim(-0.04, 1.08)
-    ax.set_xlabel("stored key--value pairs $N$")
-    ax.set_ylabel("recall accuracy (fraction of\nqueries answered correctly)")
+    ax.set_xlim(2 ** 1.7, 2 ** 10.2)
+    # a band above the softmax line for the note: it is the only ground in this panel
+    # that neither the flat control nor the three decaying curves already occupy
+    ax.set_ylim(-0.04, 1.42)
+    ax.set_yticks([0.0, 0.5, 1.0])
+    ax.set_xlabel("stored pairs $N$")
+    ax.set_ylabel("recall accuracy\n(fraction correct)")
     style.panel(ax, "a", "recall against load")
     style.label_ends(ax, ends, size=7.5, min_gap_frac=0.075)
-    style.note(ax, f"median, IQR over {len(ds)} state sizes\n"
-                   "linear and decay coincide\n"
-                   "(linear drawn wider)",
-               loc="center right", size=7.5)
+    style.note(ax, f"median, IQR,\n{len(ds)} state sizes\n"
+                   "linear = decay",
+               loc="upper left", size=7.5)
 
     # --- (b) does the state size matter at all? -------------------------------------
     # State size is an ORDERED variable, so it takes the sequential ramp, not
@@ -421,23 +433,26 @@ def make_figure(summary) -> list[str]:  # noqa: C901
     for i, dd in enumerate(shown):
         med = [float(np.median(_pool(rows, method=meth, d=dd, N=N))) for N in Ns]
         ax.plot(Ns, med, "-o", color=style.seq(i, len(shown)), markersize=3.0,
-                label=f"$S={dd}\\times{DV}$")
+                label=f"${dd}$")
     ax.set_xscale("log", base=2)
     style.log2_ticks(ax, "x", 2, 9, every=2)
-    ax.set_ylim(-0.04, 1.08)
-    ax.set_xlabel("stored key--value pairs $N$")
-    ax.set_ylabel("recall accuracy (fraction of\nqueries answered correctly)")
-    style.panel(ax, "b", f"{PRETTY[meth]}, by state size")
-    ax.legend(loc="upper right", fontsize=7.5, title="state $S=d_\\varphi\\times d_v$",
-              title_fontsize=7.5, labelspacing=0.3, borderpad=0.25)
+    ax.set_xlim(2 ** 1.7, 2 ** 9.4)
+    ax.set_xlabel("stored pairs $N$")
+    # shares (a)'s y axis: the same measurement on the same scale, and the half inch
+    # of duplicated label and ticks is this panel's whole annotation budget
+    ax.tick_params(labelleft=False)
+    style.panel(ax, "b", f"{PRETTY[meth]}, by state")
+    # two columns of bare ranks: d_v is fixed at 64 and is in the caption, and five
+    # stacked "16x64" rows would be a third of a panel this narrow
+    ax.legend(loc="upper right", fontsize=7.5, title="state $d_\\varphi$",
+              title_fontsize=7.5, ncol=2, labelspacing=0.15, columnspacing=0.9,
+              borderpad=0.2, handlelength=1.0, handletextpad=0.4)
     cr = summary["collapse_ratio"]
-    # the legend fills the upper right, the curves the lower left: the note is
-    # bottom-anchored well above the x axis so it clears both
-    style.note(ax, f"curves do not separate:\n"
-                   f"{max(shown) // min(shown)}$\\times$ larger state buys\n"
-                   f"no extra associations\n"
-                   f"$N/S$ at collapse {cr['median']:g}",
-               loc="lower right", size=7.5, ypad=0.28)
+    style.note(ax, f"curves do not\nseparate:\n"
+                   f"{max(shown) // min(shown)}$\\times$ state buys\n"
+                   f"no extra pairs\n"
+                   f"$N/S$ at\ncollapse {cr['median']:g}",
+               loc="lower right", size=7.5, ypad=0.04)
 
     # --- (c) the collapse point against the bound -----------------------------------
     ax = axes[2]
@@ -452,19 +467,26 @@ def make_figure(summary) -> list[str]:  # noqa: C901
                 linewidth=2.6 if i == 0 else 1.3, label=PRETTY[meth])
         ends.append((xs[-1], ys[-1], PRETTY[meth]))
     ax.plot(ds, ds, color=style.INK["primary"], linewidth=1.0, zorder=1)
-    style.direct_label(ax, ds[-1], ds[-1], r"the bound $N=d_\varphi$", dx=4,
-                       ha="left", va="center", size=7.5)
     ax.set_xscale("log", base=2); ax.set_yscale("log", base=2)
     style.log2_ticks(ax, "x", 3, 8, every=1)
     style.log2_ticks(ax, "y", 1, 9, every=2)
-    ax.set_xlim(2 ** 2.7, 2 ** 10.9)
-    ax.set_xlabel(r"state rank $d_\varphi$" f"  ($d_v$={DV})")
-    ax.set_ylabel("$N$ at which median recall\nfirst falls below 0.5")
-    style.panel(ax, "c", "the bound is not attained")
+    ax.set_xlim(2 ** 2.7, 2 ** 9.9)
+    # a clear octave under the flat collapse curves, so the note does not meet the
+    # "delta RNN" end label sitting on the lowest of them
+    ax.set_ylim(2 ** -0.3, 2 ** 9.6)
+    # the bound is named on the line rather than past its end: at 1.3in of panel the
+    # end label would be a quarter of the plotting area
+    # the empty half of this panel is the triangle above the diagonal, so the bound
+    # is named back along its own top-right end
+    style.direct_label(ax, ds[-1], ds[-1], r"bound $N=d_\varphi$", dx=-1, dy=4,
+                       ha="right", va="bottom", size=7.5)
+    ax.set_xlabel(r"state rank $d_\varphi$ ($d_v$=" f"{DV})")
+    ax.set_ylabel("$N$ at which median\nrecall first drops below 0.5")
+    style.panel(ax, "c", "bound not attained")
     style.label_ends(ax, ends, size=7.5, min_gap_frac=0.07)
     style.note(ax, "collapse flat in $d_\\varphi$;\n"
                    f"bound rises {ds[-1] // ds[0]}$\\times$",
-               loc="center right", size=7.5)
+               loc="lower right", size=7.5)
     return [str(C.save_fig(fig, "fig_finite_state_recall"))]
 
 
