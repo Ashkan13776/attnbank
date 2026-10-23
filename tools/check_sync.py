@@ -122,7 +122,50 @@ def main() -> int:
                          f"registry has {n_methods}")
     r.check("method counts in prose", stale)
 
-    # ---- 5. paper_section labels exist in the monograph ------------------------
+    # ---- 5. test counts written into prose match the suite ---------------------
+    # The site advertises the suite's size on the home page, the conformance page
+    # and in the README. Three separate expansions moved it and none of the three
+    # followed; the figure read 2838 for a suite that had grown to 3334. Collecting
+    # costs about a second, which is worth paying to stop the number being
+    # decoration. Tags are stripped first because the home page sets the digits in
+    # <b> and the word beside them in <span>, which no plain-text pattern sees.
+    import subprocess
+
+    def collect(target: str) -> int | None:
+        out = subprocess.run([sys.executable, "-m", "pytest", target, "-q",
+                              "--collect-only"], cwd=LIB, capture_output=True,
+                             text=True).stdout
+        m = re.search(r"(\d+) tests? collected", out)
+        return int(m.group(1)) if m else None
+
+    total = collect("tests")
+    if total is None:
+        r.skipped("test counts in prose", "could not collect the suite")
+    else:
+        # A page may also quote one file's own count; "N tests from this file"
+        # is checked against that file rather than against the whole suite.
+        per_file = {"this file": collect("tests/test_conformance.py")}
+        bad = []
+        for rel in ("README.md", "docs/index.md", "docs/conformance.md",
+                    "docs/invariant.md", "docs/quickstart.md", "SITE_DESIGN.md"):
+            path = LIB / rel
+            if not path.exists():
+                continue
+            text = re.sub(r"<[^>]+>", "", path.read_text())      # drop tags
+            for pa, sk in re.findall(
+                    r"\b(\d{3,5})\s*passed[\s,\u00b7/-]+(\d{2,5})\s*skipped", text):
+                if int(pa) + int(sk) != total:
+                    bad.append(f"{rel}: {pa} passed + {sk} skipped != {total} collected")
+            for m in re.finditer(r"\b(\d{3,5})\s*\+?\s*tests\b", text):
+                want, tail = total, text[m.end():m.end() + 40]
+                for phrase, n in per_file.items():
+                    if n and phrase in tail:
+                        want = n
+                if int(m.group(1)) != want:
+                    bad.append(f"{rel}: {m.group(0)!r} != {want}")
+        r.check("test counts in prose", bad)
+
+    # ---- 6. paper_section labels exist in the monograph ------------------------
     sections = PAPER / "sections"
     if not sections.is_dir():
         r.skipped("paper_section labels exist", "monograph not present")
@@ -136,7 +179,7 @@ def main() -> int:
                 bad_lbl.append(f"{row['name']} declares {lbl}, which no section defines")
         r.check("paper_section labels exist", bad_lbl)
 
-    # ---- 6. the monograph's own library counts ---------------------------------
+    # ---- 7. the monograph's own library counts ---------------------------------
     if not sections.is_dir():
         r.skipped("monograph counts match the library", "monograph not present")
     else:

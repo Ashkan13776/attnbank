@@ -198,7 +198,7 @@ Every registered method, with no exemptions outside its declared attributes:
 11. Every cited BibTeX key resolves in `attnbank/references.bib`
 
 ```bash
-pytest -q         # 1250+ tests, about twenty seconds
+pytest -q         # 3334 tests, about forty seconds
 ```
 
 ## Documentation
@@ -301,7 +301,7 @@ useful in your work, please cite the monograph:
 
 ## Status
 
-Pre-release. The library is complete and tested — 78 methods, 2838 tests — but
+Pre-release. The library is complete and tested — 78 methods, 3334 tests — but
 three pieces of public infrastructure are not up yet, which is why this README
 carries no badges for them:
 

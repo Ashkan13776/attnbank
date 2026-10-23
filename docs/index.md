@@ -3,17 +3,52 @@ hide:
   - toc
 ---
 
-# Every efficient attention method changes one object in one formula
+<!-- The landing page. Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
+     Every number on this page comes from the registry or the test suite:
+     tools/check_sync.py guards the method counts written in prose; the version is
+     attnbank.__version__; the per-category counts in the spectrum bar come from
+     ab.method_table() and must be updated together with their aria-label. -->
 
-<p class="ab-eyebrow">attnbank v0.3.0 &middot; 78 methods &middot; one invariant &middot; 2838 tests</p>
+<header class="ab-hero" markdown="1">
 
-<div class="ab-measure" markdown="1">
-Attention is a query-conditioned expectation. Efficiency has to come from somewhere,
-and there are only so many places it can come from: a method either evaluates the
-expectation differently, or it changes one of the objects in it. There are seven
-objects, so there are seven categories — and that is the library's directory structure,
-not a diagram drawn afterwards.
+<p class="ab-eyebrow">attnbank 0.2.0 &middot; efficient attention, side by side</p>
+
+# Every efficient attention method changes *one object* in *one formula*
+
+<p class="ab-lede">Attention is a query-conditioned expectation. Efficiency has to come
+from somewhere, and there are only so many places it can come from: a method either
+evaluates the expectation differently, or it changes one of the objects in it. There
+are seven objects, so there are seven categories — and that is the library's directory
+structure, not a diagram drawn afterwards.</p>
+
+<div class="ab-act" markdown="1">
+
+```bash
+pip install attnbank   # torch + numpy, nothing else
+```
+
+<p class="ab-act-links" markdown="1">[Five minutes to a first result](quickstart.md) <span class="ab-arrow">&rarr;</span></p>
+
 </div>
+
+<div class="ab-tape">
+<a class="ab-stat" href="methods/"><b>78</b> <span>methods</span></a>
+<a class="ab-stat" href="taxonomy/"><b>7</b> <span>categories</span></a>
+<a class="ab-stat" href="invariant/"><b>1</b> <span>invariant</span></a>
+<a class="ab-stat" href="conformance/"><b>3334</b> <span>tests</span></a>
+</div>
+
+<div class="ab-spectrum" role="img" aria-label="78 methods by category — exact 4, interaction 14, restrict 15, compress 18, factorize 8, coupling 6, recurrent 13">
+<span data-cat="exact" style="flex-grow:4" title="exact &middot; 4 methods"></span>
+<span data-cat="interaction" style="flex-grow:14" title="interaction &middot; 14 methods"></span>
+<span data-cat="restrict" style="flex-grow:15" title="restrict &middot; 15 methods"></span>
+<span data-cat="compress" style="flex-grow:18" title="compress &middot; 18 methods"></span>
+<span data-cat="factorize" style="flex-grow:8" title="factorize &middot; 8 methods"></span>
+<span data-cat="coupling" style="flex-grow:6" title="coupling &middot; 6 methods"></span>
+<span data-cat="recurrent" style="flex-grow:13" title="recurrent &middot; 13 methods"></span>
+</div>
+
+</header>
 
 <div class="op" data-op markdown="1">
 
@@ -118,11 +153,12 @@ every method here declares which it is — and the test suite reads the declarat
 ## One invariant, held by all 78
 
 <div class="ab-measure" markdown="1">
-Every method realises, explicitly or implicitly, a measure $\widehat\pi_q$ over context
-positions and a value field $\widehat v$ — and must be able to hand you both.
+Every method realises, explicitly or implicitly, a measure &#960;&#770;<sub><i>q</i></sub>
+over context positions and a value field <i>v&#770;</i> — and must be able to hand you
+both.
 </div>
 
-<div class="ab-invariant" markdown="1">
+<div class="ab-invariant" data-label="invariant W" markdown="1">
 `y == weights @ (v_hat if v_hat is not None else value)`
 
 Checked for every registered method, in float32 and float64.
@@ -132,15 +168,16 @@ Checked for every registered method, in float32 and float64.
 This is the load-bearing property of the library. The error metrics decompose output
 error into a distributional term and a value term, and that decomposition is
 meaningless unless each method's reported weights and values really do reproduce its
-own output. A method that genuinely cannot express its measure on the original $n$
-positions declares `expresses_weights = False` and is excluded from those studies **by
-declaration, not by accident**.
+own output. A method that genuinely cannot express its measure on the original
+<i>n</i> positions declares `expresses_weights = False` and is excluded from those
+studies **by declaration, not by accident**.
 
 Correctness is anchored to an *exact limit* rather than to inspection. Each method
-declares the configuration under which it provably reduces to dense softmax — top-$k$
-with $k = n$, quantisation at full precision, Nyström with every token a landmark — and
-the suite holds it to that, to `1e-5` in the output and `1e-6` in the weights. There is
-nowhere for a transposed index or a dropped scale factor to hide.
+declares the configuration under which it provably reduces to dense softmax —
+top-<i>k</i> with <i>k</i>&#8201;=&#8201;<i>n</i>, quantisation at full precision,
+Nyström with every token a landmark — and the suite holds it to that, to `1e-5` in the
+output and `1e-6` in the weights. There is nowhere for a transposed index or a dropped
+scale factor to hide.
 </div>
 
 <p class="ab-eyebrow">the conformance suite, parametrised over every registered method</p>
@@ -176,26 +213,35 @@ rows = ab.compare(["softmax", "topk", "performer", "quantkv"], query, key, value
                            "quantkv": {"bits_k": 16, "bits_v": 2}})
 ```
 
-<div class="ab-measure ab-split-table" markdown="1">
-| | output error | distributional | value |
-|---|---|---|---|
-| `topk` | 1.03 | **1.03** | 0.00 |
-| `performer` | 2.76 | **2.76** | 0.00 |
-| `quantkv` | 0.72 | 0.00 | **0.72** |
+<div class="ab-errwrap">
+<table class="ab-errsplit">
+<thead>
+<tr><th>method</th><th>category</th><th>output error</th><th>distributional</th><th>value</th></tr>
+</thead>
+<tbody>
+<tr data-cat="restrict"><td><code>topk</code></td><td class="ab-cat">restrict</td><td>1.03</td><td><strong>1.03</strong></td><td>0.00</td></tr>
+<tr data-cat="interaction"><td><code>performer</code></td><td class="ab-cat">interaction</td><td>2.76</td><td><strong>2.76</strong></td><td>0.00</td></tr>
+<tr data-cat="compress"><td><code>quantkv</code></td><td class="ab-cat">compress</td><td>0.72</td><td>0.00</td><td><strong>0.72</strong></td></tr>
+</tbody>
+</table>
+</div>
 
-Restriction moves mass to the wrong places. Quantisation aggregates the wrong values.
+<div class="ab-mech">
+<p data-cat="restrict"><strong>Restriction moves mass to the wrong places.</strong>
+The error is distributional; the values are untouched.</p>
+<p data-cat="compress"><strong>Quantisation aggregates the wrong values.</strong>
+The mass is where it should be; the integrand is not.</p>
+</div>
+
+<div class="ab-measure" markdown="1">
 Both arrive as "error" in a single number; only the split says which mechanism is at
-fault — and the split is algebra, not a heuristic. It closes to $8.5\times10^{-15}$
-over 1.78 million query rows.
+fault — and the split is algebra, not a heuristic. It closes to
+8.5&#8201;&times;&#8201;10<sup>&minus;15</sup> over 1.78 million query rows.
 </div>
 
 ---
 
-## Five minutes
-
-```bash
-pip install attnbank
-```
+## The first call
 
 ```python
 import attnbank as ab
@@ -205,30 +251,33 @@ y = ab.attend("topk", query, key, value, causal=True, k=64)
 
 <div class="ab-measure" markdown="1">
 Tensors are `[B, H, n, d]` throughout, and causal masking aligns the last query with
-the last key, so the same code path serves prefill and decode.
+the last key, so the same code path serves prefill and decode. The worked version,
+with tensor conventions and the first comparison, is [the quickstart](quickstart.md).
 </div>
 
-<div class="ab-split" markdown="1">
-[The taxonomy](taxonomy.md)
-:   The seven categories as a tree you can open, with what each one preserves and which error term it incurs.
+<p class="ab-eyebrow">where to go next</p>
 
-[Browse the bank](methods/index.md)
-:   All 78 methods, searchable by name, category, objective, backend and flag — one generated page each.
+<dl class="ab-next">
+<div><dt><a href="taxonomy/">The taxonomy <span class="ab-arrow">&rarr;</span></a></dt>
+<dd>The seven categories as a tree you can open, with what each one preserves and which error term it incurs.</dd></div>
+<div><dt><a href="methods/">Browse the bank <span class="ab-arrow">&rarr;</span></a></dt>
+<dd>All 78 methods, searchable by name, category, objective, backend and flag — one generated page each.</dd></div>
+</dl>
 
-[The invariant](invariant.md)
-:   Why `weights @ v_hat` is the property everything else rests on, and what it costs a method to be unable to supply it.
-
-[Backends](backends.md)
-:   `reference`, `sdpa`, `flash_attn`, and why most of the bank correctly declares only the first.
-
-[Examples gallery](examples/index.md)
-:   Ten short scripts, each executed to produce the output shown beside it.
-
-[API reference](api/index.md)
-:   Every public function, with a runnable example in its docstring.
-</div>
+<dl class="ab-next ab-next--more">
+<div><dt><a href="invariant/">The invariant</a></dt>
+<dd>Why <code>weights @ v_hat</code> is the property everything else rests on, and what it costs a method to be unable to supply it.</dd></div>
+<div><dt><a href="backends/">Backends</a></dt>
+<dd><code>reference</code>, <code>sdpa</code>, <code>flash_attn</code>, and why most of the bank correctly declares only the first.</dd></div>
+<div><dt><a href="examples/">Examples gallery</a></dt>
+<dd>Ten short scripts, each executed to produce the output shown beside it.</dd></div>
+<div><dt><a href="api/">API reference</a></dt>
+<dd>Every public function, with a runnable example in its docstring.</dd></div>
+</dl>
 
 ---
+
+<div class="ab-cite" markdown="1">
 
 ## Citing
 
@@ -247,3 +296,5 @@ useful in your work, please cite the monograph:
 ```
 
 Released under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+</div>

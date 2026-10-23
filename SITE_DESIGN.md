@@ -118,7 +118,7 @@ These are not style preferences. Each was expensive to establish and is checked.
    module docstring, or `references.bib`. No illustrative numbers, no example
    output that was not executed, no claim about a method that the method does
    not declare.
-6. **`mkdocs build --strict` clean; `pytest lib/tests` at 2838 passed, 340
+6. **`mkdocs build --strict` clean; `pytest lib/tests` at 2967 passed, 367
    skipped.**
 7. **Respect `prefers-reduced-motion`,** keep contrast legible in both themes,
    and give keyboard focus a visible state.

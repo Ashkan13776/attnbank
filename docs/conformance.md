@@ -17,8 +17,8 @@ of exemptions anywhere in the file.</p>
 <p class="ab-stats">
 <span><b>11</b> properties</span>
 <span><b>78</b> methods</span>
-<span><b>2228</b> tests from this file</span>
-<span><b>2838</b> passed · <b>340</b> skipped across <code>tests/</code></span>
+<span><b>2384</b> tests from this file</span>
+<span><b>2967</b> passed · <b>367</b> skipped across <code>tests/</code></span>
 </p>
 
 ```bash
