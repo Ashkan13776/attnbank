@@ -1,15 +1,11 @@
-/* Design tokens: the one place a colour, a size or a duration is chosen.
+/* Design tokens: the one place a colour, a face, a size or a duration is chosen.
  *
  * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
- * Every colour, size and duration in here comes from a token in tokens.css.
- */
-
-/* The front matter: the operator plate (home + taxonomy), the taxonomy tree, and
- * the naming in the method browser.
- *
- * Nothing here is fetched. The faces are system stacks -- mkdocs.yml sets
- * `font: false` so Material does not pull Roboto from Google Fonts, which is what
- * makes "no third-party requests" true rather than nearly true.
+ * Nothing here is fetched. STIX Two Text is vendored at docs/fonts/ (OFL, the
+ * monograph's face; the @font-face sits at the top of base.css) and every other
+ * face is a system stack -- mkdocs.yml sets `font: false` so Material does not
+ * pull Roboto from Google Fonts, which is what makes "no third-party requests"
+ * true rather than nearly true.
  *
  * The seven category hues are `attnbank.plotting.style.CATEGORICAL` verbatim, so a
  * category is the same colour on this page as in every figure in the monograph. They
@@ -17,24 +13,102 @@
  * a fill behind text, because the amber and the green do not clear 4.5:1 either way
  * round. Selection is shown with full-strength ink plus a coloured rule instead.
  *
+ * The one accent (--ab-accent) is a deep instrument cyan, deliberately outside all
+ * seven category hues: it may carry *state* (links, focus, selection, the primary
+ * action) but never *category*. Light 5.4:1 on the page ground, dark 8.6:1.
+ *
  * Material always stamps `data-md-color-scheme` on <html> server-side, so the two
- * blocks below are the complete set of states; there is no unstamped case to guard.
+ * colour blocks below are the complete set of states; there is no unstamped case.
  */
 
 :root {
-  /* STIX Two is the monograph's face; the rest of the stack is the same shape of
-   * Times that a TeX installation or a plain desktop will already have. */
-  --ab-serif: "STIX Two Text", "STIX Two Math", "TeX Gyre Termes", "Nimbus Roman",
+  /* ---- faces ----------------------------------------------------------- */
+  /* STIX Two Text is the monograph's text face, vendored as a variable font
+   * (wght 400-700) so titles are set in the same family as the mathematics.
+   * The rest of the stack is the same shape of Times that a TeX installation
+   * or a plain desktop will already have, for the no-JS/no-font worst case. */
+  --ab-serif: "STIX Two Text", "TeX Gyre Termes", "Nimbus Roman",
               "Liberation Serif", Times, "Times New Roman", serif;
+  --ab-display: var(--ab-serif);
+  --ab-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+             Arial, "Nimbus Sans", "Liberation Sans", sans-serif;
   --ab-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas,
              "DejaVu Sans Mono", "Liberation Mono", monospace;
 
-  --ab-plate: #ffffff;
-  --ab-sunk: #f4f6fa;
-  --ab-rule: #d9dfe8;
-  --ab-rule-soft: #eaeef4;
+  /* Material reads its faces from these; defining them here is what sets the
+   * body and code faces site-wide. */
+  --md-text-font-family: var(--ab-sans);
+  --md-code-font-family: var(--ab-mono);
+
+  /* ---- type scale ------------------------------------------------------ */
+  /* Material sets html to 125%, so 1rem = 20px and body text is 0.8rem = 16px.
+   * Minor-third-ish steps off that body size.                 px @ default:  */
+  --ab-step--2: 0.6rem;    /* 12  overlines, eyebrows, axis labels           */
+  --ab-step--1: 0.7rem;    /* 14  captions, table headers, code              */
+  --ab-step-0:  0.8rem;    /* 16  running text                               */
+  --ab-step-1:  0.95rem;   /* 19  lead paragraphs, h4                        */
+  --ab-step-2:  1.15rem;   /* 23  h3                                         */
+  --ab-step-3:  1.4rem;    /* 28  h2                                         */
+  --ab-step-4:  1.7rem;    /* 34  page titles in dense zones                 */
+  --ab-step-5:  2.05rem;   /* 41  page titles, the hero                      */
+
+  /* ---- spacing scale --------------------------------------------------- */
+  --ab-space-1: 0.2rem;    /*  4 */
+  --ab-space-2: 0.4rem;    /*  8 */
+  --ab-space-3: 0.6rem;    /* 12 */
+  --ab-space-4: 0.8rem;    /* 16 */
+  --ab-space-5: 1.2rem;    /* 24 */
+  --ab-space-6: 1.6rem;    /* 32 */
+  --ab-space-7: 2.4rem;    /* 48 */
+  --ab-space-8: 3.2rem;    /* 64 */
+
+  /* ---- shape ----------------------------------------------------------- */
+  --ab-radius: 0.2rem;         /* 4px: controls, inline code, small chips    */
+  --ab-radius-lg: 0.45rem;     /* 9px: plates, cards, code blocks            */
+  --ab-rule-width: 1px;        /* hairlines                                  */
+  --ab-rule-width-strong: 2px; /* selected states, category ticks, focus     */
+
+  /* ---- motion ---------------------------------------------------------- */
+  /* Fast is for hover/focus feedback, slow for anything that moves or
+   * reveals. One easing; motion on this site decelerates, it never bounces. */
+  --ab-motion-fast: 140ms;
+  --ab-motion-slow: 340ms;
+  --ab-ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+
+  /* ---- light theme ------------------------------------------------------ */
+  /* Ink, three working levels plus a decorative one. Everything down to
+   * -muted clears 4.5:1 on both the page and the plate; -faint does not and
+   * is for rules-adjacent decoration only, never for words that matter.     */
+  --ab-ink: #171b21;
+  --ab-ink-soft: #40464f;
+  --ab-ink-muted: #5d6673;
   --ab-faint: #8c94a2;
 
+  --ab-accent: #0b7285;        /* 5.4:1 on the page ground                   */
+  --ab-accent-soft: #e0f0f3;   /* a wash: selection, hover grounds           */
+
+  /* Surfaces: the page is a warm paper white; plates sit on it in pure
+   * white, sunk wells drop below it. */
+  --ab-plate: #ffffff;
+  --ab-sunk: #f4f6f9;
+  --ab-rule: #d8dee6;
+  --ab-rule-soft: #e9edf2;
+
+  /* Material bridge: the theme's own tokens, re-aimed at the ink scale so
+   * every Material component harmonises without being restyled one by one.  */
+  --md-default-bg-color: #fcfcfb;
+  --md-default-fg-color: var(--ab-ink);
+  --md-default-fg-color--light: var(--ab-ink-muted);
+  --md-default-fg-color--lighter: var(--ab-faint);
+  --md-default-fg-color--lightest: var(--ab-rule-soft);
+  --md-typeset-color: var(--ab-ink);
+  --md-typeset-a-color: var(--ab-accent);
+  --md-accent-fg-color: #095f6f;
+  --md-accent-fg-color--transparent: color-mix(in srgb, var(--ab-accent) 10%, transparent);
+  --md-code-bg-color: var(--ab-sunk);
+  --md-primary-fg-color: #14181f;
+
+  /* ---- the seven category hues (CATEGORICAL verbatim; do not touch) ----- */
   --c-exact: #52514e;
   --c-interaction: #2a78d6;
   --c-restrict: #eb6834;
@@ -45,11 +119,31 @@
 }
 
 [data-md-color-scheme="slate"] {
-  --ab-plate: #1a1f28;
-  --ab-sunk: #15191f;
-  --ab-rule: #2e3642;
-  --ab-rule-soft: #242b35;
-  --ab-faint: #78818f;
+  --ab-ink: #e6eaf0;
+  --ab-ink-soft: #b6bfcb;
+  --ab-ink-muted: #8b95a3;
+  --ab-faint: #7e8897;
+
+  --ab-accent: #56c1d6;        /* 8.6:1 on the page ground                   */
+  --ab-accent-soft: #143641;
+
+  /* Dark ground: plates rise above the page, wells sink below it. */
+  --ab-plate: #1b222c;
+  --ab-sunk: #0e1217;
+  --ab-rule: #313b48;
+  --ab-rule-soft: #232b36;
+
+  --md-default-bg-color: #12161d;
+  --md-default-fg-color: var(--ab-ink);
+  --md-default-fg-color--light: var(--ab-ink-muted);
+  --md-default-fg-color--lighter: var(--ab-faint);
+  --md-default-fg-color--lightest: var(--ab-rule-soft);
+  --md-typeset-color: var(--ab-ink);
+  --md-typeset-a-color: var(--ab-accent);
+  --md-accent-fg-color: #7fd2e2;
+  --md-accent-fg-color--transparent: color-mix(in srgb, var(--ab-accent) 12%, transparent);
+  --md-code-bg-color: var(--ab-sunk);
+  --md-primary-fg-color: #0e1217;
 
   /* lifted for the dark ground; same hue, same order */
   --c-exact: #9aa3b0;
@@ -61,6 +155,15 @@
   --c-recurrent: #f0706f;
 }
 
+/* Motion tokens collapse to nothing when the visitor asked for that; every
+ * transition built on them respects the preference for free. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ab-motion-fast: 0ms;
+    --ab-motion-slow: 0ms;
+  }
+}
+
 /* one hue per category, resolved from the data attribute so nothing is inlined */
 [data-cat="exact"]       { --hl: var(--c-exact); }
 [data-cat="interaction"] { --hl: var(--c-interaction); }
@@ -69,4 +172,3 @@
 [data-cat="factorize"]   { --hl: var(--c-factorize); }
 [data-cat="coupling"]    { --hl: var(--c-coupling); }
 [data-cat="recurrent"]   { --hl: var(--c-recurrent); }
-

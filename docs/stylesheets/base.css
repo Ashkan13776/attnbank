@@ -2,25 +2,234 @@
  *
  * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
  * Every colour, size and duration in here comes from a token in tokens.css.
+ *
+ * The system: STIX Two Text (the monograph's face, vendored below) for the
+ * display levels h1-h2 and for quotations; the system grotesque for running
+ * text; the mono for identifiers, labels and anything a machine reads. Serif
+ * over sans is the register of a journal article -- titles in the face the
+ * mathematics is set in, text in something that stays out of the way.
  */
+
+/* ---- faces -------------------------------------------------------------- */
+/* Vendored, self-hosted, subset to Latin + Greek + mathematical punctuation.
+ * Variable weight 400-700, ~100 KB per style; nothing is fetched from a third
+ * party. Licence: docs/fonts/OFL.txt. */
+@font-face {
+  font-family: "STIX Two Text";
+  src: url("../fonts/STIXTwoText.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "STIX Two Text";
+  src: url("../fonts/STIXTwoText-Italic.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ---- running text ------------------------------------------------------- */
+
+.md-typeset {
+  font-size: var(--ab-step-0);
+  line-height: 1.65;
+}
+
+.md-typeset p {
+  text-wrap: pretty;
+}
+
+/* A measure. Text blocks stop at ~75 characters even where the column is
+ * wider; tables, code, figures and the signature plates keep the full width.
+ * max-width only ever shrinks, so narrow contexts are unaffected. */
+.md-typeset p,
+.md-typeset blockquote,
+.md-typeset > ul,
+.md-typeset > ol,
+.md-typeset dl {
+  max-width: var(--ab-measure);
+}
+
+.md-typeset strong {
+  color: var(--ab-ink);
+}
+
+/* ---- headings ----------------------------------------------------------- */
+/* h1 and h2 are the monograph's serif; h3 down is the working sans. The two
+ * registers meeting on one page is the identity. */
+
+.md-typeset h1,
+.md-typeset h2 {
+  font-family: var(--ab-display);
+  color: var(--ab-ink);
+  text-wrap: balance;
+}
+
+.md-typeset h1 {
+  font-size: var(--ab-step-5);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--ab-space-5);
+}
+
+.md-typeset h2 {
+  font-size: var(--ab-step-3);
+  font-weight: 550;
+  line-height: 1.2;
+  letter-spacing: -0.004em;
+  margin: 2.2em 0 0.7em;
+}
+
+.md-typeset h3 {
+  font-size: var(--ab-step-2);
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--ab-ink);
+  margin: 1.8em 0 0.6em;
+}
+
+.md-typeset h4 {
+  font-size: var(--ab-step-1);
+  font-weight: 650;
+  line-height: 1.3;
+  color: var(--ab-ink);
+  margin: 1.6em 0 0.5em;
+}
+
+.md-typeset h5 {
+  font-size: var(--ab-step-0);
+  font-weight: 650;
+  color: var(--ab-ink);
+  text-transform: none;
+  letter-spacing: 0;
+  margin: 1.4em 0 0.4em;
+}
+
+.md-typeset h6 {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--1);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ab-ink-muted);
+  margin: 1.4em 0 0.4em;
+}
+
+/* ---- links -------------------------------------------------------------- */
+/* Prose links carry a quiet accent underline that sharpens on hover; links
+ * that are really controls (buttons, permalinks, tabs, rows) are untouched. */
+
+.md-typeset :is(p, li, dd, td, caption, blockquote) a:not(.md-button) {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ab-accent) 40%, transparent);
+  text-decoration-thickness: var(--ab-rule-width);
+  text-underline-offset: 0.16em;
+  transition: text-decoration-color var(--ab-motion-fast) var(--ab-ease),
+              color var(--ab-motion-fast) var(--ab-ease);
+}
+
+.md-typeset :is(p, li, dd, td, caption, blockquote) a:not(.md-button):hover {
+  text-decoration-color: currentcolor;
+}
+
+.md-typeset a.headerlink,
+.md-typeset a.footnote-ref,
+.md-typeset :is(p, li, dd, td, caption, blockquote) a:has(> code:only-child) {
+  text-decoration: none;
+}
+
+/* ---- code --------------------------------------------------------------- */
+
+.md-typeset code {
+  border-radius: var(--ab-radius);
+  box-shadow: inset 0 0 0 var(--ab-rule-width) var(--ab-rule-soft);
+  font-size: 0.85em;
+}
+
+.md-typeset pre > code {
+  border-radius: var(--ab-radius);
+  line-height: 1.6;
+  box-shadow: inset 0 0 0 var(--ab-rule-width) var(--ab-rule-soft);
+}
+
+/* code inside a link or a heading should not carry the well chrome */
+.md-typeset :is(h1, h2, h3, h4, h5, h6) code {
+  box-shadow: none;
+  background: none;
+  padding: 0;
+}
+
+/* ---- tables ------------------------------------------------------------- */
+/* Material's default table text is 12.8px; lift it one step and keep digits
+ * tabular so columns of numbers align. */
+
+.md-typeset table:not([class]) {
+  font-size: var(--ab-step--1);
+  font-variant-numeric: tabular-nums;
+  border-radius: var(--ab-radius);
+}
+
+.md-typeset table:not([class]) th {
+  font-weight: 650;
+  color: var(--ab-ink-soft);
+}
+
+/* ---- quotations, rules, lists ------------------------------------------- */
+
+.md-typeset blockquote {
+  font-family: var(--ab-serif);
+  font-style: italic;
+  font-size: var(--ab-step-1);
+  line-height: 1.55;
+  color: var(--ab-ink-soft);
+  border-left: var(--ab-rule-width-strong) solid var(--ab-rule);
+}
+
+.md-typeset hr {
+  border: none;
+  border-top: var(--ab-rule-width) solid var(--ab-rule);
+  margin: var(--ab-space-7) 0;
+}
+
+/* ---- mathematics -------------------------------------------------------- */
+/* Wide display formulas scroll inside their own box rather than the page. */
+
+.md-typeset mjx-container[display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: var(--ab-space-1) 0;
+}
+
+/* ---- focus and selection ------------------------------------------------ */
+
+:focus-visible {
+  outline: var(--ab-rule-width-strong) solid var(--ab-accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--ab-accent-soft);
+}
 
 /* ---- shared idioms ------------------------------------------------------ */
 
+/* The mono overline that opens a section or a plate. */
 .md-typeset .ab-eyebrow {
   font-family: var(--ab-mono);
-  font-size: 0.6rem;
+  font-size: var(--ab-step--2);
+  font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ab-faint);
-  margin: 0 0 0.5rem;
+  color: var(--ab-ink-muted);
+  margin: 0 0 var(--ab-space-3);
 }
 
-/* The page title is set in the monograph's face. Only h1, so the API pages keep
- * Material's sans for their long identifier headings. */
-.md-typeset h1 {
-  font-family: var(--ab-serif);
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  color: var(--md-default-fg-color);
+/* A lead paragraph: the first thing under a title, one step up. */
+.md-typeset .ab-lead {
+  font-size: var(--ab-step-1);
+  line-height: 1.6;
+  color: var(--ab-ink-soft);
 }
-
