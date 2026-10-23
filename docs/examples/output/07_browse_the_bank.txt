@@ -14,18 +14,22 @@ factorize -- pi_q is factored through r latents: pi_q = a(q, .) b(., x)
 ----------------------------------------------------------------------------------------------------
 method             objective    causal  weights  stoch.  backends   summary
 ----------------------------------------------------------------------------------------------------
+abc                approximate  yes     yes      yes     reference  Bounded-memory control: pi_hat = a b with b prefix-normalized, so it decodes.
 clustered          approximate  -       yes      yes     reference  One attention row per query centroid, shared within the cluster.
+isab               modify       -       -        -       reference  Two MABs through r inducing points; the block between them is nonlinear.
 latent_stochastic  modify       -       yes      yes     reference  pi_hat = A B with both factors row-stochastic (two-hop attention).
+latte              modify       yes     yes      yes     reference  pi_hat = A B with A = softmax over latents, B = softmax over positions.
 nmf_oracle         approximate  -       yes      yes     reference  Best nonnegative rank-r factorization of P, renormalized. Oracle.
+perceiver          modify       -       -        -       reference  Cross-attend into r latents, process them nonlinearly, cross-attend out.
 svd_oracle         approximate  -       yes      -       reference  Truncated SVD of P: the best signed rank-r factorization. Oracle.
 
-4 methods.  ab.describe(name) for one of them; ab.build(name, **config) to use it.
+8 methods.  ab.describe(name) for one of them; ab.build(name, **config) to use it.
 
 
 FILTERS -- every question about the bank is one call
-  causal + row-stochastic: ['blocktopk', 'cosformer', 'evict_h2o', 'flash', 'gqa', 'linear_elu', 'lowprec', 'lsh_sample', 'mla', 'performer', 'quantkv', 'sink_window', 'softmax', 'splitk', 'topk', 'value_topk', 'window']
-  a different operator:    ['cosformer', 'decay_rnn', 'delta_rnn', 'gqa', 'latent_stochastic', 'linear_elu', 'linear_rnn', 'lowrank_ot', 'mla', 'sinkhorn']
-  cannot express weights:  []
+  causal + row-stochastic: ['abc', 'based', 'bigbird', 'blocktopk', 'cosformer', 'evict_h2o', 'evict_tova', 'favorpp', 'favorsharp', 'flash', 'gqa', 'hyperattention', 'kivi', 'latte', 'linear_elu', 'longformer', 'lowprec', 'lsh_sample', 'mega', 'mla', 'oval', 'page_pca', 'performer', 'qjl', 'quantkv', 'rebased', 'reformer', 'routing', 'shifted_window', 'sink_window', 'softmax', 'splitk', 'strided', 'topk', 'value_topk', 'window']
+  a different operator:    ['cosformer', 'decay_rnn', 'delta_rnn', 'dustbin_sinkhorn', 'espformer', 'gla', 'gqa', 'hgrn2', 'hyena', 'isab', 'latent_stochastic', 'latte', 'linear_elu', 'linear_rnn', 'lowrank_ot', 'lru', 'mega', 'mla', 'mlstm', 'otke', 'perceiver', 'polaformer', 'rebased', 'retnet', 'rwkv', 's4d', 's5', 'sinkhorn', 'unbalanced_sinkhorn']
+  cannot express weights:  ['hyena', 'isab', 'lru', 'perceiver', 'polaformer', 's4d', 's5']
 
 
 ONE METHOD IN FULL

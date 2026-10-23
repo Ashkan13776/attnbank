@@ -2,6 +2,201 @@
  *
  * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
  * Every colour, size and duration in here comes from a token in tokens.css.
+ *
+ * Zone: developer tool. The index is a gallery of cards in reading order, and
+ * the thumbnail on each card is the example's own captured stdout -- in a
+ * library whose results are textual, the output is the artwork. The example
+ * pages stay narrative: claim (the docstring), script, captured output.
  */
 
-/* Empty: this aspect is unstarted. */
+/* ---- index: lead and facts ------------------------------------------------ */
+
+.md-typeset .gal-lead {
+  font-size: var(--ab-step-1);
+  line-height: 1.55;
+  color: var(--ab-ink-soft);
+  max-width: 38em;
+}
+
+.md-typeset .gal-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ab-space-2) var(--ab-space-3);
+  margin: var(--ab-space-4) 0 var(--ab-space-5);
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ab-ink-muted);
+}
+
+.md-typeset .gal-facts span + span::before {
+  content: "\00b7";
+  margin-right: var(--ab-space-3);
+  color: var(--ab-faint);
+}
+
+.md-typeset .gal-blurb {
+  margin: calc(-1 * var(--ab-space-2)) 0 var(--ab-space-4);
+  color: var(--ab-ink-muted);
+  max-width: 42em;
+}
+
+/* ---- index: the card grid ------------------------------------------------- */
+
+/* One card per example, in reading order: its claim on top, a verbatim slice
+ * of its captured stdout across the foot. The result is the thumbnail, and at
+ * full content width every excerpt is visible without scrolling. */
+.md-typeset .gal-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-4);
+  margin: var(--ab-space-4) 0 var(--ab-space-6);
+}
+
+.md-typeset .gal-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  background: var(--ab-plate);
+  border: var(--ab-rule-width) solid var(--ab-rule);
+  border-radius: var(--ab-radius-lg);
+  transition: border-color var(--ab-motion-fast) var(--ab-ease);
+}
+
+.md-typeset .gal-card:hover,
+.md-typeset .gal-card:focus-within {
+  border-color: var(--ab-accent);
+}
+
+.md-typeset .gal-card:focus-within {
+  outline: var(--ab-rule-width-strong) solid var(--ab-accent);
+  outline-offset: var(--ab-space-1);
+}
+
+.md-typeset .gal-card-text {
+  padding: var(--ab-space-4) var(--ab-space-5) var(--ab-space-4);
+  max-width: 48em;
+}
+
+/* The title is the link, stretched over the whole card; its own focus ring is
+ * replaced by the card outline above. */
+.md-typeset .gal-card h3 {
+  margin: 0 0 var(--ab-space-2);
+  font-size: var(--ab-step-1);
+  line-height: 1.35;
+}
+
+.md-typeset .gal-card h3 a {
+  color: var(--ab-ink);
+}
+
+.md-typeset .gal-card h3 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--ab-radius-lg);
+}
+
+.md-typeset .gal-card h3 a:focus-visible {
+  outline: none;
+}
+
+.md-typeset .gal-card:hover h3 a,
+.md-typeset .gal-card:focus-within h3 a {
+  color: var(--ab-accent);
+}
+
+.md-typeset .gal-card .headerlink {
+  display: none;
+}
+
+.md-typeset .gal-num {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--1);
+  font-weight: 400;
+  color: var(--ab-faint);
+  margin-right: var(--ab-space-2);
+}
+
+.md-typeset .gal-card-text > p {
+  margin: 0;
+  font-size: var(--ab-step--1);
+  line-height: 1.5;
+  color: var(--ab-ink-soft);
+}
+
+/* The thumbnail: the captured output, sunk across the foot of the card. */
+.md-typeset pre.gal-snip {
+  margin: auto 0 0;
+  padding: var(--ab-space-3) var(--ab-space-5) var(--ab-space-4);
+  background: var(--ab-sunk);
+  border-top: var(--ab-rule-width) solid var(--ab-rule-soft);
+  border-radius: 0 0 var(--ab-radius-lg) var(--ab-radius-lg);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.md-typeset pre.gal-snip::before {
+  content: "captured stdout";
+  display: block;
+  margin-bottom: var(--ab-space-2);
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+}
+
+.md-typeset pre.gal-snip > code {
+  display: block;
+  padding: 0;
+  background: none;
+  font-size: var(--ab-step--2);
+  line-height: 1.55;
+  color: var(--ab-ink-soft);
+}
+
+/* ---- example pages -------------------------------------------------------- */
+
+/* The line under the title: where the script lives, and its source link. */
+.md-typeset .gal-meta {
+  margin: calc(-1 * var(--ab-space-3)) 0 var(--ab-space-5);
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--1);
+  color: var(--ab-ink-muted);
+}
+
+.md-typeset .gal-meta code {
+  background: none;
+  padding: 0;
+  color: var(--ab-ink-muted);
+}
+
+/* The provenance line above the output block. */
+.md-typeset .gal-prov {
+  font-size: var(--ab-step--1);
+  color: var(--ab-ink-muted);
+  max-width: 42em;
+}
+
+/* The output block reads as a terminal result: the command it echoes is the
+ * title, and an accent rule marks it as captured rather than written. */
+.md-typeset .gal-stdout {
+  border-left: var(--ab-rule-width-strong) solid var(--ab-accent);
+  border-radius: 0 var(--ab-radius-lg) var(--ab-radius-lg) 0;
+}
+
+.md-typeset .gal-stdout > .filename {
+  color: var(--ab-ink-muted);
+  font-size: var(--ab-step--1);
+}
+
+/* ---- motion is inert when asked ------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .md-typeset .gal-card {
+    transition: none;
+  }
+}

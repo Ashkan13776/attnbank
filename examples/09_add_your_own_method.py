@@ -14,6 +14,8 @@ import torch
 
 import attnbank as ab
 
+torch.manual_seed(0)
+
 
 @ab.register
 class SinkTopK(ab.AttentionMethod):
