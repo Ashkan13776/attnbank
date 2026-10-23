@@ -308,8 +308,11 @@ fitted as power laws in $r$ over the asymptotic window $r\ge{rmin}$ at logit sca
 $c={c}$ (the regime where $r$ can exceed the relative variance
 $e^{{\|\tilde q+\tilde k\|^2}}$); $n=512$ keys, $m=16$ queries, causal, float64.
 Brackets are 95\% CIs on the fitted exponent.
-\cref{{prop:error-ratio-est}} predicts $-1$ and $-1/2$.  Both are met on the Gaussian
-control; on trained activations the rates are roughly half as steep, because the
+\cref{{prop:error-ratio-est}} predicts $-1$ and $-1/2$.  The variance rate is met on
+the Gaussian control; the bias rate is not measured there, since the bias stays
+below its own Monte-Carlo floor at every $r$ (dash in the table).  On trained
+activations the variance rate is roughly half as steep and the bias rate between
+a half and a tenth of prediction, because the
 relative variance is heavy-tailed there and no affordable $r$ reaches the asymptotic
 regime.  The bias on the control stays below its own Monte-Carlo floor at every $r$ and
 is therefore bounded, not measured.  Separately, ``trigrff'' returns a non-positive
@@ -555,10 +558,13 @@ def tab_ot_tilt() -> Path:
 convergence with uniform marginals on $n=m=256$ non-causal slices of GPT-2 small and
 Qwen2.5-0.5B on WikiText-103 plus the Gaussian control, float64.
 \cref{{prop:ot-conditional}} states
-$\widehat\pi_q(j)\propto\exp(s_{{qj}}+f_j)$ with $f$ independent of the query: the
-residual of that identity is exactly {num(ti['max_residual'], 0)} over
-{intc(ti['n_checks'])} checks, and the potential recovered from the coupling varies
-across queries by at most {sci(ti['max_potential_query_spread'])}.  The second column
+$\widehat\pi_q(j)\propto\exp(s_{{qj}}+f_j)$ with $f$ independent \emph{{of the
+query}}.  The tilt itself is not an empirical question --- row-normalising
+$\diag(u)K\diag(w)$ returns that form for any positive scalings, so the residual
+is {num(ti['max_residual'], 0)} by construction over {intc(ti['n_checks'])}
+checks and is not evidence.  What is measured is the query-independence: the
+potential recovered from the coupling varies across queries by at most
+{sci(ti['max_potential_query_spread'])}.  The second column
 is the distance from plain softmax; the third divides out the temperature that
 $\epsilon$ also applies, so the gap between them is the tilt alone and the two coincide
 at $\epsilon=1$ by definition.  Across all converged slices the potential's rank
@@ -888,7 +894,7 @@ layers, two passages each) and a matched Gaussian control ---
 bias, with the power law fitted over the pre-registered asymptotic window
 $r\ge{meta['r_fit_min']}$ drawn dashed and the fitted exponent annotated with its
 95\% CI as a symmetric half-width; the full fits are in \cref{{tab:rff-exponents}}.  On the Gaussian control the variance exponent is
-{num(syn['slope'], 3)} against the predicted $-1/2$ ($R^2$ {num(syn['r2'], 4)}); on
+{num(syn['slope'], 3)} against the predicted $-1/2$ ($R^2$ {num(syn['r2'], 3)}); on
 GPT-2 small it is {num(g2['slope'], 3)}, because the FAVOR+ relative variance
 $e^{{\|\tilde q+\tilde k\|^2}}$ is heavy-tailed on trained activations and no affordable
 $r$ reaches the asymptotic regime.  The bias on the control stays below its Monte-Carlo
