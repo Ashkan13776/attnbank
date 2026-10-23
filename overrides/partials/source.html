@@ -1,0 +1,18 @@
+{#-
+  Material's own partial, with one attribute removed.
+
+  `data-md-component="source"` is what makes the theme call api.github.com on every
+  page load to put a star and fork count in the header. This site makes no
+  third-party requests at all -- MathJax is vendored, the fonts are system stacks --
+  and a live counter is not worth being the single exception. The link itself is
+  unchanged.
+-#}
+<a href="{{ config.repo_url }}" title="{{ lang.t('source') }}" class="md-source">
+  <div class="md-source__icon md-icon">
+    {% set icon = config.theme.icon.repo or "fontawesome/brands/git-alt" %}
+    {% include ".icons/" ~ icon ~ ".svg" %}
+  </div>
+  <div class="md-source__repository">
+    {{ config.repo_name }}
+  </div>
+</a>

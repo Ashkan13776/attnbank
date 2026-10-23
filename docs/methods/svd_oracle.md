@@ -7,7 +7,7 @@
     result below as a bound on a family of real methods, never as a baseline you
     could ship.
 
-**Best rank-r *signed* factorization of the attention matrix.**
+**Signed rank bound: the best rank-r *signed* factorization of P (truncated SVD).**
 
 category
 :   [`factorize`](../taxonomy.md#factorize) — one of the seven objects in $y(q)=\int v\,\mathrm{d}\pi_q$ a method can change

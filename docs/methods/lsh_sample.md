@@ -1,6 +1,6 @@
 # `lsh_sample`
 
-**MagicPIG-style importance sampling of keys with unbiased reweighting.**
+**LSH importance sampling: MagicPIG-style key sampling with unbiased reweighting.**
 
 category
 :   [`restrict`](../taxonomy.md#restrict) — one of the seven objects in $y(q)=\int v\,\mathrm{d}\pi_q$ a method can change

@@ -1,6 +1,6 @@
 # `topk`
 
-**Oracle top-k restriction on the true scores, renormalized.**
+**Oracle top-k restriction: the `k` largest true scores, renormalized.**
 
 category
 :   [`restrict`](../taxonomy.md#restrict) — one of the seven objects in $y(q)=\int v\,\mathrm{d}\pi_q$ a method can change

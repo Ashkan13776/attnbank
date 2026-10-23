@@ -9,6 +9,7 @@ include attnbank/py.typed
 include attnbank/references.bib
 recursive-include tests *.py
 recursive-include examples *.py
-recursive-include docs *.md *.py *.txt
+recursive-include docs *.md *.py *.txt *.css *.js *.html
+recursive-include overrides *.html
 recursive-include results *.json
 global-exclude __pycache__ *.py[cod]

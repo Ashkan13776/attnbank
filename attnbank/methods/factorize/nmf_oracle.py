@@ -1,4 +1,4 @@
-"""ORACLE: best rank-r *nonnegative* factorization of the attention matrix.
+"""ORACLE: Nonnegative rank bound: the best rank-r *nonnegative* factorization of P.
 
 ``sec:factor-rank``, ``prop:factor-rank``.  For a row-stochastic ``P`` the hierarchy is
 

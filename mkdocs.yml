@@ -8,8 +8,20 @@ repo_name: Ashkan13776/attnbank
 edit_uri: edit/main/docs/
 copyright: Apache-2.0
 
+# docs/includes holds Markdown/HTML partials pulled in by pymdownx.snippets; they are
+# not pages and must not be copied into the built site.
+exclude_docs: |
+  includes/
+
 theme:
   name: material
+  # overrides/partials/source.html drops the header's live GitHub star count, which
+  # is the theme's one call to a third-party host.
+  custom_dir: overrides
+  # Material links fonts.googleapis.com unless this is false. The site makes no
+  # third-party requests, so the faces are system stacks; docs/stylesheets/attnbank.css
+  # names them.
+  font: false
   features:
     - navigation.instant
     - navigation.tracking
@@ -62,6 +74,11 @@ markdown_extensions:
   - tables
   - toc: { permalink: true }
   - pymdownx.details
+  # :material-xxx: shortcodes. `to_svg` inlines the icon markup; the png and font
+  # generators would reach for a CDN, which this site never does.
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.superfences
   - pymdownx.tabbed: { alternate_style: true }
   - pymdownx.highlight: { anchor_linenums: true }
@@ -72,7 +89,8 @@ markdown_extensions:
   - pymdownx.arithmatex: { generic: true }
 
 extra_css:
-  # the method browser; everything the site loads is vendored
+  # everything the site loads is vendored: the front matter and the method browser
+  - stylesheets/attnbank.css
   - stylesheets/bank.css
 
 extra_javascript:
@@ -83,6 +101,7 @@ extra_javascript:
   - javascripts/mathjax.js
   - javascripts/tex-svg.js
   - javascripts/bank.js
+  - javascripts/attnbank.js
 
 nav:
   - Home: index.md

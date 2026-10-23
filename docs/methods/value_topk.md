@@ -7,7 +7,7 @@
     result below as a bound on a family of real methods, never as a baseline you
     could ship.
 
-**Output-aware greedy selection of the support.**
+**Output-aware selection: the support that minimizes output error, chosen greedily.**
 
 category
 :   [`restrict`](../taxonomy.md#restrict) — one of the seven objects in $y(q)=\int v\,\mathrm{d}\pi_q$ a method can change

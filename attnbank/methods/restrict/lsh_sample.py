@@ -1,4 +1,4 @@
-"""MagicPIG-style importance sampling of keys with unbiased reweighting.
+"""LSH importance sampling: MagicPIG-style key sampling with unbiased reweighting.
 
 ``sec:sparse-content`` ("Sampling is not restriction") and ``prop:error-ratio-est``.
 A key set ``S`` is *sampled* with inclusion probabilities ``u_j`` monotone in the

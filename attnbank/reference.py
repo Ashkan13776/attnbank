@@ -1,4 +1,4 @@
-"""The reference operator: dense softmax attention, y(q) = sum_j pi_q(j) v_j.
+"""Dense softmax attention: the reference operator, y(q) = sum_j pi_q(j) v_j.
 
     pi_q(j) = exp(beta <q, k_j>) / sum_i exp(beta <q, k_i>),   beta = 1/sqrt(d)
 

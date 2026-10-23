@@ -1,4 +1,4 @@
-"""ORACLE: best rank-r *signed* factorization of the attention matrix.
+"""ORACLE: Signed rank bound: the best rank-r *signed* factorization of P (truncated SVD).
 
 ``sec:factor-rank``.  The truncated SVD ``P_r = U_r Sigma_r V_r^T`` is the optimal
 rank-``r`` approximation of ``P`` in every unitarily invariant norm (Eckart--Young), so

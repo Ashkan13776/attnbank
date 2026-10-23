@@ -7,7 +7,7 @@
     result below as a bound on a family of real methods, never as a baseline you
     could ship.
 
-**Best rank-r *nonnegative* factorization of the attention matrix.**
+**Nonnegative rank bound: the best rank-r *nonnegative* factorization of P.**
 
 category
 :   [`factorize`](../taxonomy.md#factorize) — one of the seven objects in $y(q)=\int v\,\mathrm{d}\pi_q$ a method can change

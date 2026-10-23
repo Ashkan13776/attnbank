@@ -189,6 +189,31 @@ def _enumerations(text: str) -> str:
     return "\n".join(out)
 
 
+def display_name(name: str) -> str:
+    """The method's human name, taken from the first words of its module docstring.
+
+    Every lede is written as ``Name: what it does.`` -- ``FlashAttention: tiled online
+    softmax``, ``H2O: accumulated-attention heavy-hitter eviction`` -- with the three
+    oracles putting the ``ORACLE:`` marker in front of the same shape. That convention
+    is what gives the browser a name to lead each row with; ``flash`` and ``evict_h2o``
+    are registry keys, which is a different thing and is shown underneath.
+
+    The split is asserted, not guessed. A lede that does not carry a name fails the
+    build rather than quietly putting a sentence fragment in the name column.
+    """
+    lede, _ = module_doc(name)
+    lede = re.sub(r"^ORACLE:\s*", "", lede)              # the oracle banner says it
+    lede = re.sub(r"\s*\(`sec:[^)]*\)\s*\.?$", "", lede)   # trailing section pointers
+    head, sep, tail = lede.partition(":")
+    head = head.strip()
+    if not sep or not tail.strip() or not 1 <= len(head.split()) <= 6:
+        raise SystemExit(
+            f"{name}: the module docstring's first line must read "
+            f"'Name: what it does.' so the browser has a name to show for the "
+            f"'{name}' key. Got:\n  {lede}")
+    return head
+
+
 def summary_html(text: str) -> str:
     """A one-line docstring summary as HTML, for the browser table cells."""
     return re.sub(r"``([^`]+)``", r"<code>\1</code>", _dashes(_escape(text)))
@@ -693,8 +718,9 @@ def _objective_sentence(obj: str) -> str:
 # the browser
 # ---------------------------------------------------------------------------
 def _search_text(name: str, info, oracles: tuple) -> str:
-    words = [name, info.class_name, info.category, info.objective, info.paper_section,
-             summary_text(info.summary), *info.backends, *info.references,
+    words = [name, display_name(name), info.class_name, info.category, info.objective,
+             info.paper_section, summary_text(info.summary),
+             *info.backends, *info.references,
              *(key for key in info.parameters if key not in _PLUMBING)]
     if info.supports_causal:
         words.append("causal")
@@ -737,10 +763,15 @@ def browser(bib: dict, oracles: tuple) -> str:
             f'data-stochastic="{flag(info.row_stochastic)}" '
             f'data-fused="{flag(len(info.backends) > 1)}" '
             f'data-backends="{" ".join(info.backends)}" '
+            f'data-title="{display_name(name).lower()}" '
             f'data-search="{_search_text(name, info, oracles)}">'
-            f'<th scope="row"><a href="{name}/"><code>{name}</code></a>'
-            + ("".join(flags) and "<br>" + "".join(flags)) + "</th>"
-            f'<td data-cell="category"><code>{info.category}</code></td>'
+            # the name a reader would say, then the key they would type
+            f'<th scope="row"><a class="bank-name" href="{name}/">'
+            f'{_escape(display_name(name))}</a>'
+            f'<span class="bank-key">{name}</span>'
+            + "".join(flags) + "</th>"
+            f'<td data-cell="category" data-cat="{info.category}">'
+            f'<code>{info.category}</code></td>'
             f'<td data-cell="objective"><code>{info.objective}</code></td>'
             f'<td data-cell="causal">{flag(info.supports_causal)}</td>'
             f'<td data-cell="backends">'
@@ -772,14 +803,15 @@ hide:
 
 {n} methods, every one of them introspectable. The table below is the registry —
 `ab.list_methods()` prints the same rows in a terminal, and `ab.method_table()` returns
-them as JSON. Each name links to a page generated from that method's own declaration,
-docstring and cost model.
+them as JSON. Each row leads with the name the method is known by and carries its
+registry key underneath, because the key is what you pass to `ab.build(...)` and what
+the method's own page is filed under.
 
-Searching matches the name, the summary, the category, the objective, the backends, the
-config keys, the BibTeX keys, and words you would plausibly type instead of a flag —
-`causal`, `trainable`, `oracle`, `signed`. The filters are plain client-side JavaScript
-over the table that is already on the page: with scripting off you get all {n} rows,
-sorted by category, which is the whole content.
+Searching matches both of those, plus the summary, the category, the objective, the
+backends, the config keys, the BibTeX keys, and words you would plausibly type instead
+of a flag — `causal`, `trainable`, `oracle`, `signed`. The filters are plain
+client-side JavaScript over the table that is already on the page: with scripting off
+you get all {n} rows, sorted by category, which is the whole content.
 
 !!! warning "Three of these are oracles"
     `value_topk`, `nmf_oracle` and `svd_oracle` are **upper bounds on what a mechanism
@@ -809,7 +841,7 @@ sorted by category, which is the whole content.
   <table class="bank-table">
     <thead>
       <tr>
-        <th scope="col" data-sort="name">method</th>
+        <th scope="col" data-sort="name">method <span class="bank-sub">/ key</span></th>
         <th scope="col" data-sort="category">category</th>
         <th scope="col" data-sort="objective">objective</th>
         <th scope="col" data-sort="causal">causal</th>

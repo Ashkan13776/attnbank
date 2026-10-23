@@ -2,7 +2,16 @@
 
     python docs/gen_taxonomy.py
 
-The prose for each category is here; the tables come from ``ab.list_methods``.
+The page is a tree: the operator at the top and seven branches hanging off a trunk,
+one per object of ``y(q) = int v dpi_q`` that a method can change. Opening a branch
+lights the symbol it reaches for. All of that is progressive enhancement --
+``docs/javascripts/attnbank.js`` collapses branches that are open in the HTML -- and
+the complete table of every method follows underneath, so with scripting off the page
+is the whole taxonomy with nothing to click and nothing missing.
+
+The prose for each category is here, one entry per *category* and never per method;
+everything else -- the method lists, the counts, the declaration columns -- comes from
+``ab.list_methods`` and ``ab.describe``.
 """
 from __future__ import annotations
 
@@ -13,51 +22,147 @@ from gen_methods import oracle_names
 
 import attnbank as ab
 
+#: The phrase that completes "this category changes ___", for the branch header. Kept
+#: shorter than ``ab.categories()``, which is written for a terminal.
+#: Hand-set rather than written as $math$: this phrase lives inside the branch
+#: header, which is the one line of a closed branch, and MathJax does not run with
+#: scripting off.
+SHORT = {
+ "exact": "nothing but the order of the arithmetic",
+ "interaction": "the interaction <i>g</i>",
+ "restrict": "the support of &#960;<sub><i>q</i></sub>",
+ "compress": "the stored context (&#956;,&#8201;<i>k</i>,&#8201;<i>v</i>)",
+ "factorize": "the shape of &#960;<sub><i>q</i></sub>",
+ "coupling": "the normaliser <i>Z</i>",
+ "recurrent": "the operator itself",
+}
+
+#: Which symbols of the operator the category reaches for. ``exact`` reaches for none
+#: and asks for the whole operator to be ruled off instead; ``recurrent`` replaces all
+#: of them and shows the recurrence underneath.
+SYMS = {
+ "exact": ("", "frame"),
+ "interaction": ("g", ""),
+ "restrict": ("int", ""),
+ "compress": ("mu v", ""),
+ "factorize": ("pi", ""),
+ "coupling": ("Z", ""),
+ "recurrent": ("y int v pi g mu Z", "replace"),
+}
+
+#: What survives the change. The complement of ``SHORT``, and the half of the story a
+#: table of methods never tells.
+PRESERVES = {
+ "exact": "everything. The measure, the values and the normaliser are the reference "
+          "operator's, bit for bit where the arithmetic allows it.",
+ "interaction": "the support, the values, and per-query normalisation — "
+                "&#960;&#770;<sub><i>q</i></sub> still lives on all <i>n</i> positions.",
+ "restrict": "the values and the scores of everything retained. Nothing is discarded "
+             "from the context, so a later query may select what this one dropped.",
+ "compress": "the operator and the per-query normalisation. What is no longer "
+             "preserved is the context itself, which is the point.",
+ "factorize": "row-stochasticity, when both factors are Markov kernels — a "
+              "composition of two of them is still a probability measure.",
+ "coupling": "the values, and &#960;&#770;<sub><i>q</i></sub> as a probability "
+             "measure. What goes is the independence of the queries, and with it "
+             "causal masking.",
+ "recurrent": "linearity in <i>v</i>. That is the whole reason the implied weights can be "
+              "recovered at all, and why Invariant W still holds here.",
+}
+
+#: Which term of the error decomposition the category incurs. The decomposition is
+#: exact, so this is a statement about the mechanism, not a rule of thumb.
+ERROR = {
+ "exact": "**None**, up to floating point — which is a claim the conformance suite "
+          "checks rather than a promise. `lowprec` is the exception, and locating the "
+          "exception is the purpose of the category.",
+ "interaction": "**Distributional only.** <i>v</i>&#770; = <i>v</i>, so every bit of the error "
+                "is in the measure. For random features it shrinks with the feature "
+                "count; for a fixed feature map it does not shrink at all, because "
+                "there is nothing it is converging to.",
+ "restrict": "**Distributional only**, and in closed form: the omitted mass "
+             "&#949;<sub><i>q</i></sub> times the contrast between the omitted and the retained "
+             "conditional means. Minimising &#949;<sub><i>q</i></sub> is not the same as "
+             "minimising the error, which is what `value_topk` exists to show.",
+ "compress": "**Both.** A distributional term through the keys and a value term "
+             "through <i>v</i>&#770; &#8800; <i>v</i> — the only category that routinely "
+             "produces the second. Key error passes through the softmax; value error "
+             "is only reweighted, so keys cost more per bit.",
+ "factorize": "**Distributional, with a floor set by rank.** No rank-<i>r</i> factorisation "
+              "beats the truncated SVD, and a nonnegative one cannot reach it. "
+              "`svd_oracle` is that lower bound and `nmf_oracle` measures the gap.",
+ "coupling": "**Not an approximation error at all.** The result is exactly softmax "
+             "tilted by one potential per key — a deterministic change of operator, "
+             "measured against softmax only to say how far it has moved.",
+ "recurrent": "**Not error but capacity.** A fixed-size state must answer every future "
+              "query, which bounds recall however the model is trained. Fidelity to "
+              "softmax is not the goal, so quoting an output error against it answers "
+              "a question nobody asked.",
+}
+
+#: The longer note on each category. Maths is hand-set rather than written as
+#: $...$ for the same reason SHORT is: the branch is readable before MathJax runs.
 BLURB = {
  "exact": ("Nothing in the formula changes — only how it is evaluated. Tiling, "
            "chunking, reduced precision. The interesting question in this category is "
            "*where exactness stops*: `flash` and `splitk` are exact up to floating "
            "point, `lowprec` is not, and the boundary between them is the point."),
- "interaction": ("The interaction $g(q, x)$ is replaced by a cheaper surrogate "
-                 "$\\widehat g$. Random features estimate $\\exp\\langle q,k\\rangle$; "
-                 "fixed feature maps replace it outright. The first is an "
-                 "approximation whose error shrinks with the feature count; the second "
-                 "is a different operator that happens to be cheap. The `objective` "
-                 "column is where that difference is recorded."),
- "restrict": ("The support of $\\pi_q$ shrinks to a subset $S_q$, and the retained mass "
-              "is renormalised. The whole category is one operator — "
-              "`prop:sparse-identity` — differing only in how $S_q$ is chosen. Error is "
-              "purely *distributional*: the values are untouched."),
- "compress": ("The stored context $(\\mu, k, v)$ is replaced by something smaller: "
-              "quantised, low-rank, evicted, merged, or shared across heads. This is "
-              "the only category that routinely produces *value* error, because it is "
-              "the only one that changes what is aggregated."),
- "factorize": ("$\\pi_q$ is routed through $r$ latents, $\\pi_q = a(q,\\cdot) b(\\cdot,x)$. "
-               "Whether the factorisation can stay row-stochastic is the question: "
-               "`latent_stochastic` is stochastic by construction, `svd_oracle` is the "
-               "signed lower bound it cannot reach, and `nmf_oracle` measures the gap."),
+ "interaction": ("The interaction <i>g</i>(<i>q</i>,&#8201;<i>x</i>) is replaced by a "
+                 "cheaper surrogate <i>g&#770;</i>. Random features estimate "
+                 "exp&#8202;&#10216;<i>q</i>,&#8201;<i>k</i>&#10217;; fixed feature "
+                 "maps replace it outright. The first is an approximation whose error "
+                 "shrinks with the feature count; the second is a different operator "
+                 "that happens to be cheap. The `objective` column is where that "
+                 "difference is recorded."),
+ "restrict": ("The support of &#960;<sub><i>q</i></sub> shrinks to a subset "
+              "<i>S</i><sub><i>q</i></sub>, and the retained mass is renormalised. The "
+              "whole category is one operator — `prop:sparse-identity` — differing "
+              "only in how <i>S</i><sub><i>q</i></sub> is chosen. Error is purely "
+              "*distributional*: the values are untouched."),
+ "compress": ("The stored context (&#956;,&#8201;<i>k</i>,&#8201;<i>v</i>) is replaced "
+              "by something smaller: quantised, low-rank, evicted, merged, or shared "
+              "across heads. This is the only category that routinely produces *value* "
+              "error, because it is the only one that changes what is aggregated."),
+ "factorize": ("&#960;<sub><i>q</i></sub> is routed through <i>r</i> latents, "
+               "&#960;<sub><i>q</i></sub> = <i>a</i>(<i>q</i>,&#8201;&#183;)&#8202;"
+               "<i>b</i>(&#183;,&#8201;<i>x</i>). Whether the factorisation can stay "
+               "row-stochastic is the question: `latent_stochastic` is stochastic by "
+               "construction, `svd_oracle` is the signed lower bound it cannot reach, "
+               "and `nmf_oracle` measures the gap."),
  "coupling": ("Normalisation stops being per-query. Sinkhorn balances the whole "
               "matrix to prescribed marginals, which makes the result softmax *tilted "
               "by a key potential* rather than softmax. Queries are no longer "
               "independent, so causal masking is not available."),
  "recurrent": ("The operator becomes a finite-state recurrence: a fixed-size state "
-               "$H_t$ absorbs the context. Linear in the values, so Invariant W still "
-               "holds and the implied weights can still be written down — they are "
-               "simply not a probability measure."),
+               "<i>H</i><sub><i>t</i></sub> absorbs the context. Linear in the values, "
+               "so Invariant W still holds and the implied weights can still be "
+               "written down — they are simply not a probability measure."),
 }
 
-HEADER = r"""# The taxonomy
+HEADER = r"""---
+hide:
+  - toc
+---
 
-Attention is a query-conditioned expectation,
+# The taxonomy
 
-$$y(q) \;=\; \int v \,\mathrm{d}\pi_q, \qquad \pi_q \;=\; \frac{g(q,\cdot)\,\mu}{Z(q)} .$$
+<div class="ab-measure" markdown="1">
+Attention is a query-conditioned expectation. Efficiency has to come from somewhere,
+and there are only so many places it can come from: a method either evaluates the
+expectation differently, or it changes one of the objects in it. **Seven categories,
+because there are seven objects to change.**
 
-Efficiency has to come from somewhere, and there are only so many places it can come
-from. A method either evaluates this expression differently, or it changes one of the
-objects in it. **Seven categories, because there are seven objects to change.**
+Open a branch to see what that category changes, what it leaves alone, which term of
+the error it incurs, and which methods are in it — and which symbol of the operator it
+reaches for.
+</div>
+"""
 
-Cutting across them is a second question, the one that decides how a method should be
-judged at all:
+AXIS = r"""
+## The second axis
+
+Cutting across all seven is the question that decides how a method should be judged at
+all:
 
 | `objective` | meaning |
 |---|---|
@@ -71,15 +176,6 @@ question — it is not trying to. Every method here declares which it is, and th
 conformance suite uses the declaration: an `approximate` method must supply a
 correctness anchor, a `modify` method is exempt and the suite *asserts the exemption*
 rather than skipping it.
-
-!!! info "This page is generated"
-    The tables below come from the live registry, so they cannot drift from the code.
-    Regenerate with `python docs/gen_taxonomy.py`; `ab.list_methods()` prints the same
-    thing in a terminal.
-
-Every method name links to its own page. To search and filter the whole bank at once —
-by category, objective, causal support, backend — use
-[**Browse the bank**](methods/index.md).
 """
 
 FOOTER = r"""
@@ -109,30 +205,133 @@ Three methods — [`value_topk`](methods/value_topk.md), [`nmf_oracle`](methods/
 **upper bounds on what a mechanism can achieve**, which is exactly what several of the
 monograph's arguments need: you cannot show that top-$k$ selection is suboptimal
 without computing what the optimal selection would have been.
+
+!!! info "This page is generated"
+    Everything but the category prose comes from the live registry, so it cannot drift
+    from the code. Regenerate with `python docs/gen_taxonomy.py`; `ab.list_methods()`
+    prints the same rows in a terminal. To search and filter the whole bank at once —
+    by category, objective, causal support, backend — use
+    [**Browse the bank**](methods/index.md).
 """
+
+
+def flag(value: bool) -> str:
+    return "yes" if value else "—"
+
+
+#: ASCII maths as it is written in the registry, mapped to the same hand-set HTML the
+#: operator above uses. This is a renderer, not a second source of prose: whatever
+#: ``ab.categories()`` says is what the page says, and a token with no rule here simply
+#: passes through unchanged.
+_TYPESET = [
+    ("pi_q", "&#960;<sub><i>q</i></sub>"),
+    ("S_q", "<i>S</i><sub><i>q</i></sub>"),
+    ("H_t", "<i>H</i><sub><i>t</i></sub>"),
+    ("g(q, x)", "<i>g</i>(<i>q</i>,&#8201;<i>x</i>)"),
+    ("a(q, .) b(., x)", "<i>a</i>(<i>q</i>,&#8201;&#183;)&#8202;<i>b</i>(&#183;,&#8201;<i>x</i>)"),
+    ("(mu, k, v)", "(&#956;,&#8201;<i>k</i>,&#8201;<i>v</i>)"),
+    (" r latents", " <i>r</i> latents"),
+]
+
+
+def _sentence(text: str) -> str:
+    """Capitalise, unless typesetting has already turned the first word into markup.
+
+    ``pi_q is factored through ...`` must not become ``Pi_q``; once ``typeset`` has
+    made it an entity there is nothing to capitalise.
+    """
+    return text[:1].upper() + text[1:] if text[:1].isascii() and text[:1].isalpha() \
+        else text
+
+
+def typeset(text: str) -> str:
+    """The registry's ASCII maths, set the way the operator at the top of the page is."""
+    for ascii_form, html in _TYPESET:
+        text = text.replace(ascii_form, html)
+    return text
+
+
+def tree(oracles: tuple) -> list[str]:
+    """The seven branches, every one of them open in the HTML."""
+    lines = ['<div class="tx-tree" markdown="1">\n']
+    for cat, blurb in BLURB.items():
+        rows = ab.list_methods(cat)
+        syms, mode = SYMS[cat]
+        attrs = f'data-cat="{cat}" data-syms="{syms}"' + (f" data-{mode}" if mode else "")
+        chips = " ".join(
+            f'<li><a href="methods/{r["name"]}/"'
+            + (' data-oracle=""' if r["name"] in oracles else "")
+            + (' title="an oracle: an upper bound, not a practical method"'
+               if r["name"] in oracles else "")
+            + f'>{r["name"]}</a></li>'
+            for r in rows)
+        count = f'{len(rows)} method{"s" if len(rows) != 1 else ""}'
+        lines += [
+            f'<section class="tx-node" {attrs} markdown="1">\n',
+            f'## `{cat}` <span class="tx-changes">changes {SHORT[cat]}</span>'
+            f'<span class="tx-n">{count}</span>'
+            f' {{: #{cat} data-toc-label="{cat}" }}\n',
+            '<div class="tx-body" markdown="1">\n',
+            '<div class="tx-facts" markdown="1">',
+            f"Changes\n:   {_sentence(typeset(ab.categories()[cat]))}.\n",
+            f"Preserves\n:   {PRESERVES[cat][0].upper()}{PRESERVES[cat][1:]}\n",
+            f"Error term\n:   {ERROR[cat]}\n",
+            f'Methods\n:   <ul class="op-methods">{chips}</ul>\n',
+            "</div>\n",
+            blurb + "\n",
+            "</div>\n",
+            "</section>\n",
+        ]
+    lines.append("</div>\n")
+    return lines
+
+
+def table(oracles: tuple) -> list[str]:
+    """Every method, in one table, underneath the tree.
+
+    The tree is the view; this is the index. It is plain Markdown so it is in the
+    search index, linkable row by row, and present whether or not anything runs.
+    """
+    order = list(BLURB)
+    rows = [r for cat in order for r in ab.list_methods(cat)]
+    out = [
+        "\n## Every method, in one table\n",
+        f"All {len(rows)} of them, grouped by the object they change. This is the same "
+        "content as the branches above, flattened — regenerated from "
+        "`ab.list_methods()`, and the view that works whatever your browser is "
+        "doing.\n",
+        "<div class=\"tx-all-wrap\" markdown=\"1\">\n",
+        "| method | what it is | category | objective | causal | weights | stochastic | backends |",
+        "|---|---|---|---|---|---|---|---|",
+    ]
+    for cat in order:
+        for r in ab.list_methods(cat):
+            name = (f"[`{r['name']}`](methods/{r['name']}.md)"
+                    + (" **(oracle)**" if r["name"] in oracles else ""))
+            # the sentence sits second, next to the name: on a narrow page the
+            # declaration columns are what scrolls out of sight, not the prose
+            out.append(
+                f"| {name} | {r['summary']} | "
+                f"<span data-cat=\"{cat}\">`{cat}`</span> | "
+                f"{r['objective']} | {flag(r['causal'])} | "
+                f"{flag(r['expresses_weights'])} | {flag(r['row_stochastic'])} | "
+                f"{', '.join(r['backends'])} |")
+    out.append("\n</div>\n")
+    return out
 
 
 def main() -> None:
     oracles = oracle_names()
-    lines = [HEADER]
-    for cat, blurb in BLURB.items():
-        lines += [f"\n## `{cat}`\n",
-                  f"**Changes:** {ab.categories()[cat]}.\n",
-                  blurb + "\n",
-                  "| method | objective | causal | weights | stochastic | backends | what it is |",
-                  "|---|---|---|---|---|---|---|"]
-        for r in ab.list_methods(cat):
-            flag = lambda b: "yes" if b else "—"       # noqa: E731
-            # the oracles are upper bounds, not methods; say so in every table they
-            # appear in, not only in the section at the foot of the page
-            name = (f"[`{r['name']}`](methods/{r['name']}.md)"
-                    + (" **(oracle)**" if r["name"] in oracles else ""))
-            lines.append(
-                f"| {name} | {r['objective']} | {flag(r['causal'])} | "
-                f"{flag(r['expresses_weights'])} | {flag(r['row_stochastic'])} | "
-                f"{', '.join(r['backends'])} | {r['summary']} |")
-        lines.append("")
-    lines.append(FOOTER)
+    lines = [HEADER,
+             '\n<div class="op" data-op markdown="1">\n',
+             '<div class="op-plate tx-sticky" data-plate="the operator">',
+             '--8<-- "docs/includes/operator.html"',
+             "</div>\n",
+             *tree(oracles),
+             "</div>\n",
+             AXIS,
+             *table(oracles),
+             FOOTER]
     text = re.sub(r"``([^`]+)``", r"`\1`", "\n".join(lines))
     out = pathlib.Path(__file__).resolve().parent / "taxonomy.md"
     out.write_text(text)

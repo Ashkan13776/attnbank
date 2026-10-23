@@ -1,6 +1,6 @@
 # `softmax`
 
-**The reference operator: dense softmax attention, y(q) = sum_j pi_q(j) v_j.**
+**Dense softmax attention: the reference operator, y(q) = sum_j pi_q(j) v_j.**
 
 category
 :   [`exact`](../taxonomy.md#exact) — one of the seven objects in $y(q)=\int v\,\mathrm{d}\pi_q$ a method can change

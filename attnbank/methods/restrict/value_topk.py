@@ -1,4 +1,4 @@
-"""ORACLE: output-aware greedy selection of the support.
+"""ORACLE: Output-aware selection: the support that minimizes output error, chosen greedily.
 
 ``sec:sparse-operator`` ("Score-optimal is not output-optimal"), ``prop:error-topk``,
 and the open problem of ``sec:open-retrieval``.  Top-k minimizes the omitted mass
