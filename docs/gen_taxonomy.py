@@ -3,11 +3,15 @@
     python docs/gen_taxonomy.py
 
 The page is a tree: the operator at the top and seven branches hanging off a trunk,
-one per object of ``y(q) = int v dpi_q`` that a method can change. Opening a branch
-lights the symbol it reaches for. All of that is progressive enhancement --
-``docs/javascripts/taxonomy.js`` collapses branches that are open in the HTML -- and
-the complete table of every method follows underneath, so with scripting off the page
-is the whole taxonomy with nothing to click and nothing missing.
+one per object of ``y(q) = int v dpi_q`` that a method can change. All 78 leaves are
+always visible, hanging off their branch as linked chips; each chip carries the
+method's ``objective`` as a glyph (= accelerate, ~ approximate, != modify), so both
+axes of the taxonomy are on screen at once. Opening a branch reveals what the
+category changes, preserves and costs, and lights the symbol of the operator it
+reaches for. All of that is progressive enhancement -- ``docs/javascripts/taxonomy.js``
+collapses the detail panels that are open in the HTML -- and the complete table of
+every method follows underneath, so with scripting off the page is the whole taxonomy
+with nothing to click and nothing missing.
 
 The prose for each category is here, one entry per *category* and never per method;
 everything else -- the method lists, the counts, the declaration columns -- comes from
@@ -15,6 +19,7 @@ everything else -- the method lists, the counts, the declaration columns -- come
 """
 from __future__ import annotations
 
+import html
 import pathlib
 import re
 
@@ -157,6 +162,23 @@ BLURB = {
                "written down — they are simply not a probability measure."),
 }
 
+#: The key to the leaves, one line between the operator and the tree. Each leaf
+#: carries its method's ``objective`` as a glyph, and the three relations a method
+#: can claim to the reference operator happen to *be* the three relation signs:
+#: the same operator (=), an approximation of it (&#8776;), a different operator
+#: (&#8800;). The glyph itself is set from ``data-obj`` by the stylesheet; the word
+#: is on the chip's title and in the table below, so the glyph is never the only
+#: carrier of the fact. The meanings here are the same three sentences as the
+#: `objective` table further down, shortened.
+KEY = (
+    '<p class="tx-key">Each leaf is a method. Its glyph is the <code>objective</code>'
+    ' it declares: <span class="tx-g">=</span>&#8201;accelerate, the same operator'
+    ' &#183; <span class="tx-g">&#8776;</span>&#8201;approximate, judged by output'
+    ' error &#183; <span class="tx-g">&#8800;</span>&#8201;modify, a different'
+    ' operator. A <span class="tx-g-oracle">dashed leaf</span> is an oracle bound,'
+    ' not a practical method.</p>'
+)
+
 HEADER = r"""---
 hide:
   - toc
@@ -170,9 +192,9 @@ and there are only so many places it can come from: a method either evaluates th
 expectation differently, or it changes one of the objects in it. **Seven categories,
 because there are seven objects to change.**
 
-Open a branch to see what that category changes, what it leaves alone, which term of
-the error it incurs, and which methods are in it — and which symbol of the operator it
-reaches for.
+Every method in the bank hangs off one of the seven branches below. Open a branch to
+see what that category changes, what it leaves alone, and which term of the error it
+incurs — and which symbol of the operator it reaches for.
 </div>
 """
 
@@ -182,11 +204,13 @@ AXIS = r"""
 Cutting across all seven is the question that decides how a method should be judged at
 all:
 
-| `objective` | meaning |
-|---|---|
-| `accelerate` | the same operator, exact up to floating point |
-| `approximate` | targets dense softmax; judged by output error |
-| `modify` | a *different operator*; fidelity to softmax is not the goal |
+| | `objective` | meaning |
+|---|---|---|
+| <span class="tx-g">=</span> | `accelerate` | the same operator, exact up to floating point |
+| <span class="tx-g">&#8776;</span> | `approximate` | targets dense softmax; judged by output error |
+| <span class="tx-g">&#8800;</span> | `modify` | a *different operator*; fidelity to softmax is not the goal |
+
+The glyph on every leaf of the tree above is this declaration.
 
 Conflating `approximate` and `modify` is the most persistent confusion in this
 literature. Asking how closely `linear_elu` approximates softmax is asking the wrong
@@ -307,32 +331,44 @@ def typeset(text: str) -> str:
     return text
 
 
+def leaf(row: dict, oracles: tuple) -> str:
+    """One method as one leaf: a link, its objective, and its summary on hover."""
+    name = row["name"]
+    tip = html.escape(row["summary"], quote=True)
+    if name in oracles:
+        tip += " &mdash; an oracle: an upper bound, not a practical method"
+    return (f'<li><a href="methods/{name}/" data-obj="{row["objective"]}"'
+            + (' data-oracle=""' if name in oracles else "")
+            + f' title="{tip}">{name}</a></li>')
+
+
 def tree(oracles: tuple) -> list[str]:
-    """The seven branches, every one of them open in the HTML."""
-    lines = ['<div class="tx-tree" markdown="1">\n']
+    """The seven branches. The leaves are always visible; only the detail folds.
+
+    The leaf list sits *outside* ``.tx-body`` so that the collapsed tree is still a
+    tree — seven branches with all 78 leaves hanging off them — rather than seven
+    closed headings. What folds is the scholarly detail.
+    """
+    lines = ['<div class="tx-tree" markdown="1">\n',
+             # inside the tree, so the trunk runs up past it to the plate unbroken
+             KEY + "\n"]
     for cat, blurb in BLURB.items():
         rows = ab.list_methods(cat)
         syms, mode = SYMS[cat]
         attrs = f'data-cat="{cat}" data-syms="{syms}"' + (f" data-{mode}" if mode else "")
-        chips = " ".join(
-            f'<li><a href="methods/{r["name"]}/"'
-            + (' data-oracle=""' if r["name"] in oracles else "")
-            + (' title="an oracle: an upper bound, not a practical method"'
-               if r["name"] in oracles else "")
-            + f'>{r["name"]}</a></li>'
-            for r in rows)
+        chips = "".join(leaf(r, oracles) for r in rows)
         count = f'{len(rows)} method{"s" if len(rows) != 1 else ""}'
         lines += [
             f'<section class="tx-node" {attrs} markdown="1">\n',
             f'## `{cat}` <span class="tx-changes">changes {SHORT[cat]}</span>'
             f'<span class="tx-n">{count}</span>'
             f' {{: #{cat} data-toc-label="{cat}" }}\n',
+            f'<ul class="tx-leaves">{chips}</ul>\n',
             '<div class="tx-body" markdown="1">\n',
             '<div class="tx-facts" markdown="1">',
             f"Changes\n:   {_sentence(typeset(ab.categories()[cat]))}.\n",
             f"Preserves\n:   {PRESERVES[cat][0].upper()}{PRESERVES[cat][1:]}\n",
             f"Error term\n:   {ERROR[cat]}\n",
-            f'Methods\n:   <ul class="op-methods">{chips}</ul>\n',
             "</div>\n",
             blurb + "\n",
             "</div>\n",

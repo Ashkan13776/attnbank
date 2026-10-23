@@ -43,16 +43,25 @@
       items.push({ node: node, button: button, body: body });
     });
 
+    // the plate lights the symbols of `which`; `current` is the pinned branch that
+    // the plate falls back to when a hover or focus preview ends
+    var current = null;
+
+    function light(which) {
+      var cat = which ? which.node.getAttribute("data-cat") : null;
+      show(cat, which ? symsOf(which.node) : [],
+           which && which.node.hasAttribute("data-frame"),
+           which && which.node.hasAttribute("data-replace"));
+    }
+
     function open(which, focus) {
       items.forEach(function (item) {
         var on = item === which;
         item.node.dataset.open = String(on);
         item.button.setAttribute("aria-expanded", String(on));
       });
-      var cat = which ? which.node.getAttribute("data-cat") : null;
-      show(cat, which ? symsOf(which.node) : [],
-           which && which.node.hasAttribute("data-frame"),
-           which && which.node.hasAttribute("data-replace"));
+      current = which;
+      light(current);
       if (which && focus) which.button.focus();
     }
 
@@ -66,11 +75,27 @@
         event.preventDefault();
         items[(i + step + items.length) % items.length].button.focus();
       });
+
+      // Pointing at or tabbing through a branch previews its symbol on the plate;
+      // leaving restores whichever branch is pinned open. A state change, not an
+      // animation, so there is nothing to still under prefers-reduced-motion.
+      item.node.addEventListener("mouseenter", function () { light(item); });
+      item.node.addEventListener("mouseleave", function () { light(current); });
+      item.node.addEventListener("focusin", function () { light(item); });
+      item.node.addEventListener("focusout", function (event) {
+        if (!item.node.contains(event.relatedTarget)) light(current);
+      });
     });
 
     // `taxonomy.md#restrict` is linked from every method page and from the home
     // page, so an incoming hash has to open the branch it names.
     function fromHash() {
+      // instant navigation replaces the page without unloading it, so a listener
+      // from a previous visit may still be here, holding a detached tree
+      if (!root.isConnected) {
+        window.removeEventListener("hashchange", fromHash);
+        return false;
+      }
       var id = (location.hash || "").slice(1);
       if (!id) return false;
       var hit = items.filter(function (item) {
