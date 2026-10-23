@@ -8,7 +8,7 @@ paper's numbers may come from).
 
 Run::
 
-    python -m attnbank.studies.replot            # all eight
+    python -m attnbank.studies.replot            # all nine
     python -m attnbank.studies.replot S1 S5      # a subset
 """
 from __future__ import annotations
@@ -29,6 +29,12 @@ STUDIES = {
     "S6": "S6_finite_state_recall",
     "S7": "S7_ot_tilt",
     "S8": "S8_roofline",
+    # S9 was missing here until the capacity studies were reworked, so
+    # ``python -m attnbank.studies.replot`` -- the regeneration command STUDIES.md
+    # documents -- silently skipped ``fig_state_scaling`` and the figure went stale
+    # whenever the house style moved.  Nothing errored; the figure simply was not
+    # redrawn, which is the quietest way for a published plot to drift.
+    "S9": "S9_state_scaling",
 }
 
 
@@ -98,7 +104,7 @@ def replot(tag: str) -> list[str]:
     if tag == "S3":
         return mod.make_figure(_part(recs, part="scaling"),
                                _part(recs, part="logit_scale"), summary)
-    if tag in ("S6", "S8"):
+    if tag in ("S6", "S8", "S9"):
         return mod.make_figures(summary) if hasattr(mod, "make_figures") \
             else mod.make_figure(summary)
     return mod.make_figure(recs, summary)
@@ -116,5 +122,5 @@ def main(tags: list[str] | None = None) -> None:
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("tags", nargs="*", help="S1 ... S8; default all")
+    ap.add_argument("tags", nargs="*", help="S1 ... S9; default all")
     main([t.upper() for t in ap.parse_args().tags])

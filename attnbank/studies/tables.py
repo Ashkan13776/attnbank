@@ -468,6 +468,103 @@ method & {' & '.join(SOURCE[s_] for s_ in SOURCE_ORDER)} \\
 
 
 # ======================================================================================
+# the labelled extension both capacity studies carry
+# ======================================================================================
+
+EXT_PRETTY = {"retnet": "RetNet", "gla": "GLA", "hgrn2": "HGRN2", "rwkv": "RWKV-6",
+              "mlstm": "mLSTM", "s4d": "S4D", "s5": "S5", "lru": "LRU",
+              "hyena": "Hyena", "mega": "Mega"}
+
+
+def _ext_on_grid(block: dict, ds, tol: float = 0.05):
+    """``block``'s collapse points placed on the table's state-size columns, or ``None``.
+
+    An operator belongs in the grid only if *every* rung of its own ladder lands on one
+    of the columns.  ``mlstm`` does, to 1.6%: its state is ``r d_v`` plus the ``r`` of
+    the normaliser.  ``mega``'s chunk ladder and ``s5``/``lru``'s shared state do not
+    land anywhere near the columns, and are reported in prose rather than pushed into a
+    column they do not occupy.
+    """
+    cells = {}
+    for blk in block.values():
+        size = blk.get("state_rank_equivalent")
+        if size is None:
+            return None
+        near = [d for d in ds if abs(size - d) <= tol * d]
+        if len(near) != 1:
+            return None
+        cells[near[0]] = blk["N_at_recall_0.5"]
+    return cells if len(cells) == len(ds) else None
+
+
+def ext_rows(ext: dict, ds) -> tuple[list[str], str]:
+    """``(grid rows, prose)`` for the labelled extension.
+
+    An operator is given numbers only if its verdict is ``capacity measured``.  A
+    structural zero's "collapse point" is the left edge of the grid, and printing that
+    integer beside a measured one is exactly the confusion the classification exists
+    to stop; those operators are described in the prose instead, as are the ones whose
+    own knob ladder does not land on the table's columns.
+
+    The prose is returned separately and belongs in the **caption**, not in a
+    ``multicolumn`` row: a ``p{}`` cell spanning the table fixes the tabular's width
+    at that cell's width, which flings the numeric columns apart to fill it.
+    """
+    rows, prose = [], []
+    for m, v in sorted(ext["by_method"].items()):
+        cls, blk = v["classification"], v["collapse"]
+        name = EXT_PRETTY.get(m, m)
+        if cls["verdict"] != "capacity measured":
+            continue
+        cells = _ext_on_grid(blk, ds)
+        if cells is not None:
+            rows.append(f"{name} & " + " & ".join(intc(cells[d]) for d in ds) + r" \\")
+            continue
+        order = sorted(blk, key=lambda k: blk[k]["state_rank_equivalent"])
+        sizes = [blk[k]["state_rank_equivalent"] for k in order]
+        seq = ", ".join(intc(blk[k]["N_at_recall_0.5"]) for k in order)
+        prose.append(
+            rf"\quad {name}: its knob (\texttt{{{cls['knob']}}}) falls between the "
+            rf"columns --- $S={intc(sizes[0])}$ to {intc(sizes[-1])}, collapse at "
+            rf"$N={seq}$, slope {ci(v['scaling_fit'], 2)}.")
+    zmeth = sorted(ext["structural_zero"]["methods"])
+    zero = [EXT_PRETTY.get(m, m) for m in zmeth]
+    umeth = sorted(ext["unbounded_state"]["methods"])
+    unb = [EXT_PRETTY.get(m, m) for m in umeth]
+    # Hyena is both query-independent and stateless.  Two rows saying so is two rows
+    # of a table that is already the longest in the section, so when the unbounded set
+    # is contained in the structural one the second fact is a clause, not a row.
+    folded = bool(umeth) and set(umeth) <= set(zmeth)
+    if zero:
+        worst = max(ext["structural_zero"]["max_abs_recall_minus_chance"].values())
+        tail = (rf"  {', '.join(unb)} additionally has no finite state at all, its "
+                rf"\texttt{{state\_bytes}} growing with the context." if folded else "")
+        prose.append(
+            rf"\quad {', '.join(zero)}: query-independent --- output bit-identical "
+            rf"whichever item is queried (spread $0.0$), so recall is chance $1/N$ at "
+            rf"every state size (largest $|\text{{recall}}-1/N|$ {num(worst, 3)}): a "
+            rf"structural zero, \cref{{prop:memory-rank}}'s premise not applying."
+            + tail)
+    nreg = ext["no_working_regime"]["methods"]
+    if nreg:
+        best = max(ext["no_working_regime"]["best_recall_at_smallest_N"].values())
+        nmin = ext["by_method"][nreg[0]]["classification"]["smallest_N"]
+        prose.append(
+            rf"\quad {', '.join(EXT_PRETTY.get(m, m) for m in sorted(nreg))}: no "
+            rf"working regime --- recall is {num(best, 2)} already at $N={nmin}$ at "
+            rf"every state size, so there is no collapse point to locate.  It has no "
+            rf"key projection (the key \emph{{is}} the forget gate), so an orthogonal "
+            rf"code does not enter it as a key: the construction's premise fails, not "
+            rf"the proposition's.")
+    if unb and not folded:
+        prose.append(
+            rf"\quad {', '.join(unb)}: no finite state at all.  Its "
+            rf"\texttt{{state\_bytes}} grows with the context, so there is no state "
+            rf"size to place anything against and nothing to bound.")
+    return rows, " ".join(t.replace(r"\quad ", "") for t in prose)
+
+
+# ======================================================================================
 # S6
 # ======================================================================================
 
@@ -496,11 +593,40 @@ def tab_finite_state() -> Path:
     tr_N = sorted({r["N"] for r in tr})
     tr_small = float(np.median([r["recall"] for r in tr if r["N"] == tr_N[0]]))
     tr_large = float(np.median([r["recall"] for r in tr if r["N"] == tr_N[-1]]))
+    ext = s.get("extension_methods")
+    xblock, xcap, ahead = "", "", ""
+    if ext:
+        # The block headers are deliberately no longer than the ones
+        # \cref{tab:state-scaling} already carries: a \multicolumn spanning all
+        # columns sets the tabular's natural width, so a long header pulls the
+        # numeric columns apart.
+        ahead = (rf"\multicolumn{{{len(ds) + 1}}}{{@{{}}l}}{{\itshape (a) S6: the "
+                 r"three additive recurrences}" + r" \\" + "\n")
+        xrows, xprose = ext_rows(ext, ds)
+        xblock = (
+            "\n\\midrule\n"
+            + rf"\multicolumn{{{len(ds) + 1}}}{{@{{}}l}}{{\itshape (b) labelled "
+            + "extension (not S6's feature map)}" + r" \\" + "\n"
+            + chr(10).join(xrows))
+        xcap = (
+            r"Block (b) is a post-hoc, separately labelled extension to the operators "
+            r"the library expansion added; no number above it, and none in "
+            r"\cref{fig:finite-state-recall}'s solid curves, uses it.  Each operator "
+            r"is swept through the knob that sizes \emph{its own} state, read off its "
+            r"\texttt{cost()} rather than assumed to be $d_\varphi\times d_v$: S4D "
+            r"carries \texttt{n\_state}$\times d_v$, S5 and LRU one state of "
+            r"\texttt{n\_state} shared across all channels ($d_v$ times smaller at "
+            r"equal \texttt{n\_state}), Mega one chunk of KV, Hyena nothing bounded.  "
+            r"$S$ is in the columns' unit, state bytes$/(d_v\cdot 8)$.  These "
+            r"operators hard-code their feature maps, so (b) runs on S6's Gaussian "
+            r"keys but \emph{not} with S6's $\mathrm{elu}(k)+1$ --- which is why its "
+            r"gated rows move with the state where block (a) does not, and is a "
+            r"second sighting of what S9 isolates.  " + xprose)
     body = rf"""\begin{{table}}[tbp]
 \centering
 \caption{{Where recall collapses (S6).  Each cell is the smallest number of stored
-key--value pairs $N$ at which median recall falls below 0.5, for a state of rank
-$d_\varphi$ and $d_v={meta['dv']}$; construction form (keys and values embedded as
+key--value pairs $N$ at which median recall falls below 0.5, for a state of size $S$
+(the column; $=d_\varphi$ in block (a)) and $d_v={meta['dv']}$; construction form (keys and values embedded as
 random Gaussian vectors, one query per batch element, $m=1$), median over
 {max(r['n_seeds'] for r in s['recall_grid'])} seeds and up to {meta['max_queries']}
 queries, float64.  A dash means recall never fell below 0.5 over
@@ -517,15 +643,15 @@ where the random key code is itself separable (at $d_\varphi=8$ softmax itself f
 A 2-layer trained MQAR run was also made and is \emph{{not}} plotted: at the design's
 200 steps the softmax control itself falls from {num(tr_small, 2)} at $N={tr_N[0]}$ to
 {num(tr_large, 2)} at $N={tr_N[-1]}$, so that run is optimisation-limited and cannot
-separate capacity from training.}}
+separate capacity from training.  {xcap}}}
 \label{{tab:finite-state}}
 \begin{{tabular}}{{@{{}}l{'r' * len(ds)}@{{}}}}
 \toprule
- & \multicolumn{{{len(ds)}}}{{c}}{{state rank $d_\varphi$}} \\
+ & \multicolumn{{{len(ds)}}}{{c}}{{state size $S$}} \\
 \cmidrule(l){{2-{len(ds) + 1}}}
 operator & {' & '.join(str(d) for d in ds)} \\
 \midrule
-{chr(10).join(rows)}
+{ahead}{chr(10).join(rows)}{xblock}
 \bottomrule
 \end{{tabular}}
 \end{{table}}
@@ -578,22 +704,46 @@ def tab_state_scaling() -> Path:
     nmax, xmax = max(meta["N_grid"]), max(meta["N_grid_extension"])
     slope_txt = "; ".join(
         f"{REC_PRETTY[m]} {ci(fits[m], 2)}" for m in ("linear_rnn", "delta_rnn"))
+    xm = s.get("extension_methods")
+    xblock, xcap = "", ""
+    if xm:
+        load9 = xm["measured"]["N_over_S_at_collapse"]
+        slopes = xm["measured"]["slopes"]
+        lo = min(v["slope"] for v in slopes.values())
+        hi = max(v["slope"] for v in slopes.values())
+        xrows, xprose = ext_rows(xm, ds)
+        xblock = (
+            "\n\\midrule\n"
+            + rf"\multicolumn{{{len(ds) + 1}}}{{@{{}}l}}{{\itshape (c) labelled "
+            r"extension, S9's construction}" + r" \\" + "\n"
+            + chr(10).join(xrows))
+        xcap = (
+            r"Block (c) is a second post-hoc, separately labelled extension, to the "
+            r"operators the expansion added; no pre-registered quantity uses it.  It "
+            r"is (b)'s construction, but each operator is swept through the knob that "
+            r"sizes \emph{its own} state, read off its \texttt{cost()}, and the "
+            rf"columns are that size in bytes$/(d_v\cdot 8)$.  Where measurable the "
+            rf"collapse point still scales with the state, at slopes {num(lo, 2)} to "
+            rf"{num(hi, 2)} --- shallower than (b)'s $1.0$, a gate forgetting as well "
+            rf"as overwriting --- and at $N/S$ median {load9['median']:g} (IQR "
+            rf"{load9['q1']:.2g} to {load9['q3']:.2g}, $n={load9['n']}$) against "
+            rf"(b)'s {cr['median']:g}.  " + xprose)
     body = rf"""\begin{{table}}[tbp]
 \centering
-\caption{{The collapse point against the state rank, under two constructions
+\caption{{The collapse point against the state size, under two constructions
 (S6, S9).  Each cell is the smallest number of stored key--value pairs $N$ at which
-median recall falls below 0.5, for a state of rank $d_\varphi$ and $d_v={meta['dv']}$.
-Both blocks are the same construction-form multi-query associative recall --- nothing
-trained, no real activations, one query per batch element ($m=1$), recall scored by
-nearest stored value, median over {nseeds} seeds and up to {meta['max_queries']}
-queries, float64, a query gain holding the matched softmax logit at
-{num(meta['matched_logit'], 0)} --- and differ in exactly two respects: (a) uses the
-feature map $\varphi(k)=\mathrm{{elu}}(k)+1$ on standard Gaussian keys, (b) uses
+median recall falls below 0.5, for a state of size $S$ (the column; $=d_\varphi$ in
+blocks (a) and (b)) and $d_v={meta['dv']}$.
+Every block is the same construction-form multi-query associative recall --- nothing
+trained, no real activations, $m=1$, recall by nearest stored value, median over
+{nseeds} seeds and up to {meta['max_queries']} queries, float64, matched softmax logit
+held at {num(meta['matched_logit'], 0)}.  (a) and (b) differ in exactly two respects:
+(a) uses $\varphi(k)=\mathrm{{elu}}(k)+1$ on standard Gaussian keys, (b) uses
 $\varphi=\mathrm{{id}}$ on orthonormal keys (the polar factor of a Gaussian, unit-norm
 rows: exactly orthonormal for $N\le d_\varphi$, a unit-norm tight frame beyond it).
 A dash means recall never fell below 0.5 over $N\le{intc(nmax)}$; the one softmax
-entry in (a) is the $d_\varphi=8$ saturation of the Gaussian key code reported in
-\cref{{tab:finite-state}}, which is the embedding and not the operator.  In (a) the
+entry in (a) is the $d_\varphi=8$ saturation of the Gaussian key code, the embedding
+and not the operator (\cref{{tab:finite-state}}).  In (a) the
 collapse point is flat: $N/S$ at collapse has median {cr6['median']:.3g} (IQR {cr6['q1']:.3g} to
 {cr6['q3']:.3g}, $n={cr6['n']}$) and a {max(ds) // min(ds)}$\times$ larger state buys
 nothing.  In (b) it tracks the rank one-for-one --- a log--log slope of
@@ -605,11 +755,11 @@ in (b) come from a labelled post-hoc extension to $N\le{intc(xmax)}$, run only b
 the collapse point at $d_\varphi\ge128$ lies above the pre-registered grid; no
 pre-registered quantity in this table or in \cref{{fig:state-scaling}} uses them;
 including them the linear RNN's slope is {ci(fx['linear_rnn'], 2)}.  Softmax is the control in both blocks and never collapses
-(median recall {num(sc['median'], 2)} in (b)).}}
+(median recall {num(sc['median'], 2)} in (b)).  {xcap}}}
 \label{{tab:state-scaling}}
 \begin{{tabular}}{{@{{}}l{'r' * len(ds)}@{{}}}}
 \toprule
- & \multicolumn{{{len(ds)}}}{{c}}{{state rank $d_\varphi$}} \\
+ & \multicolumn{{{len(ds)}}}{{c}}{{state size $S$}} \\
 \cmidrule(l){{2-{len(ds) + 1}}}
 operator & {' & '.join(str(d) for d in ds)} \\
 \midrule
@@ -619,7 +769,7 @@ operator & {' & '.join(str(d) for d in ds)} \\
 \midrule
 \multicolumn{{{len(ds) + 1}}}{{@{{}}l}}{{\itshape (b) S9: identity features, orthonormal
   keys}} \\
-{chr(10).join(rows9)}
+{chr(10).join(rows9)}{xblock}
 \bottomrule
 \end{{tabular}}
 \end{{table}}
@@ -1087,6 +1237,11 @@ def cap_fig_finite_state_recall() -> Path:
     # panel (b) drops the smallest state rank (see S6_finite_state_recall), so its
     # span is not the span of the whole sweep -- the two disagreed in print.
     ds_shown = [d for d in ds if d != min(ds)]
+    xm = s.get("extension_methods") or {}
+    gm = (xm.get("groups_measured") or {}).get("gated", [])
+    xcapfig = (f"the median of the {len(gm)} gated operators whose collapse point is "
+               f"measurable, with their range shaded, and Mega"
+               if gm else "the operators the library expansion added")
     # The MQAR construction itself -- Gaussian key/value codes, one query per batch
     # element, the trained run that is not plotted -- is stated once, in
     # \cref{tab:finite-state}; repeating it here cost an inch of the float, which is
@@ -1108,17 +1263,26 @@ to {meta['max_queries']} queries per configuration, float64, seed {meta['seed']}
 seeds.  The linear and decay RNNs coincide at every $N$ --- the decay horizon is long
 relative to $N$ --- so the former is drawn wider to stay visible.  The softmax control
 is read only at the state ranks where the random key code is itself separable; the
-panel gives those ranks and the recall at each.
+panel gives those ranks and the recall at each.  The grey dashed curve is the labelled
+extension's four query-independent operators (S4D, S5, LRU, Hyena): they never read
+$q$ or $k$, so they return bit-identical output whichever item is queried and sit on
+chance $1/N$ --- a structural zero, not a measured capacity.
 (b) The same sweep for the linear RNN resolved by state rank $d_\varphi$, on the
 sequential ramp because rank is an ordered variable, and omitting $d_\varphi={min(ds)}$
 for the reason noted in (a).  The curves do not separate: a
 {max(ds) // min(ds_shown)}$\times$ larger state buys no extra associations here.
 (c) Why that matters.  The collapse point --- the smallest $N$ at which median recall
-falls below 0.5 --- is flat in $d_\varphi$ while the $N=d_\varphi$ bound of
-\cref{{prop:memory-rank}} rises {max(ds) // min(ds)}$\times$ across the sweep.  The
-bound holds everywhere (median $N/S$ at collapse {cr['median']:g}, IQR {cr['q1']:g} to
-{cr['q3']:g}, $n={cr['n']}$) but is nowhere tight, so this experiment supports the
-\emph{{direction}} of the proposition and not its constant.
+falls below 0.5 --- is flat in the state size $S$ (here $=d_\varphi$) for the three
+solid curves while the $N=S$ bound of \cref{{prop:memory-rank}} rises
+{max(ds) // min(ds)}$\times$ across the sweep.  The bound holds everywhere (median
+$N/S$ at collapse {cr['median']:g}, IQR {cr['q1']:.2g} to {cr['q3']:.2g},
+$n={cr['n']}$) but is nowhere tight, so this experiment supports the
+\emph{{direction}} of the proposition and not its constant.  Dashed: the labelled
+extension ({xcapfig}), each placed by its own state in the common unit
+\texttt{{state\_bytes}}$/(d_v\cdot 8)$ because they do not all carry a
+$d_\varphi\times d_v$ state.  They use their own feature maps, not S6's, and they
+\emph{{do}} move with $S$ --- a second sighting of what \cref{{fig:state-scaling}}
+isolates.  \Cref{{tab:finite-state}} gives the cells.
 Log $x$ in (a) and (b); log--log in (c)."""
     return _figure("cap_fig_finite_state_recall", "fig:finite-state-recall", cap,
                    "S6_finite_state_recall", meta["git_short"])
@@ -1134,6 +1298,12 @@ def cap_fig_state_scaling() -> Path:
     rs = s["rescaled_by_load"]["by_method"]["linear_rnn"]["max_spread"]
     nseeds = max(r["n_seeds"] for r in s["recall_grid"])
     nmax, xmax = max(meta["N_grid"]), max(meta["N_grid_extension"])
+    xm = s.get("extension_methods") or {}
+    gm = (xm.get("groups_measured") or {}).get("gated", [])
+    gall = (xm.get("groups") or {}).get("gated", [])
+    slopes = (xm.get("measured") or {}).get("slopes", {})
+    slo = min((v["slope"] for v in slopes.values()), default=float("nan"))
+    shi = max((v["slope"] for v in slopes.values()), default=float("nan"))
     cap = rf"""\textbf{{With the feature map and the key geometry fixed, the collapse
 point tracks the state rank.}}  The construction of \cref{{fig:finite-state-recall}}
 with exactly two changes --- identity features in place of $\mathrm{{elu}}(k)+1$, and
@@ -1147,11 +1317,15 @@ $d_v={meta['dv']}$).  \emph{{Fixed:}} a query gain holding the matched softmax l
 float64, seed {meta['seed']}, {nseeds} seeds per cell.
 (a) Median recall with the interquartile band over the {len(ds)} state sizes; the band
 is wide because the curves now move with the state, where in
-\cref{{fig:finite-state-recall}}(a) they lay on top of one another.
+\cref{{fig:finite-state-recall}}(a) they lay on top of one another.  The grey dashed
+curve is the labelled method extension's four query-independent operators (S4D, S5,
+LRU, Hyena): they never read $q$ or $k$, so they return bit-identical output whichever
+item is queried and sit on chance $1/N$ --- a structural zero, not a measured
+capacity, and the reason they are not in (c).
 (b) The linear RNN by rank, on the sequential ramp because rank is ordered: each
 doubling of $d_\varphi$ shifts the curve one octave, and against the load $N/S$ the six
 curves agree to {num(rs, 2)} in recall.
-(c) The collapse point against the rank, with the $N=d_\varphi$ line of
+(c) The collapse point against the state size, with the $N=S$ line of
 \cref{{prop:memory-rank}}: slope {ci(fit, 2)} on the pre-registered grid and
 {ci(fx, 2)} including the open markers, a labelled post-hoc extension to
 $N\le{intc(xmax)}$ run only because the two largest ranks collapse above that grid.
@@ -1159,7 +1333,15 @@ Collapse is at load $N/S$ median {cr['median']:g} (IQR {cr['q1']:g} to {cr['q3']
 $n={cr['n']}$), i.e.\ \emph{{above}} the line: nearest-value scoring tolerates
 interference that exact retrieval would not, so what is attained is the scaling in $S$
 and not the constant.  Softmax is the control and never collapses (median recall
-{num(sc['median'], 2)}).  Log $x$ in (a) and (b); log--log in (c)."""
+{num(sc['median'], 2)}).  Dashed: the second labelled extension, to the operators the
+expansion added --- the median of the {len(gm)} of {len(gall)} gated operators whose
+collapse point is measurable, with their range shaded, and Mega.  Each is placed by
+its own state in one common unit, \texttt{{state\_bytes}}$/(d_v\cdot 8)$, which equals
+$d_\varphi$ only for the three additive recurrences.  They scale too, at slopes
+{num(slo, 2)} to {num(shi, 2)}: shallower than $1$, because a gate forgets as well as
+overwrites.  \Cref{{tab:state-scaling}} gives the cells and the three operators that
+cannot go on this axis at all.
+Log $x$ in (a) and (b); log--log in (c)."""
     return _figure("cap_fig_state_scaling", "fig:state-scaling", cap,
                    "S9_state_scaling", meta["git_short"])
 

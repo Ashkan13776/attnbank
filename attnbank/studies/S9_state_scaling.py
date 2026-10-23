@@ -58,6 +58,31 @@ on the pre-registered grid alone and reported as such; the extension is reported
 beside it and is marked wherever it is plotted or tabulated.  It was added after the
 pre-registered grid had already answered the falsifier, not in order to answer it.
 
+A second post-hoc extension: the methods the expansion added
+------------------------------------------------------------
+The pre-registration sweeps "state size" by sweeping ``d``, because at the time every
+recurrent method in the bank carried a state of shape ``d x d_v``.  The expansion broke
+that identity, so the extension runs through :mod:`attnbank.studies._state`, which
+reads each operator's state off its own ``cost()["state_bytes"]`` instead of assuming
+the shape (see that module for why it is derived rather than tabulated).  The gated
+family is swept by ``state_rank``, ``s4d``/``s5``/``lru`` by ``n_state`` -- at equal
+``n_state`` the latter two hold ``d_v`` times fewer bytes than ``s4d``, which the
+mapping reports rather than hides -- and ``mega`` by its attention ``chunk``.
+``hyena`` has no bounded state at all and is run at one setting, with the mapping
+recording that there is no size to put its recall against.
+
+This part (``part = "extended_methods"``) is **not** part of the pre-registration.  It
+is labelled exactly as the ``extended_N`` part is, no pre-registered quantity uses it,
+and it is marked wherever it is plotted or tabulated.
+
+Four of the added operators -- ``s4d``, ``s5``, ``lru``, ``hyena`` -- are linear and
+time-invariant in the value field and never read ``q`` or ``k``, so on multi-query
+associative recall they return **bit-identical** output whichever item is queried.
+Their recall is therefore chance, and the study measures and records that identity
+(``query_spread``, exactly ``0.0``) so the result is reported as the structural zero it
+is and not as a measured capacity limit: ``prop:memory-rank``'s premise is inapplicable
+to them, which is a different statement from the proposition being tested and passed.
+
 Falsifier (as pre-registered)
 -----------------------------
 *The collapse point still fails to move with ``S`` under identity features and
@@ -79,6 +104,7 @@ import attnbank as ab
 
 from . import _common as C
 from . import _harness as H
+from . import _state as ST
 
 NAME = "S9_state_scaling"
 N_GRID = (4, 8, 16, 32, 64, 128, 256, 512)      # the pre-registered grid, exactly S6's
@@ -91,6 +117,8 @@ N_SEEDS = 5
 MAX_QUERIES = 64
 FEATURE = "identity"        # S6 used "elu"; this is one of the two changes
 REC_METHODS = tuple(m for m in METHODS if m != "softmax")
+#: the second, separately labelled extension: the operators the expansion added
+EXT_METHODS = ST.EXT_METHODS
 
 
 # ======================================================================================
@@ -168,6 +196,34 @@ def measure_construction(job, ctx) -> dict:
             "N_over_S": N / d if meth != "softmax" else float("nan")}
 
 
+def measure_extended(job, ctx) -> dict:
+    """The same cell, for an operator whose state is not ``d x d_v``.
+
+    Identical construction, identical scoring; the two differences are that the
+    configuration comes from :func:`attnbank.studies._state.ext_config` (so the knob
+    that sizes *this* operator's state is the one being swept, and ``feature=`` is
+    passed only to the operators that accept it), and that the spread of the output
+    *across queries* is recorded.  A spread of exactly zero is the signature of an
+    operator that never read ``q`` or ``k``.
+    """
+    N, d, meth = int(job["N"]), int(job["d"]), job["method"]
+    cfg = ST.ext_config(job, feature=FEATURE)
+    op = ab.build(meth, **cfg)
+    accs, margins, spread = [], [], 0.0
+    for seed in range(int(job["n_seeds"])):
+        q, k, v, vbank, target, _ = _mqar_batch(N, d, DV, 1000 + seed, ctx.device,
+                                                MAX_QUERIES)
+        y = op(q, k, v, causal=True, return_weights=False).y[:, 0, 0, :]   # [Q, dv]
+        spread = max(spread, float((y - y[:1]).abs().max()))
+        logits = y @ vbank.transpose(-1, -2)
+        accs.append(float((logits.argmax(-1) == target).double().mean()))
+        best = logits.gather(-1, target.unsqueeze(-1)).squeeze(-1)
+        other = logits.scatter(-1, target.unsqueeze(-1), float("-inf")).amax(-1)
+        margins.append(float((best - other).median()))
+    return ST.ext_metrics(meth, cfg, N=N, d=d, dv=DV, recalls=accs, margins=margins,
+                          query_spread=spread)
+
+
 # ======================================================================================
 # analysis
 # ======================================================================================
@@ -237,12 +293,14 @@ def analyse(records) -> dict:  # noqa: C901
     allrows = [{**r["job"], **r["metrics"]} for r in records if r["_status"] == "ok"]
     rows = [r for r in allrows if r.get("part") == "construction"]
     ext_rows = [r for r in allrows if r.get("part") == "extended_N"]
+    ext_m_rows = [r for r in allrows if r.get("part") == "extended_methods"]
     dec_rows = [r for r in allrows if r.get("part") == "decay_sweep"]
     ds = sorted({r["d"] for r in rows})
     Ns = sorted({r["N"] for r in rows})
 
     summary: dict = {
         "recall_grid": rows, "extended_grid": ext_rows, "decay_sweep": dec_rows,
+        "extended_methods_grid": ext_m_rows,
         "dv": DV, "matched_logit": MATCHED_LOGIT, "feature": FEATURE,
         "key_geometry": "orthonormal (polar factor of a Gaussian; unit-norm rows)",
         "changed_from_S6": ["feature map elu(k)+1 -> identity",
@@ -284,6 +342,10 @@ def analyse(records) -> dict:  # noqa: C901
                     + ", where the collapse point lies above the pre-registered grid. "
                       "Every pre-registered quantity is computed without it.",
             "N_values": list(N_EXT)}
+
+    # -- the second labelled extension: the operators the expansion added --------------
+    if ext_m_rows:
+        summary["extension_methods"] = ST.extension_block(ext_m_rows, dv=DV)
 
     # -- the same summaries S6 reports, so the two studies compare term by term --------
     ratios = [v["N_over_S_at_collapse"] for m in REC_METHODS
@@ -401,6 +463,41 @@ def _pool(rows, **match) -> list[float]:
     return out
 
 
+def group_collapse(ext: dict, methods) -> tuple:
+    """``(x, median, lo, hi, n)`` of the collapse point over a group of operators.
+
+    Keyed by the *knob rung* rather than by the state size, because the five gated
+    operators put very slightly different byte counts on the same ``state_rank``
+    (``mlstm`` carries a normaliser alongside the matrix memory), and plotting five
+    curves that differ by 1.5% in ``x`` would be five curves on top of one another.
+    ``x`` is the mean of the rung's state sizes in the rank-equivalent unit.
+    """
+    per, xs_by_rung = {}, {}
+    for m in methods:
+        for blk in ext["by_method"][m]["collapse"].values():
+            if (blk["N_at_recall_0.5"] is None or blk["knob_value"] is None
+                    or blk["state_rank_equivalent"] is None):
+                continue
+            per.setdefault(blk["knob_value"], []).append(blk["N_at_recall_0.5"])
+            xs_by_rung.setdefault(blk["knob_value"], []).append(
+                blk["state_rank_equivalent"])
+    rungs = sorted(per)
+    return ([float(np.mean(xs_by_rung[r])) for r in rungs],
+            [float(np.median(per[r])) for r in rungs],
+            [float(min(per[r])) for r in rungs], [float(max(per[r])) for r in rungs],
+            [len(per[r]) for r in rungs])
+
+
+def lti_recall(ext_rows, Ns) -> list[float]:
+    """Median recall of the query-independent operators at each ``N``: the chance curve."""
+    out = []
+    for N in Ns:
+        v = [r["recall"] for r in ext_rows
+             if r["N"] == N and r["method"] in ST.EXT_LTI]
+        out.append(float(np.median(v)) if v else float("nan"))
+    return out
+
+
 def make_figure(summary) -> list[str]:  # noqa: C901
     """The same three statements S6's figure makes, under the fixed construction.
 
@@ -421,6 +518,8 @@ def make_figure(summary) -> list[str]:  # noqa: C901
     style.use()
     rows = summary["recall_grid"]
     ext = summary.get("extended_grid") or []
+    extm = summary.get("extension_methods")
+    ext_rows = summary.get("extended_methods_grid") or []
     ds = sorted({r["d"] for r in rows})
     Ns = sorted({r["N"] for r in rows})
     el = summary.get("embedding_limit", {})
@@ -454,6 +553,17 @@ def make_figure(summary) -> list[str]:  # noqa: C901
     ax.set_yticks([0.0, 0.5, 1.0])
     ax.tick_params(labelbottom=False)
     ax.set_ylabel("recall (fraction correct)")
+    # The four query-independent operators the expansion added.  They are drawn here
+    # and not in (c) because they have no collapse point: their output does not depend
+    # on which item is queried, so recall *is* chance and the curve is 1/N.  Showing it
+    # beside the control is the only way a reader can see that the zero is structural.
+    if extm:
+        lti = lti_recall(ext_rows, Ns)
+        ax.plot(Ns, lti, "--", color=style.INK["muted"], linewidth=1.2, zorder=2)
+        style.direct_label(ax, Ns[0], 0.78, "s4d, s5, lru, hyena are\n"
+                                            "query-independent, so\n"
+                                            "recall is chance $1/N$",
+                           dx=2, dy=0, ha="left", va="top", size=7.5)
     style.panel(ax, "a", "recall against load")
     style.label_ends(ax, ends, size=7.5, min_gap_frac=0.075)
     d8 = el.get("by_d", {}).get(str(min(ds)), {}).get("min_recall", float("nan"))
@@ -508,26 +618,48 @@ def make_figure(summary) -> list[str]:  # noqa: C901
                     markeredgecolor=style.series(i), markeredgewidth=0.9,
                     linestyle="none")
         ends.append((xs[-1], ys[-1], PRETTY[meth].replace(" RNN", "")))
-    ax.plot(ds, ds, color=style.INK["primary"], linewidth=1.0, zorder=1)
+    # The labelled extension to the operators the expansion added.  The gated five are
+    # one curve -- the median collapse point over the five, with their min-max range --
+    # because they lie within half an octave of one another and five more categorical
+    # hues would be unreadable; the per-operator cells are in \cref{tab:state-scaling}.
+    if extm:
+        shown = extm["groups_measured"]["gated"]
+        gx, gm, glo, ghi, _ = group_collapse(extm, shown)
+        if gx:
+            ax.fill_between(gx, glo, ghi, color=style.series(3), alpha=0.18,
+                            linewidth=0, zorder=2)
+            ax.plot(gx, gm, "--s", color=style.series(3), markersize=3.0,
+                    linewidth=1.3, zorder=3)
+            ends.append((gx[-1], gm[-1],
+                         f"gated ({len(shown)} of {len(extm['groups']['gated'])})"))
+        hx, hm, _, _, _ = group_collapse(extm, extm["groups_measured"]["hybrid"])
+        if hx:
+            ax.plot(hx, hm, "--^", color=style.series(4), markersize=3.0,
+                    linewidth=1.3, zorder=3)
+            ends.append((hx[-1], hm[-1], "mega"))
+    bnd = [min(ds), 2 ** 9.9]
+    ax.plot(bnd, bnd, color=style.INK["primary"], linewidth=1.0, zorder=1)
     ax.set_xscale("log", base=2)
     ax.set_yscale("log", base=2)
-    style.log2_ticks(ax, "x", 3, 8, every=1)
+    style.log2_ticks(ax, "x", 3, 9, every=1)
     style.log2_ticks(ax, "y", 3, 12, every=2)
-    ax.set_xlim(2 ** 2.7, 2 ** 9.5)
+    ax.set_xlim(2 ** 2.7, 2 ** 9.9)
     ax.set_ylim(2 ** 2.4, 2 ** 13.2)
     if ext:
         ax.axhspan(2 ** 9.5, 2 ** 13.2, color=style.INK["grid"], alpha=0.55, zorder=0,
                    linewidth=0)
-        style.direct_label(ax, 2 ** 2.85, 2 ** 12.8, "shaded: past the registered\n"
-                                                     "grid.  open markers are the\n"
-                                                     "labelled extension",
+        style.direct_label(ax, 2 ** 2.85, 2 ** 13.0,
+                           "shaded: past the registered grid.\n"
+                           "open markers are the labelled $N$\n"
+                           "extension; dashed curves the\n"
+                           "labelled method extension",
                            dx=0, dy=0, ha="left", va="top", size=7.5)
-    dmid = ds[len(ds) // 2]
-    style.direct_label(ax, dmid, dmid, r"bound $N=d_\varphi$", dx=4, dy=-3,
+    style.direct_label(ax, ds[0], ds[0], r"bound $N=S$", dx=3, dy=-3,
                        ha="left", va="top", size=7.5)
-    ax.set_xlabel(r"state rank $d_\varphi$ ($d_v$=" f"{DV})")
+    ax.set_xlabel(r"state size $S$ = bytes$/(d_v\cdot 8)$;" "\n"
+                  r"$=d_\varphi$ for the additive recurrences")
     ax.set_ylabel("$N$ at which median\nrecall first drops below 0.5")
-    style.panel(ax, "c", "collapse tracks the rank")
+    style.panel(ax, "c", "collapse tracks the state")
     style.label_ends(ax, ends, size=7.5, min_gap_frac=0.045)
     fit = summary["scaling_fit"][REC_METHODS[0]]
     style.note(ax, f"slope {fit['slope']:.2f}\n"
@@ -542,8 +674,14 @@ def make_figure(summary) -> list[str]:  # noqa: C901
 # ======================================================================================
 
 
+def _measure(job, ctx) -> dict:
+    """Dispatch: the pre-registered cells and the labelled extension differ only here."""
+    return (measure_extended if job.get("part") == "extended_methods"
+            else measure_construction)(job, ctx)
+
+
 def main(quick: bool = False, resume: bool = True, analyse_only: bool = False,
-         extend: bool = True) -> dict:
+         extend: bool = True, ext_methods: bool = True) -> dict:
     dev = H.default_device()
     n_grid = (8, 64) if quick else N_GRID
     d_grid = (16, 64) if quick else D_GRID
@@ -571,6 +709,22 @@ def main(quick: bool = False, resume: bool = True, analyse_only: bool = False,
                                           "part run only to uncensor the two largest "
                                           "state ranks; no pre-registered quantity "
                                           "uses it",
+                        "extended_methods": list(EXT_METHODS) if ext_methods else [],
+                        "extended_methods_note":
+                            "a second post-hoc, separately labelled part "
+                            "(part='extended_methods'): the operators the library "
+                            "expansion added, each swept through the knob that sizes "
+                            "ITS OWN state.  The state size is read off "
+                            "cost()['state_bytes'] by attnbank.studies._state rather "
+                            "than assumed to be d x d_v, which is what the pre-"
+                            "registered part assumes and what stopped being true: "
+                            "s4d carries n_state x d_v, s5 and lru carry n_state "
+                            "shared across channels (d_v times smaller at equal "
+                            "n_state), hyena carries no bounded state at all, and "
+                            "mega's is bounded only by its attention chunk.  No "
+                            "pre-registered quantity uses any of it.",
+                        "extended_methods_knob_ladder": {
+                            k: list(v) for k, v in ST.KNOB_LADDER.items()},
                         "data": "constructed MQAR (not real activations); construction "
                                 "only, nothing is trained"})
 
@@ -585,15 +739,25 @@ def main(quick: bool = False, resume: bool = True, analyse_only: bool = False,
         jobs += [{"part": "extended_N", "method": m, "N": N, "d": d, "dv": DV,
                   "n_seeds": seeds, "decay": 0.999}
                  for m in METHODS for N in n_ext for d in d_grid]
+    if ext_methods:
+        # The gated family and the chunked hybrid can collapse above the registered
+        # grid for the same reason the pre-registered operators do, so they get the
+        # same N range; the query-independent operators are at chance everywhere and
+        # nothing above N = 512 would change that.
+        ext_m = list(ST.EXT_GATED) + list(ST.EXT_HYBRID) if not quick else ["retnet"]
+        jobs += ST.ext_jobs(ext_m, list(n_grid) + list(n_ext), d=64, dv=DV,
+                            n_seeds=seeds)
+        jobs += ST.ext_jobs(list(ST.EXT_LTI) if not quick else ["s5"], n_grid,
+                            d=64, dv=DV, n_seeds=seeds)
 
     if analyse_only:
         records = [r for r in sweep.all_records
                    if r["job"].get("part") in ("construction", "decay_sweep",
-                                               "extended_N")]
+                                               "extended_N", "extended_methods")]
         print(f"  analysing {len(records)} cached jobs without running new ones",
               file=sys.stderr)
     else:
-        records = sweep.run(jobs, measure_construction, label="MQAR construction")
+        records = sweep.run(jobs, _measure, label="MQAR construction")
 
     summary = analyse(records)
     figs = make_figure(summary)
@@ -637,6 +801,27 @@ def _report(s: dict) -> None:
     for dc, v in s.get("decay_effect", {}).get("by_decay", {}).items():
         p(f"  decay={dc} (horizon {v['forgetting_horizon']:.0f}): N at recall 0.5 = "
           f"{v['N_at_recall_0.5']}")
+    ext = s.get("extension_methods")
+    if ext:
+        p("\n--- labelled extension: the operators the expansion added ---")
+        p("  (post-hoc; no pre-registered quantity uses any of this)")
+        for m, v in sorted(ext["by_method"].items()):
+            c = v["classification"]
+            p(f"  {m:8s} knob={str(c['knob']):11s} verdict={c['verdict']}")
+            p(f"           state bytes {c['state_bytes'][:1]}..{c['state_bytes'][-1:]}"
+              f"  max query spread {c['max_query_spread']:.3g}"
+              f"  median recall {c['median_recall']:.3f}")
+            if c["verdict"] == ST.MEASURED:
+                f = v["scaling_fit"]
+                p("           collapse: " + ", ".join(
+                    f"S={b['state_rank_equivalent']:g}:{b['N_at_recall_0.5']}"
+                    for b in v["collapse"].values())
+                  + f"  slope {f['slope']:+.3f} CI [{f['ci95'][0]:+.3f}, "
+                    f"{f['ci95'][1]:+.3f}] r2 {f['r2']:.3f} n={f['n']}")
+        sz = ext["structural_zero"]
+        p(f"  structural zero (query-independent): {sz['methods']}")
+        p(f"    max |recall - chance| {sz['max_abs_recall_minus_chance']}")
+        p(f"  unbounded state: {ext['unbounded_state']['methods']}")
 
 
 if __name__ == "__main__":
@@ -647,6 +832,9 @@ if __name__ == "__main__":
                     help="finalise from the resume cache without running new jobs")
     ap.add_argument("--no-extend", action="store_true",
                     help="pre-registered grid only; skip the labelled N > 512 part")
+    ap.add_argument("--no-ext-methods", action="store_true",
+                    help="skip the labelled extension to the operators the library "
+                         "expansion added")
     a = ap.parse_args()
     main(quick=a.quick, resume=not a.fresh, analyse_only=a.analyse_only,
-         extend=not a.no_extend)
+         extend=not a.no_extend, ext_methods=not a.no_ext_methods)
