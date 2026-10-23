@@ -72,11 +72,16 @@ markdown_extensions:
   - pymdownx.arithmatex: { generic: true }
 
 extra_css:
-  # the method browser; vendored, like everything else the site loads except MathJax
+  # the method browser; everything the site loads is vendored
   - stylesheets/bank.css
 
 extra_javascript:
-  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  # MathJax 3.2.2, vendored. The SVG build is used rather than CHTML because
+  # CHTML pulls ~20 MB of woff2 webfonts, while SVG embeds its glyph outlines
+  # in the bundle -- so this one file is the whole dependency and the site
+  # makes no third-party requests.  Config must load before the bundle.
+  - javascripts/mathjax.js
+  - javascripts/tex-svg.js
   - javascripts/bank.js
 
 nav:
