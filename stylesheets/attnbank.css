@@ -1,0 +1,727 @@
+/* The front matter: the operator plate (home + taxonomy), the taxonomy tree, and
+ * the naming in the method browser.
+ *
+ * Nothing here is fetched. The faces are system stacks -- mkdocs.yml sets
+ * `font: false` so Material does not pull Roboto from Google Fonts, which is what
+ * makes "no third-party requests" true rather than nearly true.
+ *
+ * The seven category hues are `attnbank.plotting.style.CATEGORICAL` verbatim, so a
+ * category is the same colour on this page as in every figure in the monograph. They
+ * are used for rules, ticks and underlines only -- never as text colour and never as
+ * a fill behind text, because the amber and the green do not clear 4.5:1 either way
+ * round. Selection is shown with full-strength ink plus a coloured rule instead.
+ *
+ * Material always stamps `data-md-color-scheme` on <html> server-side, so the two
+ * blocks below are the complete set of states; there is no unstamped case to guard.
+ */
+
+:root {
+  /* STIX Two is the monograph's face; the rest of the stack is the same shape of
+   * Times that a TeX installation or a plain desktop will already have. */
+  --ab-serif: "STIX Two Text", "STIX Two Math", "TeX Gyre Termes", "Nimbus Roman",
+              "Liberation Serif", Times, "Times New Roman", serif;
+  --ab-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas,
+             "DejaVu Sans Mono", "Liberation Mono", monospace;
+
+  --ab-plate: #ffffff;
+  --ab-sunk: #f4f6fa;
+  --ab-rule: #d9dfe8;
+  --ab-rule-soft: #eaeef4;
+  --ab-faint: #8c94a2;
+
+  --c-exact: #52514e;
+  --c-interaction: #2a78d6;
+  --c-restrict: #eb6834;
+  --c-compress: #1baf7a;
+  --c-factorize: #4a3aa7;
+  --c-coupling: #eda100;
+  --c-recurrent: #e34948;
+}
+
+[data-md-color-scheme="slate"] {
+  --ab-plate: #1a1f28;
+  --ab-sunk: #15191f;
+  --ab-rule: #2e3642;
+  --ab-rule-soft: #242b35;
+  --ab-faint: #78818f;
+
+  /* lifted for the dark ground; same hue, same order */
+  --c-exact: #9aa3b0;
+  --c-interaction: #68a8f2;
+  --c-restrict: #f58a5c;
+  --c-compress: #3fcb97;
+  --c-factorize: #8f80e0;
+  --c-coupling: #f0bb3d;
+  --c-recurrent: #f0706f;
+}
+
+/* one hue per category, resolved from the data attribute so nothing is inlined */
+[data-cat="exact"]       { --hl: var(--c-exact); }
+[data-cat="interaction"] { --hl: var(--c-interaction); }
+[data-cat="restrict"]    { --hl: var(--c-restrict); }
+[data-cat="compress"]    { --hl: var(--c-compress); }
+[data-cat="factorize"]   { --hl: var(--c-factorize); }
+[data-cat="coupling"]    { --hl: var(--c-coupling); }
+[data-cat="recurrent"]   { --hl: var(--c-recurrent); }
+
+/* ---- shared idioms ------------------------------------------------------ */
+
+.md-typeset .ab-eyebrow {
+  font-family: var(--ab-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+  margin: 0 0 0.5rem;
+}
+
+/* The page title is set in the monograph's face. Only h1, so the API pages keep
+ * Material's sans for their long identifier headings. */
+.md-typeset h1 {
+  font-family: var(--ab-serif);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--md-default-fg-color);
+}
+
+/* ---- the operator plate ------------------------------------------------- */
+
+.op-plate {
+  position: relative;
+  margin: 1.6rem 0 0;
+  padding: 1.9rem 1.1rem 1.4rem;
+  background: var(--ab-plate);
+  border: 1px solid var(--ab-rule);
+}
+
+/* the corner label of a figure plate, sitting in the top rule */
+.op-plate::before {
+  content: attr(data-plate);
+  position: absolute;
+  top: -0.46rem;
+  left: 1.1rem;
+  padding: 0 0.45rem;
+  background: var(--ab-plate);
+  font-family: var(--ab-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+}
+
+.op-formula {
+  font-family: var(--ab-serif);
+  text-align: center;
+  line-height: 1.6;
+  color: var(--md-default-fg-color);
+  overflow-x: auto;
+  padding: 0.2rem 0 0.1rem;
+}
+
+.op-line {
+  display: block;
+  white-space: nowrap;
+  font-size: clamp(1.3rem, 4.4vw, 2.1rem);
+}
+
+.op-line--sub { font-size: clamp(1.05rem, 3.4vw, 1.62rem); }
+.op-rel { padding: 0 0.3em; color: var(--ab-faint); }
+.op-formula i { font-style: italic; }
+
+/* a built fraction rather than a solidus: this is the paper's display, and the
+ * numerator and denominator are two different things a method can reach for */
+.op-frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.84em;
+}
+
+/* the fraction has no baseline to share, so the line centres its boxes instead */
+.op-line--sub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.op-num { padding: 0 0.3em 0.06em; border-bottom: 1px solid currentcolor; }
+.op-den { padding: 0.06em 0.3em 0; }
+
+.sym {
+  display: inline-block;
+  padding: 0.06em 0.14em;
+  margin: 0 -0.04em;
+  border-bottom: 2px solid transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+/* Selection is ink plus a coloured rule. A hue fill behind text would fail
+ * contrast for coupling and compress in light mode, in both directions. */
+.sym.is-lit {
+  background: color-mix(in srgb, var(--hl) 15%, transparent);
+  border-bottom-color: var(--hl);
+}
+
+/* everything the chosen category leaves alone recedes */
+.op-formula.is-focused .sym:not(.is-lit) { opacity: 0.32; }
+
+/* `exact` changes no symbol, so the figure rules off the whole operator instead of
+ * lighting part of it -- the asymmetry is the answer, not a missing state. */
+.op-formula.is-framed {
+  outline: 1px dashed var(--hl);
+  outline-offset: 0.7rem;
+}
+
+.op-formula.is-framed .sym { opacity: 1; }
+
+.op-replacement {
+  font-family: var(--ab-serif);
+  font-size: clamp(0.98rem, 2.6vw, 1.3rem);
+  text-align: center;
+  color: var(--md-default-fg-color--light);
+  margin: 0.45rem 0 0;
+}
+
+.md-typeset .op-replacement .note {
+  font-family: var(--md-text-font-family, sans-serif);
+  font-size: 0.72rem;
+  color: var(--ab-faint);
+  white-space: nowrap;
+}
+
+/* ---- the category keys -------------------------------------------------- */
+
+.op-keys[hidden],
+.op-prompt[hidden],
+.op-panel[hidden] { display: none; }
+
+.op-keys {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem;
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--ab-rule-soft);
+}
+
+.op-key {
+  font: inherit;
+  font-family: var(--ab-mono);
+  font-size: 0.72rem;
+  line-height: 1.3;
+  padding: 0.34rem 0.6rem;
+  cursor: pointer;
+  color: var(--md-default-fg-color--light);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid var(--ab-rule);
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.op-key:hover {
+  color: var(--md-default-fg-color);
+  border-bottom-color: var(--ab-faint);
+}
+
+.op-key[aria-pressed="true"] {
+  color: var(--md-default-fg-color);
+  background: color-mix(in srgb, var(--hl) 13%, transparent);
+  border-bottom-color: var(--hl);
+}
+
+.op-key:focus-visible,
+.tx-toggle:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: 2px;
+}
+
+/* ---- the readout under the keys ----------------------------------------- */
+
+.op-readout { margin-top: 1.1rem; max-width: 38rem; }
+
+@media screen and (min-width: 45em) {
+  .op-readout { min-height: 7rem; }
+}
+
+/* the plate's caption: revealed by JavaScript, because with scripting off there
+ * are no keys and a sentence about choosing one would be a lie */
+.md-typeset .op-prompt {
+  margin: 1rem 0 0;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--ab-faint);
+}
+
+.md-typeset .op-panel > dl {
+  display: grid;
+  grid-template-columns: 6.2rem 1fr;
+  gap: 0.35rem 1.1rem;
+  align-items: baseline;
+  font-size: 0.76rem;
+  margin: 0;
+}
+
+/* With scripting off every panel is shown, stacked and ruled apart, so the plate
+ * reads as a list of the seven categories rather than as a dead widget. */
+.md-typeset .op-panel + .op-panel {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--ab-rule-soft);
+}
+
+.md-typeset .op-panel > dl > dt {
+  font-family: var(--ab-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+  padding-top: 0.12rem;
+}
+
+.md-typeset .op-panel > dl > dd {
+  margin: 0;
+  color: var(--md-default-fg-color--light);
+}
+
+/* the first fact is what the category changes: ink, with the category's own rule */
+.md-typeset .op-panel > dl > dd:first-of-type {
+  color: var(--md-default-fg-color);
+  box-shadow: inset 2px 0 0 var(--hl);
+  padding-left: 0.6rem;
+  margin-left: -0.6rem;
+}
+
+.md-typeset ul.op-methods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.md-typeset ul.op-methods li { margin: 0; }
+
+.md-typeset .op-methods a {
+  display: inline-block;
+  font-family: var(--ab-mono);
+  font-size: 0.68rem;
+  padding: 0.08rem 0.4rem;
+  color: var(--md-default-fg-color--light);
+  background: var(--ab-sunk);
+  border-bottom: 1px solid var(--ab-rule);
+  text-decoration: none;
+}
+
+.md-typeset .op-methods a:hover {
+  color: var(--md-default-fg-color);
+  border-bottom-color: var(--hl);
+}
+
+.md-typeset .op-methods a[data-oracle] { border-bottom-style: dashed; }
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .op-panel > dl { grid-template-columns: 1fr; gap: 0.1rem; }
+  .md-typeset .op-panel > dl > dt { padding-top: 0.6rem; }
+  .md-typeset .op-panel > dl > dd:first-of-type {
+    box-shadow: none;
+    padding-left: 0;
+    margin-left: 0;
+  }
+}
+
+/* ---- home: quiet ruled sections ----------------------------------------- */
+
+/* running text stays near 70 characters even when the page is wide */
+.md-typeset .ab-measure { max-width: 33rem; }
+
+.md-typeset .ab-split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0 2rem;
+}
+
+.md-typeset .ab-claim {
+  font-family: var(--ab-serif);
+  font-size: 1.12rem;
+  line-height: 1.5;
+  color: var(--md-default-fg-color);
+  max-width: 32rem;
+}
+
+/* the invariant, which the whole library rests on: one rule, one line of code */
+.md-typeset .ab-invariant {
+  margin: 1.2rem 0;
+  padding: 0.9rem 0 0.9rem 1rem;
+  border-left: 2px solid var(--c-interaction);
+  background: var(--ab-sunk);
+}
+
+.md-typeset .ab-invariant code {
+  display: block;
+  background: none;
+  padding: 0;
+  font-size: 0.86rem;
+  color: var(--md-default-fg-color);
+  overflow-x: auto;
+}
+
+.md-typeset .ab-invariant p {
+  margin: 0.5rem 0 0;
+  font-size: 0.74rem;
+  color: var(--ab-faint);
+}
+
+/* the eleven conformance checks: a numbered list, because they are a checklist and
+ * the count is the claim */
+.md-typeset ol.ab-checks {
+  list-style: none;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  columns: 2;
+  column-gap: 2rem;
+  font-size: 0.74rem;
+}
+
+.md-typeset ol.ab-checks li {
+  break-inside: avoid;
+  margin: 0 0 0.3rem;
+  padding-left: 1.6rem;
+  text-indent: -1.6rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset ol.ab-checks li::before {
+  content: counter(ab-check, decimal-leading-zero) "  ";
+  counter-increment: ab-check;
+  font-family: var(--ab-mono);
+  font-size: 0.86em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ab-faint);
+}
+
+.md-typeset ol.ab-checks { counter-reset: ab-check; }
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset ol.ab-checks { columns: 1; }
+}
+
+/* the two ways an approximation can be wrong */
+.md-typeset .ab-split-table table {
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.md-typeset .ab-split-table th:not(:first-child),
+.md-typeset .ab-split-table td:not(:first-child) { text-align: right; }
+
+/* the bold cell is the mechanism at fault, which is the whole point of the split */
+.md-typeset .ab-split-table strong {
+  font-weight: 600;
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset .ab-split-table td { color: var(--md-default-fg-color--light); }
+
+/* ---- the taxonomy tree -------------------------------------------------- */
+
+/* The trunk: one vertical hairline the seven branches hang off. A taxonomy drawn
+ * as a dendrogram, which is what a taxonomy is. */
+.tx-tree {
+  position: relative;
+  margin: 1.8rem 0 0;
+  padding-left: 1.6rem;
+}
+
+.tx-tree::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1.7rem;
+  bottom: 1.7rem;
+  width: 1px;
+  background: var(--ab-rule);
+}
+
+.tx-node { position: relative; }
+
+/* the branch tick into the trunk, in the category's own colour */
+.tx-node::before {
+  content: "";
+  position: absolute;
+  left: -1.6rem;
+  top: 1.72rem;
+  width: 1.1rem;
+  height: 2px;
+  background: var(--hl);
+}
+
+/* The heading is a row: category, what it changes, how many methods. The control
+ * JavaScript builds wraps those three and inherits the same row, so the branch looks
+ * the same whether or not it can be clicked. */
+.md-typeset .tx-node > h2,
+.md-typeset .tx-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 1rem;
+  font-weight: 400;
+  font-family: var(--md-text-font-family, sans-serif);
+  letter-spacing: 0;
+}
+
+.md-typeset .tx-node > h2 {
+  margin: 0;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--ab-rule-soft);
+}
+
+.md-typeset .tx-node:first-child > h2 { border-top: 0; }
+
+.md-typeset .tx-toggle {
+  flex: 1;
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  padding: 0;
+  margin: -0.85rem 0;        /* the button takes the heading's own padding back */
+  padding-block: 0.85rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+.md-typeset .tx-node > h2 code {
+  font-size: 0.82em;
+  background: none;
+  padding: 0;
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset .tx-node .tx-changes {
+  font-size: 0.74rem;
+  color: var(--ab-faint);
+  flex: 1;
+}
+
+.md-typeset .tx-node .tx-n {
+  font-family: var(--ab-mono);
+  font-size: 0.62rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ab-faint);
+}
+
+.md-typeset .tx-toggle:hover .tx-changes,
+.md-typeset .tx-toggle[aria-expanded="true"] .tx-changes {
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .tx-toggle[aria-expanded="true"] code {
+  box-shadow: inset 0 -2px 0 var(--hl);
+}
+
+.md-typeset .tx-body {
+  padding: 0 0 0.9rem;
+  max-width: 38rem;
+}
+
+.md-typeset .tx-node[data-open="false"] > .tx-body { display: none; }
+
+.md-typeset .tx-facts > dl {
+  display: grid;
+  grid-template-columns: 6.2rem 1fr;
+  gap: 0.4rem 1.1rem;
+  align-items: baseline;
+  font-size: 0.76rem;
+  margin: 0 0 0.9rem;
+}
+
+.md-typeset .tx-facts dt {
+  font-family: var(--ab-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+  padding-top: 0.12rem;
+}
+
+.md-typeset .tx-facts dd {
+  margin: 0;
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .tx-facts dd:first-of-type {
+  color: var(--md-default-fg-color);
+  box-shadow: inset 2px 0 0 var(--hl);
+  padding-left: 0.6rem;
+  margin-left: -0.6rem;
+}
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .tx-facts > dl { grid-template-columns: 1fr; gap: 0.1rem; }
+  .md-typeset .tx-facts dt { padding-top: 0.55rem; }
+  .md-typeset .tx-facts dd:first-of-type { box-shadow: none; padding-left: 0; margin-left: 0; }
+  .md-typeset .tx-node > h2,
+  .md-typeset .tx-toggle { flex-wrap: wrap; gap: 0.2rem 0.5rem; }
+  .md-typeset .tx-node .tx-changes { flex-basis: 100%; }
+  .tx-tree { padding-left: 1rem; }
+  .tx-node::before { left: -1rem; width: 0.6rem; }
+}
+
+/* The operator keeps its place while the branches below it are opened -- without
+ * that, choosing a branch lights a symbol you cannot see, which is the whole
+ * mechanism. It is smaller here than on the home page: there it is the hero, here
+ * it is the legend. */
+.tx-sticky { padding: 1.7rem 1.1rem 1.1rem; }
+
+/* the label moves inside the box: when the plate is pinned under the header, a
+ * label sitting on the top rule would be behind it */
+.tx-sticky::before { top: 0.45rem; left: 0.9rem; padding: 0; }
+.tx-sticky .op-line { font-size: clamp(1.15rem, 3.2vw, 1.6rem); }
+.tx-sticky .op-line--sub { font-size: clamp(0.95rem, 2.6vw, 1.26rem); }
+
+@media screen and (min-width: 76.25em) and (prefers-reduced-motion: no-preference) {
+  .tx-sticky { position: sticky; top: var(--md-header-height, 2.4rem); z-index: 1; }
+}
+
+/* ---- the full static table under the tree ------------------------------- */
+
+.md-typeset .tx-all-wrap { overflow-x: auto; }
+
+/* Material turns tables into their own scroll wrapper with JavaScript; without it
+ * the bare table collapses its last columns, so the display is set here and the
+ * wrapper above does the scrolling in both cases. Eight columns do not fit a page
+ * that also carries a table of contents, so on those layouts this table scrolls
+ * inside itself -- the page body never does. */
+.md-typeset .tx-all-wrap table:not([class]) {
+  display: table;
+  width: 100%;
+  font-size: 0.68rem;
+}
+
+/* eight columns do not fit a three-column page; the declaration columns are given
+ * only what they need and the sentence column keeps the rest, with the wrapper
+ * scrolling rather than the page */
+.md-typeset .tx-all-wrap th:nth-child(n+3),
+.md-typeset .tx-all-wrap td:nth-child(n+3) {
+  width: 1%;
+  min-width: 0;                 /* Material puts 5rem on every cell */
+  white-space: nowrap;
+}
+
+.md-typeset .tx-all-wrap th:nth-child(2),
+.md-typeset .tx-all-wrap td:nth-child(2) { min-width: 14rem; }
+
+.md-typeset .tx-all-wrap th,
+.md-typeset .tx-all-wrap td {
+  padding: 0.4em 0.7em;
+  vertical-align: top;
+}
+
+.md-typeset .tx-all-wrap thead th {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  font-weight: 400;
+  color: var(--ab-faint);
+  background: none;
+  white-space: nowrap;
+}
+
+.md-typeset .tx-all-wrap td:first-child {
+  width: 1%;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+/* a rule in the category's colour, so the static table is keyed to the tree */
+.md-typeset .tx-all-wrap td [data-cat] {
+  display: inline-block;
+  padding-left: 0.5em;
+  box-shadow: inset 2px 0 0 var(--hl);
+  white-space: nowrap;
+}
+
+/* ---- the method browser: human names, registry keys kept visible -------- */
+
+.md-typeset .bank-table th[scope="row"] {
+  padding-right: 1.2em;
+  min-width: 12rem;
+}
+
+.bank-sub {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--ab-faint);
+}
+
+a.bank-name {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--md-default-fg-color);
+  text-decoration: none;
+  white-space: normal;
+  text-wrap: balance;
+}
+
+.md-typeset a.bank-name:hover { color: var(--md-accent-fg-color); }
+
+.bank-key {
+  display: block;
+  margin-top: 0.1rem;
+  font-family: var(--ab-mono);
+  font-size: 0.64rem;
+  color: var(--ab-faint);
+}
+
+.md-typeset .bank-table td[data-cell="category"] {
+  box-shadow: inset 2px 0 0 var(--hl);
+}
+
+/* flags sit under the key, not beside the name */
+.md-typeset .bank-table th[scope="row"] .bank-tag { margin-top: 0.25rem; }
+
+.md-typeset .bank-table td[data-cell="summary"] { min-width: 15rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sym,
+  .op-key,
+  .md-typeset .tx-toggle { transition: none; }
+}
+
+/* ---- where to go next: a ruled two-column list, no icons -----------------
+ * The sidebar already enumerates every page; this list exists to say why you
+ * would open one, so each entry is a destination plus a reason and nothing else.
+ */
+.md-typeset .ab-split > dl,
+.md-typeset dl.ab-split {
+  columns: 2;
+  column-gap: 2.4rem;
+  margin: 1rem 0 0;
+}
+
+.md-typeset .ab-split dt {
+  break-after: avoid;
+  margin: 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--ab-rule-soft);
+  font-weight: 500;
+}
+
+.md-typeset .ab-split dd {
+  break-inside: avoid;
+  margin: 0.15rem 0 0.9rem;
+  font-size: 0.74rem;
+  color: var(--md-default-fg-color--light);
+}
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .ab-split > dl,
+  .md-typeset dl.ab-split { columns: 1; }
+}

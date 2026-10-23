@@ -188,11 +188,15 @@
   background: var(--md-default-fg-color--lightest);
 }
 
+/* outlined rather than filled: the fill was white-on-red in light and dark-on-red
+ * in dark, and only one of those was ever legible */
 .bank-tag--oracle {
-  color: var(--md-default-bg-color);
-  background: var(--md-typeset-del-color);
-  background: #b3261e;
+  color: #b3261e;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px currentcolor;
 }
+
+[data-md-color-scheme="slate"] .bank-tag--oracle { color: #f0706f; }
 
 /* ---- per-method pages --------------------------------------------------- */
 

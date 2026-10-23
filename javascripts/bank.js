@@ -100,7 +100,8 @@
     /* ---- sorting -------------------------------------------------------- */
 
     function key(row, field) {
-      if (field === "name") return row.dataset.name;
+      // the first column leads with the human name, so that is what sorting it means
+      if (field === "name") return row.dataset.title || row.dataset.name;
       if (field === "backends") return row.dataset.backends;
       return (row.dataset[field] || "") + " " + row.dataset.name;
     }
