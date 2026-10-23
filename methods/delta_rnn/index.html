@@ -1885,10 +1885,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-recurrent" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in recurrent
+        Related methods
       
     </span>
   </a>
@@ -2833,10 +2833,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-recurrent" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in recurrent
+        Related methods
       
     </span>
   </a>
@@ -3073,15 +3073,69 @@ They are what the monograph's capacity arguments are made of;
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>row_stochastic = False | first row sums: [5.3093, 8.0564, 8.2169, 7.149]
 <a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>extras: [&#39;beta&#39;, &#39;mass&#39;, &#39;state_rank&#39;]
 </code></pre></div>
-<h2 id="others-in-recurrent">Others in <code>recurrent</code><a class="headerlink" href="#others-in-recurrent" title="Permanent link">&para;</a></h2>
-<p><a href="../decay_rnn/"><code>decay_rnn</code></a>, <a href="../linear_rnn/"><code>linear_rnn</code></a> — see <a href="../../taxonomy/#recurrent">the taxonomy</a>.</p>
+<h2 id="related-methods">Related methods<a class="headerlink" href="#related-methods" title="Permanent link">&para;</a></h2>
+<p>Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are <code>ab.available(...)</code> with <code>delta_rnn</code> removed.</p>
+<dl>
+<dt>changes the same object — <a href="../../taxonomy/#recurrent"><code>recurrent</code></a></dt>
+<dd><a href="../decay_rnn/"><code>decay_rnn</code></a>, <a href="../linear_rnn/"><code>linear_rnn</code></a> &nbsp;·&nbsp; <a href="../?category=recurrent">browse the bank, recurrent only</a></dd>
+<dt>judged the same way — <code>modify</code>, beyond the ones above</dt>
+<dd><a href="../cosformer/"><code>cosformer</code></a>, <a href="../gqa/"><code>gqa</code></a>, <a href="../latent_stochastic/"><code>latent_stochastic</code></a>, <a href="../linear_elu/"><code>linear_elu</code></a>, <a href="../lowrank_ot/"><code>lowrank_ot</code></a>, <a href="../mla/"><code>mla</code></a>, <a href="../sinkhorn/"><code>sinkhorn</code></a> &nbsp;·&nbsp; <a href="../?objective=modify">browse the bank, modify only</a></dd>
+</dl>
+<p><a href="../?compare=delta_rnn">Open the browser with <code>delta_rnn</code> selected</a> and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Schlag et al. (2021).</strong> <em>Linear Transformers Are Secretly Fast Weight Programmers.</em> Proceedings of the 38th International Conference on Machine Learning (ICML). <a href="https://arxiv.org/abs/2102.11174">arXiv:2102.11174</a><br><code>schlag2021linear</code></li>
-<li><strong>Yang et al. (2024).</strong> <em>Parallelizing Linear Transformers with the Delta Rule over Sequence Length.</em> Advances in Neural Information Processing Systems 37 (NeurIPS). <a href="https://arxiv.org/abs/2406.06484">arXiv:2406.06484</a><br><code>yang2024parallelizing</code></li>
-<li><strong>Widrow and Hoff (1960).</strong> <em>Adaptive Switching Circuits.</em> IRE WESCON Convention Record.<br><code>widrow1960adaptive</code></li>
-<li><strong>Yang et al. (2025).</strong> <em>Gated Delta Networks: Improving Mamba2 with Delta Rule.</em> International Conference on Learning Representations (ICLR). <a href="https://arxiv.org/abs/2412.06464">arXiv:2412.06464</a><br><code>yang2025gated</code></li>
+<li><strong>Schlag et al. (2021).</strong> <em>Linear Transformers Are Secretly Fast Weight Programmers.</em> Proceedings of the 38th International Conference on Machine Learning (ICML). <a href="https://arxiv.org/abs/2102.11174">arXiv:2102.11174</a><br><span class="attn-cite" data-bibkey="schlag2021linear"><code>schlag2021linear</code></span></li>
+<li><strong>Yang et al. (2024).</strong> <em>Parallelizing Linear Transformers with the Delta Rule over Sequence Length.</em> Advances in Neural Information Processing Systems 37 (NeurIPS). <a href="https://arxiv.org/abs/2406.06484">arXiv:2406.06484</a><br><span class="attn-cite" data-bibkey="yang2024parallelizing"><code>yang2024parallelizing</code></span></li>
+<li><strong>Widrow and Hoff (1960).</strong> <em>Adaptive Switching Circuits.</em> IRE WESCON Convention Record.<br><span class="attn-cite" data-bibkey="widrow1960adaptive"><code>widrow1960adaptive</code></span></li>
+<li><strong>Yang et al. (2025).</strong> <em>Gated Delta Networks: Improving Mamba2 with Delta Rule.</em> International Conference on Learning Representations (ICLR). <a href="https://arxiv.org/abs/2412.06464">arXiv:2412.06464</a><br><span class="attn-cite" data-bibkey="yang2025gated"><code>yang2025gated</code></span></li>
 </ul>
+<details class="attn-bib no-copy">
+<summary>BibTeX — 4 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="schlag2021linear">
+<pre class="attn-bib__src"><code>@inproceedings{schlag2021linear,
+  title={Linear Transformers Are Secretly Fast Weight Programmers},
+  author={Schlag, Imanol and Irie, Kazuki and Schmidhuber, J{\&quot;u}rgen},
+  booktitle={Proceedings of the 38th International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={139},
+  pages={9355--9366},
+  year={2021},
+  eprint={2102.11174},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="yang2024parallelizing">
+<pre class="attn-bib__src"><code>@inproceedings{yang2024parallelizing,
+  title={Parallelizing Linear Transformers with the Delta Rule over Sequence Length},
+  author={Yang, Songlin and Wang, Bailin and Zhang, Yu and Shen, Yikang and Kim, Yoon},
+  booktitle={Advances in Neural Information Processing Systems 37 (NeurIPS)},
+  year={2024},
+  eprint={2406.06484},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="widrow1960adaptive">
+<pre class="attn-bib__src"><code>@inproceedings{widrow1960adaptive,
+  title={Adaptive Switching Circuits},
+  author={Widrow, Bernard and Hoff, Marcian E.},
+  booktitle={IRE WESCON Convention Record},
+  pages={96--104},
+  year={1960}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="yang2025gated">
+<pre class="attn-bib__src"><code>@inproceedings{yang2025gated,
+  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule},
+  author={Yang, Songlin and Kautz, Jan and Hatamizadeh, Ali},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2025},
+  eprint={2412.06464}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
+
 <p>The bibliography is packaged with the library (<code>attnbank/references.bib</code>) and <code>tests/test_conformance.py</code> fails if a method cites a key that is not in it.</p>
 <hr />
 <p><em>Generated by <code>docs/gen_methods.py</code> from the registry and from the module docstring of <a href="https://github.com/Ashkan13776/attnbank/blob/main/attnbank/methods/recurrent/delta_rnn.py"><code>attnbank/methods/recurrent/delta_rnn.py</code></a>; the example above was executed to produce its output. Regenerate with <code>python docs/gen_methods.py</code>.</em></p>
@@ -3156,6 +3210,8 @@ They are what the monograph's capacity arguments are made of;
         <script src="../../javascripts/bank.js"></script>
       
         <script src="../../javascripts/attnbank.js"></script>
+      
+        <script src="../../javascripts/clip.js"></script>
       
     
   </body>

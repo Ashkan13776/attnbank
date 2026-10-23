@@ -2915,10 +2915,14 @@ reaches for.</p>
      it is a control: each <span class="sym"> is one of the seven objects a method
      can change. Hand-setting also means the hero is still the hero with scripting
      off, where MathJax does not run. Included by docs/index.md and by
-     docs/gen_taxonomy.py, so the two pages cannot drift. -->
+     docs/gen_taxonomy.py, so the two pages cannot drift.
+
+     data-tex is the same operator in the notation the monograph sets it in. It is
+     here rather than in the stylesheet or the script because this file is the one
+     place the operator is written down; docs/javascripts/clip.js only copies it. -->
 
 
-<div class="op-formula">
+<div class="op-formula" data-tex="y(q) \;=\; \int v \,\mathrm{d}\pi_q, \qquad \pi_q \;=\; \frac{g(q,\cdot)\,\mu}{Z(q)}">
   <span class="op-line"><span class="sym" data-s="y"><i>y</i>(<i>q</i>)</span><span class="op-rel">=</span><span class="sym" data-s="int">&#8747;</span><span class="sym" data-s="v"><i>v</i></span><span class="sym" data-s="pi">&#8202;d&#960;<sub><i>q</i></sub></span></span>
   <span class="op-line op-line--sub"><span class="sym" data-s="pi">&#960;<sub><i>q</i></sub></span><span class="op-rel">=</span><span class="op-frac"><span class="op-num"><span class="sym" data-s="g"><i>g</i>(<i>q</i>,&#8201;&#183;)</span><span class="sym" data-s="mu">&#956;</span></span><span class="op-den"><span class="sym" data-s="Z"><i>Z</i>(<i>q</i>)</span></span></span></span>
 </div>
@@ -3466,6 +3470,8 @@ by category, objective, causal support, backend — use
         <script src="../javascripts/bank.js"></script>
       
         <script src="../javascripts/attnbank.js"></script>
+      
+        <script src="../javascripts/clip.js"></script>
       
     
   </body>

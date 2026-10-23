@@ -1857,10 +1857,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-recurrent" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in recurrent
+        Related methods
       
     </span>
   </a>
@@ -2833,10 +2833,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-recurrent" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in recurrent
+        Related methods
       
     </span>
   </a>
@@ -3065,16 +3065,82 @@ They are what the monograph's capacity arguments are made of;
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>row_stochastic = False | first row sums: [43.946, 78.9989, 108.2692, 140.6155]
 <a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>extras: [&#39;decay&#39;, &#39;gate&#39;, &#39;mass&#39;]
 </code></pre></div>
-<h2 id="others-in-recurrent">Others in <code>recurrent</code><a class="headerlink" href="#others-in-recurrent" title="Permanent link">&para;</a></h2>
-<p><a href="../delta_rnn/"><code>delta_rnn</code></a>, <a href="../linear_rnn/"><code>linear_rnn</code></a> — see <a href="../../taxonomy/#recurrent">the taxonomy</a>.</p>
+<h2 id="related-methods">Related methods<a class="headerlink" href="#related-methods" title="Permanent link">&para;</a></h2>
+<p>Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are <code>ab.available(...)</code> with <code>decay_rnn</code> removed.</p>
+<dl>
+<dt>changes the same object — <a href="../../taxonomy/#recurrent"><code>recurrent</code></a></dt>
+<dd><a href="../delta_rnn/"><code>delta_rnn</code></a>, <a href="../linear_rnn/"><code>linear_rnn</code></a> &nbsp;·&nbsp; <a href="../?category=recurrent">browse the bank, recurrent only</a></dd>
+<dt>judged the same way — <code>modify</code>, beyond the ones above</dt>
+<dd><a href="../cosformer/"><code>cosformer</code></a>, <a href="../gqa/"><code>gqa</code></a>, <a href="../latent_stochastic/"><code>latent_stochastic</code></a>, <a href="../linear_elu/"><code>linear_elu</code></a>, <a href="../lowrank_ot/"><code>lowrank_ot</code></a>, <a href="../mla/"><code>mla</code></a>, <a href="../sinkhorn/"><code>sinkhorn</code></a> &nbsp;·&nbsp; <a href="../?objective=modify">browse the bank, modify only</a></dd>
+</dl>
+<p><a href="../?compare=decay_rnn">Open the browser with <code>decay_rnn</code> selected</a> and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Sun et al. (2023).</strong> <em>Retentive Network: A Successor to Transformer for Large Language Models.</em> <a href="https://arxiv.org/abs/2307.08621">arXiv:2307.08621</a><br><code>sun2023retentive</code></li>
-<li><strong>Yang et al. (2024).</strong> <em>Gated Linear Attention Transformers with Hardware-Efficient Training.</em> Proceedings of the 41st International Conference on Machine Learning (ICML). <a href="https://arxiv.org/abs/2312.06635">arXiv:2312.06635</a><br><code>yang2024gated</code></li>
-<li><strong>Dao and Gu (2024).</strong> <em>Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality.</em> Proceedings of the 41st International Conference on Machine Learning (ICML). <a href="https://arxiv.org/abs/2405.21060">arXiv:2405.21060</a><br><code>dao2024transformers</code></li>
-<li><strong>Peng et al. (2023).</strong> <em>RWKV: Reinventing RNNs for the Transformer Era.</em> Findings of the Association for Computational Linguistics: EMNLP 2023. <a href="https://arxiv.org/abs/2305.13048">arXiv:2305.13048</a><br><code>peng2023rwkv</code></li>
-<li><strong>Beck et al. (2024).</strong> <em>xLSTM: Extended Long Short-Term Memory.</em> Advances in Neural Information Processing Systems (NeurIPS). <a href="https://arxiv.org/abs/2405.04517">arXiv:2405.04517</a><br><code>beck2024xlstm</code></li>
+<li><strong>Sun et al. (2023).</strong> <em>Retentive Network: A Successor to Transformer for Large Language Models.</em> <a href="https://arxiv.org/abs/2307.08621">arXiv:2307.08621</a><br><span class="attn-cite" data-bibkey="sun2023retentive"><code>sun2023retentive</code></span></li>
+<li><strong>Yang et al. (2024).</strong> <em>Gated Linear Attention Transformers with Hardware-Efficient Training.</em> Proceedings of the 41st International Conference on Machine Learning (ICML). <a href="https://arxiv.org/abs/2312.06635">arXiv:2312.06635</a><br><span class="attn-cite" data-bibkey="yang2024gated"><code>yang2024gated</code></span></li>
+<li><strong>Dao and Gu (2024).</strong> <em>Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality.</em> Proceedings of the 41st International Conference on Machine Learning (ICML). <a href="https://arxiv.org/abs/2405.21060">arXiv:2405.21060</a><br><span class="attn-cite" data-bibkey="dao2024transformers"><code>dao2024transformers</code></span></li>
+<li><strong>Peng et al. (2023).</strong> <em>RWKV: Reinventing RNNs for the Transformer Era.</em> Findings of the Association for Computational Linguistics: EMNLP 2023. <a href="https://arxiv.org/abs/2305.13048">arXiv:2305.13048</a><br><span class="attn-cite" data-bibkey="peng2023rwkv"><code>peng2023rwkv</code></span></li>
+<li><strong>Beck et al. (2024).</strong> <em>xLSTM: Extended Long Short-Term Memory.</em> Advances in Neural Information Processing Systems (NeurIPS). <a href="https://arxiv.org/abs/2405.04517">arXiv:2405.04517</a><br><span class="attn-cite" data-bibkey="beck2024xlstm"><code>beck2024xlstm</code></span></li>
 </ul>
+<details class="attn-bib no-copy">
+<summary>BibTeX — 5 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="sun2023retentive">
+<pre class="attn-bib__src"><code>@misc{sun2023retentive,
+  title={Retentive Network: A Successor to Transformer for Large Language Models},
+  author={Sun, Yutao and Dong, Li and Huang, Shaohan and Ma, Shuming and Xia, Yuqing and Xue, Jilong and Wang, Jianyong and Wei, Furu},
+  year={2023},
+  eprint={2307.08621},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="yang2024gated">
+<pre class="attn-bib__src"><code>@inproceedings{yang2024gated,
+  title={Gated Linear Attention Transformers with Hardware-Efficient Training},
+  author={Yang, Songlin and Wang, Bailin and Shen, Yikang and Panda, Rameswar and Kim, Yoon},
+  booktitle={Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={235},
+  pages={56501--56523},
+  year={2024},
+  eprint={2312.06635},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="dao2024transformers">
+<pre class="attn-bib__src"><code>@inproceedings{dao2024transformers,
+  title={Transformers are {SSM}s: Generalized Models and Efficient Algorithms Through Structured State Space Duality},
+  author={Dao, Tri and Gu, Albert},
+  booktitle={Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={235},
+  pages={10041--10071},
+  year={2024},
+  eprint={2405.21060},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="peng2023rwkv">
+<pre class="attn-bib__src"><code>@inproceedings{peng2023rwkv,
+  title={{RWKV}: Reinventing {RNN}s for the Transformer Era},
+  author={Peng, Bo and Alcaide, Eric and Anthony, Quentin and Albalak, Alon and Arcadinho, Samuel and Biderman, Stella and others},
+  booktitle={Findings of the Association for Computational Linguistics: EMNLP 2023},
+  year={2023},
+  eprint={2305.13048}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="beck2024xlstm">
+<pre class="attn-bib__src"><code>@inproceedings{beck2024xlstm,
+  title={{xLSTM}: Extended Long Short-Term Memory},
+  author={Beck, Maximilian and P{\&quot;o}ppel, Korbinian and Spanring, Markus and Auer, Andreas and Prudnikova, Oleksandra and Kopp, Michael and Klambauer, G{\&quot;u}nter and Brandstetter, Johannes and Hochreiter, Sepp},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2024},
+  eprint={2405.04517}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
+
 <p>The bibliography is packaged with the library (<code>attnbank/references.bib</code>) and <code>tests/test_conformance.py</code> fails if a method cites a key that is not in it.</p>
 <hr />
 <p><em>Generated by <code>docs/gen_methods.py</code> from the registry and from the module docstring of <a href="https://github.com/Ashkan13776/attnbank/blob/main/attnbank/methods/recurrent/decay_rnn.py"><code>attnbank/methods/recurrent/decay_rnn.py</code></a>; the example above was executed to produce its output. Regenerate with <code>python docs/gen_methods.py</code>.</em></p>
@@ -3149,6 +3215,8 @@ They are what the monograph's capacity arguments are made of;
         <script src="../../javascripts/bank.js"></script>
       
         <script src="../../javascripts/attnbank.js"></script>
+      
+        <script src="../../javascripts/clip.js"></script>
       
     
   </body>

@@ -1167,10 +1167,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-restrict" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in restrict
+        Related methods
       
     </span>
   </a>
@@ -2833,10 +2833,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-restrict" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in restrict
+        Related methods
       
     </span>
   </a>
@@ -3057,13 +3057,46 @@ They are what the monograph's capacity arguments are made of;
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>invariant W: 0.0
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>{&#39;output_error&#39;: 1.9121, &#39;distributional_error&#39;: 1.9121, &#39;value_error&#39;: 0.0, &#39;tv&#39;: 0.66426}
 </code></pre></div>
-<h2 id="others-in-restrict">Others in <code>restrict</code><a class="headerlink" href="#others-in-restrict" title="Permanent link">&para;</a></h2>
-<p><a href="../blocktopk/"><code>blocktopk</code></a>, <a href="../lsh_sample/"><code>lsh_sample</code></a>, <a href="../topk/"><code>topk</code></a>, <a href="../value_topk/"><code>value_topk</code></a> <em>(oracle)</em>, <a href="../window/"><code>window</code></a> — see <a href="../../taxonomy/#restrict">the taxonomy</a>.</p>
+<h2 id="related-methods">Related methods<a class="headerlink" href="#related-methods" title="Permanent link">&para;</a></h2>
+<p>Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are <code>ab.available(...)</code> with <code>sink_window</code> removed.</p>
+<dl>
+<dt>changes the same object — <a href="../../taxonomy/#restrict"><code>restrict</code></a></dt>
+<dd><a href="../blocktopk/"><code>blocktopk</code></a>, <a href="../lsh_sample/"><code>lsh_sample</code></a>, <a href="../topk/"><code>topk</code></a>, <a href="../value_topk/"><code>value_topk</code></a> <em>(oracle)</em>, <a href="../window/"><code>window</code></a> &nbsp;·&nbsp; <a href="../?category=restrict">browse the bank, restrict only</a></dd>
+<dt>judged the same way — <code>approximate</code>, beyond the ones above</dt>
+<dd><a href="../clustered/"><code>clustered</code></a>, <a href="../evict_h2o/"><code>evict_h2o</code></a>, <a href="../evict_snapkv/"><code>evict_snapkv</code></a>, <a href="../linformer/"><code>linformer</code></a>, <a href="../lowprec/"><code>lowprec</code></a>, <a href="../lowrank_kv/"><code>lowrank_kv</code></a>, <a href="../merge_kv/"><code>merge_kv</code></a>, <a href="../nmf_oracle/"><code>nmf_oracle</code></a> <em>(oracle)</em>, <a href="../nystrom/"><code>nystrom</code></a>, <a href="../performer/"><code>performer</code></a>, <a href="../quantkv/"><code>quantkv</code></a>, <a href="../svd_oracle/"><code>svd_oracle</code></a> <em>(oracle)</em>, <a href="../trigrff/"><code>trigrff</code></a> &nbsp;·&nbsp; <a href="../?objective=approximate">browse the bank, approximate only</a></dd>
+</dl>
+<p><a href="../?compare=sink_window">Open the browser with <code>sink_window</code> selected</a> and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Xiao et al. (2024).</strong> <em>Efficient Streaming Language Models with Attention Sinks.</em> International Conference on Learning Representations (ICLR). <a href="https://arxiv.org/abs/2309.17453">arXiv:2309.17453</a><br><code>xiao2024efficient</code></li>
-<li><strong>Han et al. (2024).</strong> <em>LM-Infinite: Zero-Shot Extreme Length Generalization for Large Language Models.</em> Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics (NAACL). <a href="https://arxiv.org/abs/2308.16137">arXiv:2308.16137</a><br><code>han2024lminfinite</code></li>
+<li><strong>Xiao et al. (2024).</strong> <em>Efficient Streaming Language Models with Attention Sinks.</em> International Conference on Learning Representations (ICLR). <a href="https://arxiv.org/abs/2309.17453">arXiv:2309.17453</a><br><span class="attn-cite" data-bibkey="xiao2024efficient"><code>xiao2024efficient</code></span></li>
+<li><strong>Han et al. (2024).</strong> <em>LM-Infinite: Zero-Shot Extreme Length Generalization for Large Language Models.</em> Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics (NAACL). <a href="https://arxiv.org/abs/2308.16137">arXiv:2308.16137</a><br><span class="attn-cite" data-bibkey="han2024lminfinite"><code>han2024lminfinite</code></span></li>
 </ul>
+<details class="attn-bib no-copy">
+<summary>BibTeX — 2 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="xiao2024efficient">
+<pre class="attn-bib__src"><code>@inproceedings{xiao2024efficient,
+  title = {{Efficient Streaming Language Models with Attention Sinks}},
+  author = {Guangxuan Xiao and Yuandong Tian and Beidi Chen and Song Han and Mike Lewis},
+  year = {2024},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  eprint = {2309.17453},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="han2024lminfinite">
+<pre class="attn-bib__src"><code>@inproceedings{han2024lminfinite,
+  title = {{LM-Infinite: Zero-Shot Extreme Length Generalization for Large Language Models}},
+  author = {Han, Chi and Wang, Qifan and Peng, Hao and Xiong, Wenhan and Chen, Yu and Ji, Heng and Wang, Sinong},
+  year = {2024},
+  booktitle = {Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics (NAACL)},
+  eprint = {2308.16137},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
+
 <p>The bibliography is packaged with the library (<code>attnbank/references.bib</code>) and <code>tests/test_conformance.py</code> fails if a method cites a key that is not in it.</p>
 <hr />
 <p><em>Generated by <code>docs/gen_methods.py</code> from the registry and from the module docstring of <a href="https://github.com/Ashkan13776/attnbank/blob/main/attnbank/methods/restrict/sink_window.py"><code>attnbank/methods/restrict/sink_window.py</code></a>; the example above was executed to produce its output. Regenerate with <code>python docs/gen_methods.py</code>.</em></p>
@@ -3138,6 +3171,8 @@ They are what the monograph's capacity arguments are made of;
         <script src="../../javascripts/bank.js"></script>
       
         <script src="../../javascripts/attnbank.js"></script>
+      
+        <script src="../../javascripts/clip.js"></script>
       
     
   </body>

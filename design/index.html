@@ -3041,7 +3041,7 @@ If an implementation and this file disagree, this file wins — fix the implemen
 <h2 id="1-the-one-invariant">1. The one invariant<a class="headerlink" href="#1-the-one-invariant" title="Permanent link">&para;</a></h2>
 <p>Every method realises, exactly or implicitly, a measure <span class="arithmatex">\(\widehat\pi_q\)</span> over context positions and
 a value field <span class="arithmatex">\(\widehat v\)</span>:</p>
-<div class="arithmatex">\[\widehat y(q) \;=\; \sum_{j=1}^{n} \widehat\pi_q(j)\,\widehat v_j .\]</div>
+<div class="arithmatex" data-tex="\widehat y(q) \;=\; \sum_{j=1}^{n} \widehat\pi_q(j)\,\widehat v_j .">\[\widehat y(q) \;=\; \sum_{j=1}^{n} \widehat\pi_q(j)\,\widehat v_j .\]</div>
 <p><strong>Invariant W.</strong> If a method returns <code>weights</code> and <code>v_hat</code>, then</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>y  ==  weights @ (v_hat if v_hat is not None else v)      # within 1e-5 (fp32) / 1e-10 (fp64)
 </code></pre></div>
@@ -3598,6 +3598,8 @@ is chosen at build time and never changes the operator.</p>
         <script src="../javascripts/bank.js"></script>
       
         <script src="../javascripts/attnbank.js"></script>
+      
+        <script src="../javascripts/clip.js"></script>
       
     
   </body>

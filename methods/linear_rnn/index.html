@@ -1913,10 +1913,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-recurrent" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in recurrent
+        Related methods
       
     </span>
   </a>
@@ -2833,10 +2833,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-recurrent" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in recurrent
+        Related methods
       
     </span>
   </a>
@@ -3061,14 +3061,61 @@ They are what the monograph's capacity arguments are made of;
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>row_stochastic = False | first row sums: [43.946, 84.5266, 119.8822, 162.848]
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>extras: [&#39;mass&#39;, &#39;state_rank&#39;]
 </code></pre></div>
-<h2 id="others-in-recurrent">Others in <code>recurrent</code><a class="headerlink" href="#others-in-recurrent" title="Permanent link">&para;</a></h2>
-<p><a href="../decay_rnn/"><code>decay_rnn</code></a>, <a href="../delta_rnn/"><code>delta_rnn</code></a> — see <a href="../../taxonomy/#recurrent">the taxonomy</a>.</p>
+<h2 id="related-methods">Related methods<a class="headerlink" href="#related-methods" title="Permanent link">&para;</a></h2>
+<p>Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are <code>ab.available(...)</code> with <code>linear_rnn</code> removed.</p>
+<dl>
+<dt>changes the same object — <a href="../../taxonomy/#recurrent"><code>recurrent</code></a></dt>
+<dd><a href="../decay_rnn/"><code>decay_rnn</code></a>, <a href="../delta_rnn/"><code>delta_rnn</code></a> &nbsp;·&nbsp; <a href="../?category=recurrent">browse the bank, recurrent only</a></dd>
+<dt>judged the same way — <code>modify</code>, beyond the ones above</dt>
+<dd><a href="../cosformer/"><code>cosformer</code></a>, <a href="../gqa/"><code>gqa</code></a>, <a href="../latent_stochastic/"><code>latent_stochastic</code></a>, <a href="../linear_elu/"><code>linear_elu</code></a>, <a href="../lowrank_ot/"><code>lowrank_ot</code></a>, <a href="../mla/"><code>mla</code></a>, <a href="../sinkhorn/"><code>sinkhorn</code></a> &nbsp;·&nbsp; <a href="../?objective=modify">browse the bank, modify only</a></dd>
+</dl>
+<p><a href="../?compare=linear_rnn">Open the browser with <code>linear_rnn</code> selected</a> and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Katharopoulos et al. (2020).</strong> <em>Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention.</em> Proceedings of the 37th International Conference on Machine Learning (ICML). <a href="https://arxiv.org/abs/2006.16236">arXiv:2006.16236</a><br><code>katharopoulos2020transformers</code></li>
-<li><strong>Schlag et al. (2021).</strong> <em>Linear Transformers Are Secretly Fast Weight Programmers.</em> Proceedings of the 38th International Conference on Machine Learning (ICML). <a href="https://arxiv.org/abs/2102.11174">arXiv:2102.11174</a><br><code>schlag2021linear</code></li>
-<li><strong>Sun et al. (2024).</strong> <em>Learning to (Learn at Test Time): RNNs with Expressive Hidden States.</em> <a href="https://arxiv.org/abs/2407.04620">arXiv:2407.04620</a><br><code>sun2024learning</code></li>
+<li><strong>Katharopoulos et al. (2020).</strong> <em>Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention.</em> Proceedings of the 37th International Conference on Machine Learning (ICML). <a href="https://arxiv.org/abs/2006.16236">arXiv:2006.16236</a><br><span class="attn-cite" data-bibkey="katharopoulos2020transformers"><code>katharopoulos2020transformers</code></span></li>
+<li><strong>Schlag et al. (2021).</strong> <em>Linear Transformers Are Secretly Fast Weight Programmers.</em> Proceedings of the 38th International Conference on Machine Learning (ICML). <a href="https://arxiv.org/abs/2102.11174">arXiv:2102.11174</a><br><span class="attn-cite" data-bibkey="schlag2021linear"><code>schlag2021linear</code></span></li>
+<li><strong>Sun et al. (2024).</strong> <em>Learning to (Learn at Test Time): RNNs with Expressive Hidden States.</em> <a href="https://arxiv.org/abs/2407.04620">arXiv:2407.04620</a><br><span class="attn-cite" data-bibkey="sun2024learning"><code>sun2024learning</code></span></li>
 </ul>
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="katharopoulos2020transformers">
+<pre class="attn-bib__src"><code>@inproceedings{katharopoulos2020transformers,
+  title     = {Transformers are {RNN}s: Fast Autoregressive Transformers with Linear Attention},
+  author    = {Katharopoulos, Angelos and Vyas, Apoorv and Pappas, Nikolaos and Fleuret, Fran{\c{c}}ois},
+  booktitle = {Proceedings of the 37th International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {119},
+  pages     = {5156--5165},
+  year      = {2020},
+  eprint    = {2006.16236},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="schlag2021linear">
+<pre class="attn-bib__src"><code>@inproceedings{schlag2021linear,
+  title={Linear Transformers Are Secretly Fast Weight Programmers},
+  author={Schlag, Imanol and Irie, Kazuki and Schmidhuber, J{\&quot;u}rgen},
+  booktitle={Proceedings of the 38th International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={139},
+  pages={9355--9366},
+  year={2021},
+  eprint={2102.11174},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="sun2024learning">
+<pre class="attn-bib__src"><code>@misc{sun2024learning,
+  title={Learning to (Learn at Test Time): {RNN}s with Expressive Hidden States},
+  author={Sun, Yu and Li, Xinhao and Dalal, Karan and Xu, Jiarui and Vikram, Arjun and Zhang, Genghan and others},
+  year={2024},
+  eprint={2407.04620}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
+
 <p>The bibliography is packaged with the library (<code>attnbank/references.bib</code>) and <code>tests/test_conformance.py</code> fails if a method cites a key that is not in it.</p>
 <hr />
 <p><em>Generated by <code>docs/gen_methods.py</code> from the registry and from the module docstring of <a href="https://github.com/Ashkan13776/attnbank/blob/main/attnbank/methods/recurrent/linear_rnn.py"><code>attnbank/methods/recurrent/linear_rnn.py</code></a>; the example above was executed to produce its output. Regenerate with <code>python docs/gen_methods.py</code>.</em></p>
@@ -3143,6 +3190,8 @@ They are what the monograph's capacity arguments are made of;
         <script src="../../javascripts/bank.js"></script>
       
         <script src="../../javascripts/attnbank.js"></script>
+      
+        <script src="../../javascripts/clip.js"></script>
       
     
   </body>

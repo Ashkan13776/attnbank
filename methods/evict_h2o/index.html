@@ -1298,10 +1298,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-compress" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in compress
+        Related methods
       
     </span>
   </a>
@@ -2833,10 +2833,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-compress" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in compress
+        Related methods
       
     </span>
   </a>
@@ -3064,14 +3064,59 @@ They are what the monograph's capacity arguments are made of;
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>invariant W: 0.0
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>{&#39;output_error&#39;: 2.17848, &#39;distributional_error&#39;: 2.17848, &#39;value_error&#39;: 0.0, &#39;tv&#39;: 0.77822}
 </code></pre></div>
-<h2 id="others-in-compress">Others in <code>compress</code><a class="headerlink" href="#others-in-compress" title="Permanent link">&para;</a></h2>
-<p><a href="../evict_snapkv/"><code>evict_snapkv</code></a>, <a href="../gqa/"><code>gqa</code></a>, <a href="../linformer/"><code>linformer</code></a>, <a href="../lowrank_kv/"><code>lowrank_kv</code></a>, <a href="../merge_kv/"><code>merge_kv</code></a>, <a href="../mla/"><code>mla</code></a>, <a href="../quantkv/"><code>quantkv</code></a> — see <a href="../../taxonomy/#compress">the taxonomy</a>.</p>
+<h2 id="related-methods">Related methods<a class="headerlink" href="#related-methods" title="Permanent link">&para;</a></h2>
+<p>Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are <code>ab.available(...)</code> with <code>evict_h2o</code> removed.</p>
+<dl>
+<dt>changes the same object — <a href="../../taxonomy/#compress"><code>compress</code></a></dt>
+<dd><a href="../evict_snapkv/"><code>evict_snapkv</code></a>, <a href="../gqa/"><code>gqa</code></a>, <a href="../linformer/"><code>linformer</code></a>, <a href="../lowrank_kv/"><code>lowrank_kv</code></a>, <a href="../merge_kv/"><code>merge_kv</code></a>, <a href="../mla/"><code>mla</code></a>, <a href="../quantkv/"><code>quantkv</code></a> &nbsp;·&nbsp; <a href="../?category=compress">browse the bank, compress only</a></dd>
+<dt>judged the same way — <code>approximate</code>, beyond the ones above</dt>
+<dd><a href="../blocktopk/"><code>blocktopk</code></a>, <a href="../clustered/"><code>clustered</code></a>, <a href="../lowprec/"><code>lowprec</code></a>, <a href="../lsh_sample/"><code>lsh_sample</code></a>, <a href="../nmf_oracle/"><code>nmf_oracle</code></a> <em>(oracle)</em>, <a href="../nystrom/"><code>nystrom</code></a>, <a href="../performer/"><code>performer</code></a>, <a href="../sink_window/"><code>sink_window</code></a>, <a href="../svd_oracle/"><code>svd_oracle</code></a> <em>(oracle)</em>, <a href="../topk/"><code>topk</code></a>, <a href="../trigrff/"><code>trigrff</code></a>, <a href="../value_topk/"><code>value_topk</code></a> <em>(oracle)</em>, <a href="../window/"><code>window</code></a> &nbsp;·&nbsp; <a href="../?objective=approximate">browse the bank, approximate only</a></dd>
+</dl>
+<p><a href="../?compare=evict_h2o">Open the browser with <code>evict_h2o</code> selected</a> and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Zhang et al. (2023).</strong> <em>H2O: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models.</em> Advances in Neural Information Processing Systems (NeurIPS). <a href="https://arxiv.org/abs/2306.14048">arXiv:2306.14048</a><br><code>zhang2023h2o</code></li>
-<li><strong>Liu et al. (2023).</strong> <em>Scissorhands: Exploiting the Persistence of Importance Hypothesis for LLM KV Cache Compression at Test Time.</em> Advances in Neural Information Processing Systems (NeurIPS). <a href="https://arxiv.org/abs/2305.17118">arXiv:2305.17118</a><br><code>liu2023scissorhands</code></li>
-<li><strong>Oren et al. (2024).</strong> <em>Transformers are Multi-State RNNs.</em> Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP). <a href="https://arxiv.org/abs/2401.06104">arXiv:2401.06104</a><br><code>oren2024transformers</code></li>
+<li><strong>Zhang et al. (2023).</strong> <em>H2O: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models.</em> Advances in Neural Information Processing Systems (NeurIPS). <a href="https://arxiv.org/abs/2306.14048">arXiv:2306.14048</a><br><span class="attn-cite" data-bibkey="zhang2023h2o"><code>zhang2023h2o</code></span></li>
+<li><strong>Liu et al. (2023).</strong> <em>Scissorhands: Exploiting the Persistence of Importance Hypothesis for LLM KV Cache Compression at Test Time.</em> Advances in Neural Information Processing Systems (NeurIPS). <a href="https://arxiv.org/abs/2305.17118">arXiv:2305.17118</a><br><span class="attn-cite" data-bibkey="liu2023scissorhands"><code>liu2023scissorhands</code></span></li>
+<li><strong>Oren et al. (2024).</strong> <em>Transformers are Multi-State RNNs.</em> Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP). <a href="https://arxiv.org/abs/2401.06104">arXiv:2401.06104</a><br><span class="attn-cite" data-bibkey="oren2024transformers"><code>oren2024transformers</code></span></li>
 </ul>
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="zhang2023h2o">
+<pre class="attn-bib__src"><code>@inproceedings{zhang2023h2o,
+  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models},
+  author    = {Zhang, Zhenyu and Sheng, Ying and Zhou, Tianyi and Chen, Tianlong and Zheng, Lianmin and Cai, Ruisi and Song, Zhao and Tian, Yuandong and R{\'e}, Christopher and Barrett, Clark and Wang, Zhangyang and Chen, Beidi},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {36},
+  year      = {2023},
+  eprint    = {2306.14048},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="liu2023scissorhands">
+<pre class="attn-bib__src"><code>@inproceedings{liu2023scissorhands,
+  title     = {Scissorhands: Exploiting the Persistence of Importance Hypothesis for {LLM} {KV} Cache Compression at Test Time},
+  author    = {Liu, Zichang and Desai, Aditya and Liao, Fangshuo and Wang, Weitao and Xie, Victor and Xu, Zhaozhuo and Kyrillidis, Anastasios and Shrivastava, Anshumali},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {36},
+  year      = {2023},
+  eprint    = {2305.17118},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="oren2024transformers">
+<pre class="attn-bib__src"><code>@inproceedings{oren2024transformers,
+  title = {{Transformers are Multi-State RNNs}},
+  author = {Matanel Oren and Michael Hassid and Nir Yarden and Yossi Adi and Roy Schwartz},
+  year = {2024},
+  booktitle = {Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  eprint = {2401.06104},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
+
 <p>The bibliography is packaged with the library (<code>attnbank/references.bib</code>) and <code>tests/test_conformance.py</code> fails if a method cites a key that is not in it.</p>
 <hr />
 <p><em>Generated by <code>docs/gen_methods.py</code> from the registry and from the module docstring of <a href="https://github.com/Ashkan13776/attnbank/blob/main/attnbank/methods/compress/evict_h2o.py"><code>attnbank/methods/compress/evict_h2o.py</code></a>; the example above was executed to produce its output. Regenerate with <code>python docs/gen_methods.py</code>.</em></p>
@@ -3146,6 +3191,8 @@ They are what the monograph's capacity arguments are made of;
         <script src="../../javascripts/bank.js"></script>
       
         <script src="../../javascripts/attnbank.js"></script>
+      
+        <script src="../../javascripts/clip.js"></script>
       
     
   </body>

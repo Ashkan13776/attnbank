@@ -2748,7 +2748,7 @@ does.</p>
 <h2 id="what-it-says">What it says<a class="headerlink" href="#what-it-says" title="Permanent link">&para;</a></h2>
 <p>Every efficient attention method, whatever else it does, realises a measure
 <span class="arithmatex">\(\widehat\pi_q\)</span> over the <span class="arithmatex">\(n\)</span> context positions and a value field <span class="arithmatex">\(\widehat v\)</span>:</p>
-<div class="arithmatex">\[\widehat y(q) \;=\; \sum_{j=1}^{n} \widehat\pi_q(j)\,\widehat v_j .\]</div>
+<div class="arithmatex" data-tex="\widehat y(q) \;=\; \sum_{j=1}^{n} \widehat\pi_q(j)\,\widehat v_j .">\[\widehat y(q) \;=\; \sum_{j=1}^{n} \widehat\pi_q(j)\,\widehat v_j .\]</div>
 <p>Methods do not usually advertise this. A Performer computes feature maps, a
 StreamingLLM evicts tokens, a linear RNN carries a state matrix. None of them looks
 like a weighted average over positions. All of them <em>are</em> one, and the library requires
@@ -2760,7 +2760,8 @@ each to show you which one.</p>
 </code></pre></div>
 <h2 id="why-it-matters">Why it matters<a class="headerlink" href="#why-it-matters" title="Permanent link">&para;</a></h2>
 <p>Because of this:</p>
-<div class="arithmatex">\[y - \widehat y \;=\; \underbrace{(\pi - \widehat\pi)\,v}_{\text{distributional}}
+<div class="arithmatex" data-tex="y - \widehat y \;=\; \underbrace{(\pi - \widehat\pi)\,v}_{\text{distributional}}
+\;+\; \underbrace{\widehat\pi\,(v - \widehat v)}_{\text{value}}">\[y - \widehat y \;=\; \underbrace{(\pi - \widehat\pi)\,v}_{\text{distributional}}
 \;+\; \underbrace{\widehat\pi\,(v - \widehat v)}_{\text{value}}\]</div>
 <p>An approximation can be wrong in exactly two ways — it attends to the wrong places, or
 it aggregates the wrong values — and this identity separates them <strong>exactly</strong>, not
@@ -2886,6 +2887,8 @@ where there is nowhere for an error to hide.</p>
         <script src="../javascripts/bank.js"></script>
       
         <script src="../javascripts/attnbank.js"></script>
+      
+        <script src="../javascripts/clip.js"></script>
       
     
   </body>

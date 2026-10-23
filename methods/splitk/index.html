@@ -719,10 +719,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-exact" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in exact
+        Related methods
       
     </span>
   </a>
@@ -2833,10 +2833,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-exact" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in exact
+        Related methods
       
     </span>
   </a>
@@ -3056,14 +3056,47 @@ They are what the monograph's capacity arguments are made of;
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>invariant W: 4.172325134277344e-07
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>max |y - y_softmax|: 4.172325134277344e-07
 </code></pre></div>
-<h2 id="others-in-exact">Others in <code>exact</code><a class="headerlink" href="#others-in-exact" title="Permanent link">&para;</a></h2>
-<p><a href="../flash/"><code>flash</code></a>, <a href="../lowprec/"><code>lowprec</code></a>, <a href="../softmax/"><code>softmax</code></a> — see <a href="../../taxonomy/#exact">the taxonomy</a>.</p>
+<h2 id="related-methods">Related methods<a class="headerlink" href="#related-methods" title="Permanent link">&para;</a></h2>
+<p>Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are <code>ab.available(...)</code> with <code>splitk</code> removed.</p>
+<dl>
+<dt>changes the same object — <a href="../../taxonomy/#exact"><code>exact</code></a></dt>
+<dd><a href="../flash/"><code>flash</code></a>, <a href="../lowprec/"><code>lowprec</code></a>, <a href="../softmax/"><code>softmax</code></a> &nbsp;·&nbsp; <a href="../?category=exact">browse the bank, exact only</a></dd>
+</dl>
+<p><a href="../?compare=splitk">Open the browser with <code>splitk</code> selected</a> and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Dao et al. (2023).</strong> <em>Flash-Decoding for long-context inference.</em> Stanford CRFM blog, \urlhttps://crfm.stanford.edu/2023/10/12/flashdecoding.html.<br><code>dao2023flash</code></li>
-<li><strong>Sanovar et al. (2024).</strong> <em>Lean Attention: Hardware-Aware Scalable Attention Mechanism for the Decode-Phase of Transformers.</em> <a href="https://arxiv.org/abs/2405.10480">arXiv:2405.10480</a><br><code>sanovar2024lean</code></li>
-<li><strong>Shyam et al. (2024).</strong> <em>Tree Attention: Topology-aware Decoding for Long-Context Attention on GPU clusters.</em> <a href="https://arxiv.org/abs/2408.04093">arXiv:2408.04093</a><br><code>shyam2024tree</code></li>
+<li><strong>Dao et al. (2023).</strong> <em>Flash-Decoding for long-context inference.</em> Stanford CRFM blog, \urlhttps://crfm.stanford.edu/2023/10/12/flashdecoding.html.<br><span class="attn-cite" data-bibkey="dao2023flash"><code>dao2023flash</code></span></li>
+<li><strong>Sanovar et al. (2024).</strong> <em>Lean Attention: Hardware-Aware Scalable Attention Mechanism for the Decode-Phase of Transformers.</em> <a href="https://arxiv.org/abs/2405.10480">arXiv:2405.10480</a><br><span class="attn-cite" data-bibkey="sanovar2024lean"><code>sanovar2024lean</code></span></li>
+<li><strong>Shyam et al. (2024).</strong> <em>Tree Attention: Topology-aware Decoding for Long-Context Attention on GPU clusters.</em> <a href="https://arxiv.org/abs/2408.04093">arXiv:2408.04093</a><br><span class="attn-cite" data-bibkey="shyam2024tree"><code>shyam2024tree</code></span></li>
 </ul>
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="dao2023flash">
+<pre class="attn-bib__src"><code>@misc{dao2023flash,
+  title={Flash-Decoding for long-context inference},
+  author={Dao, Tri and Haziza, Daniel and Massa, Francisco and Sizov, Grigory},
+  year={2023}, howpublished={Stanford CRFM blog, \url{https://crfm.stanford.edu/2023/10/12/flashdecoding.html}},
+  note={Accessed October 2026}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="sanovar2024lean">
+<pre class="attn-bib__src"><code>@misc{sanovar2024lean,
+  title={Lean Attention: Hardware-Aware Scalable Attention Mechanism for the Decode-Phase of Transformers},
+  author={Sanovar, Rya and Bharadwaj, Srikant and St. Amant, Renee and R{\&quot;u}hle, Victor and Rajmohan, Saravan},
+  year={2024}, eprint={2405.10480}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="shyam2024tree">
+<pre class="attn-bib__src"><code>@misc{shyam2024tree,
+  title={Tree Attention: Topology-aware Decoding for Long-Context Attention on {GPU} clusters},
+  author={Shyam, Vasudev and Pilault, Jonathan and Shepperd, Emily and Anthony, Quentin and Millidge, Beren},
+  year={2024}, eprint={2408.04093}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
+
 <p>The bibliography is packaged with the library (<code>attnbank/references.bib</code>) and <code>tests/test_conformance.py</code> fails if a method cites a key that is not in it.</p>
 <hr />
 <p><em>Generated by <code>docs/gen_methods.py</code> from the registry and from the module docstring of <a href="https://github.com/Ashkan13776/attnbank/blob/main/attnbank/methods/exact/splitk.py"><code>attnbank/methods/exact/splitk.py</code></a>; the example above was executed to produce its output. Regenerate with <code>python docs/gen_methods.py</code>.</em></p>
@@ -3138,6 +3171,8 @@ They are what the monograph's capacity arguments are made of;
         <script src="../../javascripts/bank.js"></script>
       
         <script src="../../javascripts/attnbank.js"></script>
+      
+        <script src="../../javascripts/clip.js"></script>
       
     
   </body>

@@ -2603,18 +2603,7 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#020-2026-10-22" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        0.2.0 — 2026-10-22
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="0.2.0 — 2026-10-22">
+    <nav class="md-nav" aria-label="Unreleased">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2630,6 +2619,45 @@
         
           <li class="md-nav__item">
   <a href="#changed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changed
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#020-2026-10-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.2.0 — 2026-10-22
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.2.0 — 2026-10-22">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Added
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_1" class="md-nav__link">
     <span class="md-ellipsis">
       
         Changed
@@ -2709,18 +2737,7 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#020-2026-10-22" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        0.2.0 — 2026-10-22
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="0.2.0 — 2026-10-22">
+    <nav class="md-nav" aria-label="Unreleased">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2736,6 +2753,45 @@
         
           <li class="md-nav__item">
   <a href="#changed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changed
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#020-2026-10-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.2.0 — 2026-10-22
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.2.0 — 2026-10-22">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Added
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_1" class="md-nav__link">
     <span class="md-ellipsis">
       
         Changed
@@ -2800,11 +2856,42 @@
 (<code>y == weights @ (v_hat or value)</code>). If a release ever relaxes it, that release is a
 major version and this file says so in the first line.</p>
 <h2 id="unreleased"><a href="https://github.com/Ashkan13776/attnbank/compare/v0.2.0...HEAD">Unreleased</a><a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
+<p>Documentation site only. No method's mathematics, no number and no result file
+changed, and the site still makes <strong>zero third-party requests</strong>.</p>
+<h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Side-by-side comparison</strong> on the <strong>Browse the bank</strong> page. Tick two to
+  four rows and the methods appear in columns: category, objective, paper section, the
+  five declaration booleans, the oracle flag, backends, correctness anchor,
+  configuration defaults, the three cost quantities at the shape every method page
+  quotes, and the BibTeX keys. Every value is read from <code>ab.describe()</code> and the
+  method's own <code>cost()</code> — <code>docs/gen_methods.py</code> writes them into one JSON block on the
+  page. Rows the selected methods agree on fold away, a cell is marked when it is the
+  odd one out, and a property not declared by <em>all</em> of the selected methods is not
+  shown at all rather than guessed at.</li>
+<li><strong>URL state.</strong> Search text, chip filters, sort column and direction, and the
+  comparison selection are all in the query string, so a filtered view or a comparison
+  is a link you can paste. It survives <code>navigation.instant</code> and is restored on load.</li>
+<li><strong>Copy controls.</strong> A copy-BibTeX button beside each citation key on a method page, a
+  <em>copy all</em> for the page's bibliography, and a copy-LaTeX button on every display
+  formula and on the operator plate — the TeX source, not the rendered form.</li>
+<li><strong>Related methods</strong> on every method page: the methods that change the same object
+  and the methods that pursue the same objective, both derived from the registry.</li>
+<li><code>/</code> focuses the search box of the method browser.</li>
+</ul>
+<h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<ul>
+<li>The <em>Others in <code>&lt;category&gt;</code></em> section of a method page is now <em>Related methods</em>, and
+  names the same-objective methods as well as the same-category ones.</li>
+<li><code>docs/tex_source.py</code>, a new mkdocs hook, stamps each display formula's LaTeX source
+  onto its element at build time; MathJax replaces the source with SVG, so scraping it
+  in the browser is a race.</li>
+</ul>
 <h2 id="020-2026-10-22"><a href="https://github.com/Ashkan13776/attnbank/releases/tag/v0.2.0">0.2.0</a> — 2026-10-22<a class="headerlink" href="#020-2026-10-22" title="Permanent link">&para;</a></h2>
 <p>The release that turns the research code into a library. No method's mathematics, no
 number and no result file changed; everything below is interface, documentation and
 packaging.</p>
-<h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
+<h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong><code>ab.list_methods()</code></strong> — the bank as a readable table grouped by category, with the
   declaration columns that drive the test suite. Returns a <code>MethodTable</code>, which is a
@@ -2880,7 +2967,7 @@ packaging.</p>
   build and <code>twine check</code> the distribution, and verify that a bare <code>pip install
   attnbank</code> still works with neither matplotlib nor transformers present.</li>
 </ul>
-<h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<h3 id="changed_1">Changed<a class="headerlink" href="#changed_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>The positional parameters of every forward pass are now <code>query, key, value</code></strong> (the
   transformers convention) rather than <code>q, k, v</code>. This frees <code>k=</code> to mean what a reader
@@ -2978,6 +3065,8 @@ eleven-point conformance suite, and the eight studies behind the monograph.</p>
         <script src="../javascripts/bank.js"></script>
       
         <script src="../javascripts/attnbank.js"></script>
+      
+        <script src="../javascripts/clip.js"></script>
       
     
   </body>

@@ -816,10 +816,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-interaction" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in interaction
+        Related methods
       
     </span>
   </a>
@@ -2833,10 +2833,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-interaction" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in interaction
+        Related methods
       
     </span>
   </a>
@@ -3056,13 +3056,46 @@ They are what the monograph's capacity arguments are made of;
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>row_stochastic = True | first row sums: [1.0, 1.0, 1.0, 1.0]
 <a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>extras: [&#39;Z_hat&#39;, &#39;decay&#39;, &#39;g_hat&#39;]
 </code></pre></div>
-<h2 id="others-in-interaction">Others in <code>interaction</code><a class="headerlink" href="#others-in-interaction" title="Permanent link">&para;</a></h2>
-<p><a href="../linear_elu/"><code>linear_elu</code></a>, <a href="../nystrom/"><code>nystrom</code></a>, <a href="../performer/"><code>performer</code></a>, <a href="../trigrff/"><code>trigrff</code></a> — see <a href="../../taxonomy/#interaction">the taxonomy</a>.</p>
+<h2 id="related-methods">Related methods<a class="headerlink" href="#related-methods" title="Permanent link">&para;</a></h2>
+<p>Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are <code>ab.available(...)</code> with <code>cosformer</code> removed.</p>
+<dl>
+<dt>changes the same object — <a href="../../taxonomy/#interaction"><code>interaction</code></a></dt>
+<dd><a href="../linear_elu/"><code>linear_elu</code></a>, <a href="../nystrom/"><code>nystrom</code></a>, <a href="../performer/"><code>performer</code></a>, <a href="../trigrff/"><code>trigrff</code></a> &nbsp;·&nbsp; <a href="../?category=interaction">browse the bank, interaction only</a></dd>
+<dt>judged the same way — <code>modify</code>, beyond the ones above</dt>
+<dd><a href="../decay_rnn/"><code>decay_rnn</code></a>, <a href="../delta_rnn/"><code>delta_rnn</code></a>, <a href="../gqa/"><code>gqa</code></a>, <a href="../latent_stochastic/"><code>latent_stochastic</code></a>, <a href="../linear_rnn/"><code>linear_rnn</code></a>, <a href="../lowrank_ot/"><code>lowrank_ot</code></a>, <a href="../mla/"><code>mla</code></a>, <a href="../sinkhorn/"><code>sinkhorn</code></a> &nbsp;·&nbsp; <a href="../?objective=modify">browse the bank, modify only</a></dd>
+</dl>
+<p><a href="../?compare=cosformer">Open the browser with <code>cosformer</code> selected</a> and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Qin et al. (2022).</strong> <em>cosFormer: Rethinking Softmax in Attention.</em> International Conference on Learning Representations (ICLR). <a href="https://arxiv.org/abs/2202.08791">arXiv:2202.08791</a><br><code>qin2022cosformer</code></li>
-<li><strong>Qin et al. (2022).</strong> <em>The Devil in Linear Transformer.</em> Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing (EMNLP). <a href="https://arxiv.org/abs/2210.10340">arXiv:2210.10340</a><br><code>qin2022devil</code></li>
+<li><strong>Qin et al. (2022).</strong> <em>cosFormer: Rethinking Softmax in Attention.</em> International Conference on Learning Representations (ICLR). <a href="https://arxiv.org/abs/2202.08791">arXiv:2202.08791</a><br><span class="attn-cite" data-bibkey="qin2022cosformer"><code>qin2022cosformer</code></span></li>
+<li><strong>Qin et al. (2022).</strong> <em>The Devil in Linear Transformer.</em> Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing (EMNLP). <a href="https://arxiv.org/abs/2210.10340">arXiv:2210.10340</a><br><span class="attn-cite" data-bibkey="qin2022devil"><code>qin2022devil</code></span></li>
 </ul>
+<details class="attn-bib no-copy">
+<summary>BibTeX — 2 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="qin2022cosformer">
+<pre class="attn-bib__src"><code>@inproceedings{qin2022cosformer,
+  title={{cosFormer}: Rethinking Softmax in Attention},
+  author={Qin, Zhen and Sun, Weixuan and Deng, Hui and Li, Dongxu and Wei, Yunshen and Lv, Baohong and Yan, Junjie and Kong, Lingpeng and Zhong, Yiran},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2022},
+  eprint={2202.08791},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="qin2022devil">
+<pre class="attn-bib__src"><code>@inproceedings{qin2022devil,
+  title={The Devil in Linear Transformer},
+  author={Qin, Zhen and Han, Xiaodong and Sun, Weixuan and Li, Dongxu and Kong, Lingpeng and Barnes, Nick and Zhong, Yiran},
+  booktitle={Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  year={2022},
+  eprint={2210.10340},
+  archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
+
 <p>The bibliography is packaged with the library (<code>attnbank/references.bib</code>) and <code>tests/test_conformance.py</code> fails if a method cites a key that is not in it.</p>
 <hr />
 <p><em>Generated by <code>docs/gen_methods.py</code> from the registry and from the module docstring of <a href="https://github.com/Ashkan13776/attnbank/blob/main/attnbank/methods/interaction/cosformer.py"><code>attnbank/methods/interaction/cosformer.py</code></a>; the example above was executed to produce its output. Regenerate with <code>python docs/gen_methods.py</code>.</em></p>
@@ -3137,6 +3170,8 @@ They are what the monograph's capacity arguments are made of;
         <script src="../../javascripts/bank.js"></script>
       
         <script src="../../javascripts/attnbank.js"></script>
+      
+        <script src="../../javascripts/clip.js"></script>
       
     
   </body>

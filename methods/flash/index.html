@@ -663,10 +663,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-exact" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in exact
+        Related methods
       
     </span>
   </a>
@@ -2833,10 +2833,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-exact" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in exact
+        Related methods
       
     </span>
   </a>
@@ -3060,15 +3060,59 @@ They are what the monograph's capacity arguments are made of;
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>invariant W: 4.172325134277344e-07
 <a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>max |y - y_softmax|: 4.172325134277344e-07
 </code></pre></div>
-<h2 id="others-in-exact">Others in <code>exact</code><a class="headerlink" href="#others-in-exact" title="Permanent link">&para;</a></h2>
-<p><a href="../lowprec/"><code>lowprec</code></a>, <a href="../softmax/"><code>softmax</code></a>, <a href="../splitk/"><code>splitk</code></a> — see <a href="../../taxonomy/#exact">the taxonomy</a>.</p>
+<h2 id="related-methods">Related methods<a class="headerlink" href="#related-methods" title="Permanent link">&para;</a></h2>
+<p>Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are <code>ab.available(...)</code> with <code>flash</code> removed.</p>
+<dl>
+<dt>changes the same object — <a href="../../taxonomy/#exact"><code>exact</code></a></dt>
+<dd><a href="../lowprec/"><code>lowprec</code></a>, <a href="../softmax/"><code>softmax</code></a>, <a href="../splitk/"><code>splitk</code></a> &nbsp;·&nbsp; <a href="../?category=exact">browse the bank, exact only</a></dd>
+</dl>
+<p><a href="../?compare=flash">Open the browser with <code>flash</code> selected</a> and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Dao et al. (2022).</strong> <em>FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness.</em> Advances in Neural Information Processing Systems (NeurIPS). <a href="https://arxiv.org/abs/2205.14135">arXiv:2205.14135</a><br><code>dao2022flashattention</code></li>
-<li><strong>Dao (2024).</strong> <em>FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning.</em> International Conference on Learning Representations (ICLR). <a href="https://arxiv.org/abs/2307.08691">arXiv:2307.08691</a><br><code>dao2024flashattention2</code></li>
-<li><strong>Milakov and Gimelshein (2018).</strong> <em>Online normalizer calculation for softmax.</em> <a href="https://arxiv.org/abs/1805.02867">arXiv:1805.02867</a><br><code>milakov2018online</code></li>
-<li><strong>Rabe and Staats (2021).</strong> <em>Self-attention Does Not Need <span class="arithmatex">\(O(n^2)\)</span> Memory.</em> <a href="https://arxiv.org/abs/2112.05682">arXiv:2112.05682</a><br><code>rabe2021selfattention</code></li>
+<li><strong>Dao et al. (2022).</strong> <em>FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness.</em> Advances in Neural Information Processing Systems (NeurIPS). <a href="https://arxiv.org/abs/2205.14135">arXiv:2205.14135</a><br><span class="attn-cite" data-bibkey="dao2022flashattention"><code>dao2022flashattention</code></span></li>
+<li><strong>Dao (2024).</strong> <em>FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning.</em> International Conference on Learning Representations (ICLR). <a href="https://arxiv.org/abs/2307.08691">arXiv:2307.08691</a><br><span class="attn-cite" data-bibkey="dao2024flashattention2"><code>dao2024flashattention2</code></span></li>
+<li><strong>Milakov and Gimelshein (2018).</strong> <em>Online normalizer calculation for softmax.</em> <a href="https://arxiv.org/abs/1805.02867">arXiv:1805.02867</a><br><span class="attn-cite" data-bibkey="milakov2018online"><code>milakov2018online</code></span></li>
+<li><strong>Rabe and Staats (2021).</strong> <em>Self-attention Does Not Need <span class="arithmatex">\(O(n^2)\)</span> Memory.</em> <a href="https://arxiv.org/abs/2112.05682">arXiv:2112.05682</a><br><span class="attn-cite" data-bibkey="rabe2021selfattention"><code>rabe2021selfattention</code></span></li>
 </ul>
+<details class="attn-bib no-copy">
+<summary>BibTeX — 4 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="dao2022flashattention">
+<pre class="attn-bib__src"><code>@inproceedings{dao2022flashattention,
+  title     = {{FlashAttention}: Fast and Memory-Efficient Exact Attention with {IO}-Awareness},
+  author    = {Dao, Tri and Fu, Daniel Y. and Ermon, Stefano and Rudra, Atri and R{\'e}, Christopher},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {35},
+  year      = {2022},
+  eprint    = {2205.14135},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="dao2024flashattention2">
+<pre class="attn-bib__src"><code>@inproceedings{dao2024flashattention2,
+  title={{FlashAttention-2}: Faster Attention with Better Parallelism and Work Partitioning},
+  author={Dao, Tri},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2024}, eprint={2307.08691}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="milakov2018online">
+<pre class="attn-bib__src"><code>@misc{milakov2018online,
+  title={Online normalizer calculation for softmax},
+  author={Milakov, Maxim and Gimelshein, Natalia},
+  year={2018}, eprint={1805.02867}, archivePrefix={arXiv}, primaryClass={cs.PF}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="rabe2021selfattention">
+<pre class="attn-bib__src"><code>@misc{rabe2021selfattention,
+  title={Self-attention Does Not Need $O(n^2)$ Memory},
+  author={Rabe, Markus N. and Staats, Charles},
+  year={2021}, eprint={2112.05682}, archivePrefix={arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
+
 <p>The bibliography is packaged with the library (<code>attnbank/references.bib</code>) and <code>tests/test_conformance.py</code> fails if a method cites a key that is not in it.</p>
 <hr />
 <p><em>Generated by <code>docs/gen_methods.py</code> from the registry and from the module docstring of <a href="https://github.com/Ashkan13776/attnbank/blob/main/attnbank/methods/exact/flash.py"><code>attnbank/methods/exact/flash.py</code></a>; the example above was executed to produce its output. Regenerate with <code>python docs/gen_methods.py</code>.</em></p>
@@ -3143,6 +3187,8 @@ They are what the monograph's capacity arguments are made of;
         <script src="../../javascripts/bank.js"></script>
       
         <script src="../../javascripts/attnbank.js"></script>
+      
+        <script src="../../javascripts/clip.js"></script>
       
     
   </body>

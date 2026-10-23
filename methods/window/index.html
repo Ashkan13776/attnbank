@@ -1139,10 +1139,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-restrict" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in restrict
+        Related methods
       
     </span>
   </a>
@@ -2833,10 +2833,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-restrict" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in restrict
+        Related methods
       
     </span>
   </a>
@@ -3054,14 +3054,57 @@ They are what the monograph's capacity arguments are made of;
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>invariant W: 0.0
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>{&#39;output_error&#39;: 2.23291, &#39;distributional_error&#39;: 2.23291, &#39;value_error&#39;: 0.0, &#39;tv&#39;: 0.74132}
 </code></pre></div>
-<h2 id="others-in-restrict">Others in <code>restrict</code><a class="headerlink" href="#others-in-restrict" title="Permanent link">&para;</a></h2>
-<p><a href="../blocktopk/"><code>blocktopk</code></a>, <a href="../lsh_sample/"><code>lsh_sample</code></a>, <a href="../sink_window/"><code>sink_window</code></a>, <a href="../topk/"><code>topk</code></a>, <a href="../value_topk/"><code>value_topk</code></a> <em>(oracle)</em> — see <a href="../../taxonomy/#restrict">the taxonomy</a>.</p>
+<h2 id="related-methods">Related methods<a class="headerlink" href="#related-methods" title="Permanent link">&para;</a></h2>
+<p>Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are <code>ab.available(...)</code> with <code>window</code> removed.</p>
+<dl>
+<dt>changes the same object — <a href="../../taxonomy/#restrict"><code>restrict</code></a></dt>
+<dd><a href="../blocktopk/"><code>blocktopk</code></a>, <a href="../lsh_sample/"><code>lsh_sample</code></a>, <a href="../sink_window/"><code>sink_window</code></a>, <a href="../topk/"><code>topk</code></a>, <a href="../value_topk/"><code>value_topk</code></a> <em>(oracle)</em> &nbsp;·&nbsp; <a href="../?category=restrict">browse the bank, restrict only</a></dd>
+<dt>judged the same way — <code>approximate</code>, beyond the ones above</dt>
+<dd><a href="../clustered/"><code>clustered</code></a>, <a href="../evict_h2o/"><code>evict_h2o</code></a>, <a href="../evict_snapkv/"><code>evict_snapkv</code></a>, <a href="../linformer/"><code>linformer</code></a>, <a href="../lowprec/"><code>lowprec</code></a>, <a href="../lowrank_kv/"><code>lowrank_kv</code></a>, <a href="../merge_kv/"><code>merge_kv</code></a>, <a href="../nmf_oracle/"><code>nmf_oracle</code></a> <em>(oracle)</em>, <a href="../nystrom/"><code>nystrom</code></a>, <a href="../performer/"><code>performer</code></a>, <a href="../quantkv/"><code>quantkv</code></a>, <a href="../svd_oracle/"><code>svd_oracle</code></a> <em>(oracle)</em>, <a href="../trigrff/"><code>trigrff</code></a> &nbsp;·&nbsp; <a href="../?objective=approximate">browse the bank, approximate only</a></dd>
+</dl>
+<p><a href="../?compare=window">Open the browser with <code>window</code> selected</a> and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Beltagy et al. (2020).</strong> <em>Longformer: The Long-Document Transformer.</em> <a href="https://arxiv.org/abs/2004.05150">arXiv:2004.05150</a><br><code>beltagy2020longformer</code></li>
-<li><strong>Jiang et al. (2023).</strong> <em>Mistral 7B.</em> <a href="https://arxiv.org/abs/2310.06825">arXiv:2310.06825</a><br><code>jiang2023mistral</code></li>
-<li><strong>Child et al. (2019).</strong> <em>Generating Long Sequences with Sparse Transformers.</em> <a href="https://arxiv.org/abs/1904.10509">arXiv:1904.10509</a><br><code>child2019generating</code></li>
+<li><strong>Beltagy et al. (2020).</strong> <em>Longformer: The Long-Document Transformer.</em> <a href="https://arxiv.org/abs/2004.05150">arXiv:2004.05150</a><br><span class="attn-cite" data-bibkey="beltagy2020longformer"><code>beltagy2020longformer</code></span></li>
+<li><strong>Jiang et al. (2023).</strong> <em>Mistral 7B.</em> <a href="https://arxiv.org/abs/2310.06825">arXiv:2310.06825</a><br><span class="attn-cite" data-bibkey="jiang2023mistral"><code>jiang2023mistral</code></span></li>
+<li><strong>Child et al. (2019).</strong> <em>Generating Long Sequences with Sparse Transformers.</em> <a href="https://arxiv.org/abs/1904.10509">arXiv:1904.10509</a><br><span class="attn-cite" data-bibkey="child2019generating"><code>child2019generating</code></span></li>
 </ul>
+<details class="attn-bib no-copy">
+<summary>BibTeX — 3 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="beltagy2020longformer">
+<pre class="attn-bib__src"><code>@misc{beltagy2020longformer,
+  title = {{Longformer: The Long-Document Transformer}},
+  author = {Beltagy, Iz and Peters, Matthew E. and Cohan, Arman},
+  year = {2020},
+  howpublished = {arXiv preprint arXiv:2004.05150},
+  eprint = {2004.05150},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="jiang2023mistral">
+<pre class="attn-bib__src"><code>@misc{jiang2023mistral,
+  title = {{Mistral 7B}},
+  author = {Jiang, Albert Q. and Sablayrolles, Alexandre and Mensch, Arthur and Bamford, Chris and Chaplot, Devendra Singh and Casas, Diego de las and Bressand, Florian and Lengyel, Gianna and Lample, Guillaume and Saulnier, Lucile and others},
+  year = {2023},
+  howpublished = {arXiv preprint arXiv:2310.06825},
+  eprint = {2310.06825},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="child2019generating">
+<pre class="attn-bib__src"><code>@misc{child2019generating,
+  title = {{Generating Long Sequences with Sparse Transformers}},
+  author = {Child, Rewon and Gray, Scott and Radford, Alec and Sutskever, Ilya},
+  year = {2019},
+  howpublished = {arXiv preprint arXiv:1904.10509},
+  eprint = {1904.10509},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+</div>
+</details>
+
 <p>The bibliography is packaged with the library (<code>attnbank/references.bib</code>) and <code>tests/test_conformance.py</code> fails if a method cites a key that is not in it.</p>
 <hr />
 <p><em>Generated by <code>docs/gen_methods.py</code> from the registry and from the module docstring of <a href="https://github.com/Ashkan13776/attnbank/blob/main/attnbank/methods/restrict/window.py"><code>attnbank/methods/restrict/window.py</code></a>; the example above was executed to produce its output. Regenerate with <code>python docs/gen_methods.py</code>.</em></p>
@@ -3136,6 +3179,8 @@ They are what the monograph's capacity arguments are made of;
         <script src="../../javascripts/bank.js"></script>
       
         <script src="../../javascripts/attnbank.js"></script>
+      
+        <script src="../../javascripts/clip.js"></script>
       
     
   </body>

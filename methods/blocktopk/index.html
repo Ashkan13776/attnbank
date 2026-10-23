@@ -1111,10 +1111,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-restrict" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in restrict
+        Related methods
       
     </span>
   </a>
@@ -2833,10 +2833,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#others-in-restrict" class="md-nav__link">
+  <a href="#related-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Others in restrict
+        Related methods
       
     </span>
   </a>
@@ -3072,13 +3072,47 @@ They are what the monograph's capacity arguments are made of;
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>invariant W: 0.0
 <a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>{&#39;output_error&#39;: 1.53824, &#39;distributional_error&#39;: 1.53824, &#39;value_error&#39;: 0.0, &#39;tv&#39;: 0.5296}
 </code></pre></div>
-<h2 id="others-in-restrict">Others in <code>restrict</code><a class="headerlink" href="#others-in-restrict" title="Permanent link">&para;</a></h2>
-<p><a href="../lsh_sample/"><code>lsh_sample</code></a>, <a href="../sink_window/"><code>sink_window</code></a>, <a href="../topk/"><code>topk</code></a>, <a href="../value_topk/"><code>value_topk</code></a> <em>(oracle)</em>, <a href="../window/"><code>window</code></a> — see <a href="../../taxonomy/#restrict">the taxonomy</a>.</p>
+<h2 id="related-methods">Related methods<a class="headerlink" href="#related-methods" title="Permanent link">&para;</a></h2>
+<p>Two relations, because the registry declares two axes: what a method changes, and what it is trying to be. Both lists are <code>ab.available(...)</code> with <code>blocktopk</code> removed.</p>
+<dl>
+<dt>changes the same object — <a href="../../taxonomy/#restrict"><code>restrict</code></a></dt>
+<dd><a href="../lsh_sample/"><code>lsh_sample</code></a>, <a href="../sink_window/"><code>sink_window</code></a>, <a href="../topk/"><code>topk</code></a>, <a href="../value_topk/"><code>value_topk</code></a> <em>(oracle)</em>, <a href="../window/"><code>window</code></a> &nbsp;·&nbsp; <a href="../?category=restrict">browse the bank, restrict only</a></dd>
+<dt>judged the same way — <code>approximate</code>, beyond the ones above</dt>
+<dd><a href="../clustered/"><code>clustered</code></a>, <a href="../evict_h2o/"><code>evict_h2o</code></a>, <a href="../evict_snapkv/"><code>evict_snapkv</code></a>, <a href="../linformer/"><code>linformer</code></a>, <a href="../lowprec/"><code>lowprec</code></a>, <a href="../lowrank_kv/"><code>lowrank_kv</code></a>, <a href="../merge_kv/"><code>merge_kv</code></a>, <a href="../nmf_oracle/"><code>nmf_oracle</code></a> <em>(oracle)</em>, <a href="../nystrom/"><code>nystrom</code></a>, <a href="../performer/"><code>performer</code></a>, <a href="../quantkv/"><code>quantkv</code></a>, <a href="../svd_oracle/"><code>svd_oracle</code></a> <em>(oracle)</em>, <a href="../trigrff/"><code>trigrff</code></a> &nbsp;·&nbsp; <a href="../?objective=approximate">browse the bank, approximate only</a></dd>
+</dl>
+<p><a href="../?compare=blocktopk">Open the browser with <code>blocktopk</code> selected</a> and tick up to three more to see them in columns. Every row there is one the registry declares, and the rows the selected methods agree on fold away.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Tang et al. (2024).</strong> <em>Quest: Query-Aware Sparsity for Efficient Long-Context LLM Inference.</em> Proceedings of the 41st International Conference on Machine Learning (ICML). <a href="https://arxiv.org/abs/2406.10774">arXiv:2406.10774</a><br><code>tang2024quest</code></li>
-<li><strong>Xiao et al. (2024).</strong> <em>InfLLM: Training-Free Long-Context Extrapolation for LLMs with an Efficient Context Memory.</em> Advances in Neural Information Processing Systems (NeurIPS). <a href="https://doi.org/10.52202/079017-3801">doi:10.52202/079017-3801</a><br><code>xiao2024infllm</code></li>
+<li><strong>Tang et al. (2024).</strong> <em>Quest: Query-Aware Sparsity for Efficient Long-Context LLM Inference.</em> Proceedings of the 41st International Conference on Machine Learning (ICML). <a href="https://arxiv.org/abs/2406.10774">arXiv:2406.10774</a><br><span class="attn-cite" data-bibkey="tang2024quest"><code>tang2024quest</code></span></li>
+<li><strong>Xiao et al. (2024).</strong> <em>InfLLM: Training-Free Long-Context Extrapolation for LLMs with an Efficient Context Memory.</em> Advances in Neural Information Processing Systems (NeurIPS). <a href="https://doi.org/10.52202/079017-3801">doi:10.52202/079017-3801</a><br><span class="attn-cite" data-bibkey="xiao2024infllm"><code>xiao2024infllm</code></span></li>
 </ul>
+<details class="attn-bib no-copy">
+<summary>BibTeX — 2 entries, verbatim from <code>attnbank/references.bib</code></summary>
+<div class="attn-bib__entries">
+<div class="attn-bib__entry" data-bibkey="tang2024quest">
+<pre class="attn-bib__src"><code>@inproceedings{tang2024quest,
+  title     = {{Quest}: Query-Aware Sparsity for Efficient Long-Context {LLM} Inference},
+  author    = {Tang, Jiaming and Zhao, Yilong and Zhu, Kan and Xiao, Guangxuan and Kasikci, Baris and Han, Song},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {235},
+  year      = {2024},
+  eprint    = {2406.10774},
+  archivePrefix = {arXiv}
+}</code></pre>
+</div>
+<div class="attn-bib__entry" data-bibkey="xiao2024infllm">
+<pre class="attn-bib__src"><code>@inproceedings{xiao2024infllm,
+  title={{InfLLM}: Training-Free Long-Context Extrapolation for {LLMs} with an Efficient Context Memory},
+  author={Xiao, Chaojun and Zhang, Pengle and Han, Xu and Xiao, Guangxuan and Lin, Yankai and Zhang, Zhengyan and Liu, Zhiyuan and Sun, Maosong},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2024},
+  doi={10.52202/079017-3801}
+}</code></pre>
+</div>
+</div>
+</details>
+
 <p>The bibliography is packaged with the library (<code>attnbank/references.bib</code>) and <code>tests/test_conformance.py</code> fails if a method cites a key that is not in it.</p>
 <hr />
 <p><em>Generated by <code>docs/gen_methods.py</code> from the registry and from the module docstring of <a href="https://github.com/Ashkan13776/attnbank/blob/main/attnbank/methods/restrict/blocktopk.py"><code>attnbank/methods/restrict/blocktopk.py</code></a>; the example above was executed to produce its output. Regenerate with <code>python docs/gen_methods.py</code>.</em></p>
@@ -3153,6 +3187,8 @@ They are what the monograph's capacity arguments are made of;
         <script src="../../javascripts/bank.js"></script>
       
         <script src="../../javascripts/attnbank.js"></script>
+      
+        <script src="../../javascripts/clip.js"></script>
       
     
   </body>
