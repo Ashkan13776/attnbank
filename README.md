@@ -9,6 +9,7 @@ and holds every one of them to a single invariant.
 [![status](https://img.shields.io/badge/status-pre--release-orange)](#status)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](pyproject.toml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![docs](https://img.shields.io/badge/docs-live-brightgreen)](http://ashkan-shahbazi.com/attnbank/)
 
 </div>
 
@@ -308,10 +309,12 @@ carries no badges for them:
 |---|---|---|
 | **PyPI** | not published | first tagged release; `pip install attnbank` will not work until then |
 | **CI** | workflow written, not active | the workflow file sits at [`ci/ci.yml`](ci/ci.yml) rather than `.github/workflows/`, because the token used to create this repository lacks the `workflow` OAuth scope. [`ci/README.md`](ci/README.md) has the one-line fix |
-| **Docs site** | built, not deployed | publishing the existing MkDocs site to GitHub Pages |
+| **Docs site** | **live** at [ashkan-shahbazi.com/attnbank](http://ashkan-shahbazi.com/attnbank/) | — (HTTPS not yet enforced in the repository's Pages settings) |
 
-Until then: clone and `pip install -e .`, run `python -m pytest tests -q`, and
-read the docs locally with `mkdocs serve`.
+Until then: clone and `pip install -e .`, and run `python -m pytest tests -q`.
+The documentation is already published --- every method has a page generated
+from the registry, and the [bank is
+searchable](http://ashkan-shahbazi.com/attnbank/methods/).
 
 A badge that renders blank is worse than no badge, so they go back when the
 things behind them are real.
