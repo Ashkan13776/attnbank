@@ -23,11 +23,21 @@ ENTRY = re.compile(r"^@(\w+)\s*\{\s*([^,\s]+)\s*,", re.M)
 
 
 def split_entries(text: str) -> list[tuple[str, str]]:
-    """Return [(key, source)] by brace matching, so nested braces survive."""
-    out, i = [], 0
+    """Return [(key, source)] by brace matching, so nested braces survive.
+
+    The scan has to start at the entry's *own* opening brace. It used to start
+    at ``m.end() - 1``, which is the comma after the key and therefore already
+    past it -- so the depth counter began at zero inside the entry, and the
+    first field's closing brace looked like the end of the whole entry. Every
+    entry was cut after its title, losing author, venue and year, and the
+    generated file was 129 unclosed entries. Nothing caught it: the "is
+    references.bib current?" check compares this function's output against a
+    file this function wrote, so it agreed with itself.
+    """
+    out = []
     for m in ENTRY.finditer(text):
         key, start, depth = m.group(2), m.start(), 0
-        for i in range(m.end() - 1, len(text)):
+        for i in range(text.index("{", m.start()), len(text)):
             if text[i] == "{":
                 depth += 1
             elif text[i] == "}":
