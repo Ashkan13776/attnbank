@@ -8,10 +8,14 @@ repo_name: Ashkan13776/attnbank
 edit_uri: edit/main/docs/
 copyright: Apache-2.0
 
-# docs/includes holds Markdown/HTML partials pulled in by pymdownx.snippets; they are
-# not pages and must not be copied into the built site.
+# Everything under docs/ that is not a page. The snippets partials are pulled in
+# by pymdownx.snippets rather than rendered; the generators are build tooling and
+# were being published along with their bytecode -- five .py files and a
+# __pycache__ served from the live site.
 exclude_docs: |
   includes/
+  *.py
+  __pycache__/
 
 theme:
   name: material
