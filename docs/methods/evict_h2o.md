@@ -33,17 +33,17 @@ It pursues **approximation**: it is trying to be dense softmax, so it is fair to
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -70,6 +70,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -80,24 +82,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + m * b * (d + dv) + m * dv) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** It reports the omitted mass `eps` (and the $\chi^2$ divergence of the renormalisation) in `extras`, which needs the full score matrix. A kernel that avoids materialising that matrix is a kernel that cannot produce them.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `accumulated`, `budget`, `chi2`, `eps`, `k_realized`, `recent`, `support`.
 
@@ -114,9 +103,7 @@ Diagnostics returned in `extras`: `accumulated`, `budget`, `chi2`, `eps`, `k_rea
 
 `budget`: cache size; `recent`: most recent positions never evicted.
 
-```python
-ab.describe("evict_h2o")     # the same keys, with everything else it declares
-```
+`ab.describe("evict_h2o")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -158,10 +145,12 @@ invariant W: 0.0
 
 <div class="attn-notation" markdown="1">
 
-`sec:compress-evict`, `prop:compress-noeviction`.  Eviction is a restriction whose
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:compress-evict</code>, <code>prop:compress-noeviction</code></p>
+
+Eviction is a restriction whose
 set is chosen *before* the queries that will use it exist, and the sets are nested:
 `S_{t+1} subset S_t union {t+1}`.  A deleted token is gone for every future query, so
-`prop:compress-noeviction` says no query-oblivious rule has a uniform guarantee —
+<span class="attn-ref">prop:compress-noeviction</span> says no query-oblivious rule has a uniform guarantee —
 for any retained `S` and any evicted `j`, the query `q = tau k_j` drives
 `eps_q -> 1` while `y_hat` stays in `conv{v_i : i in S}`.
 
@@ -184,18 +173,18 @@ Exact limit: `budget = None` (no eviction).
 changes the same object — [`compress`](../taxonomy.md#compress)
 :   [`atom`](atom.md), [`evict_adakv`](evict_adakv.md), [`evict_pyramidkv`](evict_pyramidkv.md), [`evict_snapkv`](evict_snapkv.md), [`evict_tova`](evict_tova.md), [`gqa`](gqa.md), [`kivi`](kivi.md), [`kvquant`](kvquant.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_cam`](merge_cam.md), [`merge_kv`](merge_kv.md), [`merge_tome`](merge_tome.md), [`mla`](mla.md), [`qjl`](qjl.md), [`quantkv`](quantkv.md), [`zipcache`](zipcache.md) &nbsp;·&nbsp; [browse the bank, compress only](index.md?category=compress)
 
-judged the same way — `approximate`, beyond the ones above
-:   [`abc`](abc.md), [`based`](based.md), [`bigbird`](bigbird.md), [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`favorpp`](favorpp.md), [`favorsharp`](favorsharp.md), [`hedgehog`](hedgehog.md), [`hyperattention`](hyperattention.md), [`longformer`](longformer.md), [`lowprec`](lowprec.md), [`lowrank_logit`](lowrank_logit.md) *(oracle)*, [`lsh_sample`](lsh_sample.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`oval`](oval.md), [`page_pca`](page_pca.md), [`performer`](performer.md), [`polysketch`](polysketch.md), [`reformer`](reformer.md), [`routing`](routing.md), [`shifted_window`](shifted_window.md), [`sink_window`](sink_window.md), [`skyformer`](skyformer.md), [`strided`](strided.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+judged the same way — `approximate`
+:   30 further methods besides these declare `objective = approximate`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
 
-Both lists are `ab.available(...)` with `evict_h2o` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `evict_h2o` selected](index.md?compare=evict_h2o) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `evict_h2o` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `evict_h2o` selected](index.md?compare=evict_h2o) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *H2O: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models.*<br><span class="attn-cite" data-bibkey="zhang2023h2o"><code>zhang2023h2o</code></span>
-- *Scissorhands: Exploiting the Persistence of Importance Hypothesis for LLM KV Cache Compression at Test Time.*<br><span class="attn-cite" data-bibkey="liu2023scissorhands"><code>liu2023scissorhands</code></span>
-- *Transformers are Multi-State RNNs.*<br><span class="attn-cite" data-bibkey="oren2024transformers"><code>oren2024transformers</code></span>
+- **Zhang et al. (2023).** *H2O: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2306.14048](https://arxiv.org/abs/2306.14048)<br><span class="attn-cite" data-bibkey="zhang2023h2o"><code>zhang2023h2o</code></span>
+- **Liu et al. (2023).** *Scissorhands: Exploiting the Persistence of Importance Hypothesis for LLM KV Cache Compression at Test Time.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2305.17118](https://arxiv.org/abs/2305.17118)<br><span class="attn-cite" data-bibkey="liu2023scissorhands"><code>liu2023scissorhands</code></span>
+- **Oren et al. (2024).** *Transformers are Multi-State RNNs.* Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP). [arXiv:2401.06104](https://arxiv.org/abs/2401.06104)<br><span class="attn-cite" data-bibkey="oren2024transformers"><code>oren2024transformers</code></span>
 
 </div>
 
@@ -204,15 +193,35 @@ Both lists are `ab.available(...)` with `evict_h2o` removed — the two axes the
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="zhang2023h2o">
 <pre class="attn-bib__src"><code>@inproceedings{zhang2023h2o,
-  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models}</code></pre>
+  title     = {{H2O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models},
+  author    = {Zhang, Zhenyu and Sheng, Ying and Zhou, Tianyi and Chen, Tianlong and Zheng, Lianmin and Cai, Ruisi and Song, Zhao and Tian, Yuandong and R{\'e}, Christopher and Barrett, Clark and Wang, Zhangyang and Chen, Beidi},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {36},
+  year      = {2023},
+  eprint    = {2306.14048},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="liu2023scissorhands">
 <pre class="attn-bib__src"><code>@inproceedings{liu2023scissorhands,
-  title     = {Scissorhands: Exploiting the Persistence of Importance Hypothesis for {LLM} {KV} Cache Compression at Test Time}</code></pre>
+  title     = {Scissorhands: Exploiting the Persistence of Importance Hypothesis for {LLM} {KV} Cache Compression at Test Time},
+  author    = {Liu, Zichang and Desai, Aditya and Liao, Fangshuo and Wang, Weitao and Xie, Victor and Xu, Zhaozhuo and Kyrillidis, Anastasios and Shrivastava, Anshumali},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {36},
+  year      = {2023},
+  eprint    = {2305.17118},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="oren2024transformers">
 <pre class="attn-bib__src"><code>@inproceedings{oren2024transformers,
-  title = {{Transformers are Multi-State RNNs}}</code></pre>
+  title = {{Transformers are Multi-State RNNs}},
+  author = {Matanel Oren and Michael Hassid and Nir Yarden and Yossi Adi and Roy Schwartz},
+  year = {2024},
+  booktitle = {Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  eprint = {2401.06104},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

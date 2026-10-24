@@ -33,17 +33,17 @@ It pursues **approximation**: it is trying to be dense softmax, so it is fair to
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **no** | the weights are **not** a probability measure — signed, or not summing to one — so the output can leave the convex hull of the values. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="no">no</span> | the weights are **not** a probability measure — signed, or not summing to one — so the output can leave the convex hull of the values. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -71,6 +71,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -81,24 +83,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + n * (d + dv) + m * dv + r * (dv + 1)) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** `sdpa` computes exactly $\mathrm{softmax}(\beta\langle q,k\rangle + \text{mask})\,v$; this operator replaces $g$, so it is not that expression and there is no kernel for it.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `Z_rel`, `log_g_hat`, `negative_Z`, `r`, `sign`.
 
@@ -114,9 +103,7 @@ Diagnostics returned in `extras`: `Z_rel`, `log_g_hat`, `negative_Z`, `r`, `sign
 
 </div>
 
-```python
-ab.describe("trigrff")     # the same keys, with everything else it declares
-```
+`ab.describe("trigrff")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -158,8 +145,10 @@ invariant W: 0.0
 
 <div class="attn-notation" markdown="1">
 
-`sec:kernel-rf`.  Bochner's theorem for the Gaussian kernel plus
-`eq:kernel-softmax-gauss` gives the unbiased estimator
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:kernel-rf</code></p>
+
+Bochner's theorem for the Gaussian kernel plus
+<span class="attn-ref">eq:kernel-softmax-gauss</span> gives the unbiased estimator
 
 ```text
 xi_omega(q,x) = exp((||qt||^2 + ||kt_x||^2)/2) * cos(omega^T (qt - kt_x)),
@@ -171,11 +160,11 @@ is the basis of RFA (Peng et al., 2021) and of the trigonometric variant of
 Choromanski et al. (2021).
 
 Two things go wrong, and this file exists so that they can be measured.
-(i) The relative variance is `2 sinh^2(||qt - kt_x||^2 / 2)` (`eq:kernel-trig-var`),
+(i) The relative variance is `2 sinh^2(||qt - kt_x||^2 / 2)` (<span class="attn-ref">eq:kernel-trig-var</span>),
 largest for keys *far* from the query — the many small entries whose accumulated noise
 makes `Z_hat` unreliable.
 (ii) `xi` takes both signs, so `Z_hat` can be zero or negative; then `pi_hat` is
-not a probability measure and no bound of the form `prop:error-additive` holds.  The
+not a probability measure and no bound of the form <span class="attn-ref">prop:error-additive</span> holds.  The
 fraction of queries with `Z_hat <= 0` is reported in `extras["Z_rel"]`.
 
 Numerics.  The factor `exp(||kt_j||^2/2)` does not cancel in `pi_hat` and overflows
@@ -191,18 +180,18 @@ large; this is a reported failure, not a silent repair.
 changes the same object — [`interaction`](../taxonomy.md#interaction)
 :   [`based`](based.md), [`cosformer`](cosformer.md), [`favorpp`](favorpp.md), [`favorsharp`](favorsharp.md), [`hedgehog`](hedgehog.md), [`linear_elu`](linear_elu.md), [`lowrank_logit`](lowrank_logit.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`polaformer`](polaformer.md), [`polysketch`](polysketch.md), [`rebased`](rebased.md), [`skyformer`](skyformer.md) &nbsp;·&nbsp; [browse the bank, interaction only](index.md?category=interaction)
 
-judged the same way — `approximate`, beyond the ones above
-:   [`abc`](abc.md), [`atom`](atom.md), [`bigbird`](bigbird.md), [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`evict_adakv`](evict_adakv.md), [`evict_h2o`](evict_h2o.md), [`evict_pyramidkv`](evict_pyramidkv.md), [`evict_snapkv`](evict_snapkv.md), [`evict_tova`](evict_tova.md), [`hyperattention`](hyperattention.md), [`kivi`](kivi.md), [`kvquant`](kvquant.md), [`linformer`](linformer.md), [`longformer`](longformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`lsh_sample`](lsh_sample.md), [`merge_cam`](merge_cam.md), [`merge_kv`](merge_kv.md), [`merge_tome`](merge_tome.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`oval`](oval.md), [`page_pca`](page_pca.md), [`qjl`](qjl.md), [`quantkv`](quantkv.md), [`reformer`](reformer.md), [`routing`](routing.md), [`shifted_window`](shifted_window.md), [`sink_window`](sink_window.md), [`strided`](strided.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md), [`zipcache`](zipcache.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+judged the same way — `approximate`
+:   36 further methods besides these declare `objective = approximate`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
 
-Both lists are `ab.available(...)` with `trigrff` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `trigrff` selected](index.md?compare=trigrff) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `trigrff` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `trigrff` selected](index.md?compare=trigrff) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *Random Features for Large-Scale Kernel Machines.*<br><span class="attn-cite" data-bibkey="rahimi2007random"><code>rahimi2007random</code></span>
-- *Random Feature Attention.*<br><span class="attn-cite" data-bibkey="peng2021random"><code>peng2021random</code></span>
-- *Rethinking Attention with Performers.*<br><span class="attn-cite" data-bibkey="choromanski2021rethinking"><code>choromanski2021rethinking</code></span>
+- **Rahimi and Recht (2007).** *Random Features for Large-Scale Kernel Machines.* Advances in Neural Information Processing Systems (NIPS).<br><span class="attn-cite" data-bibkey="rahimi2007random"><code>rahimi2007random</code></span>
+- **Peng et al. (2021).** *Random Feature Attention.* International Conference on Learning Representations (ICLR). [arXiv:2103.02143](https://arxiv.org/abs/2103.02143)<br><span class="attn-cite" data-bibkey="peng2021random"><code>peng2021random</code></span>
+- **Choromanski et al. (2021).** *Rethinking Attention with Performers.* International Conference on Learning Representations (ICLR). [arXiv:2009.14794](https://arxiv.org/abs/2009.14794)<br><span class="attn-cite" data-bibkey="choromanski2021rethinking"><code>choromanski2021rethinking</code></span>
 
 </div>
 
@@ -211,15 +200,32 @@ Both lists are `ab.available(...)` with `trigrff` removed — the two axes the r
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="rahimi2007random">
 <pre class="attn-bib__src"><code>@inproceedings{rahimi2007random,
-  title     = {Random Features for Large-Scale Kernel Machines}</code></pre>
+  title     = {Random Features for Large-Scale Kernel Machines},
+  author    = {Rahimi, Ali and Recht, Benjamin},
+  booktitle = {Advances in Neural Information Processing Systems (NIPS)},
+  volume    = {20},
+  year      = {2007}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="peng2021random">
 <pre class="attn-bib__src"><code>@inproceedings{peng2021random,
-  title     = {Random Feature Attention}</code></pre>
+  title     = {Random Feature Attention},
+  author    = {Peng, Hao and Pappas, Nikolaos and Yogatama, Dani and Schwartz, Roy and Smith, Noah A. and Kong, Lingpeng},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021},
+  eprint    = {2103.02143},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="choromanski2021rethinking">
 <pre class="attn-bib__src"><code>@inproceedings{choromanski2021rethinking,
-  title     = {Rethinking Attention with Performers}</code></pre>
+  title     = {Rethinking Attention with Performers},
+  author    = {Choromanski, Krzysztof and Likhosherstov, Valerii and Dohan, David and Song, Xingyou and Gane, Andreea and Sarlos, Tamas and Hawkins, Peter and Davis, Jared and Mohiuddin, Afroz and Kaiser, Lukasz and Belanger, David and Colwell, Lucy and Weller, Adrian},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021},
+  eprint    = {2009.14794},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

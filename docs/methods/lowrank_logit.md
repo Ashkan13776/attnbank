@@ -40,17 +40,17 @@ It pursues **approximation**: it is trying to be dense softmax, so it is fair to
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **no** | `causal=True` raises `CausalNotSupportedError` — a statement about the operator, not a missing feature. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="no">no</span> | `causal=True` raises `CausalNotSupportedError` — a statement about the operator, not a missing feature. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -77,6 +77,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -88,24 +90,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + n * (d + dv) + m * dv) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** `sdpa` computes exactly $\mathrm{softmax}(\beta\langle q,k\rangle + \text{mask})\,v$; this operator replaces $g$, so it is not that expression and there is no kernel for it.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `logit_error`, `r`, `singular_values`, `spectral_energy`.
 
@@ -121,9 +110,7 @@ Diagnostics returned in `extras`: `logit_error`, `r`, `singular_values`, `spectr
 
 `r`: rank kept in the logit matrix; `None` keeps all of it (the limit).
 
-```python
-ab.describe("lowrank_logit")     # the same keys, with everything else it declares
-```
+`ab.describe("lowrank_logit")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -165,7 +152,9 @@ invariant W: 0.0
 
 <div class="attn-notation" markdown="1">
 
-`sec:kernel-matrix`.  Everything else in the bank that says "low rank" is low rank in
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:kernel-matrix</code></p>
+
+Everything else in the bank that says "low rank" is low rank in
 the wrong space.  `linformer` projects the sequence axis of `K` and `V`,
 `svd_oracle` truncates `P` itself, `nystrom` factors `P` through landmarks —
 all three produce a **signed** measure, because a rank-`r` approximation of a
@@ -190,7 +179,7 @@ bottleneck, stated as an operator rather than as an architectural constraint.  N
 also that `rank(S_r) = r` says nothing about `rank(exp(S_r))`: the entrywise
 exponential of a rank-one matrix is generically full rank, so a low-rank *interaction*
 is not a low-rank *attention matrix*, and this method is not a factorization in the
-sense of `sec:factor`.
+sense of <span class="attn-ref">sec:factor</span>.
 
 This is an **oracle**: it needs the full `m x n` logit matrix and an SVD of it, so it
 buys nothing at inference.  It exists to bound what a rank-`r` surrogate of the
@@ -207,17 +196,17 @@ defined.
 changes the same object — [`interaction`](../taxonomy.md#interaction)
 :   [`based`](based.md), [`cosformer`](cosformer.md), [`favorpp`](favorpp.md), [`favorsharp`](favorsharp.md), [`hedgehog`](hedgehog.md), [`linear_elu`](linear_elu.md), [`nystrom`](nystrom.md), [`performer`](performer.md), [`polaformer`](polaformer.md), [`polysketch`](polysketch.md), [`rebased`](rebased.md), [`skyformer`](skyformer.md), [`trigrff`](trigrff.md) &nbsp;·&nbsp; [browse the bank, interaction only](index.md?category=interaction)
 
-judged the same way — `approximate`, beyond the ones above
-:   [`abc`](abc.md), [`atom`](atom.md), [`bigbird`](bigbird.md), [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`evict_adakv`](evict_adakv.md), [`evict_h2o`](evict_h2o.md), [`evict_pyramidkv`](evict_pyramidkv.md), [`evict_snapkv`](evict_snapkv.md), [`evict_tova`](evict_tova.md), [`hyperattention`](hyperattention.md), [`kivi`](kivi.md), [`kvquant`](kvquant.md), [`linformer`](linformer.md), [`longformer`](longformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`lsh_sample`](lsh_sample.md), [`merge_cam`](merge_cam.md), [`merge_kv`](merge_kv.md), [`merge_tome`](merge_tome.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`oval`](oval.md), [`page_pca`](page_pca.md), [`qjl`](qjl.md), [`quantkv`](quantkv.md), [`reformer`](reformer.md), [`routing`](routing.md), [`shifted_window`](shifted_window.md), [`sink_window`](sink_window.md), [`strided`](strided.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md), [`zipcache`](zipcache.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+judged the same way — `approximate`
+:   36 further methods besides these declare `objective = approximate`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
 
-Both lists are `ab.available(...)` with `lowrank_logit` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `lowrank_logit` selected](index.md?compare=lowrank_logit) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `lowrank_logit` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `lowrank_logit` selected](index.md?compare=lowrank_logit) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *Low-Rank Bottleneck in Multi-head Attention Models.*<br><span class="attn-cite" data-bibkey="bhojanapalli2020lowrank"><code>bhojanapalli2020lowrank</code></span>
-- *Linformer: Self-Attention with Linear Complexity.*<br><span class="attn-cite" data-bibkey="wang2020linformer"><code>wang2020linformer</code></span>
+- **Bhojanapalli et al. (2020).** *Low-Rank Bottleneck in Multi-head Attention Models.* Proceedings of the 37th International Conference on Machine Learning (ICML). [arXiv:2002.07028](https://arxiv.org/abs/2002.07028)<br><span class="attn-cite" data-bibkey="bhojanapalli2020lowrank"><code>bhojanapalli2020lowrank</code></span>
+- **Wang et al. (2020).** *Linformer: Self-Attention with Linear Complexity.* [arXiv:2006.04768](https://arxiv.org/abs/2006.04768)<br><span class="attn-cite" data-bibkey="wang2020linformer"><code>wang2020linformer</code></span>
 
 </div>
 
@@ -226,11 +215,26 @@ Both lists are `ab.available(...)` with `lowrank_logit` removed — the two axes
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="bhojanapalli2020lowrank">
 <pre class="attn-bib__src"><code>@inproceedings{bhojanapalli2020lowrank,
-  title         = {Low-Rank Bottleneck in Multi-head Attention Models}</code></pre>
+  title         = {Low-Rank Bottleneck in Multi-head Attention Models},
+  author        = {Bhojanapalli, Srinadh and Yun, Chulhee and Rawat, Ankit Singh and Reddi, Sashank and Kumar, Sanjiv},
+  booktitle     = {Proceedings of the 37th International Conference on Machine Learning (ICML)},
+  series        = {PMLR},
+  volume        = {119},
+  pages         = {864--873},
+  year          = {2020},
+  eprint        = {2002.07028},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="wang2020linformer">
 <pre class="attn-bib__src"><code>@misc{wang2020linformer,
-  title = {{Linformer: Self-Attention with Linear Complexity}}</code></pre>
+  title = {{Linformer: Self-Attention with Linear Complexity}},
+  author = {Sinong Wang and Belinda Z. Li and Madian Khabsa and Han Fang and Hao Ma},
+  year = {2020},
+  howpublished = {arXiv preprint arXiv:2006.04768},
+  eprint = {2006.04768},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

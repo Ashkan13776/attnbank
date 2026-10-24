@@ -33,17 +33,17 @@ It pursues **modification**: it defines a *different* operator. Asking how close
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **no** | `causal=True` raises `CausalNotSupportedError` — a statement about the operator, not a missing feature. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **yes** | it has learned parameters; the reference implementation initialises them from a seed, so the numbers here are an untrained operator. |
+| `supports_causal` | <span class="attn-flag" data-v="no">no</span> | `causal=True` raises `CausalNotSupportedError` — a statement about the operator, not a missing feature. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="yes">yes</span> | it has learned parameters; the reference implementation initialises them from a seed, so the numbers here are an untrained operator. |
 
 </div>
 
@@ -65,6 +65,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -75,24 +77,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": m * (d + dv) * bytes_per_el + r * (d + dv) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** The measure is a *product* $a(q,\cdot)\,b(\cdot,x)$ — an SVD, an NMF, a clustering, a pair of small softmaxes — and `sdpa` computes one softmax, not a product of two.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `a`, `b`, `latent_keys`, `latent_values`, `r`.
 
@@ -107,9 +96,7 @@ Diagnostics returned in `extras`: `a`, `b`, `latent_keys`, `latent_values`, `r`.
 
 </div>
 
-```python
-ab.describe("latent_stochastic")     # the same keys, with everything else it declares
-```
+`ab.describe("latent_stochastic")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -152,7 +139,9 @@ extras: ['a', 'b', 'latent_keys', 'latent_values', 'r']
 
 <div class="attn-notation" markdown="1">
 
-`sec:factor-def`, `def:factor-stochastic`, `prop:factor-closure`.  A rank-`r`
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:factor-def</code>, <code>def:factor-stochastic</code>, <code>prop:factor-closure</code></p>
+
+A rank-`r`
 latent stochastic factorization is a pair of Markov kernels `a: Q -> Z` (read) and
 `b: Z -> X` (write) with
 
@@ -161,7 +150,7 @@ pi_hat_q(dx) = sum_z a(q, z) b(z, dx),    P_hat = A B,
 A in R_{>=0}^{m x r} with A 1 = 1,   B in R_{>=0}^{r x n} with B 1 = 1.
 ```
 
-Both kernels are attentions (`eq:factor-write`, `eq:factor-read`):
+Both kernels are attentions (<span class="attn-ref">eq:factor-write</span>, <span class="attn-ref">eq:factor-read</span>):
 
 ```text
 b(z, .) = softmax_x( beta <w_z, k_x> ),     w_z a latent query,
@@ -173,14 +162,14 @@ the ABC form in which the latent keys summarize the context rather than being fr
 are a seeded Gaussian, so `trainable = True` records that the method is only
 meaningful after training.
 
-`prop:factor-closure` is why this category exists separately from low-rank
+<span class="attn-ref">prop:factor-closure</span> is why this category exists separately from low-rank
 approximation: a composition of Markov kernels is automatically a probability measure,
 so normalization, constant preservation and convex-hull confinement all survive — none
 of which holds for a generic signed rank-`r` factorization.  The output has the
 two-level form `y_hat(q) = sum_z a(q,z) u(z)` with `u(z) = int v db(z,.)`, so the
 context is seen only through `r` latent values.
 
-This is an **operator modification** (`tab:comparative`): there is no `r` at which
+This is an **operator modification** (<span class="attn-ref">tab:comparative</span>): there is no `r` at which
 it becomes softmax, and nothing it converges to, so both correctness anchors are
 `None` by design.  It loses `fs` (full support in the exact sense) and `ql`.
 
@@ -193,19 +182,19 @@ Not causal: the write kernel pools over the whole context.
 changes the same object — [`factorize`](../taxonomy.md#factorize)
 :   [`abc`](abc.md), [`clustered`](clustered.md), [`isab`](isab.md), [`latte`](latte.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`perceiver`](perceiver.md), [`svd_oracle`](svd_oracle.md) *(oracle)* &nbsp;·&nbsp; [browse the bank, factorize only](index.md?category=factorize)
 
-judged the same way — `modify`, beyond the ones above
-:   [`cosformer`](cosformer.md), [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`espformer`](espformer.md), [`gla`](gla.md), [`gqa`](gqa.md), [`hgrn2`](hgrn2.md), [`hyena`](hyena.md), [`linear_elu`](linear_elu.md), [`linear_rnn`](linear_rnn.md), [`lowrank_ot`](lowrank_ot.md), [`lru`](lru.md), [`mega`](mega.md), [`mla`](mla.md), [`mlstm`](mlstm.md), [`otke`](otke.md), [`polaformer`](polaformer.md), [`rebased`](rebased.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md), [`sinkhorn`](sinkhorn.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+judged the same way — `modify`
+:   25 further methods besides these declare `objective = modify`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
-Both lists are `ab.available(...)` with `latent_stochastic` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `latent_stochastic` selected](index.md?compare=latent_stochastic) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `latent_stochastic` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `latent_stochastic` selected](index.md?compare=latent_stochastic) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *Luna: Linear Unified Nested Attention.*<br><span class="attn-cite" data-bibkey="ma2021luna"><code>ma2021luna</code></span>
-- *Latte: Latent Attention for Linear Time Transformers.*<br><span class="attn-cite" data-bibkey="dolga2024latte"><code>dolga2024latte</code></span>
-- *ABC: Attention with Bounded-memory Control.*<br><span class="attn-cite" data-bibkey="peng2022abc"><code>peng2022abc</code></span>
-- *Set Transformer: A Framework for Attention-based Permutation-Invariant Neural Networks.*<br><span class="attn-cite" data-bibkey="lee2019set"><code>lee2019set</code></span>
+- **Ma et al. (2021).** *Luna: Linear Unified Nested Attention.* Advances in Neural Information Processing Systems 34 (NeurIPS). [arXiv:2106.01540](https://arxiv.org/abs/2106.01540)<br><span class="attn-cite" data-bibkey="ma2021luna"><code>ma2021luna</code></span>
+- **Dolga et al. (2024).** *Latte: Latent Attention for Linear Time Transformers.* [arXiv:2402.17512](https://arxiv.org/abs/2402.17512)<br><span class="attn-cite" data-bibkey="dolga2024latte"><code>dolga2024latte</code></span>
+- **Peng et al. (2022).** *ABC: Attention with Bounded-memory Control.* Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL). [arXiv:2110.02488](https://arxiv.org/abs/2110.02488) [doi:10.18653/v1/2022.acl-long.515](https://doi.org/10.18653/v1/2022.acl-long.515)<br><span class="attn-cite" data-bibkey="peng2022abc"><code>peng2022abc</code></span>
+- **Lee et al. (2019).** *Set Transformer: A Framework for Attention-based Permutation-Invariant Neural Networks.* Proceedings of the 36th International Conference on Machine Learning (ICML). [arXiv:1810.00825](https://arxiv.org/abs/1810.00825)<br><span class="attn-cite" data-bibkey="lee2019set"><code>lee2019set</code></span>
 
 </div>
 
@@ -214,19 +203,46 @@ Both lists are `ab.available(...)` with `latent_stochastic` removed — the two 
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="ma2021luna">
 <pre class="attn-bib__src"><code>@inproceedings{ma2021luna,
-  title         = {Luna: Linear Unified Nested Attention}</code></pre>
+  title         = {Luna: Linear Unified Nested Attention},
+  author        = {Ma, Xuezhe and Kong, Xiang and Wang, Sinong and Zhou, Chunting and May, Jonathan and Ma, Hao and Zettlemoyer, Luke},
+  booktitle     = {Advances in Neural Information Processing Systems 34 (NeurIPS)},
+  year          = {2021},
+  eprint        = {2106.01540},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="dolga2024latte">
 <pre class="attn-bib__src"><code>@misc{dolga2024latte,
-  title         = {Latte: Latent Attention for Linear Time Transformers}</code></pre>
+  title         = {Latte: Latent Attention for Linear Time Transformers},
+  author        = {Dolga, Rares and Maystre, Lucas and Cobzarenco, Marius and Barber, David},
+  year          = {2024},
+  eprint        = {2402.17512},
+  archivePrefix = {arXiv},
+  note          = {Later versions (v5, 2025) retitled ``Unifying Linear-Time Attention via Latent Probabilistic Modelling''}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="peng2022abc">
 <pre class="attn-bib__src"><code>@inproceedings{peng2022abc,
-  title         = {{ABC}: Attention with Bounded-memory Control}</code></pre>
+  title         = {{ABC}: Attention with Bounded-memory Control},
+  author        = {Peng, Hao and Kasai, Jungo and Pappas, Nikolaos and Yogatama, Dani and Wu, Zhaofeng and Kong, Lingpeng and Schwartz, Roy and Smith, Noah A.},
+  booktitle     = {Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL)},
+  year          = {2022},
+  doi           = {10.18653/v1/2022.acl-long.515},
+  eprint        = {2110.02488},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="lee2019set">
 <pre class="attn-bib__src"><code>@inproceedings{lee2019set,
-  title         = {Set Transformer: A Framework for Attention-based Permutation-Invariant Neural Networks}</code></pre>
+  title         = {Set Transformer: A Framework for Attention-based Permutation-Invariant Neural Networks},
+  author        = {Lee, Juho and Lee, Yoonho and Kim, Jungtaek and Kosiorek, Adam R. and Choi, Seungjin and Teh, Yee Whye},
+  booktitle     = {Proceedings of the 36th International Conference on Machine Learning (ICML)},
+  series        = {PMLR},
+  volume        = {97},
+  year          = {2019},
+  eprint        = {1810.00825},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

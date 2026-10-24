@@ -33,17 +33,17 @@ It pursues **modification**: it defines a *different* operator. Asking how close
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **no** | `causal=True` raises `CausalNotSupportedError` — a statement about the operator, not a missing feature. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **yes** | it has learned parameters; the reference implementation initialises them from a seed, so the numbers here are an untrained operator. |
+| `supports_causal` | <span class="attn-flag" data-v="no">no</span> | `causal=True` raises `CausalNotSupportedError` — a statement about the operator, not a missing feature. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="yes">yes</span> | it has learned parameters; the reference implementation initialises them from a seed, so the numbers here are an untrained operator. |
 
 </div>
 
@@ -65,6 +65,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -77,24 +79,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + n * (d + dv) + m * dv + p * d) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** A fixed-point iteration over the whole matrix is not a kernel call, and the normalisation it computes is not per-query.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `a`, `col_marginal`, `f`, `g`, `gamma`, `marginal_error`, `n_iter`, `p`, `potential`, `reference`, `row_marginal`, `slot_col_marginal`, `target_col`, `target_row`, `w`.
 
@@ -115,9 +104,7 @@ Diagnostics returned in `extras`: `a`, `col_marginal`, `f`, `g`, `gamma`, `margi
 (the paper reports ten is enough). `eps`: entropic regularization.
 `seed`: the generator the untrained reference is drawn from.
 
-```python
-ab.describe("otke")     # the same keys, with everything else it declares
-```
+`ab.describe("otke")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -160,7 +147,9 @@ extras: ['a', 'col_marginal', 'f', 'g', 'gamma', 'marginal_error', 'n_iter', 'p'
 
 <div class="attn-notation" markdown="1">
 
-`sec:ot`, "The same constraint elsewhere", and `sec:ot-implications`.  The optimal
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:ot</code>, &quot;The same constraint elsewhere&quot;, and <code>sec:ot-implications</code></p>
+
+The optimal
 transport kernel embedding of Mialon et al. (2021) is not an attention layer — it is a
 *pooling* layer, with no queries at all.  It embeds a set by transporting it onto a
 trainable reference `Z` of `p` points and aggregating along the plan
@@ -188,8 +177,8 @@ operator is therefore
 pi_hat = A W ,     A in R^{m x p} row-stochastic,  W in R^{p x n} row-stochastic,
 ```
 
-a pivot factorization (`def:factor-stochastic`) of rank at most `p`, exactly as
-`sec:ot` classifies OTKE.  `lowrank_ot` is the neighbouring object and the contrast
+a pivot factorization (<span class="attn-ref">def:factor-stochastic</span>) of rank at most `p`, exactly as
+<span class="attn-ref">sec:ot</span> classifies OTKE.  `lowrank_ot` is the neighbouring object and the contrast
 is the point: it Sinkhorns *both* halves, so the full coupling is doubly stochastic;
 OTKE Sinkhorns only the key half, so the constraint binds between keys and slots and
 each key is guaranteed its share of the *reference's* attention, not of the queries'.
@@ -204,7 +193,7 @@ the conditional, and drops out of a row-stochastic operator.
 `extras` exposes the transport diagnostics in the `sinkhorn` spelling — `f`,
 `g`, `potential`, `gamma`, `row_marginal`, `col_marginal`,
 `marginal_error` — for the key-to-reference coupling, which is the coupling the
-method computes.  `prop:ot-conditional` applies to it unchanged: a slot's weighting of
+method computes.  <span class="attn-ref">prop:ot-conditional</span> applies to it unchanged: a slot's weighting of
 the keys is softmax of `beta <z_s, k_j>` tilted by one potential per key.
 
 `trainable = True`, and not as a formality: `Z` carries the method.  The paper
@@ -214,7 +203,7 @@ library reproduces, which makes the untrained operator arbitrary in the same way
 `lowrank_ot`'s pivots are.
 
 Not causal: the plan is computed over the whole key set at once, and the column
-constraint is the reason `prop:ot-causal` applies to this family.
+constraint is the reason <span class="attn-ref">prop:ot-causal</span> applies to this family.
 
 </div>
 
@@ -223,19 +212,19 @@ constraint is the reason `prop:ot-causal` applies to this family.
 changes the same object — [`coupling`](../taxonomy.md#coupling)
 :   [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`espformer`](espformer.md), [`lowrank_ot`](lowrank_ot.md), [`sinkhorn`](sinkhorn.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, coupling only](index.md?category=coupling)
 
-judged the same way — `modify`, beyond the ones above
-:   [`cosformer`](cosformer.md), [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`gla`](gla.md), [`gqa`](gqa.md), [`hgrn2`](hgrn2.md), [`hyena`](hyena.md), [`isab`](isab.md), [`latent_stochastic`](latent_stochastic.md), [`latte`](latte.md), [`linear_elu`](linear_elu.md), [`linear_rnn`](linear_rnn.md), [`lru`](lru.md), [`mega`](mega.md), [`mla`](mla.md), [`mlstm`](mlstm.md), [`perceiver`](perceiver.md), [`polaformer`](polaformer.md), [`rebased`](rebased.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+judged the same way — `modify`
+:   23 further methods besides these declare `objective = modify`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
-Both lists are `ab.available(...)` with `otke` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `otke` selected](index.md?compare=otke) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `otke` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `otke` selected](index.md?compare=otke) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *A Trainable Optimal Transport Embedding for Feature Aggregation and its Relationship to Attention.*<br><span class="attn-cite" data-bibkey="mialon2021trainable"><code>mialon2021trainable</code></span>
-- *Sinkhorn Distances: Lightspeed Computation of Optimal Transportation Distances.*<br><span class="attn-cite" data-bibkey="cuturi2013sinkhorn"><code>cuturi2013sinkhorn</code></span>
-- *Computational Optimal Transport.*<br><span class="attn-cite" data-bibkey="peyre2019computational"><code>peyre2019computational</code></span>
-- *Pooling by Sliced-Wasserstein Embedding.*<br><span class="attn-cite" data-bibkey="naderializadeh2021pooling"><code>naderializadeh2021pooling</code></span>
+- **Mialon et al. (2021).** *A Trainable Optimal Transport Embedding for Feature Aggregation and its Relationship to Attention.* International Conference on Learning Representations (ICLR). [arXiv:2006.12065](https://arxiv.org/abs/2006.12065)<br><span class="attn-cite" data-bibkey="mialon2021trainable"><code>mialon2021trainable</code></span>
+- **Cuturi (2013).** *Sinkhorn Distances: Lightspeed Computation of Optimal Transportation Distances.* Advances in Neural Information Processing Systems 26 (NIPS). [arXiv:1306.0895](https://arxiv.org/abs/1306.0895)<br><span class="attn-cite" data-bibkey="cuturi2013sinkhorn"><code>cuturi2013sinkhorn</code></span>
+- **Peyre and Cuturi (2019).** *Computational Optimal Transport.* Foundations and Trends in Machine Learning. [arXiv:1803.00567](https://arxiv.org/abs/1803.00567)<br><span class="attn-cite" data-bibkey="peyre2019computational"><code>peyre2019computational</code></span>
+- **Naderializadeh et al. (2021).** *Pooling by Sliced-Wasserstein Embedding.* Advances in Neural Information Processing Systems (NeurIPS).<br><span class="attn-cite" data-bibkey="naderializadeh2021pooling"><code>naderializadeh2021pooling</code></span>
 
 </div>
 
@@ -244,19 +233,27 @@ Both lists are `ab.available(...)` with `otke` removed — the two axes the regi
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="mialon2021trainable">
 <pre class="attn-bib__src"><code>@inproceedings{mialon2021trainable,
-  title={A Trainable Optimal Transport Embedding for Feature Aggregation and its Relationship to Attention}</code></pre>
+  title={A Trainable Optimal Transport Embedding for Feature Aggregation and its Relationship to Attention},
+  author={Mialon, Gr{\'e}goire and Chen, Dexiong and d'Aspremont, Alexandre and Mairal, Julien},
+  booktitle={International Conference on Learning Representations (ICLR)}, year={2021}, eprint={2006.12065}, archivePrefix={arXiv}}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="cuturi2013sinkhorn">
 <pre class="attn-bib__src"><code>@inproceedings{cuturi2013sinkhorn,
-  title={Sinkhorn Distances: Lightspeed Computation of Optimal Transportation Distances}</code></pre>
+  title={Sinkhorn Distances: Lightspeed Computation of Optimal Transportation Distances},
+  author={Cuturi, Marco}, booktitle={Advances in Neural Information Processing Systems 26 (NIPS)}, pages={2292--2300}, year={2013},
+  eprint={1306.0895}, archivePrefix={arXiv}}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="peyre2019computational">
 <pre class="attn-bib__src"><code>@article{peyre2019computational,
-  title={Computational Optimal Transport}</code></pre>
+  title={Computational Optimal Transport}, author={Peyr{\'e}, Gabriel and Cuturi, Marco},
+  journal={Foundations and Trends in Machine Learning}, volume={11}, number={5-6}, pages={355--607}, year={2019},
+  eprint={1803.00567}, archivePrefix={arXiv}}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="naderializadeh2021pooling">
 <pre class="attn-bib__src"><code>@inproceedings{naderializadeh2021pooling,
-  title={Pooling by Sliced-{W}asserstein Embedding}</code></pre>
+  title={Pooling by Sliced-{W}asserstein Embedding},
+  author={Naderializadeh, Navid and Comer, Joseph F. and Andrews, Reed and Hoffmann, Heiko and Kolouri, Soheil},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)}, year={2021}}</code></pre>
 </div>
 </div>
 </details>

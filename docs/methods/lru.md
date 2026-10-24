@@ -33,17 +33,17 @@ It pursues **modification**: it defines a *different* operator. Asking how close
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **no** | it cannot name $\widehat\pi_q$ on the original positions and is excluded from the error decomposition by declaration. |
-| `row_stochastic` | **no** | the weights are **not** a probability measure — signed, or not summing to one — so the output can leave the convex hull of the values. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **yes** | it has learned parameters; the reference implementation initialises them from a seed, so the numbers here are an untrained operator. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="no">no</span> | it cannot name $\widehat\pi_q$ on the original positions and is excluded from the error decomposition by declaration. |
+| `row_stochastic` | <span class="attn-flag" data-v="no">no</span> | the weights are **not** a probability measure — signed, or not summing to one — so the output can leave the convex hull of the values. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="yes">yes</span> | it has learned parameters; the reference implementation initialises them from a seed, so the numbers here are an untrained operator. |
 
 </div>
 
@@ -65,6 +65,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -75,24 +77,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (n * dv + m * dv + 4 * r * dv) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** A scan over positions with a fixed-size state is a different program from a masked softmax.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `b_bar`, `c_eff`, `d_skip`, `lam`, `n_state`, `radius`, `reads_qk`, `state_size`.
 
@@ -117,9 +106,7 @@ Diagnostics returned in `extras`: `b_bar`, `c_eff`, `d_skip`, `lam`, `n_state`, 
 horizon, since mode `n` decays with time constant `-1/log|lambda_n|` — and
 `max_phase` bounds the initial phase.  The defaults are the paper's.
 
-```python
-ab.describe("lru")     # the same keys, with everything else it declares
-```
+`ab.describe("lru")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -163,7 +150,9 @@ extras: ['b_bar', 'c_eff', 'd_skip', 'lam', 'n_state', 'radius', 'reads_qk', 'st
 
 <div class="attn-notation" markdown="1">
 
-`sec:memory-state`, `tab:memory-recurrences`.  The recurrence is exactly S5's,
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:memory-state</code>, <code>tab:memory-recurrences</code></p>
+
+The recurrence is exactly S5's,
 
 ```text
 h_t = lambda * h_{t-1} + gamma * (B v_t),      y_t = Re(C h_t) + D * v_t,
@@ -209,18 +198,18 @@ there is no scalar measure over the original positions to report.
 changes the same object — [`recurrent`](../taxonomy.md#recurrent)
 :   [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`gla`](gla.md), [`hgrn2`](hgrn2.md), [`hyena`](hyena.md), [`linear_rnn`](linear_rnn.md), [`mega`](mega.md), [`mlstm`](mlstm.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md) &nbsp;·&nbsp; [browse the bank, recurrent only](index.md?category=recurrent)
 
-judged the same way — `modify`, beyond the ones above
-:   [`cosformer`](cosformer.md), [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`espformer`](espformer.md), [`gqa`](gqa.md), [`isab`](isab.md), [`latent_stochastic`](latent_stochastic.md), [`latte`](latte.md), [`linear_elu`](linear_elu.md), [`lowrank_ot`](lowrank_ot.md), [`mla`](mla.md), [`otke`](otke.md), [`perceiver`](perceiver.md), [`polaformer`](polaformer.md), [`rebased`](rebased.md), [`sinkhorn`](sinkhorn.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+judged the same way — `modify`
+:   16 further methods besides these declare `objective = modify`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
-Both lists are `ab.available(...)` with `lru` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `lru` selected](index.md?compare=lru) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `lru` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `lru` selected](index.md?compare=lru) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *Resurrecting Recurrent Neural Networks for Long Sequences.*<br><span class="attn-cite" data-bibkey="orvieto2023resurrecting"><code>orvieto2023resurrecting</code></span>
-- *Simplified State Space Layers for Sequence Modeling.*<br><span class="attn-cite" data-bibkey="smith2023simplified"><code>smith2023simplified</code></span>
-- *Prefix Sums and Their Applications.*<br><span class="attn-cite" data-bibkey="blelloch1990prefix"><code>blelloch1990prefix</code></span>
+- **Orvieto et al. (2023).** *Resurrecting Recurrent Neural Networks for Long Sequences.* International Conference on Machine Learning (ICML). [arXiv:2303.06349](https://arxiv.org/abs/2303.06349)<br><span class="attn-cite" data-bibkey="orvieto2023resurrecting"><code>orvieto2023resurrecting</code></span>
+- **Smith et al. (2023).** *Simplified State Space Layers for Sequence Modeling.* International Conference on Learning Representations (ICLR). [arXiv:2208.04933](https://arxiv.org/abs/2208.04933)<br><span class="attn-cite" data-bibkey="smith2023simplified"><code>smith2023simplified</code></span>
+- **Blelloch (1990).** *Prefix Sums and Their Applications.*<br><span class="attn-cite" data-bibkey="blelloch1990prefix"><code>blelloch1990prefix</code></span>
 
 </div>
 
@@ -229,15 +218,38 @@ Both lists are `ab.available(...)` with `lru` removed — the two axes the regis
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="orvieto2023resurrecting">
 <pre class="attn-bib__src"><code>@inproceedings{orvieto2023resurrecting,
-  title     = {Resurrecting Recurrent Neural Networks for Long Sequences}</code></pre>
+  title     = {Resurrecting Recurrent Neural Networks for Long Sequences},
+  author    = {Orvieto, Antonio and Smith, Samuel L. and Gu, Albert and
+               Fernando, Anushan and Gulcehre, Caglar and Pascanu, Razvan and
+               De, Soham},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2023},
+  eprint    = {2303.06349},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url       = {https://arxiv.org/abs/2303.06349}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="smith2023simplified">
 <pre class="attn-bib__src"><code>@inproceedings{smith2023simplified,
-  title     = {Simplified State Space Layers for Sequence Modeling}</code></pre>
+  title     = {Simplified State Space Layers for Sequence Modeling},
+  author    = {Smith, Jimmy T.H. and Warrington, Andrew and Linderman, Scott W.},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2023},
+  eprint    = {2208.04933},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url       = {https://arxiv.org/abs/2208.04933}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="blelloch1990prefix">
 <pre class="attn-bib__src"><code>@techreport{blelloch1990prefix,
-  title       = {Prefix Sums and Their Applications}</code></pre>
+  title       = {Prefix Sums and Their Applications},
+  author      = {Blelloch, Guy E.},
+  institution = {School of Computer Science, Carnegie Mellon University},
+  number      = {CMU-CS-90-190},
+  year        = {1990}
+}</code></pre>
 </div>
 </div>
 </details>

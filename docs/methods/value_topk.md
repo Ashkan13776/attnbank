@@ -40,17 +40,17 @@ It pursues **approximation**: it is trying to be dense softmax, so it is fair to
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -77,6 +77,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -87,24 +89,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + n * (d + dv) + m * dv) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** It reports the omitted mass `eps` (and the $\chi^2$ divergence of the renormalisation) in `extras`, which needs the full score matrix. A kernel that avoids materialising that matrix is a kernel that cannot produce them.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `chi2`, `eps`, `k_realized`, `selector`, `support`.
 
@@ -121,9 +110,7 @@ Diagnostics returned in `extras`: `chi2`, `eps`, `k_realized`, `selector`, `supp
 
 </div>
 
-```python
-ab.describe("value_topk")     # the same keys, with everything else it declares
-```
+`ab.describe("value_topk")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -165,8 +152,8 @@ invariant W: 0.0
 
 <div class="attn-notation" markdown="1">
 
-`sec:sparse-operator` ("Score-optimal is not output-optimal"), `prop:error-topk`,
-and the open problem of `sec:open-retrieval`.  Top-k minimizes the omitted mass
+<span class="attn-ref">sec:sparse-operator</span> ("Score-optimal is not output-optimal"), <span class="attn-ref">prop:error-topk</span>,
+and the open problem of <span class="attn-ref">sec:open-retrieval</span>.  Top-k minimizes the omitted mass
 `eps_q` and therefore the *bound* `eps_q osc(v)`; it does not minimize the error.
 The right target, named in the text, is
 
@@ -193,7 +180,7 @@ cannot undo.  The selector therefore evaluates four cheap candidate supports and
   2. forward greedy from the empty set;
   3. forward greedy seeded with the single heaviest position;
   4. backward greedy from the full set, deleting the position whose removal costs least
-     — the elementary step of every eviction policy, and exactly `prop:error-single`.
+     — the elementary step of every eviction policy, and exactly <span class="attn-ref">prop:error-single</span>.
 
 Complexity.  Each greedy step scores all `n` candidates, and a candidate is scored in
 `O(d_v)` from the running `(U_S, W_S)` rather than by recomputing the conditional
@@ -217,18 +204,18 @@ correctness matters and speed does not.
 changes the same object — [`restrict`](../taxonomy.md#restrict)
 :   [`bigbird`](bigbird.md), [`blocktopk`](blocktopk.md), [`hyperattention`](hyperattention.md), [`longformer`](longformer.md), [`lsh_sample`](lsh_sample.md), [`oval`](oval.md), [`page_pca`](page_pca.md), [`reformer`](reformer.md), [`routing`](routing.md), [`shifted_window`](shifted_window.md), [`sink_window`](sink_window.md), [`strided`](strided.md), [`topk`](topk.md), [`window`](window.md) &nbsp;·&nbsp; [browse the bank, restrict only](index.md?category=restrict)
 
-judged the same way — `approximate`, beyond the ones above
-:   [`abc`](abc.md), [`atom`](atom.md), [`based`](based.md), [`clustered`](clustered.md), [`evict_adakv`](evict_adakv.md), [`evict_h2o`](evict_h2o.md), [`evict_pyramidkv`](evict_pyramidkv.md), [`evict_snapkv`](evict_snapkv.md), [`evict_tova`](evict_tova.md), [`favorpp`](favorpp.md), [`favorsharp`](favorsharp.md), [`hedgehog`](hedgehog.md), [`kivi`](kivi.md), [`kvquant`](kvquant.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`lowrank_logit`](lowrank_logit.md) *(oracle)*, [`merge_cam`](merge_cam.md), [`merge_kv`](merge_kv.md), [`merge_tome`](merge_tome.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`polysketch`](polysketch.md), [`qjl`](qjl.md), [`quantkv`](quantkv.md), [`skyformer`](skyformer.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`trigrff`](trigrff.md), [`zipcache`](zipcache.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+judged the same way — `approximate`
+:   31 further methods besides these declare `objective = approximate`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
 
-Both lists are `ab.available(...)` with `value_topk` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `value_topk` selected](index.md?compare=value_topk) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `value_topk` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `value_topk` selected](index.md?compare=value_topk) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *SparQ Attention: Bandwidth-Efficient LLM Inference.*<br><span class="attn-cite" data-bibkey="ribar2024sparq"><code>ribar2024sparq</code></span>
-- *CriticalKV: Optimizing KV Cache Eviction from an Output Perturbation Perspective.*<br><span class="attn-cite" data-bibkey="feng2025criticalkv"><code>feng2025criticalkv</code></span>
-- *Memory-efficient Transformers via Top-k Attention.*<br><span class="attn-cite" data-bibkey="gupta2021memory"><code>gupta2021memory</code></span>
+- **Ribar et al. (2024).** *SparQ Attention: Bandwidth-Efficient LLM Inference.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2312.04985](https://arxiv.org/abs/2312.04985)<br><span class="attn-cite" data-bibkey="ribar2024sparq"><code>ribar2024sparq</code></span>
+- **Feng et al. (2025).** *CriticalKV: Optimizing KV Cache Eviction from an Output Perturbation Perspective.* [arXiv:2502.03805](https://arxiv.org/abs/2502.03805)<br><span class="attn-cite" data-bibkey="feng2025criticalkv"><code>feng2025criticalkv</code></span>
+- **Gupta et al. (2021).** *Memory-efficient Transformers via Top-k Attention.* Proceedings of the Second Workshop on Simple and Efficient Natural Language Processing (SustaiNLP). [arXiv:2106.06899](https://arxiv.org/abs/2106.06899)<br><span class="attn-cite" data-bibkey="gupta2021memory"><code>gupta2021memory</code></span>
 
 </div>
 
@@ -237,15 +224,33 @@ Both lists are `ab.available(...)` with `value_topk` removed — the two axes th
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="ribar2024sparq">
 <pre class="attn-bib__src"><code>@inproceedings{ribar2024sparq,
-  title = {{SparQ Attention: Bandwidth-Efficient LLM Inference}}</code></pre>
+  title = {{SparQ Attention: Bandwidth-Efficient LLM Inference}},
+  author = {Ribar, Luka and Chelombiev, Ivan and Hudlass-Galley, Luke and Blake, Charlie and Luschi, Carlo and Orr, Douglas},
+  year = {2024},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  eprint = {2312.04985},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="feng2025criticalkv">
 <pre class="attn-bib__src"><code>@misc{feng2025criticalkv,
-  title = {{CriticalKV: Optimizing KV Cache Eviction from an Output Perturbation Perspective}}</code></pre>
+  title = {{CriticalKV: Optimizing KV Cache Eviction from an Output Perturbation Perspective}},
+  author = {Yuan Feng and Junlin Lv and Haoyu Guo and Yukun Cao and S Kevin Zhou and Xike Xie},
+  year = {2025},
+  howpublished = {arXiv preprint arXiv:2502.03805},
+  eprint = {2502.03805},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="gupta2021memory">
 <pre class="attn-bib__src"><code>@inproceedings{gupta2021memory,
-  title     = {Memory-efficient Transformers via Top-k Attention}</code></pre>
+  title     = {Memory-efficient Transformers via Top-k Attention},
+  author    = {Gupta, Ankit and Dar, Guy and Goodman, Shaya and Ciprut, David and Berant, Jonathan},
+  booktitle = {Proceedings of the Second Workshop on Simple and Efficient Natural Language Processing (SustaiNLP)},
+  year      = {2021},
+  eprint    = {2106.06899},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

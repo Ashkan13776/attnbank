@@ -33,17 +33,17 @@ It pursues **modification**: it defines a *different* operator. Asking how close
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **no** | it shares $K$/$V$ across query heads, so heads are not independent. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="no">no</span> | it shares $K$/$V$ across query heads, so heads are not independent. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -70,6 +70,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -82,19 +84,14 @@ def cost(self, m, n, d, dv, bytes_per_el=2, heads: int = 1):
             "bytes_moved": m * (d + dv) * bytes_per_el + per_head}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
 
 <div class="attn-tab" markdown="1">
 
 | backend | what it is |
 |---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-| `sdpa` | `torch.nn.functional.scaled_dot_product_attention` -- on CUDA, FlashAttention-2 or the memory-efficient kernel |
+| `reference` | plain PyTorch — the correctness anchor and the default |
+| `sdpa` | `torch.nn.functional.scaled_dot_product_attention` — on CUDA, FlashAttention-2 or the memory-efficient kernel |
 
 </div>
 
@@ -116,9 +113,7 @@ Diagnostics returned in `extras`: `latent`, `latent_width`, `r`.
 
 `r`: latent width; `None` uses the full width (the exact limit).
 
-```python
-ab.describe("mla")     # the same keys, with everything else it declares
-```
+`ab.describe("mla")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -161,7 +156,9 @@ extras: ['latent', 'latent_width', 'r']
 
 <div class="attn-notation" markdown="1">
 
-`sec:compress-arch`.  Instead of caching `h` key–value pairs per position, MLA
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:compress-arch</code></p>
+
+Instead of caching `h` key–value pairs per position, MLA
 caches a single latent `c_j = W_down [k_j^{(1)}; ...; k_j^{(h)}; v_j^{(1)}; ...]` of
 dimension `r`, and reconstructs each head's key and value by a per-head
 up-projection.  The cached state per position drops from `h (d + d_v)` to `r`.
@@ -184,16 +181,16 @@ and invertible, the reconstruction is exact, and the operator is dense softmax.
 changes the same object — [`compress`](../taxonomy.md#compress)
 :   [`atom`](atom.md), [`evict_adakv`](evict_adakv.md), [`evict_h2o`](evict_h2o.md), [`evict_pyramidkv`](evict_pyramidkv.md), [`evict_snapkv`](evict_snapkv.md), [`evict_tova`](evict_tova.md), [`gqa`](gqa.md), [`kivi`](kivi.md), [`kvquant`](kvquant.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_cam`](merge_cam.md), [`merge_kv`](merge_kv.md), [`merge_tome`](merge_tome.md), [`qjl`](qjl.md), [`quantkv`](quantkv.md), [`zipcache`](zipcache.md) &nbsp;·&nbsp; [browse the bank, compress only](index.md?category=compress)
 
-judged the same way — `modify`, beyond the ones above
-:   [`cosformer`](cosformer.md), [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`espformer`](espformer.md), [`gla`](gla.md), [`hgrn2`](hgrn2.md), [`hyena`](hyena.md), [`isab`](isab.md), [`latent_stochastic`](latent_stochastic.md), [`latte`](latte.md), [`linear_elu`](linear_elu.md), [`linear_rnn`](linear_rnn.md), [`lowrank_ot`](lowrank_ot.md), [`lru`](lru.md), [`mega`](mega.md), [`mlstm`](mlstm.md), [`otke`](otke.md), [`perceiver`](perceiver.md), [`polaformer`](polaformer.md), [`rebased`](rebased.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md), [`sinkhorn`](sinkhorn.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+judged the same way — `modify`
+:   27 further methods besides these declare `objective = modify`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
-Both lists are `ab.available(...)` with `mla` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `mla` selected](index.md?compare=mla) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `mla` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `mla` selected](index.md?compare=mla) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model.*<br><span class="attn-cite" data-bibkey="deepseekai2024deepseekv2"><code>deepseekai2024deepseekv2</code></span>
+- **DeepSeek-AI (2024).** *DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model.* [arXiv:2405.04434](https://arxiv.org/abs/2405.04434)<br><span class="attn-cite" data-bibkey="deepseekai2024deepseekv2"><code>deepseekai2024deepseekv2</code></span>
 
 </div>
 
@@ -202,7 +199,13 @@ Both lists are `ab.available(...)` with `mla` removed — the two axes the regis
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="deepseekai2024deepseekv2">
 <pre class="attn-bib__src"><code>@misc{deepseekai2024deepseekv2,
-  title = {{DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model}}</code></pre>
+  title = {{DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model}},
+  author = {{DeepSeek-AI}},
+  year = {2024},
+  howpublished = {arXiv preprint arXiv:2405.04434},
+  eprint = {2405.04434},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

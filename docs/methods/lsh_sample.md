@@ -33,17 +33,17 @@ It pursues **approximation**: it is trying to be dense softmax, so it is fair to
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -77,6 +77,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -87,24 +89,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + n * d + m * ns * dv + m * dv) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** It reports the omitted mass `eps` (and the $\chi^2$ divergence of the renormalisation) in `extras`, which needs the full score matrix. A kernel that avoids materialising that matrix is a kernel that cannot produce them.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `chi2_pi_lambda`, `empty_draws`, `eps`, `n_sampled`, `support`, `u`.
 
@@ -120,9 +109,7 @@ Diagnostics returned in `extras`: `chi2_pi_lambda`, `empty_draws`, `eps`, `n_sam
 
 </div>
 
-```python
-ab.describe("lsh_sample")     # the same keys, with everything else it declares
-```
+`ab.describe("lsh_sample")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -164,10 +151,11 @@ invariant W: 0.0
 
 <div class="attn-notation" markdown="1">
 
-`sec:sparse-content` ("Sampling is not restriction") and `prop:error-ratio-est`.
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:sparse-content</code> (&quot;Sampling is not restriction&quot;) and <code>prop:error-ratio-est</code></p>
+
 A key set `S` is *sampled* with inclusion probabilities `u_j` monotone in the
 attention score, and the output is the self-normalized importance-sampling estimator
-(`eq:sparse-snis`)
+(<span class="attn-ref">eq:sparse-snis</span>)
 
 ```text
 y_hat(q) = sum_{j in S} (g_j / u_j) v_j  /  sum_{j in S} (g_j / u_j),
@@ -177,9 +165,9 @@ pi_hat_j = 1{j in S} (pi_j / u_j) / sum_i 1{i in S} (pi_i / u_i).
 Numerator and normalizer are unbiased for `N(q)` and `Z(q)`; the ratio is only
 consistent, with `O(1/N_s)` bias (Owen, 2013).  Unlike deterministic restriction this
 does **not** systematically reallocate tail mass to the head — it trades the
-value-dependent bias of `prop:sparse-identity` for variance, whose size is
+value-dependent bias of <span class="attn-ref">prop:sparse-identity</span> for variance, whose size is
 `(1 + chi2(pi || lambda)) / N_s` times `sup_x ||v(x) - y||^2`
-(`prop:error-ratio-est` (b)).
+(<span class="attn-ref">prop:error-ratio-est</span> (b)).
 
 Proposal.  MagicPIG derives `u_j` from SimHash collision probabilities; this
 reference implementation abstracts that to a tempered proposal
@@ -202,18 +190,18 @@ inserted so the estimator is defined; the event is counted in
 changes the same object — [`restrict`](../taxonomy.md#restrict)
 :   [`bigbird`](bigbird.md), [`blocktopk`](blocktopk.md), [`hyperattention`](hyperattention.md), [`longformer`](longformer.md), [`oval`](oval.md), [`page_pca`](page_pca.md), [`reformer`](reformer.md), [`routing`](routing.md), [`shifted_window`](shifted_window.md), [`sink_window`](sink_window.md), [`strided`](strided.md), [`topk`](topk.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, restrict only](index.md?category=restrict)
 
-judged the same way — `approximate`, beyond the ones above
-:   [`abc`](abc.md), [`atom`](atom.md), [`based`](based.md), [`clustered`](clustered.md), [`evict_adakv`](evict_adakv.md), [`evict_h2o`](evict_h2o.md), [`evict_pyramidkv`](evict_pyramidkv.md), [`evict_snapkv`](evict_snapkv.md), [`evict_tova`](evict_tova.md), [`favorpp`](favorpp.md), [`favorsharp`](favorsharp.md), [`hedgehog`](hedgehog.md), [`kivi`](kivi.md), [`kvquant`](kvquant.md), [`linformer`](linformer.md), [`lowprec`](lowprec.md), [`lowrank_kv`](lowrank_kv.md), [`lowrank_logit`](lowrank_logit.md) *(oracle)*, [`merge_cam`](merge_cam.md), [`merge_kv`](merge_kv.md), [`merge_tome`](merge_tome.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`polysketch`](polysketch.md), [`qjl`](qjl.md), [`quantkv`](quantkv.md), [`skyformer`](skyformer.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`trigrff`](trigrff.md), [`zipcache`](zipcache.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+judged the same way — `approximate`
+:   31 further methods besides these declare `objective = approximate`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
 
-Both lists are `ab.available(...)` with `lsh_sample` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `lsh_sample` selected](index.md?compare=lsh_sample) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `lsh_sample` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `lsh_sample` selected](index.md?compare=lsh_sample) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *MagicPIG: LSH Sampling for Efficient LLM Generation.*<br><span class="attn-cite" data-bibkey="chen2025magicpig"><code>chen2025magicpig</code></span>
-- *Monte Carlo Theory, Methods and Examples.*<br><span class="attn-cite" data-bibkey="owen2013monte"><code>owen2013monte</code></span>
-- *Reformer: The Efficient Transformer.*<br><span class="attn-cite" data-bibkey="kitaev2020reformer"><code>kitaev2020reformer</code></span>
+- **Chen et al. (2025).** *MagicPIG: LSH Sampling for Efficient LLM Generation.* International Conference on Learning Representations (ICLR). [arXiv:2410.16179](https://arxiv.org/abs/2410.16179)<br><span class="attn-cite" data-bibkey="chen2025magicpig"><code>chen2025magicpig</code></span>
+- **Owen (2013).** *Monte Carlo Theory, Methods and Examples.*<br><span class="attn-cite" data-bibkey="owen2013monte"><code>owen2013monte</code></span>
+- **Kitaev et al. (2020).** *Reformer: The Efficient Transformer.* International Conference on Learning Representations (ICLR). [arXiv:2001.04451](https://arxiv.org/abs/2001.04451)<br><span class="attn-cite" data-bibkey="kitaev2020reformer"><code>kitaev2020reformer</code></span>
 
 </div>
 
@@ -222,15 +210,31 @@ Both lists are `ab.available(...)` with `lsh_sample` removed — the two axes th
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="chen2025magicpig">
 <pre class="attn-bib__src"><code>@inproceedings{chen2025magicpig,
-  title     = {{MagicPIG}: {LSH} Sampling for Efficient {LLM} Generation}</code></pre>
+  title     = {{MagicPIG}: {LSH} Sampling for Efficient {LLM} Generation},
+  author    = {Chen, Zhuoming and Sadhukhan, Ranajoy and Ye, Zihao and Zhou, Yang and Zhang, Jianyu and Nolte, Niklas and Tian, Yuandong and Douze, Matthijs and Bottou, Leon and Jia, Zhihao and Chen, Beidi},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2025},
+  eprint    = {2410.16179},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="owen2013monte">
 <pre class="attn-bib__src"><code>@book{owen2013monte,
-  title     = {Monte Carlo Theory, Methods and Examples}</code></pre>
+  title     = {Monte Carlo Theory, Methods and Examples},
+  author    = {Owen, Art B.},
+  year      = {2013},
+  note      = {Book manuscript, available online at \url{https://artowen.su.domains/mc/}}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="kitaev2020reformer">
 <pre class="attn-bib__src"><code>@inproceedings{kitaev2020reformer,
-  title={Reformer: The Efficient Transformer}</code></pre>
+  title={Reformer: The Efficient Transformer},
+  author={Kitaev, Nikita and Kaiser, {\L}ukasz and Levskaya, Anselm},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2020},
+  eprint={2001.04451},
+  archivePrefix={arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

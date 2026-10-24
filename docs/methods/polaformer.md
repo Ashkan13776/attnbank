@@ -33,17 +33,17 @@ It pursues **modification**: it defines a *different* operator. Asking how close
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **no** | it cannot name $\widehat\pi_q$ on the original positions and is excluded from the error decomposition by declaration. |
-| `row_stochastic` | **no** | the weights are **not** a probability measure — signed, or not summing to one — so the output can leave the convex hull of the values. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **yes** | it has learned parameters; the reference implementation initialises them from a seed, so the numbers here are an untrained operator. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="no">no</span> | it cannot name $\widehat\pi_q$ on the original positions and is excluded from the error decomposition by declaration. |
+| `row_stochastic` | <span class="attn-flag" data-v="no">no</span> | the weights are **not** a probability measure — signed, or not summing to one — so the output can leave the convex hull of the values. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="yes">yes</span> | it has learned parameters; the reference implementation initialises them from a seed, so the numbers here are an untrained operator. |
 
 </div>
 
@@ -65,6 +65,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -76,24 +78,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
                             + 2 * r * (dv + 1)) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** `sdpa` computes exactly $\mathrm{softmax}(\beta\langle q,k\rangle + \text{mask})\,v$; this operator replaces $g$, so it is not that expression and there is no kernel for it.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `Z_opposite`, `Z_same`, `power`, `split`, `weights_opposite_sign`, `weights_same_sign`.
 
@@ -107,9 +96,7 @@ Diagnostics returned in `extras`: `Z_opposite`, `Z_same`, `power`, `split`, `wei
 
 </div>
 
-```python
-ab.describe("polaformer")     # the same keys, with everything else it declares
-```
+`ab.describe("polaformer")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -153,7 +140,9 @@ extras: ['Z_opposite', 'Z_same', 'power', 'split', 'weights_opposite_sign', 'wei
 
 <div class="attn-notation" markdown="1">
 
-`sec:kernel-det`.  Every nonnegative feature map in this directory throws away the
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:kernel-det</code></p>
+
+Every nonnegative feature map in this directory throws away the
 sign structure of the logit: `relu` deletes the negative coordinates outright, and
 with them the opposite-signed part of `<q, k>`.  Meng et al. (2025) keep it.  Split
 each vector into its positive and negative parts, `q = q+ - q-` with
@@ -208,18 +197,18 @@ plain polarity split with no sharpening.
 changes the same object — [`interaction`](../taxonomy.md#interaction)
 :   [`based`](based.md), [`cosformer`](cosformer.md), [`favorpp`](favorpp.md), [`favorsharp`](favorsharp.md), [`hedgehog`](hedgehog.md), [`linear_elu`](linear_elu.md), [`lowrank_logit`](lowrank_logit.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`polysketch`](polysketch.md), [`rebased`](rebased.md), [`skyformer`](skyformer.md), [`trigrff`](trigrff.md) &nbsp;·&nbsp; [browse the bank, interaction only](index.md?category=interaction)
 
-judged the same way — `modify`, beyond the ones above
-:   [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`espformer`](espformer.md), [`gla`](gla.md), [`gqa`](gqa.md), [`hgrn2`](hgrn2.md), [`hyena`](hyena.md), [`isab`](isab.md), [`latent_stochastic`](latent_stochastic.md), [`latte`](latte.md), [`linear_rnn`](linear_rnn.md), [`lowrank_ot`](lowrank_ot.md), [`lru`](lru.md), [`mega`](mega.md), [`mla`](mla.md), [`mlstm`](mlstm.md), [`otke`](otke.md), [`perceiver`](perceiver.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md), [`sinkhorn`](sinkhorn.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+judged the same way — `modify`
+:   25 further methods besides these declare `objective = modify`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
-Both lists are `ab.available(...)` with `polaformer` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `polaformer` selected](index.md?compare=polaformer) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `polaformer` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `polaformer` selected](index.md?compare=polaformer) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *PolaFormer: Polarity-aware Linear Attention for Vision Transformers.*<br><span class="attn-cite" data-bibkey="meng2025polaformer"><code>meng2025polaformer</code></span>
-- *Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention.*<br><span class="attn-cite" data-bibkey="katharopoulos2020transformers"><code>katharopoulos2020transformers</code></span>
-- *cosFormer: Rethinking Softmax in Attention.*<br><span class="attn-cite" data-bibkey="qin2022cosformer"><code>qin2022cosformer</code></span>
+- **Meng et al. (2025).** *PolaFormer: Polarity-aware Linear Attention for Vision Transformers.* International Conference on Learning Representations (ICLR). [arXiv:2501.15061](https://arxiv.org/abs/2501.15061)<br><span class="attn-cite" data-bibkey="meng2025polaformer"><code>meng2025polaformer</code></span>
+- **Katharopoulos et al. (2020).** *Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention.* Proceedings of the 37th International Conference on Machine Learning (ICML). [arXiv:2006.16236](https://arxiv.org/abs/2006.16236)<br><span class="attn-cite" data-bibkey="katharopoulos2020transformers"><code>katharopoulos2020transformers</code></span>
+- **Qin et al. (2022).** *cosFormer: Rethinking Softmax in Attention.* International Conference on Learning Representations (ICLR). [arXiv:2202.08791](https://arxiv.org/abs/2202.08791)<br><span class="attn-cite" data-bibkey="qin2022cosformer"><code>qin2022cosformer</code></span>
 
 </div>
 
@@ -228,15 +217,36 @@ Both lists are `ab.available(...)` with `polaformer` removed — the two axes th
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="meng2025polaformer">
 <pre class="attn-bib__src"><code>@inproceedings{meng2025polaformer,
-  title     = {{PolaFormer}: Polarity-aware Linear Attention for Vision Transformers}</code></pre>
+  title     = {{PolaFormer}: Polarity-aware Linear Attention for Vision Transformers},
+  author    = {Meng, Weikang and Luo, Yadan and Li, Xin and Jiang, Dongmei and Zhang, Zheng},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2025},
+  eprint    = {2501.15061},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="katharopoulos2020transformers">
 <pre class="attn-bib__src"><code>@inproceedings{katharopoulos2020transformers,
-  title     = {Transformers are {RNN}s: Fast Autoregressive Transformers with Linear Attention}</code></pre>
+  title     = {Transformers are {RNN}s: Fast Autoregressive Transformers with Linear Attention},
+  author    = {Katharopoulos, Angelos and Vyas, Apoorv and Pappas, Nikolaos and Fleuret, Fran{\c{c}}ois},
+  booktitle = {Proceedings of the 37th International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {119},
+  pages     = {5156--5165},
+  year      = {2020},
+  eprint    = {2006.16236},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="qin2022cosformer">
 <pre class="attn-bib__src"><code>@inproceedings{qin2022cosformer,
-  title={{cosFormer}: Rethinking Softmax in Attention}</code></pre>
+  title={{cosFormer}: Rethinking Softmax in Attention},
+  author={Qin, Zhen and Sun, Weixuan and Deng, Hui and Li, Dongxu and Wei, Yunshen and Lv, Baohong and Yan, Junjie and Kong, Lingpeng and Zhong, Yiran},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2022},
+  eprint={2202.08791},
+  archivePrefix={arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

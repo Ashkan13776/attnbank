@@ -33,17 +33,17 @@ It pursues **approximation**: it is trying to be dense softmax, so it is fair to
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **no** | `causal=True` raises `CausalNotSupportedError` — a statement about the operator, not a missing feature. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="no">no</span> | `causal=True` raises `CausalNotSupportedError` — a statement about the operator, not a missing feature. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -70,6 +70,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -81,24 +83,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + m * b * (d + dv) + m * dv) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** It reports the omitted mass `eps` (and the $\chi^2$ divergence of the renormalisation) in `extras`, which needs the full score matrix. A kernel that avoids materialising that matrix is a kernel that cannot produce them.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `budget`, `chi2`, `eps`, `k_realized`, `layer_budgets`, `obs`, `pooled_scores`, `support`.
 
@@ -122,9 +111,7 @@ Diagnostics returned in `extras`: `budget`, `chi2`, `eps`, `k_realized`, `layer_
 `budget` is the *uniform* budget the pyramid redistributes; `layer` of
 `n_layers` picks this call's share of it.
 
-```python
-ab.describe("evict_pyramidkv")     # the same keys, with everything else it declares
-```
+`ab.describe("evict_pyramidkv")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -166,7 +153,9 @@ invariant W: 0.0
 
 <div class="attn-notation" markdown="1">
 
-`sec:compress-evict`, `prop:compress-noeviction`.  SnapKV and H2O give every layer
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:compress-evict</code>, <code>prop:compress-noeviction</code></p>
+
+SnapKV and H2O give every layer
 the same cache size.  PyramidKV observes that attention concentrates as depth grows —
 lower layers spread mass broadly, upper layers funnel it onto a few tokens — and so
 spends the same *total* budget unevenly: the per-layer budgets form a decreasing
@@ -201,7 +190,7 @@ context those queries would have needed is gone, which is why the method declare
 `supports_causal = False`: query 0's support depends on query `m-1`, and no causal
 mask can express that.  `tests/test_compress_evict.py` measures the gap against the
 per-query restriction `topk` at the same budget; it is the price of deleting rather
-than hiding, and `prop:compress-noeviction` says no budget makes it uniformly small.
+than hiding, and <span class="attn-ref">prop:compress-noeviction</span> says no budget makes it uniformly small.
 
 Exact limit: `budget = None` (every layer keeps everything).
 
@@ -212,17 +201,17 @@ Exact limit: `budget = None` (every layer keeps everything).
 changes the same object — [`compress`](../taxonomy.md#compress)
 :   [`atom`](atom.md), [`evict_adakv`](evict_adakv.md), [`evict_h2o`](evict_h2o.md), [`evict_snapkv`](evict_snapkv.md), [`evict_tova`](evict_tova.md), [`gqa`](gqa.md), [`kivi`](kivi.md), [`kvquant`](kvquant.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_cam`](merge_cam.md), [`merge_kv`](merge_kv.md), [`merge_tome`](merge_tome.md), [`mla`](mla.md), [`qjl`](qjl.md), [`quantkv`](quantkv.md), [`zipcache`](zipcache.md) &nbsp;·&nbsp; [browse the bank, compress only](index.md?category=compress)
 
-judged the same way — `approximate`, beyond the ones above
-:   [`abc`](abc.md), [`based`](based.md), [`bigbird`](bigbird.md), [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`favorpp`](favorpp.md), [`favorsharp`](favorsharp.md), [`hedgehog`](hedgehog.md), [`hyperattention`](hyperattention.md), [`longformer`](longformer.md), [`lowprec`](lowprec.md), [`lowrank_logit`](lowrank_logit.md) *(oracle)*, [`lsh_sample`](lsh_sample.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`oval`](oval.md), [`page_pca`](page_pca.md), [`performer`](performer.md), [`polysketch`](polysketch.md), [`reformer`](reformer.md), [`routing`](routing.md), [`shifted_window`](shifted_window.md), [`sink_window`](sink_window.md), [`skyformer`](skyformer.md), [`strided`](strided.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+judged the same way — `approximate`
+:   30 further methods besides these declare `objective = approximate`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
 
-Both lists are `ab.available(...)` with `evict_pyramidkv` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `evict_pyramidkv` selected](index.md?compare=evict_pyramidkv) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `evict_pyramidkv` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `evict_pyramidkv` selected](index.md?compare=evict_pyramidkv) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *PyramidKV: Dynamic KV Cache Compression based on Pyramidal Information Funneling.*<br><span class="attn-cite" data-bibkey="cai2024pyramidkv"><code>cai2024pyramidkv</code></span>
-- *SnapKV: LLM Knows What You are Looking for Before Generation.*<br><span class="attn-cite" data-bibkey="li2024snapkv"><code>li2024snapkv</code></span>
+- **Cai et al. (2024).** *PyramidKV: Dynamic KV Cache Compression based on Pyramidal Information Funneling.* [arXiv:2406.02069](https://arxiv.org/abs/2406.02069)<br><span class="attn-cite" data-bibkey="cai2024pyramidkv"><code>cai2024pyramidkv</code></span>
+- **Li et al. (2024).** *SnapKV: LLM Knows What You are Looking for Before Generation.* Advances in Neural Information Processing Systems (NeurIPS). [doi:10.52202/079017-0722](https://doi.org/10.52202/079017-0722)<br><span class="attn-cite" data-bibkey="li2024snapkv"><code>li2024snapkv</code></span>
 
 </div>
 
@@ -231,11 +220,22 @@ Both lists are `ab.available(...)` with `evict_pyramidkv` removed — the two ax
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="cai2024pyramidkv">
 <pre class="attn-bib__src"><code>@misc{cai2024pyramidkv,
-  title = {{PyramidKV: Dynamic KV Cache Compression based on Pyramidal Information Funneling}}</code></pre>
+  title = {{PyramidKV: Dynamic KV Cache Compression based on Pyramidal Information Funneling}},
+  author = {Zefan Cai and Yichi Zhang and Bofei Gao and Yuliang Liu and Yucheng Li and Tianyu Liu and Keming Lu and Wayne Xiong and Yue Dong and Junjie Hu and Wen Xiao},
+  year = {2024},
+  howpublished = {arXiv preprint arXiv:2406.02069},
+  eprint = {2406.02069},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="li2024snapkv">
 <pre class="attn-bib__src"><code>@inproceedings{li2024snapkv,
-  title={{SnapKV}: {LLM} Knows What You are Looking for Before Generation}</code></pre>
+  title={{SnapKV}: {LLM} Knows What You are Looking for Before Generation},
+  author={Li, Yuhong and Huang, Yingbing and Yang, Bowen and Venkitesh, Bharat and Locatelli, Acyr and Ye, Hanchen and Cai, Tianle and Lewis, Patrick and Chen, Deming},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2024},
+  doi={10.52202/079017-0722}
+}</code></pre>
 </div>
 </div>
 </details>

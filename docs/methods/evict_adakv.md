@@ -33,17 +33,17 @@ It pursues **approximation**: it is trying to be dense softmax, so it is fair to
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **no** | `causal=True` raises `CausalNotSupportedError` — a statement about the operator, not a missing feature. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **no** | it shares $K$/$V$ across query heads, so heads are not independent. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="no">no</span> | `causal=True` raises `CausalNotSupportedError` — a statement about the operator, not a missing feature. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="no">no</span> | it shares $K$/$V$ across query heads, so heads are not independent. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -70,6 +70,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -80,24 +82,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + m * b * (d + dv) + m * dv) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** It reports the omitted mass `eps` (and the $\chi^2$ divergence of the renormalisation) in `extras`, which needs the full score matrix. A kernel that avoids materialising that matrix is a kernel that cannot produce them.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `adaptive_budget`, `budget`, `chi2`, `eps`, `head_budget`, `k_realized`, `obs`, `pooled_scores`, `support`.
 
@@ -118,9 +107,7 @@ Diagnostics returned in `extras`: `adaptive_budget`, `budget`, `chi2`, `eps`, `h
 
 `budget` is the per-head *average*; `floor_alpha = 1` recovers SnapKV.
 
-```python
-ab.describe("evict_adakv")     # the same keys, with everything else it declares
-```
+`ab.describe("evict_adakv")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -162,7 +149,9 @@ invariant W: 0.0
 
 <div class="attn-notation" markdown="1">
 
-`sec:compress-evict`, `prop:compress-noeviction`.  SnapKV, H2O and PyramidKV give
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:compress-evict</code>, <code>prop:compress-noeviction</code></p>
+
+SnapKV, H2O and PyramidKV give
 every head of a layer the same cache size.  Ada-KV observes that heads differ enormously
 in how concentrated their attention is — a head whose mass sits on three tokens wastes a
 budget of sixty, while a diffuse head is crippled by it — and that the top-`k`
@@ -192,7 +181,7 @@ shares the *budget*.
 **Semantics: eviction, not restriction.**  As in SnapKV the support is fixed once from
 the observation window and then serves every query, so a query outside that window is
 answered from a cache that was pruned without knowing what it would ask.  Hence
-`supports_causal = False`, and hence `prop:compress-noeviction`: adaptive allocation
+`supports_causal = False`, and hence <span class="attn-ref">prop:compress-noeviction</span>: adaptive allocation
 buys a better *average*, not a uniform guarantee.
 
 Exact limit: `budget = None` (nothing is evicted).
@@ -204,17 +193,17 @@ Exact limit: `budget = None` (nothing is evicted).
 changes the same object — [`compress`](../taxonomy.md#compress)
 :   [`atom`](atom.md), [`evict_h2o`](evict_h2o.md), [`evict_pyramidkv`](evict_pyramidkv.md), [`evict_snapkv`](evict_snapkv.md), [`evict_tova`](evict_tova.md), [`gqa`](gqa.md), [`kivi`](kivi.md), [`kvquant`](kvquant.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_cam`](merge_cam.md), [`merge_kv`](merge_kv.md), [`merge_tome`](merge_tome.md), [`mla`](mla.md), [`qjl`](qjl.md), [`quantkv`](quantkv.md), [`zipcache`](zipcache.md) &nbsp;·&nbsp; [browse the bank, compress only](index.md?category=compress)
 
-judged the same way — `approximate`, beyond the ones above
-:   [`abc`](abc.md), [`based`](based.md), [`bigbird`](bigbird.md), [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`favorpp`](favorpp.md), [`favorsharp`](favorsharp.md), [`hedgehog`](hedgehog.md), [`hyperattention`](hyperattention.md), [`longformer`](longformer.md), [`lowprec`](lowprec.md), [`lowrank_logit`](lowrank_logit.md) *(oracle)*, [`lsh_sample`](lsh_sample.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`oval`](oval.md), [`page_pca`](page_pca.md), [`performer`](performer.md), [`polysketch`](polysketch.md), [`reformer`](reformer.md), [`routing`](routing.md), [`shifted_window`](shifted_window.md), [`sink_window`](sink_window.md), [`skyformer`](skyformer.md), [`strided`](strided.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+judged the same way — `approximate`
+:   30 further methods besides these declare `objective = approximate`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
 
-Both lists are `ab.available(...)` with `evict_adakv` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `evict_adakv` selected](index.md?compare=evict_adakv) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `evict_adakv` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `evict_adakv` selected](index.md?compare=evict_adakv) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *Ada-KV: Optimizing KV Cache Eviction by Adaptive Budget Allocation for Efficient LLM Inference.*<br><span class="attn-cite" data-bibkey="feng2025adakv"><code>feng2025adakv</code></span>
-- *SnapKV: LLM Knows What You are Looking for Before Generation.*<br><span class="attn-cite" data-bibkey="li2024snapkv"><code>li2024snapkv</code></span>
+- **Feng et al. (2025).** *Ada-KV: Optimizing KV Cache Eviction by Adaptive Budget Allocation for Efficient LLM Inference.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2407.11550](https://arxiv.org/abs/2407.11550)<br><span class="attn-cite" data-bibkey="feng2025adakv"><code>feng2025adakv</code></span>
+- **Li et al. (2024).** *SnapKV: LLM Knows What You are Looking for Before Generation.* Advances in Neural Information Processing Systems (NeurIPS). [doi:10.52202/079017-0722](https://doi.org/10.52202/079017-0722)<br><span class="attn-cite" data-bibkey="li2024snapkv"><code>li2024snapkv</code></span>
 
 </div>
 
@@ -223,11 +212,22 @@ Both lists are `ab.available(...)` with `evict_adakv` removed — the two axes t
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="feng2025adakv">
 <pre class="attn-bib__src"><code>@inproceedings{feng2025adakv,
-  title = {{Ada-KV}: Optimizing {KV} Cache Eviction by Adaptive Budget Allocation for Efficient {LLM} Inference}</code></pre>
+  title = {{Ada-KV}: Optimizing {KV} Cache Eviction by Adaptive Budget Allocation for Efficient {LLM} Inference},
+  author = {Yuan Feng and Junlin Lv and Yukun Cao and Xike Xie and S. Kevin Zhou},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year = {2025},
+  eprint = {2407.11550},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="li2024snapkv">
 <pre class="attn-bib__src"><code>@inproceedings{li2024snapkv,
-  title={{SnapKV}: {LLM} Knows What You are Looking for Before Generation}</code></pre>
+  title={{SnapKV}: {LLM} Knows What You are Looking for Before Generation},
+  author={Li, Yuhong and Huang, Yingbing and Yang, Bowen and Venkitesh, Bharat and Locatelli, Acyr and Ye, Hanchen and Cai, Tianle and Lewis, Patrick and Chen, Deming},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2024},
+  doi={10.52202/079017-0722}
+}</code></pre>
 </div>
 </div>
 </details>

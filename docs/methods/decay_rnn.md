@@ -33,17 +33,17 @@ It pursues **modification**: it defines a *different* operator. Asking how close
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **no** | the weights are **not** a probability measure — signed, or not summing to one — so the output can leave the convex hull of the values. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="no">no</span> | the weights are **not** a probability measure — signed, or not summing to one — so the output can leave the convex hull of the values. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -65,6 +65,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -75,24 +77,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + n * (d + dv) + m * dv) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** A scan over positions with a fixed-size state is a different program from a masked softmax.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `decay`, `gate`, `mass`.
 
@@ -108,9 +97,7 @@ Diagnostics returned in `extras`: `decay`, `gate`, `mass`.
 
 </div>
 
-```python
-ab.describe("decay_rnn")     # the same keys, with everything else it declares
-```
+`ab.describe("decay_rnn")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -153,7 +140,8 @@ extras: ['decay', 'gate', 'mass']
 
 <div class="attn-notation" markdown="1">
 
-`sec:memory-state`, `tab:memory-recurrences` (rows "Retention", "GLA / Mamba-2").
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:memory-state</code>, <code>tab:memory-recurrences</code> (rows &quot;Retention&quot;, &quot;GLA / Mamba-2&quot;)</p>
+
 `A_t = gamma Id` with a fixed `gamma < 1` is retention (RetNet); a data-dependent
 scalar or diagonal gate gives Mamba-2, GLA, HGRN2, RWKV-5/6 and the mLSTM.  The weights
 on the original positions are
@@ -168,7 +156,7 @@ Decay restores *boundedness* without restoring normalization: the effective mass
 `sum_i prod_{u>i} gamma_u` is bounded by `1/(1 - gamma)` rather than growing with
 `n`, so the output cannot blow up with context length, but it is still not an
 expectation under a probability measure (set `normalize=True` to recover one).  This
-is the distinction `sec:memory-state` draws between "restoring boundedness" and
+is the distinction <span class="attn-ref">sec:memory-state</span> draws between "restoring boundedness" and
 "restoring the contract".
 
 State size is `r x d_v` regardless of `gamma`, so sweeping `gamma` at fixed state
@@ -181,20 +169,20 @@ separates *recency* from *capacity* — which is what study S6 needs.
 changes the same object — [`recurrent`](../taxonomy.md#recurrent)
 :   [`delta_rnn`](delta_rnn.md), [`gla`](gla.md), [`hgrn2`](hgrn2.md), [`hyena`](hyena.md), [`linear_rnn`](linear_rnn.md), [`lru`](lru.md), [`mega`](mega.md), [`mlstm`](mlstm.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md) &nbsp;·&nbsp; [browse the bank, recurrent only](index.md?category=recurrent)
 
-judged the same way — `modify`, beyond the ones above
-:   [`cosformer`](cosformer.md), [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`espformer`](espformer.md), [`gqa`](gqa.md), [`isab`](isab.md), [`latent_stochastic`](latent_stochastic.md), [`latte`](latte.md), [`linear_elu`](linear_elu.md), [`lowrank_ot`](lowrank_ot.md), [`mla`](mla.md), [`otke`](otke.md), [`perceiver`](perceiver.md), [`polaformer`](polaformer.md), [`rebased`](rebased.md), [`sinkhorn`](sinkhorn.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+judged the same way — `modify`
+:   16 further methods besides these declare `objective = modify`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
-Both lists are `ab.available(...)` with `decay_rnn` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `decay_rnn` selected](index.md?compare=decay_rnn) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `decay_rnn` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `decay_rnn` selected](index.md?compare=decay_rnn) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *Retentive Network: A Successor to Transformer for Large Language Models.*<br><span class="attn-cite" data-bibkey="sun2023retentive"><code>sun2023retentive</code></span>
-- *Gated Linear Attention Transformers with Hardware-Efficient Training.*<br><span class="attn-cite" data-bibkey="yang2024gated"><code>yang2024gated</code></span>
-- *Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality.*<br><span class="attn-cite" data-bibkey="dao2024transformers"><code>dao2024transformers</code></span>
-- *RWKV: Reinventing RNNs for the Transformer Era.*<br><span class="attn-cite" data-bibkey="peng2023rwkv"><code>peng2023rwkv</code></span>
-- *xLSTM: Extended Long Short-Term Memory.*<br><span class="attn-cite" data-bibkey="beck2024xlstm"><code>beck2024xlstm</code></span>
+- **Sun et al. (2023).** *Retentive Network: A Successor to Transformer for Large Language Models.* [arXiv:2307.08621](https://arxiv.org/abs/2307.08621)<br><span class="attn-cite" data-bibkey="sun2023retentive"><code>sun2023retentive</code></span>
+- **Yang et al. (2024).** *Gated Linear Attention Transformers with Hardware-Efficient Training.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2312.06635](https://arxiv.org/abs/2312.06635)<br><span class="attn-cite" data-bibkey="yang2024gated"><code>yang2024gated</code></span>
+- **Dao and Gu (2024).** *Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2405.21060](https://arxiv.org/abs/2405.21060)<br><span class="attn-cite" data-bibkey="dao2024transformers"><code>dao2024transformers</code></span>
+- **Peng et al. (2023).** *RWKV: Reinventing RNNs for the Transformer Era.* Findings of the Association for Computational Linguistics: EMNLP 2023. [arXiv:2305.13048](https://arxiv.org/abs/2305.13048)<br><span class="attn-cite" data-bibkey="peng2023rwkv"><code>peng2023rwkv</code></span>
+- **Beck et al. (2024).** *xLSTM: Extended Long Short-Term Memory.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2405.04517](https://arxiv.org/abs/2405.04517)<br><span class="attn-cite" data-bibkey="beck2024xlstm"><code>beck2024xlstm</code></span>
 
 </div>
 
@@ -203,23 +191,56 @@ Both lists are `ab.available(...)` with `decay_rnn` removed — the two axes the
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="sun2023retentive">
 <pre class="attn-bib__src"><code>@misc{sun2023retentive,
-  title={Retentive Network: A Successor to Transformer for Large Language Models}</code></pre>
+  title={Retentive Network: A Successor to Transformer for Large Language Models},
+  author={Sun, Yutao and Dong, Li and Huang, Shaohan and Ma, Shuming and Xia, Yuqing and Xue, Jilong and Wang, Jianyong and Wei, Furu},
+  year={2023},
+  eprint={2307.08621},
+  archivePrefix={arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="yang2024gated">
 <pre class="attn-bib__src"><code>@inproceedings{yang2024gated,
-  title={Gated Linear Attention Transformers with Hardware-Efficient Training}</code></pre>
+  title={Gated Linear Attention Transformers with Hardware-Efficient Training},
+  author={Yang, Songlin and Wang, Bailin and Shen, Yikang and Panda, Rameswar and Kim, Yoon},
+  booktitle={Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={235},
+  pages={56501--56523},
+  year={2024},
+  eprint={2312.06635},
+  archivePrefix={arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="dao2024transformers">
 <pre class="attn-bib__src"><code>@inproceedings{dao2024transformers,
-  title={Transformers are {SSM}s: Generalized Models and Efficient Algorithms Through Structured State Space Duality}</code></pre>
+  title={Transformers are {SSM}s: Generalized Models and Efficient Algorithms Through Structured State Space Duality},
+  author={Dao, Tri and Gu, Albert},
+  booktitle={Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={235},
+  pages={10041--10071},
+  year={2024},
+  eprint={2405.21060},
+  archivePrefix={arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="peng2023rwkv">
 <pre class="attn-bib__src"><code>@inproceedings{peng2023rwkv,
-  title={{RWKV}: Reinventing {RNN}s for the Transformer Era}</code></pre>
+  title={{RWKV}: Reinventing {RNN}s for the Transformer Era},
+  author={Peng, Bo and Alcaide, Eric and Anthony, Quentin and Albalak, Alon and Arcadinho, Samuel and Biderman, Stella and others},
+  booktitle={Findings of the Association for Computational Linguistics: EMNLP 2023},
+  year={2023},
+  eprint={2305.13048}, archivePrefix={arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="beck2024xlstm">
 <pre class="attn-bib__src"><code>@inproceedings{beck2024xlstm,
-  title={{xLSTM}: Extended Long Short-Term Memory}</code></pre>
+  title={{xLSTM}: Extended Long Short-Term Memory},
+  author={Beck, Maximilian and P{\&quot;o}ppel, Korbinian and Spanring, Markus and Auer, Andreas and Prudnikova, Oleksandra and Kopp, Michael and Klambauer, G{\&quot;u}nter and Brandstetter, Johannes and Hochreiter, Sepp},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2024},
+  eprint={2405.04517}, archivePrefix={arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

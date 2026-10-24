@@ -33,17 +33,17 @@ It pursues **acceleration**: the operator is the reference operator, exact up to
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -65,6 +65,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -76,24 +78,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
                            * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** The method exists to expose the *intermediate* states of the evaluation, which a single fused call does not hand back.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `lse`, `n_splits`.
 
@@ -112,9 +101,7 @@ Diagnostics returned in `extras`: `lse`, `n_splits`.
 `partition`: an explicit list of index tensors/lists; overrides `splits`.
 `tree`: merge pairwise (a balanced reduction tree) instead of left-to-right.
 
-```python
-ab.describe("splitk")     # the same keys, with everything else it declares
-```
+`ab.describe("splitk")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -154,9 +141,11 @@ max |y - y_softmax|: 4.172325134277344e-07
 
 <div class="attn-notation" markdown="1">
 
-`sec:exact-tiling` (decode-specialized kernels).  The context is split into `p`
-chunks, each chunk produces a state `sigma_{J_t}` of `def:exact-state`, and the
-states are combined by the monoid of `prop:exact-monoid`.  Parts (i)-(iii) of that
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:exact-tiling</code> (decode-specialized kernels)</p>
+
+The context is split into `p`
+chunks, each chunk produces a state `sigma_{J_t}` of <span class="attn-ref">def:exact-state</span>, and the
+states are combined by the monoid of <span class="attn-ref">prop:exact-monoid</span>.  Parts (i)-(iii) of that
 proposition say the result is independent of the partition *and* of the bracketing,
 which is exactly what `tests/test_exact.py` checks: every partition, contiguous or
 not, gives the identical answer.
@@ -168,15 +157,15 @@ not, gives the identical answer.
 changes the same object — [`exact`](../taxonomy.md#exact)
 :   [`flash`](flash.md), [`lowprec`](lowprec.md), [`softmax`](softmax.md) &nbsp;·&nbsp; [browse the bank, exact only](index.md?category=exact)
 
-Both lists are `ab.available(...)` with `splitk` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `splitk` selected](index.md?compare=splitk) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `splitk` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `splitk` selected](index.md?compare=splitk) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *Flash-Decoding for long-context inference.*<br><span class="attn-cite" data-bibkey="dao2023flash"><code>dao2023flash</code></span>
-- *Lean Attention: Hardware-Aware Scalable Attention Mechanism for the Decode-Phase of Transformers.*<br><span class="attn-cite" data-bibkey="sanovar2024lean"><code>sanovar2024lean</code></span>
-- *Tree Attention: Topology-aware Decoding for Long-Context Attention on GPU clusters.*<br><span class="attn-cite" data-bibkey="shyam2024tree"><code>shyam2024tree</code></span>
+- **Dao et al. (2023).** *Flash-Decoding for long-context inference.* Stanford CRFM blog, \urlhttps://crfm.stanford.edu/2023/10/12/flashdecoding.html.<br><span class="attn-cite" data-bibkey="dao2023flash"><code>dao2023flash</code></span>
+- **Sanovar et al. (2024).** *Lean Attention: Hardware-Aware Scalable Attention Mechanism for the Decode-Phase of Transformers.* [arXiv:2405.10480](https://arxiv.org/abs/2405.10480)<br><span class="attn-cite" data-bibkey="sanovar2024lean"><code>sanovar2024lean</code></span>
+- **Shyam et al. (2024).** *Tree Attention: Topology-aware Decoding for Long-Context Attention on GPU clusters.* [arXiv:2408.04093](https://arxiv.org/abs/2408.04093)<br><span class="attn-cite" data-bibkey="shyam2024tree"><code>shyam2024tree</code></span>
 
 </div>
 
@@ -185,15 +174,25 @@ Both lists are `ab.available(...)` with `splitk` removed — the two axes the re
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="dao2023flash">
 <pre class="attn-bib__src"><code>@misc{dao2023flash,
-  title={Flash-Decoding for long-context inference}</code></pre>
+  title={Flash-Decoding for long-context inference},
+  author={Dao, Tri and Haziza, Daniel and Massa, Francisco and Sizov, Grigory},
+  year={2023}, howpublished={Stanford CRFM blog, \url{https://crfm.stanford.edu/2023/10/12/flashdecoding.html}},
+  note={Accessed October 2026}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="sanovar2024lean">
 <pre class="attn-bib__src"><code>@misc{sanovar2024lean,
-  title={Lean Attention: Hardware-Aware Scalable Attention Mechanism for the Decode-Phase of Transformers}</code></pre>
+  title={Lean Attention: Hardware-Aware Scalable Attention Mechanism for the Decode-Phase of Transformers},
+  author={Sanovar, Rya and Bharadwaj, Srikant and St. Amant, Renee and R{\&quot;u}hle, Victor and Rajmohan, Saravan},
+  year={2024}, eprint={2405.10480}, archivePrefix={arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="shyam2024tree">
 <pre class="attn-bib__src"><code>@misc{shyam2024tree,
-  title={Tree Attention: Topology-aware Decoding for Long-Context Attention on {GPU} clusters}</code></pre>
+  title={Tree Attention: Topology-aware Decoding for Long-Context Attention on {GPU} clusters},
+  author={Shyam, Vasudev and Pilault, Jonathan and Shepperd, Emily and Anthony, Quentin and Millidge, Beren},
+  year={2024}, eprint={2408.04093}, archivePrefix={arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

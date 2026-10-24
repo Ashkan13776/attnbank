@@ -33,17 +33,17 @@ It pursues **acceleration**: the operator is the reference operator, exact up to
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -53,17 +53,19 @@ This method is **exact as built**: the conformance suite instantiates it at its 
 
 ## Cost model
 
-Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ and `bytes_per_el=2`, against the reference operator at the same shape:
+Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ and `bytes_per_el=2` — and this *is* the reference operator, so these are the counts every other page in the bank divides by:
 
 <div class="attn-tab" markdown="1">
 
-| quantity | this method | `softmax` | ratio |
-|---|---:|---:|---:|
-| `flops` | 268,435,456 | 268,435,456 | 1× |
-| `state_bytes` | 262,144 | 262,144 | 1× |
-| `bytes_moved` | 4,718,592 | 4,718,592 | 1× |
+| quantity | count |
+|---|---:|
+| `flops` | 268,435,456 |
+| `state_bytes` | 262,144 |
+| `bytes_moved` | 4,718,592 |
 
 </div>
+
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
 
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
@@ -73,19 +75,14 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + n * (d + dv) + m * dv + 2 * m * n) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
 
 <div class="attn-tab" markdown="1">
 
 | backend | what it is |
 |---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-| `sdpa` | `torch.nn.functional.scaled_dot_product_attention` -- on CUDA, FlashAttention-2 or the memory-efficient kernel |
+| `reference` | plain PyTorch — the correctness anchor and the default |
+| `sdpa` | `torch.nn.functional.scaled_dot_product_attention` — on CUDA, FlashAttention-2 or the memory-efficient kernel |
 | `flash_attn` | the `flash-attn` package (CUDA, fp16/bf16) |
 
 </div>
@@ -105,9 +102,7 @@ Each non-`reference` entry is a claim that the path is **equal** to the referenc
 `sdpa_kernel`: pin the SDPA sub-backend (`flash` / `mem_efficient` /
 `math`) instead of letting torch choose. Ignored by other backends.
 
-```python
-ab.describe("softmax")     # the same keys, with everything else it declares
-```
+`ab.describe("softmax")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -149,7 +144,7 @@ max |y - y_softmax|: 0.0
 
 pi_q(j) = exp(beta <q, k_j>) / sum_i exp(beta <q, k_i>),   beta = 1/sqrt(d)
 
-Everything in the library is compared against this.  Section `sec:found`.
+Everything in the library is compared against this.  Section <span class="attn-ref">sec:found</span>.
 
 </div>
 
@@ -158,13 +153,13 @@ Everything in the library is compared against this.  Section `sec:found`.
 changes the same object — [`exact`](../taxonomy.md#exact)
 :   [`flash`](flash.md), [`lowprec`](lowprec.md), [`splitk`](splitk.md) &nbsp;·&nbsp; [browse the bank, exact only](index.md?category=exact)
 
-Both lists are `ab.available(...)` with `softmax` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `softmax` selected](index.md?compare=softmax) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `softmax` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `softmax` selected](index.md?compare=softmax) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *Attention Is All You Need.*<br><span class="attn-cite" data-bibkey="vaswani2017attention"><code>vaswani2017attention</code></span>
+- **Vaswani et al. (2017).** *Attention Is All You Need.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:1706.03762](https://arxiv.org/abs/1706.03762)<br><span class="attn-cite" data-bibkey="vaswani2017attention"><code>vaswani2017attention</code></span>
 
 </div>
 
@@ -173,7 +168,12 @@ Both lists are `ab.available(...)` with `softmax` removed — the two axes the r
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="vaswani2017attention">
 <pre class="attn-bib__src"><code>@inproceedings{vaswani2017attention,
-  title={Attention Is All You Need}</code></pre>
+  title={Attention Is All You Need},
+  author={Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, {\L}ukasz and Polosukhin, Illia},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2017},
+  eprint={1706.03762}, archivePrefix={arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

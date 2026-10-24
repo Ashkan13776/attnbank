@@ -33,17 +33,17 @@ It pursues **approximation**: it is trying to be dense softmax, so it is fair to
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -70,6 +70,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -81,24 +83,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": m * (d + dv) * bytes_per_el + state}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** It returns both the exact and the perturbed score matrices (`s`, `s_hat`) in `extras` — the perturbation *is* the object of study, and a fused kernel hands back neither.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `delta_k`, `delta_v`, `s`, `s_hat`.
 
@@ -115,9 +104,7 @@ Diagnostics returned in `extras`: `delta_k`, `delta_v`, `s`, `s_hat`.
 
 </div>
 
-```python
-ab.describe("quantkv")     # the same keys, with everything else it declares
-```
+`ab.describe("quantkv")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -159,7 +146,9 @@ invariant W: 0.0
 
 <div class="attn-notation" markdown="1">
 
-`sec:compress-quant` and `prop:compress-sensitivity`.  Keys and values stay on the
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:compress-quant</code> and <code>prop:compress-sensitivity</code></p>
+
+Keys and values stay on the
 same domain; only their representation changes, so
 
 ```text
@@ -171,7 +160,7 @@ with `lo, hi` the min and max over a *group*.  The key error enters as a log-wei
 perturbation `delta_l_j = beta <q, delta k_j>` — an exponential tilt of `pi_q` —
 and is amplified by `e^{osc(delta_l)} - 1` and by `||q||`; the value error enters
 linearly and is attention-weighted.  That asymmetry is the content of
-`prop:compress-sensitivity` and of `eq:error-joint`, and is what study S4 measures.
+<span class="attn-ref">prop:compress-sensitivity</span> and of <span class="attn-ref">eq:error-joint</span>, and is what study S4 measures.
 
 Grouping.  `axis='token'` shares a scale among `group` channels of one token (KIVI's
 value grouping); `axis='channel'` shares it among `group` tokens of one channel
@@ -196,18 +185,18 @@ shared with `lowprec`; this file is only the decision to apply it to the *cache*
 changes the same object — [`compress`](../taxonomy.md#compress)
 :   [`atom`](atom.md), [`evict_adakv`](evict_adakv.md), [`evict_h2o`](evict_h2o.md), [`evict_pyramidkv`](evict_pyramidkv.md), [`evict_snapkv`](evict_snapkv.md), [`evict_tova`](evict_tova.md), [`gqa`](gqa.md), [`kivi`](kivi.md), [`kvquant`](kvquant.md), [`linformer`](linformer.md), [`lowrank_kv`](lowrank_kv.md), [`merge_cam`](merge_cam.md), [`merge_kv`](merge_kv.md), [`merge_tome`](merge_tome.md), [`mla`](mla.md), [`qjl`](qjl.md), [`zipcache`](zipcache.md) &nbsp;·&nbsp; [browse the bank, compress only](index.md?category=compress)
 
-judged the same way — `approximate`, beyond the ones above
-:   [`abc`](abc.md), [`based`](based.md), [`bigbird`](bigbird.md), [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`favorpp`](favorpp.md), [`favorsharp`](favorsharp.md), [`hedgehog`](hedgehog.md), [`hyperattention`](hyperattention.md), [`longformer`](longformer.md), [`lowprec`](lowprec.md), [`lowrank_logit`](lowrank_logit.md) *(oracle)*, [`lsh_sample`](lsh_sample.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`oval`](oval.md), [`page_pca`](page_pca.md), [`performer`](performer.md), [`polysketch`](polysketch.md), [`reformer`](reformer.md), [`routing`](routing.md), [`shifted_window`](shifted_window.md), [`sink_window`](sink_window.md), [`skyformer`](skyformer.md), [`strided`](strided.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+judged the same way — `approximate`
+:   30 further methods besides these declare `objective = approximate`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
 
-Both lists are `ab.available(...)` with `quantkv` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `quantkv` selected](index.md?compare=quantkv) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `quantkv` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `quantkv` selected](index.md?compare=quantkv) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache.*<br><span class="attn-cite" data-bibkey="liu2024kivi"><code>liu2024kivi</code></span>
-- *KVQuant: Towards 10 Million Context Length LLM Inference with KV Cache Quantization.*<br><span class="attn-cite" data-bibkey="hooper2024kvquant"><code>hooper2024kvquant</code></span>
-- *IntactKV: Improving Large Language Model Quantization by Keeping Pivot Tokens Intact.*<br><span class="attn-cite" data-bibkey="liu2024intactkv"><code>liu2024intactkv</code></span>
+- **Liu et al. (2024).** *KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2402.02750](https://arxiv.org/abs/2402.02750)<br><span class="attn-cite" data-bibkey="liu2024kivi"><code>liu2024kivi</code></span>
+- **Hooper et al. (2024).** *KVQuant: Towards 10 Million Context Length LLM Inference with KV Cache Quantization.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2401.18079](https://arxiv.org/abs/2401.18079)<br><span class="attn-cite" data-bibkey="hooper2024kvquant"><code>hooper2024kvquant</code></span>
+- **Liu et al. (2024).** *IntactKV: Improving Large Language Model Quantization by Keeping Pivot Tokens Intact.* Findings of the Association for Computational Linguistics: ACL 2024. [arXiv:2403.01241](https://arxiv.org/abs/2403.01241)<br><span class="attn-cite" data-bibkey="liu2024intactkv"><code>liu2024intactkv</code></span>
 
 </div>
 
@@ -216,15 +205,36 @@ Both lists are `ab.available(...)` with `quantkv` removed — the two axes the r
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="liu2024kivi">
 <pre class="attn-bib__src"><code>@inproceedings{liu2024kivi,
-  title     = {{KIVI}: A Tuning-Free Asymmetric 2bit Quantization for {KV} Cache}</code></pre>
+  title     = {{KIVI}: A Tuning-Free Asymmetric 2bit Quantization for {KV} Cache},
+  author    = {Liu, Zirui and Yuan, Jiayi and Jin, Hongye and Zhong, Shaochen and Xu, Zhaozhuo and Braverman, Vladimir and Chen, Beidi and Hu, Xia},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {235},
+  year      = {2024},
+  eprint    = {2402.02750},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="hooper2024kvquant">
 <pre class="attn-bib__src"><code>@inproceedings{hooper2024kvquant,
-  title     = {{KVQuant}: Towards 10 Million Context Length {LLM} Inference with {KV} Cache Quantization}</code></pre>
+  title     = {{KVQuant}: Towards 10 Million Context Length {LLM} Inference with {KV} Cache Quantization},
+  author    = {Hooper, Coleman and Kim, Sehoon and Mohammadzadeh, Hiva and Mahoney, Michael W. and Shao, Yakun Sophia and Keutzer, Kurt and Gholami, Amir},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {37},
+  year      = {2024},
+  eprint    = {2401.18079},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="liu2024intactkv">
 <pre class="attn-bib__src"><code>@inproceedings{liu2024intactkv,
-  title = {{IntactKV: Improving Large Language Model Quantization by Keeping Pivot Tokens Intact}}</code></pre>
+  title = {{IntactKV: Improving Large Language Model Quantization by Keeping Pivot Tokens Intact}},
+  author = {Ruikang Liu and Haoli Bai and Haokun Lin and Yuening Li and Han Gao and Zhengzhuo Xu and Lu Hou and Jun Yao and Chun Yuan},
+  year = {2024},
+  booktitle = {Findings of the Association for Computational Linguistics: ACL 2024},
+  eprint = {2403.01241},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

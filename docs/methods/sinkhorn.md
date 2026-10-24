@@ -33,17 +33,17 @@ It pursues **modification**: it defines a *different* operator. Asking how close
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **no** | `causal=True` raises `CausalNotSupportedError` — a statement about the operator, not a missing feature. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="no">no</span> | `causal=True` raises `CausalNotSupportedError` — a statement about the operator, not a missing feature. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -70,6 +70,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -80,24 +82,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
                             + 2 * self.n_iter * m * n) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** A fixed-point iteration over the whole matrix is not a kernel call, and the normalisation it computes is not per-query.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `col_marginal`, `f`, `g`, `gamma`, `marginal_error`, `n_iter`, `potential`, `row_marginal`, `target_col`, `target_row`.
 
@@ -115,9 +104,7 @@ Diagnostics returned in `extras`: `col_marginal`, `f`, `g`, `gamma`, `marginal_e
 `n_iter`: Sinkhorn iterations (0 = softmax exactly).
 `eps`: entropic regularization, applied as a temperature on the scaled logits.
 
-```python
-ab.describe("sinkhorn")     # the same keys, with everything else it declares
-```
+`ab.describe("sinkhorn")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -160,10 +147,12 @@ extras: ['col_marginal', 'f', 'g', 'gamma', 'marginal_error', 'n_iter', 'potenti
 
 <div class="attn-notation" markdown="1">
 
-`sec:ot-eot`.  Softmax attention is *semi-relaxed* entropic OT: it minimizes
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:ot-eot</code></p>
+
+Softmax attention is *semi-relaxed* entropic OT: it minimizes
 `int c dgamma + eps KL(gamma || nu x mubar)` subject to the **row** marginal only
-(`prop:ot-gibbs`).  Adding the column constraint gives entropic OT, and the central
-structural fact (`prop:ot-conditional`) is that its conditionals are still softmax —
+(<span class="attn-ref">prop:ot-gibbs</span>).  Adding the column constraint gives entropic OT, and the central
+structural fact (<span class="attn-ref">prop:ot-conditional</span>) is that its conditionals are still softmax —
 tilted by a *query-independent key potential*:
 
 ```text
@@ -176,13 +165,13 @@ softmax and positive on under-subscribed ones.  `extras["potential"]` returns th
 quantity `psi` in the form in which the identity can be checked directly,
 `pi_hat = softmax_j(s_ij / eps + potential_j)`, which is what study S7 does.
 
-Sinkhorn's algorithm alternates the two identities of `prop:ot-conditional` (b) in
-log domain (`eq:ot-sinkhorn`): a row log-sum-exp (a softmax normalizer) followed by a
+Sinkhorn's algorithm alternates the two identities of <span class="attn-ref">prop:ot-conditional</span> (b) in
+log domain (<span class="attn-ref">eq:ot-sinkhorn</span>): a row log-sum-exp (a softmax normalizer) followed by a
 column log-sum-exp.  **One step from `psi = 0`, stopped after the row update, is
 exactly softmax attention** — so `n_iter = 0` is the exact limit, and the whole
 operator family is a continuation of softmax in the number of iterations.
 
-Not causal, and not by omission: `prop:ot-causal` shows that a lower-triangular
+Not causal, and not by omission: <span class="attn-ref">prop:ot-causal</span> shows that a lower-triangular
 matrix with equal row and column sums *is diagonal*.  Causal attention with uniform
 marginals is the identity, every token attending only to itself.  A non-uniform column
 marginal satisfying `sum_{j>=t} b_j <= sum_{i>=t} a_i` is the way out, and is not
@@ -195,19 +184,19 @@ implemented here.
 changes the same object — [`coupling`](../taxonomy.md#coupling)
 :   [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`espformer`](espformer.md), [`lowrank_ot`](lowrank_ot.md), [`otke`](otke.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, coupling only](index.md?category=coupling)
 
-judged the same way — `modify`, beyond the ones above
-:   [`cosformer`](cosformer.md), [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`gla`](gla.md), [`gqa`](gqa.md), [`hgrn2`](hgrn2.md), [`hyena`](hyena.md), [`isab`](isab.md), [`latent_stochastic`](latent_stochastic.md), [`latte`](latte.md), [`linear_elu`](linear_elu.md), [`linear_rnn`](linear_rnn.md), [`lru`](lru.md), [`mega`](mega.md), [`mla`](mla.md), [`mlstm`](mlstm.md), [`perceiver`](perceiver.md), [`polaformer`](polaformer.md), [`rebased`](rebased.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+judged the same way — `modify`
+:   23 further methods besides these declare `objective = modify`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
-Both lists are `ab.available(...)` with `sinkhorn` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `sinkhorn` selected](index.md?compare=sinkhorn) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `sinkhorn` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `sinkhorn` selected](index.md?compare=sinkhorn) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *Sinkhorn Distances: Lightspeed Computation of Optimal Transportation Distances.*<br><span class="attn-cite" data-bibkey="cuturi2013sinkhorn"><code>cuturi2013sinkhorn</code></span>
-- *A relationship between arbitrary positive matrices and doubly stochastic matrices.*<br><span class="attn-cite" data-bibkey="sinkhorn1964relationship"><code>sinkhorn1964relationship</code></span>
-- *Sinkformers: Transformers with Doubly Stochastic Attention.*<br><span class="attn-cite" data-bibkey="sander2022sinkformers"><code>sander2022sinkformers</code></span>
-- *Computational Optimal Transport.*<br><span class="attn-cite" data-bibkey="peyre2019computational"><code>peyre2019computational</code></span>
+- **Cuturi (2013).** *Sinkhorn Distances: Lightspeed Computation of Optimal Transportation Distances.* Advances in Neural Information Processing Systems 26 (NIPS). [arXiv:1306.0895](https://arxiv.org/abs/1306.0895)<br><span class="attn-cite" data-bibkey="cuturi2013sinkhorn"><code>cuturi2013sinkhorn</code></span>
+- **Sinkhorn (1964).** *A relationship between arbitrary positive matrices and doubly stochastic matrices.* The Annals of Mathematical Statistics.<br><span class="attn-cite" data-bibkey="sinkhorn1964relationship"><code>sinkhorn1964relationship</code></span>
+- **Sander et al. (2022).** *Sinkformers: Transformers with Doubly Stochastic Attention.* Proceedings of the 25th International Conference on Artificial Intelligence and Statistics (AISTATS). [arXiv:2110.11773](https://arxiv.org/abs/2110.11773)<br><span class="attn-cite" data-bibkey="sander2022sinkformers"><code>sander2022sinkformers</code></span>
+- **Peyre and Cuturi (2019).** *Computational Optimal Transport.* Foundations and Trends in Machine Learning. [arXiv:1803.00567](https://arxiv.org/abs/1803.00567)<br><span class="attn-cite" data-bibkey="peyre2019computational"><code>peyre2019computational</code></span>
 
 </div>
 
@@ -216,19 +205,32 @@ Both lists are `ab.available(...)` with `sinkhorn` removed — the two axes the 
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="cuturi2013sinkhorn">
 <pre class="attn-bib__src"><code>@inproceedings{cuturi2013sinkhorn,
-  title={Sinkhorn Distances: Lightspeed Computation of Optimal Transportation Distances}</code></pre>
+  title={Sinkhorn Distances: Lightspeed Computation of Optimal Transportation Distances},
+  author={Cuturi, Marco}, booktitle={Advances in Neural Information Processing Systems 26 (NIPS)}, pages={2292--2300}, year={2013},
+  eprint={1306.0895}, archivePrefix={arXiv}}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="sinkhorn1964relationship">
 <pre class="attn-bib__src"><code>@article{sinkhorn1964relationship,
-  title={A relationship between arbitrary positive matrices and doubly stochastic matrices}</code></pre>
+  title={A relationship between arbitrary positive matrices and doubly stochastic matrices},
+  author={Sinkhorn, Richard}, journal={The Annals of Mathematical Statistics}, volume={35}, pages={876--879}, year={1964}}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="sander2022sinkformers">
 <pre class="attn-bib__src"><code>@inproceedings{sander2022sinkformers,
-  title         = {Sinkformers: Transformers with Doubly Stochastic Attention}</code></pre>
+  title         = {Sinkformers: Transformers with Doubly Stochastic Attention},
+  author        = {Sander, Michael E. and Ablin, Pierre and Blondel, Mathieu and Peyr{\'e}, Gabriel},
+  booktitle     = {Proceedings of the 25th International Conference on Artificial Intelligence and Statistics (AISTATS)},
+  series        = {PMLR},
+  volume        = {151},
+  year          = {2022},
+  eprint        = {2110.11773},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="peyre2019computational">
 <pre class="attn-bib__src"><code>@article{peyre2019computational,
-  title={Computational Optimal Transport}</code></pre>
+  title={Computational Optimal Transport}, author={Peyr{\'e}, Gabriel and Cuturi, Marco},
+  journal={Foundations and Trends in Machine Learning}, volume={11}, number={5-6}, pages={355--607}, year={2019},
+  eprint={1803.00567}, archivePrefix={arXiv}}</code></pre>
 </div>
 </div>
 </details>

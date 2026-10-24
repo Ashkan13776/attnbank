@@ -106,9 +106,13 @@ CATEGORY_KERNEL = {
                  "program from a masked softmax.",
 }
 
+#: Each of these is read twice: as a table cell on the four methods that declare more
+#: than one backend, and as a clause ("`reference` is ...") on the seventy-four that
+#: declare only the first. They are punctuated to work in both, which is why the
+#: dashes are set rather than left as the ``--`` these would be in a docstring.
 BACKEND_WHAT = {
-    "reference": "plain PyTorch; the correctness anchor and the default",
-    "sdpa": "`torch.nn.functional.scaled_dot_product_attention` -- on CUDA, "
+    "reference": "plain PyTorch — the correctness anchor and the default",
+    "sdpa": "`torch.nn.functional.scaled_dot_product_attention` — on CUDA, "
             "FlashAttention-2 or the memory-efficient kernel",
     "flash_attn": "the `flash-attn` package (CUDA, fp16/bf16)",
 }
@@ -542,16 +546,24 @@ def cost_block(name: str) -> list[str]:
     here = ab.build(name).cost(**COST_SHAPE)
     ref = ab.build("softmax").cost(**COST_SHAPE)
     shape = ", ".join(f"${key} = {val}$" for key, val in COST_SHAPE.items())
-    rows = ["| quantity | this method | `softmax` | ratio |", "|---|---:|---:|---:|"]
+    # `softmax` is the reference operator, so on its own page the comparison is the
+    # method against itself: two identical columns and a column of 1×. The counts
+    # are still worth stating -- they are what every other page divides by.
+    against = name != "softmax"
+    rows = (["| quantity | this method | `softmax` | ratio |", "|---|---:|---:|---:|"]
+            if against else ["| quantity | count |", "|---|---:|"])
     for key in ("flops", "state_bytes", "bytes_moved"):
         if key not in here:
             continue
         a, b = float(here[key]), float(ref.get(key, 0.0))
         ratio = f"{a / b:.3g}×" if b else "—"
-        rows.append(f"| `{key}` | {a:,.0f} | {b:,.0f} | {ratio} |")
+        rows.append(f"| `{key}` | {a:,.0f} | {b:,.0f} | {ratio} |" if against
+                    else f"| `{key}` | {a:,.0f} |")
     return [
-        f"Analytic, per `(batch, head)`. At {shape} and `bytes_per_el=2`, against the "
-        "reference operator at the same shape:",
+        f"Analytic, per `(batch, head)`. At {shape} and `bytes_per_el=2`"
+        + (", against the reference operator at the same shape:" if against else
+           " — and this *is* the reference operator, so these are the counts every "
+           "other page in the bank divides by:"),
         "",
         '<div class="attn-tab" markdown="1">',
         "",
@@ -559,17 +571,21 @@ def cost_block(name: str) -> list[str]:
         "",
         "</div>",
         "",
+        # The caveat sits against the numbers it qualifies rather than at the foot of
+        # the section, and as a caption rather than an admonition: a filled card is
+        # the loudest object this page would own, and what it carries is a footnote.
+        '<p class="attn-caveat" markdown="span">Counted operations and resident '
+        "bytes, not measured time — a cost model is not a benchmark. These are what "
+        "the monograph's capacity arguments are made of; "
+        "`examples/08_cost_and_capacity.py` walks the comparison through "
+        "properly.</p>",
+        "",
         "The numbers are the method's own `cost()`, evaluated — the declaration, not "
         "a measurement:",
         "",
         "```python",
         src,
         "```",
-        "",
-        '!!! note "A cost model is not a benchmark"',
-        "    These are counted operations and resident bytes, not measured time.",
-        "    They are what the monograph's capacity arguments are made of;",
-        "    `examples/08_cost_and_capacity.py` walks through the comparison properly.",
     ]
 
 
@@ -607,10 +623,19 @@ def bibtex_block(keys, bib: dict) -> list[str]:
 def related_block(name: str, oracles: tuple) -> list[str]:
     """Methods related to this one, by the two axes the registry actually has.
 
-    Same `category` is *changes the same object*; same `objective` is *judged the same
-    way*. Both lists are `ab.available(...)` with this method removed, so there is no
+    Same `category` is *changes the same object*, and that is the list worth naming:
+    between three and seventeen methods, every one of them a genuine neighbour.
+
+    Same `objective` is *judged the same way*, and naming those was a mistake. It runs
+    to between sixteen and forty-five methods on seventy-five of the seventy-eight
+    pages -- over half the bank, listed as "related" because it is scored the same
+    way. The count and a filtered link say the same thing and are readable; the wall
+    of links said it in a way nobody could use. No links are lost by this: the nav
+    lists all seventy-eight on every page, and so does the browser.
+
+    Both facts are `ab.available(...)` with this method removed, so there is no
     hand-written "see also" to go stale -- and no third axis, because the registry does
-    not have one. A method in both lists is named once, under the category: the
+    not have one. A method in both sets is named once, under the category: the
     stronger relation of the two.
     """
     cls = ab.get_class(name)
@@ -637,15 +662,18 @@ def related_block(name: str, oracles: tuple) -> list[str]:
             "",
         ]
     if same_obj:
-        beyond = ", beyond the ones above" if same_cat else ""
+        beyond = " besides these" if same_cat else ""
         out += [
-            f"judged the same way — `{obj}`{beyond}",
-            f":   {links(same_obj)}"
-            f" &nbsp;·&nbsp; [browse the bank, {obj} only](index.md?objective={obj})",
+            "judged the same way — "
+            f"`{obj}`",
+            f":   {len(same_obj)} further methods{beyond} declare "
+            f"`objective = {obj}`, which is how they are scored rather than what they "
+            f"do &nbsp;·&nbsp; "
+            f"[browse the bank, {obj} only](index.md?objective={obj})",
             "",
         ]
     out += [
-        "Both lists are `ab.available(...)` with "
+        "Both come from `ab.available(...)` with "
         f"`{name}` removed — the two axes the registry declares, nothing hand-picked. "
         f"[Open the browser with `{name}` selected](index.md?compare={name}) to set it "
         "beside up to three of them; the rows they agree on fold away.",
@@ -660,6 +688,77 @@ def related_block(name: str, oracles: tuple) -> list[str]:
 
 def flag(value: bool) -> str:
     return "yes" if value else "no"
+
+
+#: A monograph cross-reference as the docstrings write them: ``sec:kernel-rf``,
+#: ``prop:error-additive``, ``eq:kernel-pos-var``. These are pointers into the paper,
+#: not code, and the eight prefixes below are the ones the 78 docstrings actually use.
+_LABEL = r"(?:sec|eq|prop|thm|lem|cor|def|rem|fig|tab|alg|ex|app):[A-Za-z0-9_.:-]+"
+_INLINE_LABEL = re.compile(rf"`({_LABEL})`")
+
+#: The citation line a docstring body opens with: a run made of nothing but monograph
+#: labels, the subsection titles that qualify them, commas and ``and``, closed by a
+#: full stop. The whitelist is what keeps it from eating prose -- any other word ends
+#: the match, so ``sec:sparse-query ("Blocks and pages"), alongside blocktopk.`` is
+#: left where it stands, because "alongside blocktopk" is an argument and not a
+#: pointer.
+_LEAD_LABELS = re.compile(
+    rf"""\A( `{_LABEL}`
+             (?: \s+ | \s*,\s* | \s+and\s+ | `{_LABEL}`
+               | \([^()]*\) | "[^"]*" )*
+           ) \.(?=\s)\s*""", re.X | re.S)
+
+
+def _split_monograph_labels(body: str) -> tuple[str, str]:
+    """Lift the source line the docstring body opens with out of the prose.
+
+    Seventy-two of the seventy-eight bodies begin with one — ``sec:kernel-rf.``,
+    ``sec:ot, "Doubly stochastic attention in transformers".`` — naming the part of
+    the monograph the passage is written against. Read as the opening words of a
+    sentence it is a dangling fragment (*"sec:kernel-rf. With qt = q / d^{1/4} …"*);
+    read as the section's source line it is exactly the provenance a reader wants.
+
+    Returns ``(lead, rest)`` with the lead as HTML, its labels in code and everything
+    else — the subsection titles in quotes, the parentheticals — verbatim. Nothing is
+    dropped and nothing is reworded; the text is the same text, one line higher up.
+    """
+    match = _LEAD_LABELS.match(body)
+    if not match:
+        return "", body
+    lead = "".join(
+        f"<code>{hit.group(1)}</code>" if (hit := _INLINE_LABEL.fullmatch(part))
+        else _escape(part)
+        for part in re.split(rf"(`{_LABEL}`)", match.group(1)) if part)
+    return " ".join(lead.split()), body[match.end():]
+
+
+def _quiet_labels(text: str) -> str:
+    """Set the remaining monograph cross-references as apparatus, not as code spans.
+
+    There are 247 of them across the 78 docstrings, and `prop:error-additive` in a
+    code chip reads as something you could type into Python. It is a pointer into the
+    paper. Fenced blocks are skipped -- inside a display, a label is part of the
+    display.
+    """
+    out, fenced = [], False
+    for line in text.split("\n"):
+        if line.lstrip().startswith("```"):
+            fenced = not fenced
+        out.append(line if fenced else
+                   _INLINE_LABEL.sub(r'<span class="attn-ref">\1</span>', line))
+    return "\n".join(out)
+
+
+def _declared(value: bool) -> str:
+    """The declared column of the declaration table: the word, plus a tick to scan.
+
+    Both states are full-strength ink. ``no`` is not a missing feature on these
+    pages -- ``supports_causal = False`` is a statement about the operator, and a
+    greyed-out ``no`` would read as a gap where the registry made a claim. The
+    stylesheet draws a filled mark for one and a hollow one for the other, so the
+    middle column can be read down in one pass without reading five words.
+    """
+    return (f'<span class="attn-flag" data-v="{flag(value)}">{flag(value)}</span>')
 
 
 def page(name: str, bib: dict, oracles: tuple) -> str:
@@ -736,34 +835,35 @@ def page(name: str, bib: dict, oracles: tuple) -> str:
     out += [
         "## What it declares",
         "",
-        "Each row is a commitment the conformance suite tests, not a description.",
+        "Each row is a commitment the [conformance suite](../conformance.md) tests, "
+        "not a description.",
         "",
         '<div class="attn-decl" markdown="1">',
         "",
         "| attribute | declared | what that commits it to |",
         "|---|---|---|",
-        f"| `supports_causal` | **{flag(cls.supports_causal)}** | "
+        f"| `supports_causal` | {_declared(cls.supports_causal)} | "
         + ("`causal=True` masks so query $i$ sees keys $0 \\dots i + (n-m)$."
            if cls.supports_causal else
            "`causal=True` raises `CausalNotSupportedError` — a statement about the "
            "operator, not a missing feature.") + " |",
-        f"| `expresses_weights` | **{flag(cls.expresses_weights)}** | "
+        f"| `expresses_weights` | {_declared(cls.expresses_weights)} | "
         + ("it can name $\\widehat\\pi_q$ on the **original** $n$ positions, so it "
            "enters the error decomposition."
            if cls.expresses_weights else
            "it cannot name $\\widehat\\pi_q$ on the original positions and is excluded "
            "from the error decomposition by declaration.") + " |",
-        f"| `row_stochastic` | **{flag(cls.row_stochastic)}** | "
+        f"| `row_stochastic` | {_declared(cls.row_stochastic)} | "
         + ("those weights are $\\ge 0$ and sum to one: $\\widehat\\pi_q$ is a "
            "probability measure."
            if cls.row_stochastic else
            "the weights are **not** a probability measure — signed, or not summing to "
            "one — so the output can leave the convex hull of the values.") + " |",
-        f"| `head_independent` | **{flag(cls.head_independent)}** | "
+        f"| `head_independent` | {_declared(cls.head_independent)} | "
         + ("each head is computed from its own $K, V$."
            if cls.head_independent else
            "it shares $K$/$V$ across query heads, so heads are not independent.") + " |",
-        f"| `trainable` | **{flag(cls.trainable)}** | "
+        f"| `trainable` | {_declared(cls.trainable)} | "
         + ("it has learned parameters; the reference implementation initialises them "
            "from a seed, so the numbers here are an untrained operator."
            if cls.trainable else
@@ -788,22 +888,27 @@ def page(name: str, bib: dict, oracles: tuple) -> str:
     ]
 
     declared = list(info.backends)
-    out += ['<div class="attn-tab" markdown="1">', "",
-            "| backend | what it is |", "|---|---|"]
-    out += [f"| `{b}` | {BACKEND_WHAT.get(b, b)} |" for b in declared]
-    out += ["", "</div>", ""]
     if declared == ["reference"]:
+        # Seventy-four of the seventy-eight declare this and nothing else. A table
+        # with one row in it is a table pretending to be a comparison; the single
+        # fact it carries is a clause, and the interesting half of this section is
+        # the reason underneath it.
         why = backend_reason(name, extras)
         out += [
             "**`reference` only, and that is the correct answer.** "
             + why[0].upper() + why[1:],
             "",
-            "Declaring a backend is a claim that it equals the reference, checked by "
+            f"`reference` is {BACKEND_WHAT['reference']}. Declaring a second backend "
+            "is a claim that it equals the first, checked by "
             "`tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` "
             "here would be pretending. See [Backends](../backends.md).",
             "",
         ]
     else:
+        out += ['<div class="attn-tab" markdown="1">', "",
+                "| backend | what it is |", "|---|---|"]
+        out += [f"| `{b}` | {BACKEND_WHAT.get(b, b)} |" for b in declared]
+        out += ["", "</div>", ""]
         out += [
             "Each non-`reference` entry is a claim that the path is **equal** to the "
             "reference, and `tests/test_conformance.py::test_backend_equivalence` "
@@ -836,9 +941,10 @@ def page(name: str, bib: dict, oracles: tuple) -> str:
         out += ["This method takes no configuration of its own — only the base class's "
                 "`scale` and `backend`.", ""]
     out += [
-        "```python",
-        f'ab.describe("{name}")     # the same keys, with everything else it declares',
-        "```",
+        # A one-line fence carries a code well and a copy button for a call the
+        # nameplate has already shown the shape of; as a clause it costs one line.
+        f'`ab.describe("{name}")` returns the same keys alongside everything else '
+        "this page states.",
         "",
         "## Run it",
         "",
@@ -852,9 +958,14 @@ def page(name: str, bib: dict, oracles: tuple) -> str:
             "</div>", ""]
 
     if body:
+        lead, body = _split_monograph_labels(body)
         out += ["## In the paper's notation", "",
-                '<div class="attn-notation" markdown="1">', "",
-                body, "",
+                '<div class="attn-notation" markdown="1">', ""]
+        if lead:
+            out += ['<p class="attn-notation__sec">'
+                    '<span class="attn-notation__from">monograph</span> '
+                    + lead + "</p>", ""]
+        out += [_quiet_labels(body), "",
                 "</div>", ""]
 
     out += related_block(name, oracles)

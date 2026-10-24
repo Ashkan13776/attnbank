@@ -33,17 +33,17 @@ It pursues **modification**: it defines a *different* operator. Asking how close
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **yes** | it has learned parameters; the reference implementation initialises them from a seed, so the numbers here are an untrained operator. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="yes">yes</span> | it has learned parameters; the reference implementation initialises them from a seed, so the numbers here are an untrained operator. |
 
 </div>
 
@@ -65,6 +65,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -76,24 +78,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + n * (d + dv) + m * dv) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** A scan over positions with a fixed-size state is a different program from a masked softmax.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `chunk`, `ema`, `ndim`, `support_size`.
 
@@ -116,9 +105,7 @@ Diagnostics returned in `extras`: `chunk`, `ema`, `ndim`, `support_size`.
 feature, Mega's `h` — and `ema=False` removes the moving average, leaving
 the chunked attention alone.
 
-```python
-ab.describe("mega")     # the same keys, with everything else it declares
-```
+`ab.describe("mega")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -161,7 +148,9 @@ extras: ['chunk', 'ema', 'ndim', 'support_size']
 
 <div class="attn-notation" markdown="1">
 
-`sec:memory-state`, `sec:sparse`.  Mega keeps softmax attention but puts a
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:memory-state</code>, <code>sec:sparse</code></p>
+
+Mega keeps softmax attention but puts a
 recurrence in front of it.  A multi-dimensional damped exponential moving average
 smooths the sequence before the queries and keys are read off it,
 
@@ -191,7 +180,7 @@ the LRU do.  The attention branch does not: `pi_t` is computed from the content 
 `q'` and `k'` and is as input-dependent as any softmax.  Mega is thus *not* an
 instance of the family's defining restriction taken as a whole — only its recurrent
 component is — and the operator is a hybrid rather than a pure state-space layer.
-`sec:memory-state` records the same caveat about the headline model's cost: full
+<span class="attn-ref">sec:memory-state</span> records the same caveat about the headline model's cost: full
 gated attention plus an EMA is quadratic, and only the chunked variant implemented here
 (`chunk` not `None`) is linear.
 
@@ -221,16 +210,16 @@ fidelity to softmax as Mega's goal, which is not what the paper proposes.
 changes the same object — [`recurrent`](../taxonomy.md#recurrent)
 :   [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`gla`](gla.md), [`hgrn2`](hgrn2.md), [`hyena`](hyena.md), [`linear_rnn`](linear_rnn.md), [`lru`](lru.md), [`mlstm`](mlstm.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md) &nbsp;·&nbsp; [browse the bank, recurrent only](index.md?category=recurrent)
 
-judged the same way — `modify`, beyond the ones above
-:   [`cosformer`](cosformer.md), [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`espformer`](espformer.md), [`gqa`](gqa.md), [`isab`](isab.md), [`latent_stochastic`](latent_stochastic.md), [`latte`](latte.md), [`linear_elu`](linear_elu.md), [`lowrank_ot`](lowrank_ot.md), [`mla`](mla.md), [`otke`](otke.md), [`perceiver`](perceiver.md), [`polaformer`](polaformer.md), [`rebased`](rebased.md), [`sinkhorn`](sinkhorn.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+judged the same way — `modify`
+:   16 further methods besides these declare `objective = modify`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
-Both lists are `ab.available(...)` with `mega` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `mega` selected](index.md?compare=mega) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `mega` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `mega` selected](index.md?compare=mega) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *Mega: Moving Average Equipped Gated Attention.*<br><span class="attn-cite" data-bibkey="ma2023mega"><code>ma2023mega</code></span>
+- **Ma et al. (2023).** *Mega: Moving Average Equipped Gated Attention.* International Conference on Learning Representations (ICLR). [arXiv:2209.10655](https://arxiv.org/abs/2209.10655)<br><span class="attn-cite" data-bibkey="ma2023mega"><code>ma2023mega</code></span>
 
 </div>
 
@@ -239,7 +228,17 @@ Both lists are `ab.available(...)` with `mega` removed — the two axes the regi
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="ma2023mega">
 <pre class="attn-bib__src"><code>@inproceedings{ma2023mega,
-  title     = {Mega: Moving Average Equipped Gated Attention}</code></pre>
+  title     = {Mega: Moving Average Equipped Gated Attention},
+  author    = {Ma, Xuezhe and Zhou, Chunting and Kong, Xiang and He, Junxian and
+               Gui, Liangke and Neubig, Graham and May, Jonathan and
+               Zettlemoyer, Luke},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2023},
+  eprint    = {2209.10655},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url       = {https://arxiv.org/abs/2209.10655}
+}</code></pre>
 </div>
 </div>
 </details>

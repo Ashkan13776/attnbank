@@ -33,17 +33,17 @@ It pursues **modification**: it defines a *different* operator. Asking how close
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **yes** | it has learned parameters; the reference implementation initialises them from a seed, so the numbers here are an untrained operator. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="yes">yes</span> | it has learned parameters; the reference implementation initialises them from a seed, so the numbers here are an untrained operator. |
 
 </div>
 
@@ -65,6 +65,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -75,24 +77,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + n * (d + dv) + m * dv + r * (dv + 1)) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** `sdpa` computes exactly $\mathrm{softmax}(\beta\langle q,k\rangle + \text{mask})\,v$; this operator replaces $g$, so it is not that expression and there is no kernel for it.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `Z_hat`, `dynamic_range`, `g_hat`, `phi_k`, `phi_q`.
 
@@ -109,9 +98,7 @@ Diagnostics returned in `extras`: `Z_hat`, `dynamic_range`, `g_hat`, `phi_k`, `p
 
 </div>
 
-```python
-ab.describe("rebased")     # the same keys, with everything else it declares
-```
+`ab.describe("rebased")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -154,7 +141,9 @@ extras: ['Z_hat', 'dynamic_range', 'g_hat', 'phi_k', 'phi_q']
 
 <div class="attn-notation" markdown="1">
 
-`sec:kernel-det`.  Aksenov et al. (2024) start from the observation that Based's
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:kernel-det</code></p>
+
+Aksenov et al. (2024) start from the observation that Based's
 surrogate `1 + z + z^2/2` has minimum `1/2` at `z = -1`: however negative the
 logit, the weight it assigns is bounded below, so the measure can never concentrate
 the way softmax does.  Their fix keeps the quadratic but makes its root learnable —
@@ -175,9 +164,9 @@ is the whole point.
 
 This is an **operator modification**: `r = d` features, no resource parameter, and
 no configuration under which it becomes softmax, so both correctness anchors are
-`None` by design (`tab:kernel-methods`).  Two structural consequences follow from
+`None` by design (<span class="attn-ref">tab:kernel-methods</span>).  Two structural consequences follow from
 the normalization and are worth separating from the learnability.  First
-`rem:kernel-homogeneous` applies *exactly*: LayerNorm discards `||q||`, so unlike
+<span class="attn-ref">rem:kernel-homogeneous</span> applies *exactly*: LayerNorm discards `||q||`, so unlike
 `based` — and unlike softmax — scaling the query cannot sharpen `pi_hat_q` at
 all.  Second, `g_hat` is a quadratic form in `norm(q)`, hence bounded on the
 sphere: the dynamic range of the surrogate is bounded uniformly in the input, where
@@ -195,17 +184,17 @@ see the root move with them.
 changes the same object — [`interaction`](../taxonomy.md#interaction)
 :   [`based`](based.md), [`cosformer`](cosformer.md), [`favorpp`](favorpp.md), [`favorsharp`](favorsharp.md), [`hedgehog`](hedgehog.md), [`linear_elu`](linear_elu.md), [`lowrank_logit`](lowrank_logit.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`polaformer`](polaformer.md), [`polysketch`](polysketch.md), [`skyformer`](skyformer.md), [`trigrff`](trigrff.md) &nbsp;·&nbsp; [browse the bank, interaction only](index.md?category=interaction)
 
-judged the same way — `modify`, beyond the ones above
-:   [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`espformer`](espformer.md), [`gla`](gla.md), [`gqa`](gqa.md), [`hgrn2`](hgrn2.md), [`hyena`](hyena.md), [`isab`](isab.md), [`latent_stochastic`](latent_stochastic.md), [`latte`](latte.md), [`linear_rnn`](linear_rnn.md), [`lowrank_ot`](lowrank_ot.md), [`lru`](lru.md), [`mega`](mega.md), [`mla`](mla.md), [`mlstm`](mlstm.md), [`otke`](otke.md), [`perceiver`](perceiver.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md), [`sinkhorn`](sinkhorn.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+judged the same way — `modify`
+:   25 further methods besides these declare `objective = modify`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
-Both lists are `ab.available(...)` with `rebased` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `rebased` selected](index.md?compare=rebased) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `rebased` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `rebased` selected](index.md?compare=rebased) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *Linear Transformers with Learnable Kernel Functions are Better In-Context Models.*<br><span class="attn-cite" data-bibkey="aksenov2024rebased"><code>aksenov2024rebased</code></span>
-- *Simple linear attention language models balance the recall-throughput tradeoff.*<br><span class="attn-cite" data-bibkey="arora2024based"><code>arora2024based</code></span>
+- **Aksenov et al. (2024).** *Linear Transformers with Learnable Kernel Functions are Better In-Context Models.* Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (ACL), Volume 1: Long Papers. [arXiv:2402.10644](https://arxiv.org/abs/2402.10644)<br><span class="attn-cite" data-bibkey="aksenov2024rebased"><code>aksenov2024rebased</code></span>
+- **Arora et al. (2024).** *Simple linear attention language models balance the recall-throughput tradeoff.* Proceedings of the 41st International Conference on Machine Learning (ICML). [arXiv:2402.18668](https://arxiv.org/abs/2402.18668)<br><span class="attn-cite" data-bibkey="arora2024based"><code>arora2024based</code></span>
 
 </div>
 
@@ -214,11 +203,27 @@ Both lists are `ab.available(...)` with `rebased` removed — the two axes the r
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="aksenov2024rebased">
 <pre class="attn-bib__src"><code>@inproceedings{aksenov2024rebased,
-  title     = {Linear Transformers with Learnable Kernel Functions are Better In-Context Models}</code></pre>
+  title     = {Linear Transformers with Learnable Kernel Functions are Better In-Context Models},
+  author    = {Aksenov, Yaroslav and Balagansky, Nikita and Lo Cicero Vaina, Sofia Maria and Shaposhnikov, Boris and Gorbatovski, Alexey and Gavrilov, Daniil},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (ACL), Volume 1: Long Papers},
+  pages     = {9584--9597},
+  year      = {2024},
+  eprint    = {2402.10644},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="arora2024based">
 <pre class="attn-bib__src"><code>@inproceedings{arora2024based,
-  title     = {Simple linear attention language models balance the recall-throughput tradeoff}</code></pre>
+  title     = {Simple linear attention language models balance the recall-throughput tradeoff},
+  author    = {Arora, Simran and Eyuboglu, Sabri and Zhang, Michael and Timalsina, Aman and Alberti, Silas and Zou, James and Rudra, Atri and R{\'e}, Christopher},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  series    = {PMLR},
+  volume    = {235},
+  pages     = {1763--1840},
+  year      = {2024},
+  eprint    = {2402.18668},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

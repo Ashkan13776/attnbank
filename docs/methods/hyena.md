@@ -33,17 +33,17 @@ It pursues **modification**: it defines a *different* operator. Asking how close
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **no** | it cannot name $\widehat\pi_q$ on the original positions and is excluded from the error decomposition by declaration. |
-| `row_stochastic` | **no** | the weights are **not** a probability measure — signed, or not summing to one — so the output can leave the convex hull of the values. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **yes** | it has learned parameters; the reference implementation initialises them from a seed, so the numbers here are an untrained operator. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="no">no</span> | it cannot name $\widehat\pi_q$ on the original positions and is excluded from the error decomposition by declaration. |
+| `row_stochastic` | <span class="attn-flag" data-v="no">no</span> | the weights are **not** a probability measure — signed, or not summing to one — so the output can leave the convex hull of the values. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="yes">yes</span> | it has learned parameters; the reference implementation initialises them from a seed, so the numbers here are an untrained operator. |
 
 </div>
 
@@ -65,6 +65,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -78,24 +80,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
                             + self.order * n * dv) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** A scan over positions with a fixed-size state is a different program from a masked softmax.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `filter_length`, `filters`, `order`, `reads_qk`.
 
@@ -121,9 +110,7 @@ and the number of Fourier features in the positional encoding of the lag —
 and `decay_min` / `decay_max` bound the log-spaced exponential window, which
 is what sets the effective filter length per channel.
 
-```python
-ab.describe("hyena")     # the same keys, with everything else it declares
-```
+`ab.describe("hyena")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -167,7 +154,9 @@ extras: ['filter_length', 'filters', 'order', 'reads_qk']
 
 <div class="attn-notation" markdown="1">
 
-`sec:memory-state`.  The Hyena operator of order `N` alternates a long causal
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:memory-state</code></p>
+
+The Hyena operator of order `N` alternates a long causal
 convolution with an elementwise ("data-controlled") gate:
 
 ```text
@@ -187,7 +176,7 @@ input-independent dynamics exactly like S4, S5 and the LRU.  Its *gating* does n
 `x^{i+1}` is a projection of the input, and multiplying by it makes the composite
 operator depend on the content at the output position.  Hyena is therefore a genuine
 member of this family in its filters and a partial exception in its gates, which is
-precisely the distinction `sec:memory-state` draws when it says the step that
+precisely the distinction <span class="attn-ref">sec:memory-state</span> draws when it says the step that
 produced the current generation of models was to make the *state dynamics* themselves
 input-dependent.  Hyena moves the data dependence into a pointwise product sitting
 outside the recurrence; Mamba and the gated linear RNNs move it inside.
@@ -195,7 +184,7 @@ outside the recurrence; Mamba and the gated linear RNNs move it inside.
 **No finite state.**  Unlike every other method in `recurrent/`, Hyena's filter is
 not realised by a finite-dimensional recurrence: an arbitrary length-`n` FIR filter
 needs `O(n)` memory to run causally, which is why `cost()['state_bytes']` grows
-with `n` here and does not for `s4d`, `s5` or `lru`.  `prop:memory-rank` has
+with `n` here and does not for `s4d`, `s5` or `lru`.  <span class="attn-ref">prop:memory-rank</span> has
 nothing to bound.  The *parameters* are few; the *state* is not.
 
 **It does not read the queries or the keys.**  As in the rest of the family, the three
@@ -222,18 +211,18 @@ so that causality is bit-exact (see `s4d`).
 changes the same object — [`recurrent`](../taxonomy.md#recurrent)
 :   [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`gla`](gla.md), [`hgrn2`](hgrn2.md), [`linear_rnn`](linear_rnn.md), [`lru`](lru.md), [`mega`](mega.md), [`mlstm`](mlstm.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md) &nbsp;·&nbsp; [browse the bank, recurrent only](index.md?category=recurrent)
 
-judged the same way — `modify`, beyond the ones above
-:   [`cosformer`](cosformer.md), [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`espformer`](espformer.md), [`gqa`](gqa.md), [`isab`](isab.md), [`latent_stochastic`](latent_stochastic.md), [`latte`](latte.md), [`linear_elu`](linear_elu.md), [`lowrank_ot`](lowrank_ot.md), [`mla`](mla.md), [`otke`](otke.md), [`perceiver`](perceiver.md), [`polaformer`](polaformer.md), [`rebased`](rebased.md), [`sinkhorn`](sinkhorn.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+judged the same way — `modify`
+:   16 further methods besides these declare `objective = modify`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
-Both lists are `ab.available(...)` with `hyena` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `hyena` selected](index.md?compare=hyena) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `hyena` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `hyena` selected](index.md?compare=hyena) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *Hyena Hierarchy: Towards Larger Convolutional Language Models.*<br><span class="attn-cite" data-bibkey="poli2023hyena"><code>poli2023hyena</code></span>
-- *CKConv: Continuous Kernel Convolution For Sequential Data.*<br><span class="attn-cite" data-bibkey="romero2022ckconv"><code>romero2022ckconv</code></span>
-- *Efficiently Modeling Long Sequences with Structured State Spaces.*<br><span class="attn-cite" data-bibkey="gu2022efficiently"><code>gu2022efficiently</code></span>
+- **Poli et al. (2023).** *Hyena Hierarchy: Towards Larger Convolutional Language Models.* International Conference on Machine Learning (ICML). [arXiv:2302.10866](https://arxiv.org/abs/2302.10866)<br><span class="attn-cite" data-bibkey="poli2023hyena"><code>poli2023hyena</code></span>
+- **Romero et al. (2022).** *CKConv: Continuous Kernel Convolution For Sequential Data.* International Conference on Learning Representations (ICLR). [arXiv:2102.02611](https://arxiv.org/abs/2102.02611)<br><span class="attn-cite" data-bibkey="romero2022ckconv"><code>romero2022ckconv</code></span>
+- **Gu et al. (2022).** *Efficiently Modeling Long Sequences with Structured State Spaces.* International Conference on Learning Representations (ICLR). [arXiv:2111.00396](https://arxiv.org/abs/2111.00396)<br><span class="attn-cite" data-bibkey="gu2022efficiently"><code>gu2022efficiently</code></span>
 
 </div>
 
@@ -242,15 +231,42 @@ Both lists are `ab.available(...)` with `hyena` removed — the two axes the reg
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="poli2023hyena">
 <pre class="attn-bib__src"><code>@inproceedings{poli2023hyena,
-  title     = {Hyena Hierarchy: Towards Larger Convolutional Language Models}</code></pre>
+  title     = {Hyena Hierarchy: Towards Larger Convolutional Language Models},
+  author    = {Poli, Michael and Massaroli, Stefano and Nguyen, Eric and
+               Fu, Daniel Y. and Dao, Tri and Baccus, Stephen and Bengio, Yoshua and
+               Ermon, Stefano and R{\'e}, Christopher},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2023},
+  eprint    = {2302.10866},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url       = {https://arxiv.org/abs/2302.10866}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="romero2022ckconv">
 <pre class="attn-bib__src"><code>@inproceedings{romero2022ckconv,
-  title     = {CKConv: Continuous Kernel Convolution For Sequential Data}</code></pre>
+  title     = {CKConv: Continuous Kernel Convolution For Sequential Data},
+  author    = {Romero, David W. and Kuzina, Anna and Bekkers, Erik J. and
+               Tomczak, Jakub M. and Hoogendoorn, Mark},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2022},
+  eprint    = {2102.02611},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url       = {https://arxiv.org/abs/2102.02611}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="gu2022efficiently">
 <pre class="attn-bib__src"><code>@inproceedings{gu2022efficiently,
-  title     = {Efficiently Modeling Long Sequences with Structured State Spaces}</code></pre>
+  title     = {Efficiently Modeling Long Sequences with Structured State Spaces},
+  author    = {Gu, Albert and Goel, Karan and R{\'e}, Christopher},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2022},
+  eprint    = {2111.00396},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url       = {https://arxiv.org/abs/2111.00396}
+}</code></pre>
 </div>
 </div>
 </details>

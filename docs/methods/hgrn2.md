@@ -33,17 +33,17 @@ It pursues **modification**: it defines a *different* operator. Asking how close
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **no** | the weights are **not** a probability measure — signed, or not summing to one — so the output can leave the convex hull of the values. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="no">no</span> | the weights are **not** a probability measure — signed, or not summing to one — so the output can leave the convex hull of the values. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -65,6 +65,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -75,24 +77,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
     return recurrent_cost(m, n, r, dv, bytes_per_el, gate_flops=3)
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** A scan over positions with a fixed-size state is a different program from a masked softmax.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `forget_gate`, `input_gate`, `lower_bound`, `mass`, `state_rank`.
 
@@ -117,9 +106,7 @@ untrained gate averages one half and the state keeps barely a token.
 `state_rank` truncates the gate/key dimension and so *is* the size of the
 recurrent state, `state_rank x d_v`.
 
-```python
-ab.describe("hgrn2")     # the same keys, with everything else it declares
-```
+`ab.describe("hgrn2")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -162,13 +149,15 @@ extras: ['forget_gate', 'input_gate', 'lower_bound', 'mass', 'state_rank']
 
 <div class="attn-notation" markdown="1">
 
-`sec:memory-state`, `tab:memory-recurrences`.  HGRN is an element-wise gated RNN,
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:memory-state</code>, <code>tab:memory-recurrences</code></p>
+
+HGRN is an element-wise gated RNN,
 
 ```text
 h_t = f_t * h_{t-1} + (1 - f_t) * i_t,                     h_t in R^d,
 ```
 
-whose state is a *vector*: `prop:memory-rank` caps what it can recall at `d`
+whose state is a *vector*: <span class="attn-ref">prop:memory-rank</span> caps what it can recall at `d`
 numbers however wide the layer is.  HGRN2 changes one symbol — the element-wise
 product becomes an outer product —
 
@@ -193,7 +182,7 @@ w_{tj} = sum_r q_{t,r} (1 - f_{j,r}) prod_{u = j+1}^{t} f_{u,r}
 ```
 
 have row sum `<q_t, 1 - prod_{u <= t} f_u>` — bounded, readable, and equal to one
-only by accident.  Boundedness without normalization again (`sec:memory-state`); the
+only by accident.  Boundedness without normalization again (<span class="attn-ref">sec:memory-state</span>); the
 rows are not a probability measure and the operator declares
 `row_stochastic = False`.
 
@@ -214,17 +203,17 @@ clamped away.
 changes the same object — [`recurrent`](../taxonomy.md#recurrent)
 :   [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`gla`](gla.md), [`hyena`](hyena.md), [`linear_rnn`](linear_rnn.md), [`lru`](lru.md), [`mega`](mega.md), [`mlstm`](mlstm.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md) &nbsp;·&nbsp; [browse the bank, recurrent only](index.md?category=recurrent)
 
-judged the same way — `modify`, beyond the ones above
-:   [`cosformer`](cosformer.md), [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`espformer`](espformer.md), [`gqa`](gqa.md), [`isab`](isab.md), [`latent_stochastic`](latent_stochastic.md), [`latte`](latte.md), [`linear_elu`](linear_elu.md), [`lowrank_ot`](lowrank_ot.md), [`mla`](mla.md), [`otke`](otke.md), [`perceiver`](perceiver.md), [`polaformer`](polaformer.md), [`rebased`](rebased.md), [`sinkhorn`](sinkhorn.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+judged the same way — `modify`
+:   16 further methods besides these declare `objective = modify`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
-Both lists are `ab.available(...)` with `hgrn2` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `hgrn2` selected](index.md?compare=hgrn2) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `hgrn2` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `hgrn2` selected](index.md?compare=hgrn2) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *HGRN2: Gated Linear RNNs with State Expansion.*<br><span class="attn-cite" data-bibkey="qin2024hgrn2"><code>qin2024hgrn2</code></span>
-- *Hierarchically Gated Recurrent Neural Network for Sequence Modeling.*<br><span class="attn-cite" data-bibkey="qin2023hgrn"><code>qin2023hgrn</code></span>
+- **Qin et al. (2024).** *HGRN2: Gated Linear RNNs with State Expansion.* Conference on Language Modeling (COLM). [arXiv:2404.07904](https://arxiv.org/abs/2404.07904)<br><span class="attn-cite" data-bibkey="qin2024hgrn2"><code>qin2024hgrn2</code></span>
+- **Qin et al. (2023).** *Hierarchically Gated Recurrent Neural Network for Sequence Modeling.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2311.04823](https://arxiv.org/abs/2311.04823)<br><span class="attn-cite" data-bibkey="qin2023hgrn"><code>qin2023hgrn</code></span>
 
 </div>
 
@@ -233,11 +222,21 @@ Both lists are `ab.available(...)` with `hgrn2` removed — the two axes the reg
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="qin2024hgrn2">
 <pre class="attn-bib__src"><code>@inproceedings{qin2024hgrn2,
-  title={{HGRN2}: Gated Linear {RNN}s with State Expansion}</code></pre>
+  title={{HGRN2}: Gated Linear {RNN}s with State Expansion},
+  author={Qin, Zhen and Yang, Songlin and Sun, Weixuan and Shen, Xuyang and Li, Dong and Sun, Weigao and Zhong, Yiran},
+  booktitle={Conference on Language Modeling (COLM)},
+  year={2024},
+  eprint={2404.07904}, archivePrefix={arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="qin2023hgrn">
 <pre class="attn-bib__src"><code>@inproceedings{qin2023hgrn,
-  title={Hierarchically Gated Recurrent Neural Network for Sequence Modeling}</code></pre>
+  title={Hierarchically Gated Recurrent Neural Network for Sequence Modeling},
+  author={Qin, Zhen and Yang, Songlin and Zhong, Yiran},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2023},
+  eprint={2311.04823}, archivePrefix={arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

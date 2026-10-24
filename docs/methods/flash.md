@@ -33,17 +33,17 @@ It pursues **acceleration**: the operator is the reference operator, exact up to
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -65,6 +65,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -75,19 +77,14 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + n * (d + dv) + m * dv) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
 
 <div class="attn-tab" markdown="1">
 
 | backend | what it is |
 |---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-| `sdpa` | `torch.nn.functional.scaled_dot_product_attention` -- on CUDA, FlashAttention-2 or the memory-efficient kernel |
+| `reference` | plain PyTorch — the correctness anchor and the default |
+| `sdpa` | `torch.nn.functional.scaled_dot_product_attention` — on CUDA, FlashAttention-2 or the memory-efficient kernel |
 
 </div>
 
@@ -106,9 +103,7 @@ Diagnostics returned in `extras`: `lse`, `n_blocks`.
 
 </div>
 
-```python
-ab.describe("flash")     # the same keys, with everything else it declares
-```
+`ab.describe("flash")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -155,14 +150,14 @@ sigma_J = (a_J, l_J, u_J),
 a_J = max_{j in J} s_j,  l_J = sum_{j in J} e^{s_j - a_J},  u_J = sum_{j in J} e^{s_j - a_J} v_j,
 ```
 
-with merge (`eq:exact-merge`)
+with merge (<span class="attn-ref">eq:exact-merge</span>)
 
 ```text
 (a1,l1,u1) + (a2,l2,u2) = (a, e^{a1-a} l1 + e^{a2-a} l2, e^{a1-a} u1 + e^{a2-a} u2),
 a = max(a1, a2),
 ```
 
-readout `rd(a,l,u) = u/l` and identity `(-inf, 0, 0)`.  `prop:exact-monoid`
+readout `rd(a,l,u) = u/l` and identity `(-inf, 0, 0)`.  <span class="attn-ref">prop:exact-monoid</span>
 states that `(Sigma, +, 0)` is a commutative monoid and that the readout of the
 fold over *any* partition is `y(q)`.  This file folds left-to-right over key
 blocks in one pass, which is what a FlashAttention kernel does.
@@ -177,16 +172,16 @@ The monoid itself lives in `attnbank.components.online_softmax`, shared with
 changes the same object — [`exact`](../taxonomy.md#exact)
 :   [`lowprec`](lowprec.md), [`softmax`](softmax.md), [`splitk`](splitk.md) &nbsp;·&nbsp; [browse the bank, exact only](index.md?category=exact)
 
-Both lists are `ab.available(...)` with `flash` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `flash` selected](index.md?compare=flash) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `flash` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `flash` selected](index.md?compare=flash) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness.*<br><span class="attn-cite" data-bibkey="dao2022flashattention"><code>dao2022flashattention</code></span>
-- *FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning.*<br><span class="attn-cite" data-bibkey="dao2024flashattention2"><code>dao2024flashattention2</code></span>
-- *Online normalizer calculation for softmax.*<br><span class="attn-cite" data-bibkey="milakov2018online"><code>milakov2018online</code></span>
-- *Self-attention Does Not Need $O(n^2)$ Memory.*<br><span class="attn-cite" data-bibkey="rabe2021selfattention"><code>rabe2021selfattention</code></span>
+- **Dao et al. (2022).** *FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2205.14135](https://arxiv.org/abs/2205.14135)<br><span class="attn-cite" data-bibkey="dao2022flashattention"><code>dao2022flashattention</code></span>
+- **Dao (2024).** *FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning.* International Conference on Learning Representations (ICLR). [arXiv:2307.08691](https://arxiv.org/abs/2307.08691)<br><span class="attn-cite" data-bibkey="dao2024flashattention2"><code>dao2024flashattention2</code></span>
+- **Milakov and Gimelshein (2018).** *Online normalizer calculation for softmax.* [arXiv:1805.02867](https://arxiv.org/abs/1805.02867)<br><span class="attn-cite" data-bibkey="milakov2018online"><code>milakov2018online</code></span>
+- **Rabe and Staats (2021).** *Self-attention Does Not Need $O(n^2)$ Memory.* [arXiv:2112.05682](https://arxiv.org/abs/2112.05682)<br><span class="attn-cite" data-bibkey="rabe2021selfattention"><code>rabe2021selfattention</code></span>
 
 </div>
 
@@ -195,19 +190,36 @@ Both lists are `ab.available(...)` with `flash` removed — the two axes the reg
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="dao2022flashattention">
 <pre class="attn-bib__src"><code>@inproceedings{dao2022flashattention,
-  title     = {{FlashAttention}: Fast and Memory-Efficient Exact Attention with {IO}-Awareness}</code></pre>
+  title     = {{FlashAttention}: Fast and Memory-Efficient Exact Attention with {IO}-Awareness},
+  author    = {Dao, Tri and Fu, Daniel Y. and Ermon, Stefano and Rudra, Atri and R{\'e}, Christopher},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {35},
+  year      = {2022},
+  eprint    = {2205.14135},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="dao2024flashattention2">
 <pre class="attn-bib__src"><code>@inproceedings{dao2024flashattention2,
-  title={{FlashAttention-2}: Faster Attention with Better Parallelism and Work Partitioning}</code></pre>
+  title={{FlashAttention-2}: Faster Attention with Better Parallelism and Work Partitioning},
+  author={Dao, Tri},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2024}, eprint={2307.08691}, archivePrefix={arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="milakov2018online">
 <pre class="attn-bib__src"><code>@misc{milakov2018online,
-  title={Online normalizer calculation for softmax}</code></pre>
+  title={Online normalizer calculation for softmax},
+  author={Milakov, Maxim and Gimelshein, Natalia},
+  year={2018}, eprint={1805.02867}, archivePrefix={arXiv}, primaryClass={cs.PF}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="rabe2021selfattention">
 <pre class="attn-bib__src"><code>@misc{rabe2021selfattention,
-  title={Self-attention Does Not Need $O(n^2)$ Memory}</code></pre>
+  title={Self-attention Does Not Need $O(n^2)$ Memory},
+  author={Rabe, Markus N. and Staats, Charles},
+  year={2021}, eprint={2112.05682}, archivePrefix={arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

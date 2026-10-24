@@ -33,17 +33,17 @@ It pursues **modification**: it defines a *different* operator. Asking how close
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **no** | `causal=True` raises `CausalNotSupportedError` — a statement about the operator, not a missing feature. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="no">no</span> | `causal=True` raises `CausalNotSupportedError` — a statement about the operator, not a missing feature. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -65,6 +65,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -85,24 +87,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
                             + n_sl * m * n) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** A fixed-point iteration over the whole matrix is not a kernel call, and the normalisation it computes is not per-query.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `col_marginal`, `gamma`, `marginal_error`, `n_slices`, `plan`, `row_marginal`, `row_sum_error`, `slice_cost`, `slice_weights`, `slices`, `target_col`, `target_row`.
 
@@ -127,9 +116,7 @@ or an integer for that many random directions on the sphere.
 applied to the cost of the unit-mass plan `U_theta`.  `0` averages the slices.
 `cost`: `'sqeuclidean'` (Algorithm 1) or `'euclidean'` (the released code).
 
-```python
-ab.describe("espformer")     # the same keys, with everything else it declares
-```
+`ab.describe("espformer")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -172,8 +159,10 @@ extras: ['col_marginal', 'gamma', 'marginal_error', 'n_slices', 'plan', 'row_mar
 
 <div class="attn-notation" markdown="1">
 
-`sec:ot`, "Doubly stochastic attention in transformers".  Sinkformers reach the
-column constraint by iterating `eq:ot-sinkhorn`; the iteration is sequential, and
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:ot</code>, &quot;Doubly stochastic attention in transformers&quot;</p>
+
+Sinkformers reach the
+column constraint by iterating <span class="attn-ref">eq:ot-sinkhorn</span>; the iteration is sequential, and
 its Hilbert-metric rate degrades exponentially in `||c||_inf / eps`.  ESPFormer
 — Shahbazi et al. (2025), building on the expected sliced transport plan of Liu
 et al. (2025) — reaches it in a *single* pass instead, by averaging one-dimensional
@@ -191,7 +180,7 @@ The construction, for one slice `theta` in `R^d`:
    U_theta = (1/m) A^T I B,
 ```
 
-   where `I` is the `m x n` rank-to-rank coupling (`eq:ot-nwcorner` in spirit:
+   where `I` is the `m x n` rank-to-rank coupling (<span class="attn-ref">eq:ot-nwcorner</span> in spirit:
    the north-west-corner plan between the uniform marginals `1/m` and `1/n`, with
    rows rescaled to sum to one).  `I` *is* the identity when `m == n`, which is
    the form stated in the paper.  `U_theta` has row marginal `1/m` and column
@@ -229,7 +218,7 @@ of the operator, only how sharply the cheap slices are preferred.  Under those t
 conventions `extras["plan"]` reproduces the authors' released module bit for bit;
 `tests/test_coupling_transport.py` writes out that computation and checks it.
 
-**No key potential.**  `prop:ot-conditional` says the *entropic*-OT conditional is
+**No key potential.**  <span class="attn-ref">prop:ot-conditional</span> says the *entropic*-OT conditional is
 softmax tilted by one number per key.  ESP's plan is a mixture of permutations, not
 a Gibbs kernel `exp(s + f + g)`, so no such `psi` exists and `extras` deliberately
 contains no `"potential"`: study S7's tilt analysis does not apply to it.  What it
@@ -252,7 +241,7 @@ when the number of slices is small; `n_slices=L` draws `L` directions uniformly 
 the sphere through a seeded generator, which is that ablation's initialization but not
 its training.
 
-Not causal, for the reason every doubly stochastic operator is not: `prop:ot-causal`,
+Not causal, for the reason every doubly stochastic operator is not: <span class="attn-ref">prop:ot-causal</span>,
 a lower-triangular matrix with equal row and column sums is diagonal.  Sorting is in
 any case a global operation over the sequence.
 
@@ -263,19 +252,19 @@ any case a global operation over the sequence.
 changes the same object — [`coupling`](../taxonomy.md#coupling)
 :   [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`lowrank_ot`](lowrank_ot.md), [`otke`](otke.md), [`sinkhorn`](sinkhorn.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, coupling only](index.md?category=coupling)
 
-judged the same way — `modify`, beyond the ones above
-:   [`cosformer`](cosformer.md), [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`gla`](gla.md), [`gqa`](gqa.md), [`hgrn2`](hgrn2.md), [`hyena`](hyena.md), [`isab`](isab.md), [`latent_stochastic`](latent_stochastic.md), [`latte`](latte.md), [`linear_elu`](linear_elu.md), [`linear_rnn`](linear_rnn.md), [`lru`](lru.md), [`mega`](mega.md), [`mla`](mla.md), [`mlstm`](mlstm.md), [`perceiver`](perceiver.md), [`polaformer`](polaformer.md), [`rebased`](rebased.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+judged the same way — `modify`
+:   23 further methods besides these declare `objective = modify`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
-Both lists are `ab.available(...)` with `espformer` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `espformer` selected](index.md?compare=espformer) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `espformer` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `espformer` selected](index.md?compare=espformer) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *ESPFormer: Doubly-Stochastic Attention with Expected Sliced Transport Plans.*<br><span class="attn-cite" data-bibkey="shahbazi2025espformer"><code>shahbazi2025espformer</code></span>
-- *Expected Sliced Transport Plans.*<br><span class="attn-cite" data-bibkey="liu2025expected"><code>liu2025expected</code></span>
-- *SoftSort: A Continuous Relaxation for the argsort Operator.*<br><span class="attn-cite" data-bibkey="prillo2020softsort"><code>prillo2020softsort</code></span>
-- *Sinkformers: Transformers with Doubly Stochastic Attention.*<br><span class="attn-cite" data-bibkey="sander2022sinkformers"><code>sander2022sinkformers</code></span>
+- **Shahbazi et al. (2025).** *ESPFormer: Doubly-Stochastic Attention with Expected Sliced Transport Plans.* International Conference on Machine Learning (ICML). [arXiv:2502.07962](https://arxiv.org/abs/2502.07962)<br><span class="attn-cite" data-bibkey="shahbazi2025espformer"><code>shahbazi2025espformer</code></span>
+- **Liu et al. (2025).** *Expected Sliced Transport Plans.* International Conference on Learning Representations (ICLR). [arXiv:2410.12176](https://arxiv.org/abs/2410.12176)<br><span class="attn-cite" data-bibkey="liu2025expected"><code>liu2025expected</code></span>
+- **Prillo and Eisenschlos (2020).** *SoftSort: A Continuous Relaxation for the argsort Operator.* International Conference on Machine Learning (ICML). [arXiv:2006.16038](https://arxiv.org/abs/2006.16038)<br><span class="attn-cite" data-bibkey="prillo2020softsort"><code>prillo2020softsort</code></span>
+- **Sander et al. (2022).** *Sinkformers: Transformers with Doubly Stochastic Attention.* Proceedings of the 25th International Conference on Artificial Intelligence and Statistics (AISTATS). [arXiv:2110.11773](https://arxiv.org/abs/2110.11773)<br><span class="attn-cite" data-bibkey="sander2022sinkformers"><code>sander2022sinkformers</code></span>
 
 </div>
 
@@ -284,19 +273,35 @@ Both lists are `ab.available(...)` with `espformer` removed — the two axes the
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="shahbazi2025espformer">
 <pre class="attn-bib__src"><code>@inproceedings{shahbazi2025espformer,
-  title={{ESPFormer}: Doubly-Stochastic Attention with Expected Sliced Transport Plans}</code></pre>
+  title={{ESPFormer}: Doubly-Stochastic Attention with Expected Sliced Transport Plans},
+  author={Shahbazi, Ashkan and Akbari, Elaheh and Salehi, Darian and Liu, Xinran and Naderializadeh, Navid and Kolouri, Soheil},
+  booktitle={International Conference on Machine Learning (ICML)}, series={PMLR}, volume={267}, pages={54186--54202}, year={2025},
+  eprint={2502.07962}, archivePrefix={arXiv}}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="liu2025expected">
 <pre class="attn-bib__src"><code>@inproceedings{liu2025expected,
-  title={Expected Sliced Transport Plans}</code></pre>
+  title={Expected Sliced Transport Plans},
+  author={Liu, Xinran and Diaz Martin, Rocio and Bai, Yikun and Shahbazi, Ashkan and Thorpe, Matthew and Aldroubi, Akram and Kolouri, Soheil},
+  booktitle={International Conference on Learning Representations (ICLR)}, year={2025}, eprint={2410.12176}, archivePrefix={arXiv}}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="prillo2020softsort">
 <pre class="attn-bib__src"><code>@inproceedings{prillo2020softsort,
-  title={{SoftSort}: A Continuous Relaxation for the argsort Operator}</code></pre>
+  title={{SoftSort}: A Continuous Relaxation for the argsort Operator},
+  author={Prillo, Sebastian and Eisenschlos, Julian Martin},
+  booktitle={International Conference on Machine Learning (ICML)}, series={PMLR}, volume={119}, pages={7793--7802}, year={2020},
+  eprint={2006.16038}, archivePrefix={arXiv}}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="sander2022sinkformers">
 <pre class="attn-bib__src"><code>@inproceedings{sander2022sinkformers,
-  title         = {Sinkformers: Transformers with Doubly Stochastic Attention}</code></pre>
+  title         = {Sinkformers: Transformers with Doubly Stochastic Attention},
+  author        = {Sander, Michael E. and Ablin, Pierre and Blondel, Mathieu and Peyr{\'e}, Gabriel},
+  booktitle     = {Proceedings of the 25th International Conference on Artificial Intelligence and Statistics (AISTATS)},
+  series        = {PMLR},
+  volume        = {151},
+  year          = {2022},
+  eprint        = {2110.11773},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

@@ -33,17 +33,17 @@ It pursues **approximation**: it is trying to be dense softmax, so it is fair to
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -70,6 +70,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -80,24 +82,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + n * (d + dv) + m * dv) * b}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** The method exists to expose the *intermediate* states of the evaluation, which a single fused call does not hand back.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `delta_v`, `s_hat`.
 
@@ -120,9 +109,7 @@ Diagnostics returned in `extras`: `delta_v`, `s_hat`.
 `fmt`: `'e4m3'` / `'e5m2'` to use FP8 instead of INT.
 `bits_p`: optional INT width for the attention weights themselves.
 
-```python
-ab.describe("lowprec")     # the same keys, with everything else it declares
-```
+`ab.describe("lowprec")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -164,10 +151,12 @@ invariant W: 0.0
 
 <div class="attn-notation" markdown="1">
 
-`sec:exact-boundary`.  This is the method that marks *where exactness ends*.  An
-FP8/INT8 kernel keeps the evaluation order of `prop:exact-monoid` but stores the
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:exact-boundary</code></p>
+
+This is the method that marks *where exactness ends*.  An
+FP8/INT8 kernel keeps the evaluation order of <span class="attn-ref">prop:exact-monoid</span> but stores the
 operands at a precision `u' >> u`, so it satisfies the first clause of
-`def:exact-scheme` and fails the second.  By the criterion of "which object is
+<span class="attn-ref">def:exact-scheme</span> and fails the second.  By the criterion of "which object is
 changed" it belongs with context compression: quantizing `q, k` replaces `g` by
 `g_hat` (a distributional error) and quantizing `v` or `P` replaces `v` by
 `v_hat` (a value-representation error).  Its objective is therefore `approximate`,
@@ -197,19 +186,19 @@ The quantizers themselves live in `attnbank.components.quantization`, shared wit
 changes the same object — [`exact`](../taxonomy.md#exact)
 :   [`flash`](flash.md), [`softmax`](softmax.md), [`splitk`](splitk.md) &nbsp;·&nbsp; [browse the bank, exact only](index.md?category=exact)
 
-judged the same way — `approximate`, beyond the ones above
-:   [`abc`](abc.md), [`atom`](atom.md), [`based`](based.md), [`bigbird`](bigbird.md), [`blocktopk`](blocktopk.md), [`clustered`](clustered.md), [`evict_adakv`](evict_adakv.md), [`evict_h2o`](evict_h2o.md), [`evict_pyramidkv`](evict_pyramidkv.md), [`evict_snapkv`](evict_snapkv.md), [`evict_tova`](evict_tova.md), [`favorpp`](favorpp.md), [`favorsharp`](favorsharp.md), [`hedgehog`](hedgehog.md), [`hyperattention`](hyperattention.md), [`kivi`](kivi.md), [`kvquant`](kvquant.md), [`linformer`](linformer.md), [`longformer`](longformer.md), [`lowrank_kv`](lowrank_kv.md), [`lowrank_logit`](lowrank_logit.md) *(oracle)*, [`lsh_sample`](lsh_sample.md), [`merge_cam`](merge_cam.md), [`merge_kv`](merge_kv.md), [`merge_tome`](merge_tome.md), [`nmf_oracle`](nmf_oracle.md) *(oracle)*, [`nystrom`](nystrom.md), [`oval`](oval.md), [`page_pca`](page_pca.md), [`performer`](performer.md), [`polysketch`](polysketch.md), [`qjl`](qjl.md), [`quantkv`](quantkv.md), [`reformer`](reformer.md), [`routing`](routing.md), [`shifted_window`](shifted_window.md), [`sink_window`](sink_window.md), [`skyformer`](skyformer.md), [`strided`](strided.md), [`svd_oracle`](svd_oracle.md) *(oracle)*, [`topk`](topk.md), [`trigrff`](trigrff.md), [`value_topk`](value_topk.md) *(oracle)*, [`window`](window.md), [`zipcache`](zipcache.md) &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
+judged the same way — `approximate`
+:   45 further methods besides these declare `objective = approximate`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, approximate only](index.md?objective=approximate)
 
-Both lists are `ab.available(...)` with `lowprec` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `lowprec` selected](index.md?compare=lowprec) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `lowprec` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `lowprec` selected](index.md?compare=lowprec) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision.*<br><span class="attn-cite" data-bibkey="shah2024flashattention3"><code>shah2024flashattention3</code></span>
-- *SageAttention: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration.*<br><span class="attn-cite" data-bibkey="zhang2025sageattention"><code>zhang2025sageattention</code></span>
-- *FP8 Formats for Deep Learning.*<br><span class="attn-cite" data-bibkey="micikevicius2022fp8"><code>micikevicius2022fp8</code></span>
-- *INT-FlashAttention: Enabling Flash Attention for INT8 Quantization.*<br><span class="attn-cite" data-bibkey="chen2024intflashattention"><code>chen2024intflashattention</code></span>
+- **Shah et al. (2024).** *FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision.* Advances in Neural Information Processing Systems (NeurIPS). [arXiv:2407.08608](https://arxiv.org/abs/2407.08608)<br><span class="attn-cite" data-bibkey="shah2024flashattention3"><code>shah2024flashattention3</code></span>
+- **Zhang et al. (2025).** *SageAttention: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration.* International Conference on Learning Representations (ICLR). [arXiv:2410.02367](https://arxiv.org/abs/2410.02367)<br><span class="attn-cite" data-bibkey="zhang2025sageattention"><code>zhang2025sageattention</code></span>
+- **Micikevicius et al. (2022).** *FP8 Formats for Deep Learning.* [arXiv:2209.05433](https://arxiv.org/abs/2209.05433)<br><span class="attn-cite" data-bibkey="micikevicius2022fp8"><code>micikevicius2022fp8</code></span>
+- **Chen et al. (2024).** *INT-FlashAttention: Enabling Flash Attention for INT8 Quantization.* [arXiv:2409.16997](https://arxiv.org/abs/2409.16997)<br><span class="attn-cite" data-bibkey="chen2024intflashattention"><code>chen2024intflashattention</code></span>
 
 </div>
 
@@ -218,19 +207,36 @@ Both lists are `ab.available(...)` with `lowprec` removed — the two axes the r
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="shah2024flashattention3">
 <pre class="attn-bib__src"><code>@inproceedings{shah2024flashattention3,
-  title={{FlashAttention-3}: Fast and Accurate Attention with Asynchrony and Low-precision}</code></pre>
+  title={{FlashAttention-3}: Fast and Accurate Attention with Asynchrony and Low-precision},
+  author={Shah, Jay and Bikshandi, Ganesh and Zhang, Ying and Thakkar, Vijay and Ramani, Pradeep and Dao, Tri},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2024}, eprint={2407.08608}, archivePrefix={arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="zhang2025sageattention">
 <pre class="attn-bib__src"><code>@inproceedings{zhang2025sageattention,
-  title={{SageAttention}: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration}</code></pre>
+  title={{SageAttention}: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration},
+  author={Zhang, Jintao and Wei, Jia and Huang, Haofeng and Zhang, Pengle and Zhu, Jun and Chen, Jianfei},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2025}, eprint={2410.02367}, archivePrefix={arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="micikevicius2022fp8">
 <pre class="attn-bib__src"><code>@misc{micikevicius2022fp8,
-  title = {{FP8 Formats for Deep Learning}}</code></pre>
+  title = {{FP8 Formats for Deep Learning}},
+  author = {Paulius Micikevicius and Dusan Stosic and Neil Burgess and Marius Cornea and Pradeep Dubey and Richard Grisenthwaite and Sangwon Ha and Alexander Heinecke and Patrick Judd and John Kamalu and Naveen Mellempudi and Stuart Oberman and Mohammad Shoeybi and Michael Siu and Hao Wu},
+  year = {2022},
+  howpublished = {arXiv preprint arXiv:2209.05433},
+  eprint = {2209.05433},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="chen2024intflashattention">
 <pre class="attn-bib__src"><code>@misc{chen2024intflashattention,
-  title={{INT-FlashAttention}: Enabling Flash Attention for {INT8} Quantization}</code></pre>
+  title={{INT-FlashAttention}: Enabling Flash Attention for {INT8} Quantization},
+  author={Chen, Shimao and Liu, Zirui and Wu, Zhiying and Zheng, Ce and Cong, Peizhuang and Jiang, Zihan and others},
+  year={2024}, eprint={2409.16997}, archivePrefix={arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

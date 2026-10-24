@@ -33,17 +33,17 @@ It pursues **modification**: it defines a *different* operator. Asking how close
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **yes** | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="yes">yes</span> | those weights are $\ge 0$ and sum to one: $\widehat\pi_q$ is a probability measure. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -65,6 +65,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -75,24 +77,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + n * (d + dv) + m * dv + r * (dv + 1)) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** `sdpa` computes exactly $\mathrm{softmax}(\beta\langle q,k\rangle + \text{mask})\,v$; this operator replaces $g$, so it is not that expression and there is no kernel for it.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `Z_hat`, `g_hat`.
 
@@ -100,9 +89,7 @@ Diagnostics returned in `extras`: `Z_hat`, `g_hat`.
 
 This method takes no configuration of its own — only the base class's `scale` and `backend`.
 
-```python
-ab.describe("linear_elu")     # the same keys, with everything else it declares
-```
+`ab.describe("linear_elu")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -145,7 +132,9 @@ extras: ['Z_hat', 'g_hat']
 
 <div class="attn-notation" markdown="1">
 
-`sec:kernel-det`.  Katharopoulos et al. (2020) replace the interaction by
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:kernel-det</code></p>
+
+Katharopoulos et al. (2020) replace the interaction by
 
 ```text
 g_hat(q, x) = <phi(q), phi(k_x)>,   phi(u) = elu(u) + 1 > 0,   r = d,
@@ -153,21 +142,21 @@ g_hat(q, x) = <phi(q), phi(k_x)>,   phi(u) = elu(u) + 1 > 0,   r = d,
 
 with no resource parameter, so `<phi(q), phi(k)> -> exp(beta <q,k>)` holds *in no
 sense*: this is an **operator modification**, not an approximation
-(`def:kernel-regimes`, `tab:kernel-methods` row "Linear transformer ... no").  The
+(<span class="attn-ref">def:kernel-regimes</span>, <span class="attn-ref">tab:kernel-methods</span> row "Linear transformer ... no").  The
 library records that by `objective = modify` and by returning `None` from both
 correctness anchors: there is no configuration under which it becomes softmax, and
 nothing it converges to.
 
 Because `phi > 0` the induced measure is a genuine probability measure, so this is
-one of the normalized members of the family; `lem:kernel-mixture` then says
+one of the normalized members of the family; <span class="attn-ref">lem:kernel-mixture</span> then says
 `pi_hat_q` is a mixture of `r = d` *query-independent* context distributions, and
-`prop:kernel-retrieval` bounds what it can retrieve.  `rem:kernel-homogeneous`
+<span class="attn-ref">prop:kernel-retrieval</span> bounds what it can retrieve.  <span class="attn-ref">rem:kernel-homogeneous</span>
 applies approximately: for large positive coordinates `phi` is linear, so the query
 norm cannot sharpen `pi_hat_q`.
 
-The normalized form of `eq:kernel-moments` is used (divide by `phi(q)^T z`).  Many
+The normalized form of <span class="attn-ref">eq:kernel-moments</span> is used (divide by `phi(q)^T z`).  Many
 deployed descendants drop the denominator and normalize the output instead
-(`sec:memory-state`); that variant lives in `recurrent/linear_rnn.py`, where the
+(<span class="attn-ref">sec:memory-state</span>); that variant lives in `recurrent/linear_rnn.py`, where the
 loss of normalization invariance is the point.
 
 </div>
@@ -177,17 +166,17 @@ loss of normalization invariance is the point.
 changes the same object — [`interaction`](../taxonomy.md#interaction)
 :   [`based`](based.md), [`cosformer`](cosformer.md), [`favorpp`](favorpp.md), [`favorsharp`](favorsharp.md), [`hedgehog`](hedgehog.md), [`lowrank_logit`](lowrank_logit.md) *(oracle)*, [`nystrom`](nystrom.md), [`performer`](performer.md), [`polaformer`](polaformer.md), [`polysketch`](polysketch.md), [`rebased`](rebased.md), [`skyformer`](skyformer.md), [`trigrff`](trigrff.md) &nbsp;·&nbsp; [browse the bank, interaction only](index.md?category=interaction)
 
-judged the same way — `modify`, beyond the ones above
-:   [`decay_rnn`](decay_rnn.md), [`delta_rnn`](delta_rnn.md), [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`espformer`](espformer.md), [`gla`](gla.md), [`gqa`](gqa.md), [`hgrn2`](hgrn2.md), [`hyena`](hyena.md), [`isab`](isab.md), [`latent_stochastic`](latent_stochastic.md), [`latte`](latte.md), [`linear_rnn`](linear_rnn.md), [`lowrank_ot`](lowrank_ot.md), [`lru`](lru.md), [`mega`](mega.md), [`mla`](mla.md), [`mlstm`](mlstm.md), [`otke`](otke.md), [`perceiver`](perceiver.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md), [`sinkhorn`](sinkhorn.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+judged the same way — `modify`
+:   25 further methods besides these declare `objective = modify`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
-Both lists are `ab.available(...)` with `linear_elu` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `linear_elu` selected](index.md?compare=linear_elu) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `linear_elu` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `linear_elu` selected](index.md?compare=linear_elu) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention.*<br><span class="attn-cite" data-bibkey="katharopoulos2020transformers"><code>katharopoulos2020transformers</code></span>
-- *Linear Transformers Are Secretly Fast Weight Programmers.*<br><span class="attn-cite" data-bibkey="schlag2021linear"><code>schlag2021linear</code></span>
+- **Katharopoulos et al. (2020).** *Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention.* Proceedings of the 37th International Conference on Machine Learning (ICML). [arXiv:2006.16236](https://arxiv.org/abs/2006.16236)<br><span class="attn-cite" data-bibkey="katharopoulos2020transformers"><code>katharopoulos2020transformers</code></span>
+- **Schlag et al. (2021).** *Linear Transformers Are Secretly Fast Weight Programmers.* Proceedings of the 38th International Conference on Machine Learning (ICML). [arXiv:2102.11174](https://arxiv.org/abs/2102.11174)<br><span class="attn-cite" data-bibkey="schlag2021linear"><code>schlag2021linear</code></span>
 
 </div>
 
@@ -196,11 +185,29 @@ Both lists are `ab.available(...)` with `linear_elu` removed — the two axes th
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="katharopoulos2020transformers">
 <pre class="attn-bib__src"><code>@inproceedings{katharopoulos2020transformers,
-  title     = {Transformers are {RNN}s: Fast Autoregressive Transformers with Linear Attention}</code></pre>
+  title     = {Transformers are {RNN}s: Fast Autoregressive Transformers with Linear Attention},
+  author    = {Katharopoulos, Angelos and Vyas, Apoorv and Pappas, Nikolaos and Fleuret, Fran{\c{c}}ois},
+  booktitle = {Proceedings of the 37th International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {119},
+  pages     = {5156--5165},
+  year      = {2020},
+  eprint    = {2006.16236},
+  archivePrefix = {arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="schlag2021linear">
 <pre class="attn-bib__src"><code>@inproceedings{schlag2021linear,
-  title={Linear Transformers Are Secretly Fast Weight Programmers}</code></pre>
+  title={Linear Transformers Are Secretly Fast Weight Programmers},
+  author={Schlag, Imanol and Irie, Kazuki and Schmidhuber, J{\&quot;u}rgen},
+  booktitle={Proceedings of the 38th International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={139},
+  pages={9355--9366},
+  year={2021},
+  eprint={2102.11174},
+  archivePrefix={arXiv}
+}</code></pre>
 </div>
 </div>
 </details>

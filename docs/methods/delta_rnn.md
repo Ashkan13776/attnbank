@@ -33,17 +33,17 @@ It pursues **modification**: it defines a *different* operator. Asking how close
 
 ## What it declares
 
-Each row is a commitment the conformance suite tests, not a description.
+Each row is a commitment the [conformance suite](../conformance.md) tests, not a description.
 
 <div class="attn-decl" markdown="1">
 
 | attribute | declared | what that commits it to |
 |---|---|---|
-| `supports_causal` | **yes** | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
-| `expresses_weights` | **yes** | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
-| `row_stochastic` | **no** | the weights are **not** a probability measure — signed, or not summing to one — so the output can leave the convex hull of the values. |
-| `head_independent` | **yes** | each head is computed from its own $K, V$. |
-| `trainable` | **no** | no learned parameters — what you build is what the paper describes. |
+| `supports_causal` | <span class="attn-flag" data-v="yes">yes</span> | `causal=True` masks so query $i$ sees keys $0 \dots i + (n-m)$. |
+| `expresses_weights` | <span class="attn-flag" data-v="yes">yes</span> | it can name $\widehat\pi_q$ on the **original** $n$ positions, so it enters the error decomposition. |
+| `row_stochastic` | <span class="attn-flag" data-v="no">no</span> | the weights are **not** a probability measure — signed, or not summing to one — so the output can leave the convex hull of the values. |
+| `head_independent` | <span class="attn-flag" data-v="yes">yes</span> | each head is computed from its own $K, V$. |
+| `trainable` | <span class="attn-flag" data-v="no">no</span> | no learned parameters — what you build is what the paper describes. |
 
 </div>
 
@@ -65,6 +65,8 @@ Analytic, per `(batch, head)`. At $m = 1024$, $n = 1024$, $d = 64$, $dv = 64$ an
 
 </div>
 
+<p class="attn-caveat" markdown="span">Counted operations and resident bytes, not measured time — a cost model is not a benchmark. These are what the monograph's capacity arguments are made of; `examples/08_cost_and_capacity.py` walks the comparison through properly.</p>
+
 The numbers are the method's own `cost()`, evaluated — the declaration, not a measurement:
 
 ```python
@@ -75,24 +77,11 @@ def cost(self, m, n, d, dv, bytes_per_el=2):
             "bytes_moved": (m * d + n * (d + dv) + m * dv) * bytes_per_el}
 ```
 
-!!! note "A cost model is not a benchmark"
-    These are counted operations and resident bytes, not measured time.
-    They are what the monograph's capacity arguments are made of;
-    `examples/08_cost_and_capacity.py` walks through the comparison properly.
-
 ## Backends
-
-<div class="attn-tab" markdown="1">
-
-| backend | what it is |
-|---|---|
-| `reference` | plain PyTorch; the correctness anchor and the default |
-
-</div>
 
 **`reference` only, and that is the correct answer.** A scan over positions with a fixed-size state is a different program from a masked softmax.
 
-Declaring a backend is a claim that it equals the reference, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
+`reference` is plain PyTorch — the correctness anchor and the default. Declaring a second backend is a claim that it equals the first, checked by `tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` here would be pretending. See [Backends](../backends.md).
 
 Diagnostics returned in `extras`: `beta`, `mass`, `state_rank`.
 
@@ -109,9 +98,7 @@ Diagnostics returned in `extras`: `beta`, `mass`, `state_rank`.
 
 `beta`: write strength (not an inverse temperature; see sec:memory-state).
 
-```python
-ab.describe("delta_rnn")     # the same keys, with everything else it declares
-```
+`ab.describe("delta_rnn")` returns the same keys alongside everything else this page states.
 
 ## Run it
 
@@ -154,7 +141,8 @@ extras: ['beta', 'mass', 'state_rank']
 
 <div class="attn-notation" markdown="1">
 
-`sec:memory-state`, `eq:memory-delta`, `tab:memory-recurrences` (row "DeltaNet").
+<p class="attn-notation__sec"><span class="attn-notation__from">monograph</span> <code>sec:memory-state</code>, <code>eq:memory-delta</code>, <code>tab:memory-recurrences</code> (row &quot;DeltaNet&quot;)</p>
+
 The transition is a rank-one correction rather than a decay:
 
 ```text
@@ -185,7 +173,7 @@ DeltaNet, so that `I - beta psi psi^T` is a contraction for `beta in (0, 2)`.
 
 Note on notation: DESIGN.md writes the update as `H_{t-1}(I - beta phi phi^T)`, which
 is the same map with `H` transposed (`d_v x r`).  This file follows the paper's
-`eq:memory-delta` with `H in R^{r x d_v}`.
+<span class="attn-ref">eq:memory-delta</span> with `H in R^{r x d_v}`.
 
 </div>
 
@@ -194,19 +182,19 @@ is the same map with `H` transposed (`d_v x r`).  This file follows the paper's
 changes the same object — [`recurrent`](../taxonomy.md#recurrent)
 :   [`decay_rnn`](decay_rnn.md), [`gla`](gla.md), [`hgrn2`](hgrn2.md), [`hyena`](hyena.md), [`linear_rnn`](linear_rnn.md), [`lru`](lru.md), [`mega`](mega.md), [`mlstm`](mlstm.md), [`retnet`](retnet.md), [`rwkv`](rwkv.md), [`s4d`](s4d.md), [`s5`](s5.md) &nbsp;·&nbsp; [browse the bank, recurrent only](index.md?category=recurrent)
 
-judged the same way — `modify`, beyond the ones above
-:   [`cosformer`](cosformer.md), [`dustbin_sinkhorn`](dustbin_sinkhorn.md), [`espformer`](espformer.md), [`gqa`](gqa.md), [`isab`](isab.md), [`latent_stochastic`](latent_stochastic.md), [`latte`](latte.md), [`linear_elu`](linear_elu.md), [`lowrank_ot`](lowrank_ot.md), [`mla`](mla.md), [`otke`](otke.md), [`perceiver`](perceiver.md), [`polaformer`](polaformer.md), [`rebased`](rebased.md), [`sinkhorn`](sinkhorn.md), [`unbalanced_sinkhorn`](unbalanced_sinkhorn.md) &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
+judged the same way — `modify`
+:   16 further methods besides these declare `objective = modify`, which is how they are scored rather than what they do &nbsp;·&nbsp; [browse the bank, modify only](index.md?objective=modify)
 
-Both lists are `ab.available(...)` with `delta_rnn` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `delta_rnn` selected](index.md?compare=delta_rnn) to set it beside up to three of them; the rows they agree on fold away.
+Both come from `ab.available(...)` with `delta_rnn` removed — the two axes the registry declares, nothing hand-picked. [Open the browser with `delta_rnn` selected](index.md?compare=delta_rnn) to set it beside up to three of them; the rows they agree on fold away.
 
 ## References
 
 <div class="attn-refs" markdown="1">
 
-- *Linear Transformers Are Secretly Fast Weight Programmers.*<br><span class="attn-cite" data-bibkey="schlag2021linear"><code>schlag2021linear</code></span>
-- *Parallelizing Linear Transformers with the Delta Rule over Sequence Length.*<br><span class="attn-cite" data-bibkey="yang2024parallelizing"><code>yang2024parallelizing</code></span>
-- *Adaptive Switching Circuits.*<br><span class="attn-cite" data-bibkey="widrow1960adaptive"><code>widrow1960adaptive</code></span>
-- *Gated Delta Networks: Improving Mamba2 with Delta Rule.*<br><span class="attn-cite" data-bibkey="yang2025gated"><code>yang2025gated</code></span>
+- **Schlag et al. (2021).** *Linear Transformers Are Secretly Fast Weight Programmers.* Proceedings of the 38th International Conference on Machine Learning (ICML). [arXiv:2102.11174](https://arxiv.org/abs/2102.11174)<br><span class="attn-cite" data-bibkey="schlag2021linear"><code>schlag2021linear</code></span>
+- **Yang et al. (2024).** *Parallelizing Linear Transformers with the Delta Rule over Sequence Length.* Advances in Neural Information Processing Systems 37 (NeurIPS). [arXiv:2406.06484](https://arxiv.org/abs/2406.06484)<br><span class="attn-cite" data-bibkey="yang2024parallelizing"><code>yang2024parallelizing</code></span>
+- **Widrow and Hoff (1960).** *Adaptive Switching Circuits.* IRE WESCON Convention Record.<br><span class="attn-cite" data-bibkey="widrow1960adaptive"><code>widrow1960adaptive</code></span>
+- **Yang et al. (2025).** *Gated Delta Networks: Improving Mamba2 with Delta Rule.* International Conference on Learning Representations (ICLR). [arXiv:2412.06464](https://arxiv.org/abs/2412.06464)<br><span class="attn-cite" data-bibkey="yang2025gated"><code>yang2025gated</code></span>
 
 </div>
 
@@ -215,19 +203,44 @@ Both lists are `ab.available(...)` with `delta_rnn` removed — the two axes the
 <div class="attn-bib__entries">
 <div class="attn-bib__entry" data-bibkey="schlag2021linear">
 <pre class="attn-bib__src"><code>@inproceedings{schlag2021linear,
-  title={Linear Transformers Are Secretly Fast Weight Programmers}</code></pre>
+  title={Linear Transformers Are Secretly Fast Weight Programmers},
+  author={Schlag, Imanol and Irie, Kazuki and Schmidhuber, J{\&quot;u}rgen},
+  booktitle={Proceedings of the 38th International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={139},
+  pages={9355--9366},
+  year={2021},
+  eprint={2102.11174},
+  archivePrefix={arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="yang2024parallelizing">
 <pre class="attn-bib__src"><code>@inproceedings{yang2024parallelizing,
-  title={Parallelizing Linear Transformers with the Delta Rule over Sequence Length}</code></pre>
+  title={Parallelizing Linear Transformers with the Delta Rule over Sequence Length},
+  author={Yang, Songlin and Wang, Bailin and Zhang, Yu and Shen, Yikang and Kim, Yoon},
+  booktitle={Advances in Neural Information Processing Systems 37 (NeurIPS)},
+  year={2024},
+  eprint={2406.06484},
+  archivePrefix={arXiv}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="widrow1960adaptive">
 <pre class="attn-bib__src"><code>@inproceedings{widrow1960adaptive,
-  title={Adaptive Switching Circuits}</code></pre>
+  title={Adaptive Switching Circuits},
+  author={Widrow, Bernard and Hoff, Marcian E.},
+  booktitle={IRE WESCON Convention Record},
+  pages={96--104},
+  year={1960}
+}</code></pre>
 </div>
 <div class="attn-bib__entry" data-bibkey="yang2025gated">
 <pre class="attn-bib__src"><code>@inproceedings{yang2025gated,
-  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule}</code></pre>
+  title={Gated Delta Networks: Improving {Mamba2} with Delta Rule},
+  author={Yang, Songlin and Kautz, Jan and Hatamizadeh, Ali},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2025},
+  eprint={2412.06464}, archivePrefix={arXiv}
+}</code></pre>
 </div>
 </div>
 </details>
