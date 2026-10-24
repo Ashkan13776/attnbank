@@ -25,7 +25,7 @@ WHO DECLARES WHAT
   mla         reference, sdpa
   softmax     reference, sdpa, flash_attn
 
-  reference only (28): blocktopk, clustered, cosformer, decay_rnn, delta_rnn, evict_h2o, evict_snapkv, latent_stochastic, linear_elu, linear_rnn, linformer, lowprec, lowrank_kv, lowrank_ot, lsh_sample, merge_kv, nmf_oracle, nystrom, performer, quantkv, sink_window, sinkhorn, splitk, svd_oracle, topk, trigrff, value_topk, window
+  reference only (74): abc, atom, based, bigbird, blocktopk, clustered, cosformer, decay_rnn, delta_rnn, dustbin_sinkhorn, espformer, evict_adakv, evict_h2o, evict_pyramidkv, evict_snapkv, evict_tova, favorpp, favorsharp, gla, hedgehog, hgrn2, hyena, hyperattention, isab, kivi, kvquant, latent_stochastic, latte, linear_elu, linear_rnn, linformer, longformer, lowprec, lowrank_kv, lowrank_logit, lowrank_ot, lru, lsh_sample, mega, merge_cam, merge_kv, merge_tome, mlstm, nmf_oracle, nystrom, otke, oval, page_pca, perceiver, performer, polaformer, polysketch, qjl, quantkv, rebased, reformer, retnet, routing, rwkv, s4d, s5, shifted_window, sink_window, sinkhorn, skyformer, splitk, strided, svd_oracle, topk, trigrff, unbalanced_sinkhorn, value_topk, window, zipcache
 
   Not a gap in the library -- a fact about the operators. `nmf_oracle` is an
   oracle factorisation, `merge_kv` is a clustering step, `topk` needs the full

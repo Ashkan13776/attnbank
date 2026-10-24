@@ -1,0 +1,425 @@
+/* The taxonomy tree and the static table beneath it.
+ *
+ * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
+ * Every colour, size and duration in here comes from a token in tokens.css.
+ */
+
+/* ---- the taxonomy tree --------------------------------------------------
+ *
+ * A dendrogram drawn in HTML: one trunk descending from the operator plate, a
+ * rounded elbow in the category's hue into each of the seven branches, and all 78
+ * leaves always visible, hanging off a rail in the same hue. What collapses is the
+ * scholarly detail under each branch, never the leaves -- so the collapsed tree is
+ * still a tree, not seven closed headings. */
+
+/* the key above the branches: the three objective glyphs and the oracle mark.
+ * It lives inside the tree, right of the trunk, so the trunk runs past it from
+ * the plate to the first branch unbroken. */
+.md-typeset .tx-key {
+  margin: 0 0 1.1rem;
+  font-size: 0.68rem;
+  line-height: 1.7;
+  color: var(--ab-faint);
+}
+
+.md-typeset .tx-key code { color: var(--md-default-fg-color); background: none; padding: 0; }
+
+.md-typeset .tx-g {
+  font-family: var(--ab-mono);
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset .tx-g-oracle {
+  border: 1px dashed var(--ab-faint);
+  border-radius: 0.15rem;
+  padding: 0 0.3em;
+}
+
+/* The trunk the seven branches hang off. It reaches up toward the operator plate,
+ * because the plate is what the branches are branches *of*. */
+.tx-tree {
+  position: relative;
+  margin: 1rem 0 0;
+  padding-left: 2rem;
+}
+
+.tx-tree::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -1rem;              /* up to the plate: the branches are branches of it */
+  bottom: 0;
+  width: 2px;
+  background: var(--ab-rule);
+}
+
+.tx-node { position: relative; padding-bottom: 0.55rem; }
+
+/* the elbow out of the trunk, in the category's own colour: down the trunk, a
+ * rounded turn, and into the branch header */
+.tx-node::before {
+  content: "";
+  position: absolute;
+  left: -2rem;
+  top: 0.1rem;
+  width: 1.5rem;
+  height: 0.92rem;
+  border-left: 2px solid var(--hl);
+  border-bottom: 2px solid var(--hl);
+  border-bottom-left-radius: 0.6rem;
+}
+
+/* below the last elbow there is nothing to reach, so the trunk stops: the last
+ * node paints the page ground over the remainder */
+.tx-node:last-child::after {
+  content: "";
+  position: absolute;
+  left: -2rem;
+  top: 1.1rem;
+  bottom: 0;
+  width: 2px;
+  background: var(--md-default-bg-color);
+}
+
+/* The heading is a row: category, what it changes, how many methods. The control
+ * JavaScript builds wraps those three and inherits the same row, so the branch looks
+ * the same whether or not it can be clicked. */
+.md-typeset .tx-node > h2,
+.md-typeset .tx-toggle {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  font-size: 1rem;
+  font-weight: 400;
+  font-family: var(--md-text-font-family, sans-serif);
+  letter-spacing: 0;
+}
+
+.md-typeset .tx-node > h2 {
+  margin: 0;
+  padding: 0.1rem 0 0.4rem;
+}
+
+.md-typeset .tx-toggle {
+  flex: 1;
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  padding: 0;
+  margin: -0.1rem 0 -0.4rem;   /* the button takes the heading's own padding back */
+  padding-block: 0.1rem 0.4rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+.md-typeset .tx-node > h2 code {
+  font-size: 0.86em;
+  font-weight: 700;
+  background: none;
+  padding: 0;
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset .tx-node .tx-changes {
+  font-size: 0.74rem;
+  color: var(--ab-faint);
+  flex: 1;
+}
+
+.md-typeset .tx-node .tx-n {
+  font-family: var(--ab-mono);
+  font-size: 0.62rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ab-faint);
+  white-space: nowrap;
+}
+
+.md-typeset .tx-toggle:hover .tx-changes,
+.md-typeset .tx-toggle[aria-expanded="true"] .tx-changes {
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .tx-toggle[aria-expanded="true"] code {
+  box-shadow: inset 0 -2px 0 var(--hl);
+}
+
+.md-typeset .tx-toggle:focus-visible {
+  outline: 2px solid var(--hl);
+  outline-offset: 0.2rem;
+}
+
+/* ---- the leaves: every method, always on screen --------------------------
+ * The rail on the left is the branch continuing past the header; each leaf keeps a
+ * tick of the same hue. Hue is carried by rules only -- never behind or as text. */
+/* `ul.` is load-bearing: Material sets `.md-typeset ul:not([hidden])` to flow-root,
+ * which is (0,2,1) and would beat a class-only (0,2,0) selector's flex. */
+.md-typeset ul.tx-leaves {
+  list-style: none;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.35rem;
+  margin: 0 0 0.35rem;
+  padding-left: 1rem;
+}
+
+.md-typeset .tx-leaves::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.15rem;
+  bottom: 0.15rem;
+  width: 2px;
+  background: var(--hl);
+  opacity: 0.45;
+}
+
+.md-typeset .tx-leaves li { margin: 0; }
+
+/* `ul.` again: base.css underlines `:is(li) a`, which is (0,2,2) */
+.md-typeset ul.tx-leaves a,
+.md-typeset ul.tx-leaves a:hover {
+  text-decoration: none;   /* the chip is the affordance; an underline is noise */
+}
+
+.md-typeset .tx-leaves a {
+  display: inline-block;
+  font-family: var(--ab-mono);
+  font-size: 0.64rem;
+  line-height: 1.5;
+  padding: 0.08rem 0.5rem 0.1rem 0.45rem;
+  color: var(--md-default-fg-color--light);
+  background: var(--ab-sunk);
+  border: 1px solid var(--ab-rule-soft);
+  border-left: 2px solid var(--hl);
+  border-radius: 0.15rem;
+}
+
+/* the objective glyph: = the same operator, ~ an approximation of it, != a
+ * different one. The word itself is on the title and in the table below. */
+.md-typeset .tx-leaves a::before {
+  color: var(--ab-faint);
+  margin-right: 0.4em;
+}
+
+.md-typeset .tx-leaves a[data-obj="accelerate"]::before  { content: "="; }
+.md-typeset .tx-leaves a[data-obj="approximate"]::before { content: "\2248"; }
+.md-typeset .tx-leaves a[data-obj="modify"]::before      { content: "\2260"; }
+
+/* an oracle is a bound, not a method you would run: dashed, like the key says */
+.md-typeset .tx-leaves a[data-oracle] {
+  border-style: dashed;
+  border-left: 2px solid var(--hl);
+}
+
+.md-typeset .tx-leaves a:hover,
+.md-typeset .tx-leaves a:focus-visible {
+  color: var(--md-default-fg-color);
+  border-color: var(--hl);
+}
+
+.md-typeset .tx-leaves a:focus-visible {
+  outline: 2px solid var(--hl);
+  outline-offset: 0.1rem;
+}
+
+/* ---- the detail panel: what folds ---------------------------------------- */
+
+.md-typeset .tx-body {
+  padding: 0.25rem 0 0.9rem 1rem;
+  max-width: 38rem;
+}
+
+.md-typeset .tx-node[data-open="false"] > .tx-body { display: none; }
+
+.md-typeset .tx-facts > dl {
+  display: grid;
+  grid-template-columns: 6.2rem 1fr;
+  gap: 0.4rem 1.1rem;
+  align-items: baseline;
+  font-size: 0.76rem;
+  margin: 0 0 0.9rem;
+}
+
+.md-typeset .tx-facts dt {
+  font-family: var(--ab-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+  padding-top: 0.12rem;
+}
+
+.md-typeset .tx-facts dd {
+  margin: 0;
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .tx-facts dd:first-of-type {
+  color: var(--md-default-fg-color);
+  box-shadow: inset 2px 0 0 var(--hl);
+  padding-left: 0.6rem;
+  margin-left: -0.6rem;
+}
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .tx-facts > dl { grid-template-columns: 1fr; gap: 0.1rem; }
+  .md-typeset .tx-facts dt { padding-top: 0.55rem; }
+  .md-typeset .tx-facts dd:first-of-type { box-shadow: none; padding-left: 0; margin-left: 0; }
+  .md-typeset .tx-node > h2,
+  .md-typeset .tx-toggle { flex-wrap: wrap; gap: 0.2rem 0.5rem; }
+  .md-typeset .tx-node .tx-changes { flex-basis: 100%; }
+  .tx-tree { padding-left: 1.1rem; }
+  .tx-node::before { left: -1.1rem; width: 0.7rem; }
+  .tx-node:last-child::after { left: -1.1rem; }
+  .md-typeset .tx-leaves { padding-left: 0.6rem; }
+  .md-typeset .tx-body { padding-left: 0.6rem; }
+}
+
+/* The operator keeps its place while the branches below it are opened -- without
+ * that, choosing a branch lights a symbol you cannot see, which is the whole
+ * mechanism. It is smaller here than on the home page: there it is the hero, here
+ * it is the legend. */
+.tx-sticky { padding: 1.7rem 1.1rem 1.1rem; }
+
+/* the label moves inside the box: when the plate is pinned under the header, a
+ * label sitting on the top rule would be behind it */
+.tx-sticky::before { top: 0.45rem; left: 0.9rem; padding: 0; }
+.tx-sticky .op-line { font-size: clamp(1.15rem, 3.2vw, 1.6rem); }
+.tx-sticky .op-line--sub { font-size: clamp(0.95rem, 2.6vw, 1.26rem); }
+
+@media screen and (min-width: 76.25em) and (prefers-reduced-motion: no-preference) {
+  .tx-sticky { position: sticky; top: var(--md-header-height, 2.4rem); z-index: 1; }
+}
+
+/* ---- the full static table under the tree ------------------------------- */
+
+.md-typeset .tx-all-wrap { overflow-x: auto; }
+
+/* Material turns tables into their own scroll wrapper with JavaScript; without it
+ * the bare table collapses its last columns, so the display is set here and the
+ * wrapper above does the scrolling in both cases -- a safety net for the phone
+ * layout, where no six-column table fits anything. */
+.md-typeset .tx-all-wrap table:not([class]) {
+  display: table;
+  width: 100%;
+  font-size: 0.68rem;
+}
+
+/* The three declaration booleans used to be three columns, and their three headers
+ * -- CAUSAL WEIGHTS STOCHASTIC, uppercase and letter-spaced -- were most of the
+ * ~220px by which the table overran the page. They are one `declares` column now;
+ * everything to the right of the sentence still takes only what it needs. */
+.md-typeset .tx-all-wrap th:nth-child(n+3),
+.md-typeset .tx-all-wrap td:nth-child(n+3) {
+  width: 1%;
+  min-width: 0;                 /* Material puts 5rem on every cell */
+  white-space: nowrap;
+}
+
+/* the sentence takes whatever the other five leave, and this is the floor it wraps
+ * down to -- low enough that the table still fits the tablet layout, where there is
+ * no table of contents but no sidebar gutter either */
+.md-typeset .tx-all-wrap th:nth-child(2),
+.md-typeset .tx-all-wrap td:nth-child(2) { min-width: 12rem; }
+
+/* With scripting on, Material wraps the table in a scroller of its own that bleeds
+ * 0.6rem into the content padding on each side. Inside our overflow box that bleed
+ * is a dozen pixels of scroll range with no content in it -- the wrapper scrolling
+ * when there is nothing to scroll to. The table here is already sized to the column,
+ * so take the bleed back. */
+.md-typeset .tx-all-wrap .md-typeset__scrollwrap { margin-left: 0; margin-right: 0; }
+.md-typeset .tx-all-wrap .md-typeset__table { padding: 0; }
+
+/* `backends` is the one remaining wide column, and only because one method in
+ * thirty-two claims three paths. Letting it wrap costs that row a second line and
+ * returns the width to the sentence. */
+.md-typeset .tx-all-wrap td:last-child {
+  white-space: normal;
+  min-width: 5rem;
+}
+
+.md-typeset .tx-all-wrap th,
+.md-typeset .tx-all-wrap td {
+  padding: 0.4em 0.7em;
+  vertical-align: top;
+}
+
+.md-typeset .tx-all-wrap thead th {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  font-weight: 400;
+  color: var(--ab-faint);
+  background: none;
+  white-space: nowrap;
+}
+
+.md-typeset .tx-all-wrap td:first-child {
+  width: 1%;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+/* ---- the `declares` column, and the key that sits above it ---------------
+ * Letters rather than ticks and crosses: a tick and a cross are the same glyph to
+ * anyone who cannot tell the two colours apart, whereas `c` `w` `s` name themselves
+ * once the key has been read -- and the key is one line above the table, not in the
+ * notes below it. Every row carries all three slots, declared or not, so scanning
+ * the column is reading positions rather than looking things up. */
+.md-typeset .tx-dec,
+.md-typeset abbr.tx-dec {
+  font-family: var(--ab-mono);
+  border-bottom: 0;             /* Material's dotted underline on <abbr> */
+  text-decoration: none;
+  cursor: help;
+}
+
+.md-typeset .tx-all-wrap .tx-dec { margin-right: 0.45em; }
+.md-typeset .tx-all-wrap .tx-dec:last-child { margin-right: 0; }
+
+/* the one place the table says no. Struck *and* faint, so it survives both a
+ * greyscale print and a reader who has turned colour down. The side padding is
+ * load-bearing: a line-through paints across the whole inline box, and without it
+ * the rule stops at the glyph -- a struck `c` is then a passable euro sign. With
+ * the line running past both sides it reads as a letter crossed out. */
+.md-typeset .tx-struck {
+  color: var(--ab-faint);
+  text-decoration: line-through;
+  text-decoration-thickness: from-font;
+}
+
+/* Drawn as a background rule rather than `line-through`, because a line-through
+ * stops at the glyph and a bar drawn exactly across a lowercase `c` is a euro sign.
+ * This one runs the full width of the box, padding included, so it reads as a letter
+ * crossed out at any size. */
+.md-typeset .tx-dec[data-no] {
+  color: var(--ab-faint);
+  cursor: default;
+  padding: 0 0.3em;
+  background-image: linear-gradient(to bottom, transparent 0 46%,
+                                    currentcolor 46% 54%, transparent 54% 100%);
+  background-repeat: no-repeat;
+}
+
+.md-typeset .tx-legend {
+  margin: 0 0 0.6rem;
+  font-size: 0.68rem;
+  line-height: 1.6;
+  color: var(--ab-faint);
+}
+
+.md-typeset .tx-legend strong,
+.md-typeset .tx-legend code { color: var(--md-default-fg-color); }
+
+/* a rule in the category's colour, so the static table is keyed to the tree */
+.md-typeset .tx-all-wrap td [data-cat] {
+  display: inline-block;
+  padding-left: 0.5em;
+  box-shadow: inset 2px 0 0 var(--hl);
+  white-space: nowrap;
+}
+

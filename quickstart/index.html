@@ -49,9 +49,29 @@
     
       <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../stylesheets/attnbank.css">
+      <link rel="stylesheet" href="../stylesheets/tokens.css">
     
-      <link rel="stylesheet" href="../stylesheets/bank.css">
+      <link rel="stylesheet" href="../stylesheets/base.css">
+    
+      <link rel="stylesheet" href="../stylesheets/home.css">
+    
+      <link rel="stylesheet" href="../stylesheets/operator.css">
+    
+      <link rel="stylesheet" href="../stylesheets/taxonomy.css">
+    
+      <link rel="stylesheet" href="../stylesheets/browse.css">
+    
+      <link rel="stylesheet" href="../stylesheets/compare.css">
+    
+      <link rel="stylesheet" href="../stylesheets/method.css">
+    
+      <link rel="stylesheet" href="../stylesheets/gallery.css">
+    
+      <link rel="stylesheet" href="../stylesheets/prose.css">
+    
+      <link rel="stylesheet" href="../stylesheets/chrome.css">
+    
+      <link rel="stylesheet" href="../stylesheets/motion.css">
     
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -95,10 +115,15 @@
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="attnbank" class="md-header__button md-logo" aria-label="attnbank" data-md-component="logo">
-      
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
-
+      <svg class="ab-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 24" aria-hidden="true">
+  <rect x="0"    y="5" width="2.6" height="14" style="fill: var(--c-exact)"/>
+  <rect x="4.2"  y="5" width="2.6" height="14" style="fill: var(--c-interaction)"/>
+  <rect x="8.4"  y="5" width="2.6" height="14" style="fill: var(--c-restrict)"/>
+  <rect x="12.6" y="5" width="2.6" height="14" style="fill: var(--c-compress)"/>
+  <rect x="16.8" y="5" width="2.6" height="14" style="fill: var(--c-factorize)"/>
+  <rect x="21"   y="5" width="2.6" height="14" style="fill: var(--c-coupling)"/>
+  <rect x="25.2" y="5" width="2.6" height="14" style="fill: var(--c-recurrent)"/>
+</svg>
     </a>
     <label class="md-header__button md-icon" for="__drawer">
       
@@ -233,10 +258,15 @@
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="attnbank" class="md-nav__button md-logo" aria-label="attnbank" data-md-component="logo">
-      
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
-
+      <svg class="ab-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 24" aria-hidden="true">
+  <rect x="0"    y="5" width="2.6" height="14" style="fill: var(--c-exact)"/>
+  <rect x="4.2"  y="5" width="2.6" height="14" style="fill: var(--c-interaction)"/>
+  <rect x="8.4"  y="5" width="2.6" height="14" style="fill: var(--c-restrict)"/>
+  <rect x="12.6" y="5" width="2.6" height="14" style="fill: var(--c-compress)"/>
+  <rect x="16.8" y="5" width="2.6" height="14" style="fill: var(--c-factorize)"/>
+  <rect x="21"   y="5" width="2.6" height="14" style="fill: var(--c-coupling)"/>
+  <rect x="25.2" y="5" width="2.6" height="14" style="fill: var(--c-recurrent)"/>
+</svg>
     </a>
     attnbank
   </label>
@@ -349,10 +379,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#tensors" class="md-nav__link">
+  <a href="#install" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tensors
+        Install
       
     </span>
   </a>
@@ -360,52 +390,46 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#three-functions" class="md-nav__link">
+  <a href="#the-first-call" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Three functions
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Three functions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#attend-the-one-liner" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        attend — the one-liner
+        The first call
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#build-the-object" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#the-tensor-convention" class="md-nav__link">
     <span class="md-ellipsis">
       
-        build — the object
+        The tensor convention
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#compare-the-numbers" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#the-object-build" class="md-nav__link">
     <span class="md-ellipsis">
       
-        compare — the numbers
+        The object: build
       
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#the-numbers-compare" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The numbers: compare
+      
+    </span>
+  </a>
   
 </li>
       
@@ -447,17 +471,6 @@
     <span class="md-ellipsis">
       
         Errors that tell you what to do
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next
       
     </span>
   </a>
@@ -1438,34 +1451,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../methods/topk/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Oracle top-k restriction
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../methods/value_topk/" class="md-nav__link">
         
   
@@ -1726,6 +1711,34 @@
     
   
     Swin-style shifted local windows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../methods/topk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Top-k restriction (oracle)
   
 
     
@@ -4127,10 +4140,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#tensors" class="md-nav__link">
+  <a href="#install" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tensors
+        Install
       
     </span>
   </a>
@@ -4138,52 +4151,46 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#three-functions" class="md-nav__link">
+  <a href="#the-first-call" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Three functions
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Three functions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#attend-the-one-liner" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        attend — the one-liner
+        The first call
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#build-the-object" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#the-tensor-convention" class="md-nav__link">
     <span class="md-ellipsis">
       
-        build — the object
+        The tensor convention
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#compare-the-numbers" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#the-object-build" class="md-nav__link">
     <span class="md-ellipsis">
       
-        compare — the numbers
+        The object: build
       
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#the-numbers-compare" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The numbers: compare
+      
+    </span>
+  </a>
   
 </li>
       
@@ -4231,17 +4238,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#next" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -4262,7 +4258,20 @@
   
 
 
+<nav class="ab-path" aria-label="The path through these pages">
+  <ol>
+    <li aria-current="page"><b>01</b>Quickstart</li>
+    <li><a href="../invariant/"><b>02</b>The invariant</a></li>
+    <li><a href="../conformance/"><b>03</b>Conformance</a></li>
+    <li><a href="../backends/"><b>04</b>Backends</a></li>
+  </ol>
+</nav>
+
 <h1 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">&para;</a></h1>
+<p class="ab-lead">Install, make one call, learn the one tensor convention, and know
+where everything else lives. Four pages explain this library; this is the first.</p>
+
+<h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>attnbank<span class="w">            </span><span class="c1"># torch + numpy, nothing else</span>
 </code></pre></div>
 <p>Optional extras, none of them needed to start:</p>
@@ -4284,7 +4293,7 @@
 </tr>
 <tr>
 <td><code>attnbank[studies]</code></td>
-<td><code>transformers</code> + <code>datasets</code>, for capturing real activations</td>
+<td><code>transformers</code>, <code>datasets</code>, <code>accelerate</code> — capturing real activations</td>
 </tr>
 <tr>
 <td><code>attnbank[dev]</code></td>
@@ -4292,10 +4301,24 @@
 </tr>
 </tbody>
 </table>
-<h2 id="tensors">Tensors<a class="headerlink" href="#tensors" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>query  [B, H, m, d]
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>key    [B, H, n, d]
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>value  [B, H, n, dv]
+<h2 id="the-first-call">The first call<a class="headerlink" href="#the-first-call" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">attnbank</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ab</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">query</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>        <span class="c1"># [B, H, m, d]</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">key</span>   <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>        <span class="c1"># [B, H, n, d]</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">value</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>        <span class="c1"># [B, H, n, dv]</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">y</span> <span class="o">=</span> <span class="n">ab</span><span class="o">.</span><span class="n">attend</span><span class="p">(</span><span class="s2">&quot;topk&quot;</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">y</span><span class="o">.</span><span class="n">shape</span>                                   <span class="c1"># [B, H, m, dv] = [1, 8, 128, 64]</span>
+</code></pre></div>
+<p><code>ab.attend</code> builds the method, runs it, returns <code>y</code>. Nothing else. Swap <code>"topk"</code> for
+any of the registered names — <code>"performer"</code>, <code>"sinkhorn"</code>, <code>"retnet"</code> — and the call
+stays the same.</p>
+<h2 id="the-tensor-convention">The tensor convention<a class="headerlink" href="#the-tensor-convention" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>query  [B, H, m, d]
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>key    [B, H, n, d]
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>value  [B, H, n, dv]
 </code></pre></div>
 <p>Causal masking aligns the <strong>last</strong> query with the <strong>last</strong> key, so <code>m &lt;= n</code> and query
 <code>i</code> sees keys <code>0 … i + (n - m)</code>. That is the decode convention, and it means the same
@@ -4306,26 +4329,22 @@ code path serves prefill (<code>m == n</code>) and a single decode step (<code>m
 what a reader expects — <code>ab.attend("topk", q, k, v, k=64)</code> is top-k's budget. The
 tensors are positional, so nothing about <code>attn(q, k, v)</code> changed.</p>
 </div>
-<h2 id="three-functions">Three functions<a class="headerlink" href="#three-functions" title="Permanent link">&para;</a></h2>
-<h3 id="attend-the-one-liner"><code>attend</code> — the one-liner<a class="headerlink" href="#attend-the-one-liner" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">attnbank</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ab</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">y</span> <span class="o">=</span> <span class="n">ab</span><span class="o">.</span><span class="n">attend</span><span class="p">(</span><span class="s2">&quot;topk&quot;</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
-</code></pre></div>
-<p>Builds the method, runs it, returns <code>y</code>. Nothing else.</p>
-<h3 id="build-the-object"><code>build</code> — the object<a class="headerlink" href="#build-the-object" title="Permanent link">&para;</a></h3>
+<h2 id="the-object-build">The object: <code>build</code><a class="headerlink" href="#the-object-build" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">attn</span> <span class="o">=</span> <span class="n">ab</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;topk&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>            <span class="c1"># a torch.nn.Module</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">out</span> <span class="o">=</span> <span class="n">attn</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">out</span><span class="o">.</span><span class="n">y</span>                                     <span class="c1"># [B, H, m, dv]</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">out</span><span class="o">.</span><span class="n">weights</span>                               <span class="c1"># [B, H, m, n] — the implied measure</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">out</span><span class="o">.</span><span class="n">v_hat</span>                                 <span class="c1"># [B, H, n, dv] — if values were compressed</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">out</span><span class="o">.</span><span class="n">extras</span>                                <span class="c1"># method-specific diagnostics</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">out</span><span class="o">.</span><span class="n">y</span>          <span class="c1"># [B, H, m, dv]</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">out</span><span class="o">.</span><span class="n">weights</span>    <span class="c1"># [B, H, m, n] — the implied measure</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">out</span><span class="o">.</span><span class="n">v_hat</span>      <span class="c1"># [B, H, n, dv] — if values were compressed</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">out</span><span class="o">.</span><span class="n">extras</span>     <span class="c1"># method-specific diagnostics</span>
 </code></pre></div>
-<p><code>return_weights</code> materialises an <code>m × n</code> tensor, so it is off by default.</p>
-<h3 id="compare-the-numbers"><code>compare</code> — the numbers<a class="headerlink" href="#compare-the-numbers" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">rows</span> <span class="o">=</span> <span class="n">ab</span><span class="o">.</span><span class="n">compare</span><span class="p">([</span><span class="s2">&quot;softmax&quot;</span><span class="p">,</span> <span class="s2">&quot;topk&quot;</span><span class="p">,</span> <span class="s2">&quot;performer&quot;</span><span class="p">],</span> <span class="n">query</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>                  <span class="n">configs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;topk&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">},</span> <span class="s2">&quot;performer&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="mi">256</span><span class="p">}})</span>
+<p><code>return_weights</code> materialises an <code>m × n</code> tensor, so it is off by default. <code>weights</code>
+and <code>v_hat</code> are not a debugging courtesy: together with <code>y</code> they are the
+<a href="../invariant/">invariant</a> everything in this library rests on.</p>
+<h2 id="the-numbers-compare">The numbers: <code>compare</code><a class="headerlink" href="#the-numbers-compare" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">rows</span> <span class="o">=</span> <span class="n">ab</span><span class="o">.</span><span class="n">compare</span><span class="p">([</span><span class="s2">&quot;softmax&quot;</span><span class="p">,</span> <span class="s2">&quot;topk&quot;</span><span class="p">,</span> <span class="s2">&quot;performer&quot;</span><span class="p">],</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>                  <span class="n">query</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>                  <span class="n">configs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;topk&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">},</span> <span class="s2">&quot;performer&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="mi">256</span><span class="p">}})</span>
 </code></pre></div>
 <p>One JSON-serialisable dict per method: <code>output_error</code>, <code>relative_error</code>, the two terms
 of the <a href="../invariant/#why-it-matters">error decomposition</a>, total variation, and the
@@ -4342,7 +4361,7 @@ matrix norms of §4.2 — all reduced to a median over queries, batch and heads.
 <p><code>ab.describe</code> prints the declaration attributes, the constructor signature with its
 defaults, the correctness anchor, the backends, the paper section and the citations:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>nystrom  --  interaction / approximate
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>=====================================
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>======================================
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Landmark Nystrom factorization of the softmax matrix; signed weights.
 <a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
 <a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>changes      the interaction g(q, x) is replaced by a cheaper surrogate
@@ -4360,36 +4379,49 @@ defaults, the correctness anchor, the backends, the paper section and the citati
 <a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>references   xiong2021nystromformer, williams2001using
 </code></pre></div>
 <h2 id="choosing-an-execution-path">Choosing an execution path<a class="headerlink" href="#choosing-an-execution-path" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">print</span><span class="p">(</span><span class="n">ab</span><span class="o">.</span><span class="n">backends</span><span class="p">())</span>                      <span class="c1"># what runs here, and why anything does not</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">ab</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;softmax&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;sdpa&quot;</span><span class="p">)</span>       <span class="c1"># PyTorch&#39;s fused kernel</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">ab</span><span class="o">.</span><span class="n">backend_matrix</span><span class="p">()</span>                       <span class="c1"># method -&gt; declared backends</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">print</span><span class="p">(</span><span class="n">ab</span><span class="o">.</span><span class="n">backends</span><span class="p">())</span>                 <span class="c1"># what runs here, and why anything does not</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">ab</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;softmax&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;sdpa&quot;</span><span class="p">)</span>  <span class="c1"># PyTorch&#39;s fused kernel</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">ab</span><span class="o">.</span><span class="n">backend_matrix</span><span class="p">()</span>                  <span class="c1"># method -&gt; declared backends</span>
 </code></pre></div>
 <p>The default is <code>reference</code>: plain PyTorch, always available, and the path every other
 backend is tested against. See <a href="../backends/">Backends</a>.</p>
 <h2 id="checking-the-contract">Checking the contract<a class="headerlink" href="#checking-the-contract" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">ab</span><span class="o">.</span><span class="n">check_invariant</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>            <span class="c1"># y == weights @ (v_hat or value)</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">ab</span><span class="o">.</span><span class="n">check_conformance</span><span class="p">(</span><span class="s2">&quot;topk&quot;</span><span class="p">)</span>              <span class="c1"># a printable pass/fail report</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">ab</span><span class="o">.</span><span class="n">check_invariant</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>       <span class="c1"># y == weights @ (v_hat or value)</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">ab</span><span class="o">.</span><span class="n">check_conformance</span><span class="p">(</span><span class="s2">&quot;topk&quot;</span><span class="p">)</span>         <span class="c1"># a printable pass/fail report</span>
 </code></pre></div>
+<p>What these check — and why it is worth checking — is the subject of the next two
+pages: <a href="../invariant/">the invariant</a> and <a href="../conformance/">conformance</a>.</p>
 <h2 id="errors-that-tell-you-what-to-do">Errors that tell you what to do<a class="headerlink" href="#errors-that-tell-you-what-to-do" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ab</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;topkk&quot;</span><span class="p">)</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="go">UnknownMethodError: unknown method &#39;topkk&#39;. Did you mean: &#39;topk&#39;? ab.available() lists</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="go">all 32 registered methods; ab.list_methods() prints them grouped by category.</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ab</span><span class="o">.</span><span class="n">attend</span><span class="p">(</span><span class="s2">&quot;topk&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="go">ShapeError: query (in ab.attend(...)) must be [B, H, m, d]; got [8, 8] (2 dims, expected 4)</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ab</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;sinkhorn&quot;</span><span class="p">)(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="go">CausalNotSupportedError: &#39;sinkhorn&#39; does not support causal attention: it declares</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="go">supports_causal = False, which is a statement about the operator, not a missing</span>
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="go">feature. No method in the coupling category supports it; 21 others do, e.g.</span>
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="go">&#39;blocktopk&#39;, &#39;cosformer&#39;, … ab.list_methods(causal=True) lists them all.</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="go">UnknownMethodError: unknown method &#39;topkk&#39;. Did you mean: &#39;topk&#39;?</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="go">ab.available() lists all 78 registered methods; ab.list_methods() prints</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="go">them grouped by category.</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ab</span><span class="o">.</span><span class="n">attend</span><span class="p">(</span><span class="s2">&quot;topk&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="go">ShapeError: query (in ab.attend(...)) must be [B, H, m, d]; got [8, 8]</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="go">(2 dims, expected 4)</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ab</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;sinkhorn&quot;</span><span class="p">)(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="go">CausalNotSupportedError: &#39;sinkhorn&#39; does not support causal attention: it</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="go">declares supports_causal = False, which is a statement about the operator,</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="go">not a missing feature. No method in the coupling category supports it; 51</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="go">others do, e.g. &#39;abc&#39;, &#39;based&#39;, &#39;bigbird&#39;, &#39;blocktopk&#39;, &#39;cosformer&#39;.</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="go">ab.list_methods(causal=True) lists them all. Pass causal=False to use it</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="go">as it is.</span>
 </code></pre></div>
-<h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
-<ul>
-<li><a href="../taxonomy/">The taxonomy</a> — what the seven categories mean.</li>
-<li><a href="../invariant/">The invariant</a> — why <code>weights</code> and <code>v_hat</code> are part of the interface.</li>
-<li><a href="../examples/">Examples gallery</a> — short scripts you can run now.</li>
-</ul>
+<nav class="ab-next" aria-label="Continue reading">
+  <a href="../invariant/">
+    <span class="ab-next-kicker">Next · 02 of 04</span>
+    <span class="ab-next-title">The invariant</span>
+    <span class="ab-next-desc">Why <code>weights</code> and <code>v_hat</code> are
+    part of the interface, and what the one property every method must satisfy buys
+    you.</span>
+  </a>
+  <p class="ab-next-also">Also from here:
+  <a href="../taxonomy/">the taxonomy</a> — what the seven categories mean ·
+  <a href="../methods/">browse the bank</a> ·
+  <a href="../examples/">examples gallery</a> — short scripts you can run now.</p>
+</nav>
 
 
 
@@ -4428,12 +4460,7 @@ backend is tested against. See <a href="../backends/">Backends</a>.</p>
       Apache-2.0
     </div>
   
-  
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
-  
+  Served entirely from this site &mdash; no third-party requests.
 </div>
       
     </div>
@@ -4460,9 +4487,13 @@ backend is tested against. See <a href="../backends/">Backends</a>.</p>
       
         <script src="../javascripts/bank.js"></script>
       
-        <script src="../javascripts/attnbank.js"></script>
+        <script src="../javascripts/operator.js"></script>
+      
+        <script src="../javascripts/taxonomy.js"></script>
       
         <script src="../javascripts/clip.js"></script>
+      
+        <script src="../javascripts/motion.js"></script>
       
     
   </body>

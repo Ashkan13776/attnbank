@@ -1,0 +1,454 @@
+/* The side-by-side comparison.
+ *
+ * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
+ * Every colour, size and duration in here comes from a token in tokens.css or from
+ * Material's own --md-* set.
+ *
+ * Zone: scientific instrument. The panel is an N-way property diff over what the
+ * registry declares: differing rows carry full ink, agreed rows fold behind a
+ * diff-style expander at the foot of the table, the odd cell in a row is marked with
+ * a rule (never a hue behind text), and the one quantitative axis -- the cost model
+ * -- gets linear bars in the method's category hue over equal-width columns, so
+ * equal percentages are equal lengths and the bars cannot lie.
+ */
+
+/* ---- picking -------------------------------------------------------------
+ * The checkbox in each row, the panel it fills, and the tray that echoes the picks
+ * are all created or revealed by docs/javascripts/bank.js -- the checkbox does not
+ * exist in the HTML at all, and the panel is `hidden` until two methods are picked,
+ * so with scripting off there is no empty frame and nothing dead to click.
+ */
+
+/* a gutter for the checkbox, opened only on the rows that got one: the name is a
+ * block, so inline the box would take a line of its own */
+.md-typeset .bank-table tbody tr[data-picked] th {
+  position: relative;
+  padding-left: 2.1em;
+}
+
+.bank-pick {
+  position: absolute;
+  left: 0.6em;
+  top: 0.72em;
+  width: 1em;
+  height: 1em;
+  margin: 0;
+  accent-color: var(--md-typeset-a-color);
+  cursor: pointer;
+}
+
+.bank-pick:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: 2px;
+}
+
+.bank-pick:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.md-typeset .bank-table tbody tr[data-picked="1"] {
+  background: var(--md-code-bg-color);
+}
+
+.md-typeset .bank-table tbody tr[data-picked="1"] th {
+  box-shadow: inset 2px 0 0 var(--md-typeset-a-color);
+}
+
+.bank-pick-hint {
+  margin: 0.1rem 0 0.1rem;
+  font-size: 0.63rem;
+  color: var(--md-default-fg-color--light);
+}
+
+/* ---- the tray ------------------------------------------------------------
+ * Fixed to the viewport while at least one method is picked and the panel is
+ * off-screen: the feedback for a tick that happened sixty rows down. Pure state
+ * echo, no motion.
+ */
+
+.bank-tray {
+  position: fixed;
+  bottom: 0.9rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem 0.55rem;
+  max-width: min(46rem, calc(100vw - 1.6rem));
+  padding: 0.4rem 0.75rem;
+  font-size: 0.66rem;
+  line-height: 1.4;
+  color: var(--md-default-fg-color);
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--ab-rule);
+  border-radius: 0.35rem;
+  box-shadow: var(--md-shadow-z2);
+}
+
+.bank-tray__label {
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--md-default-fg-color--light);
+}
+
+.bank-tray__chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.bank-tray__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15em;
+  padding: 0.05em 0.2em 0.05em 0.55em;
+  border: 1px solid var(--ab-rule);
+  border-radius: 1em;
+  white-space: nowrap;
+}
+
+.bank-tray__x {
+  padding: 0 0.35em;
+  font: inherit;
+  line-height: 1.2;
+  color: var(--md-default-fg-color--light);
+  background: none;
+  border: 0;
+  border-radius: 1em;
+  cursor: pointer;
+}
+
+.bank-tray__x:hover,
+.bank-tray__x:focus-visible {
+  color: var(--md-accent-fg-color);
+}
+
+.bank-tray__x:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: 1px;
+}
+
+.bank-tray__status {
+  color: var(--md-default-fg-color--light);
+  font-variant-numeric: tabular-nums;
+}
+
+.md-typeset a.bank-tray__view {
+  font-weight: 700;
+}
+
+.bank-tray .bank-reset {
+  margin: 0;
+}
+
+@media print {
+  .bank-tray { display: none; }
+}
+
+/* ---- the panel ------------------------------------------------------------ */
+
+.bank-compare {
+  margin: 1rem 0 1.2rem;
+  padding: 0.7rem 0.9rem 0.8rem;
+  border: 1px solid var(--ab-rule);
+  border-radius: 0.3rem;
+}
+
+.bank-compare__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin-bottom: 0.5rem;
+}
+
+.md-typeset .bank-compare__h {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+}
+
+.bank-compare__hint {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 0.63rem;
+  color: var(--md-default-fg-color--light);
+  font-variant-numeric: tabular-nums;
+}
+
+.bank-compare__note {
+  margin: 0.5rem 0 0;
+  font-size: 0.63rem;
+  line-height: 1.5;
+  color: var(--md-default-fg-color--light);
+}
+
+.bank-compare__scroll {
+  overflow-x: auto;
+}
+
+/* Equal method columns, enforced: the cost bars are percentages of the cell, so the
+ * cells must be the same width for the lengths to be comparable. The property
+ * column is the one fixed width; the rest split what remains evenly. */
+.bank-compare__table {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+  font-size: 0.68rem;
+  border-collapse: collapse;
+}
+
+.bank-compare__table[data-cols="2"] { min-width: 24rem; }
+.bank-compare__table[data-cols="3"] { min-width: 32rem; }
+.bank-compare__table[data-cols="4"] { min-width: 40rem; }
+
+.md-typeset .bank-compare__table th,
+.md-typeset .bank-compare__table td {
+  padding: 0.45em 0.7em;
+  vertical-align: top;
+  text-align: left;
+  overflow-wrap: anywhere;
+  border-top: 1px solid var(--ab-rule-soft);
+  background: none;
+}
+
+/* the property column: fixed width (which under table-layout: fixed sizes the whole
+ * column), sticky under horizontal scroll so four methods on a phone keep their row
+ * labels, and recessive ink -- the values are the content */
+.md-typeset .bank-compare__table thead th:first-child {
+  width: 10em;
+}
+
+.md-typeset .bank-compare__table tbody tr:not(.bank-cmp__group) th,
+.md-typeset .bank-compare__table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--md-default-bg-color);
+}
+
+.md-typeset .bank-compare__table tbody tr:not(.bank-cmp__group) th {
+  font-weight: 400;
+  color: var(--md-default-fg-color--light);
+  overflow-wrap: normal;      /* never break an identifier mid-word at full width */
+}
+
+.md-typeset .bank-compare__table thead th {
+  position: relative;
+  border-top: none;
+  border-bottom: 1px solid var(--ab-rule);
+  vertical-align: bottom;
+}
+
+/* the column's identity: the category hue as a tick over the method's name, the
+ * same hue that category carries in every monograph figure -- never behind text,
+ * and short, so four columns do not fuse into one striped band */
+.md-typeset .bank-compare__table thead th[data-cat]::before {
+  content: "";
+  display: block;
+  width: 2.4em;
+  height: 3px;
+  margin-bottom: 0.5em;
+  background: var(--hl);
+}
+
+.md-typeset .bank-compare__table thead th .bank-cmp__name {
+  display: inline-block;
+  padding-right: 1.4em;
+}
+
+.bank-cmp__corner {
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .bank-cmp__name {
+  font-weight: 700;
+}
+
+.bank-cmp__key {
+  display: block;
+  font-family: var(--ab-mono);
+  font-size: 0.9em;
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset p.bank-cmp__summary {
+  margin: 0.25rem 0 0;
+  font-size: 0.92em;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--md-default-fg-color--light);
+}
+
+.bank-cmp__drop {
+  position: absolute;
+  top: 0.45em;
+  right: 0.3em;
+  padding: 0 0.3em;
+  font: inherit;
+  line-height: 1.2;
+  cursor: pointer;
+  color: var(--md-default-fg-color--light);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 0.15rem;
+}
+
+.bank-cmp__drop:hover,
+.bank-cmp__drop:focus-visible {
+  color: var(--md-accent-fg-color);
+  border-color: var(--ab-rule);
+}
+
+.bank-cmp__drop:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: 1px;
+}
+
+/* a section rule inside the table: the group title, with its qualifier beside it */
+.md-typeset .bank-compare__table tr.bank-cmp__group th {
+  width: auto;
+  padding-top: 1em;
+  white-space: normal;
+  color: var(--md-default-fg-color--light);
+  border-top: 1px solid var(--ab-rule);
+}
+
+.bank-cmp__gt {
+  font-size: 0.9em;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--md-default-fg-color);
+}
+
+.bank-cmp__gs {
+  margin-left: 0.7em;
+  font-size: 0.88em;
+}
+
+/* Agreement is the default state of this table and the least interesting thing in
+ * it, so it folds away; the expander row at the foot of the table puts it back.
+ * When shown, agreed rows are context, dimmed the way a diff dims unchanged lines. */
+.bank-compare__table[data-show-same="0"] tr[data-same="1"] {
+  display: none;
+}
+
+.md-typeset .bank-compare__table tbody tr[data-same="1"]:not(.bank-cmp__group) td {
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .bank-compare__table tbody tr[data-same="0"] th {
+  color: var(--md-default-fg-color);
+}
+
+/* the expander, styled like an elided hunk in a diff view */
+.md-typeset .bank-compare__table tr.bank-cmp__fold td {
+  padding: 0;
+  border-top: 1px dashed var(--ab-rule);
+}
+
+.bank-cmp__foldbtn {
+  display: block;
+  width: 100%;
+  padding: 0.5em 0.7em;
+  font: inherit;
+  text-align: center;
+  color: var(--md-default-fg-color--light);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.bank-cmp__foldbtn:hover {
+  color: var(--md-accent-fg-color);
+  background: var(--ab-sunk);
+}
+
+.bank-cmp__foldbtn:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: -2px;
+}
+
+/* the label stays inside the scrollport when the table is wider than the screen */
+.bank-cmp__foldtxt {
+  display: inline-block;
+  position: sticky;
+  left: 1em;
+  right: 1em;
+}
+
+/* The odd one out. A rule under the cell rather than a fill behind it: the fill
+ * would have to clear 4.5:1 against the text in both schemes, and a rule does not. */
+.md-typeset .bank-compare__table td[data-odd] {
+  background: var(--ab-sunk);
+  box-shadow: inset 0 -2px 0 var(--md-typeset-a-color);
+}
+
+.bank-cmp__flag {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- the cost model --------------------------------------------------------
+ * One quantitative axis, so it gets the one visual treatment: a linear bar in the
+ * method's category hue (via [data-cat] on the cell), the ratio against softmax as
+ * the leading figure, the declared count beneath it. The bar ranks; the numbers
+ * are the declaration.
+ */
+
+.bank-cmp__track {
+  display: block;
+  height: 3px;
+  max-width: 14em;            /* the same cap in every column, so lengths stay comparable */
+  margin: 0.25em 0 0.4em;
+  background: var(--ab-rule-soft);
+}
+
+.bank-cmp__fill {
+  display: block;
+  height: 100%;
+  background: var(--hl, var(--ab-faint));
+}
+
+.bank-cmp__ratio {
+  display: block;
+  font-family: var(--ab-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--md-default-fg-color);
+}
+
+.bank-cmp__num {
+  display: block;
+  font-family: var(--ab-mono);
+  font-size: 0.88em;
+  font-variant-numeric: tabular-nums;
+  color: var(--md-default-fg-color--light);
+}
+
+/* agreed-but-shown cost rows keep their dim ink, ratio included */
+.md-typeset .bank-compare__table tbody tr[data-same="1"] .bank-cmp__ratio {
+  color: var(--md-default-fg-color--light);
+}
+
+.bank-cmp__none {
+  color: var(--md-default-fg-color--light);
+}
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset p.bank-cmp__summary { display: none; }
+  .md-typeset .bank-compare__table thead th:first-child { width: 7.5em; }
+  .md-typeset .bank-compare__table tbody tr:not(.bank-cmp__group) th {
+    overflow-wrap: anywhere;  /* on a phone, a broken identifier beats a lost column */
+  }
+  .bank-tray__label { display: none; }
+}

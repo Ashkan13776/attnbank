@@ -1,0 +1,471 @@
+/* A generated method page -- the reference core of the site.
+ *
+ * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md. Zone:
+ * scientific instrument. Dense, typographic, quiet; no hero, no decoration,
+ * no motion that is not functional. Every colour, face, size and duration
+ * comes from a token in tokens.css.
+ *
+ * The anatomy styled here is emitted by page() in docs/gen_methods.py:
+ *
+ *   .attn-standfirst   the docstring lede, minus the name the H1 already said
+ *   .attn-facts        the nameplate: key, category, objective, class, monograph
+ *   .attn-changes      the one-sentence statement of what the category changes
+ *   .attn-decl         the declaration table the conformance suite tests
+ *   .attn-flag         one declared yes/no inside it, with a mark to scan by
+ *   .attn-tab          the other declared tables: cost, backends, configuration
+ *   .attn-caveat       a caption qualifying the table above it
+ *   .attn-out          example output -- executed at build time, not typed in
+ *   .attn-notation     the module docstring body, set in the monograph's face
+ *   .attn-notation__sec  the monograph section that body is written against
+ *   .attn-ref          a monograph cross-reference inside it: a pointer, not code
+ *   .attn-refs         the rendered citations
+ *   .attn-bib          the verbatim BibTeX disclosure (controls from clip.js)
+ *   .attn-colophon     the provenance line at the foot
+ *
+ * The hierarchy is carried by rules and by one hue, never by fills: the
+ * category rule on the nameplate, a 2px ink rule over the declaration table
+ * and a hairline over every other, and captions and apparatus at -muted.
+ */
+
+/* ---- standfirst ---------------------------------------------------------- */
+/* The rest of the method's own lede, as a subtitle in the serif the H1 is set
+ * in. One register, two sizes: the name, then what it does. */
+
+.md-typeset .attn-standfirst {
+  font-family: var(--ab-serif);
+  font-size: var(--ab-step-2);
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--ab-ink-soft);
+  max-width: 34rem;
+  margin: calc(-1 * var(--ab-space-4)) 0 var(--ab-space-5);
+}
+
+.md-typeset .attn-standfirst code {
+  font-style: normal;
+  font-size: 0.78em;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* ---- the nameplate ------------------------------------------------------- */
+/* The registry's identifying facts at datasheet density. The one piece of
+ * colour on the page is its rule: the category hue, resolved from [data-cat]
+ * by tokens.css -- the same hue this method carries in the taxonomy, the
+ * browser and every figure of the monograph. A rule, never a fill. */
+
+.md-typeset .attn-facts {
+  margin: var(--ab-space-6) 0;
+  padding: var(--ab-space-2) 0 var(--ab-space-2) var(--ab-space-5);
+  border-left: var(--ab-rule-width-strong) solid var(--hl, var(--ab-rule));
+}
+
+.md-typeset .attn-facts dl {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: var(--ab-space-6);
+  row-gap: var(--ab-space-2);
+  margin: 0;
+}
+
+.md-typeset .attn-facts dt {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ab-ink-muted);
+  padding-top: 0.3em;             /* optical: align the cap line with the dd */
+}
+
+.md-typeset .attn-facts dd {
+  margin: 0;
+  font-size: var(--ab-step--1);
+  line-height: 1.55;
+}
+
+.md-typeset .attn-facts dd code {
+  font-size: 0.95em;
+}
+
+@media screen and (max-width: 37.4375em) {
+  .md-typeset .attn-facts dl {
+    grid-template-columns: 1fr;
+    row-gap: var(--ab-space-1);
+  }
+  .md-typeset .attn-facts dt {
+    padding-top: var(--ab-space-2);
+  }
+}
+
+/* ---- what it changes ------------------------------------------------------ */
+/* The operator formulas are inline mathematics and cannot wrap; on a narrow
+ * screen they scroll within their own line rather than pushing the page wide.
+ * (Display mathematics already does this, in base.css.) */
+
+.md-typeset .attn-changes mjx-container {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* ---- declared tables ----------------------------------------------------- */
+/* Booktabs, the register of a journal table: a strong rule above, a hairline
+ * below, hairlines between rows, no vertical rules, no card chrome. Headers
+ * are mono overlines. .attn-decl is the declaration table -- the page's
+ * central object; .attn-tab is the same instrument at the other tables. */
+
+.md-typeset :is(.attn-decl, .attn-tab) .md-typeset__scrollwrap {
+  margin: var(--ab-space-4) 0;
+}
+
+.md-typeset :is(.attn-decl, .attn-tab) .md-typeset__table {
+  display: block;
+  padding: 0;
+}
+
+.md-typeset :is(.attn-decl, .attn-tab) table:not([class]) {
+  display: table;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  border-top: var(--ab-rule-width) solid var(--ab-rule);
+  border-bottom: var(--ab-rule-width) solid var(--ab-rule);
+  font-size: var(--ab-step--1);
+  background: none;
+}
+
+/* The one table on the page that is this library's argument gets the heavy rule;
+ * the cost, backend and configuration tables keep the hairline. Same instrument,
+ * one of them louder -- which is the whole hierarchy, and it costs no colour. */
+.md-typeset .attn-decl table:not([class]) {
+  border-top: var(--ab-rule-width-strong) solid var(--ab-ink);
+}
+
+.md-typeset :is(.attn-decl, .attn-tab) table:not([class]) th {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ab-ink-muted);
+  border-bottom: var(--ab-rule-width) solid var(--ab-rule);
+  padding: var(--ab-space-2) var(--ab-space-5) var(--ab-space-2) 0;
+  background: none;
+}
+
+.md-typeset :is(.attn-decl, .attn-tab) table:not([class]) td {
+  border-top: var(--ab-rule-width) solid var(--ab-rule-soft);
+  padding: var(--ab-space-2) var(--ab-space-5) var(--ab-space-2) 0;
+  vertical-align: top;
+}
+
+.md-typeset :is(.attn-decl, .attn-tab) table:not([class]) tr:first-child td {
+  border-top: 0;
+}
+
+/* the declaration table is the page's distinguishing object: full measure */
+.md-typeset .attn-decl table:not([class]) {
+  width: 100%;
+}
+
+/* attribute names are identifiers; never hyphenate `expresses_weights` --
+ * and the first column of every declared table is an identifier */
+.md-typeset .attn-decl td:first-child,
+.md-typeset .attn-decl th:first-child,
+.md-typeset .attn-decl td:nth-child(2),
+.md-typeset .attn-tab td:first-child {
+  white-space: nowrap;
+}
+
+/* The declared value, with a mark that can be read down the column in one pass.
+ * Filled square for yes, hollow for no, both in full ink: on this page `no` is
+ * a commitment and not a missing feature, so neither state is greyed and the
+ * difference is carried by the mark rather than by weight or colour. */
+.md-typeset .attn-flag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
+  font-weight: 600;
+  color: var(--ab-ink);
+}
+
+.md-typeset .attn-flag::before {
+  content: "";
+  flex: none;
+  width: 0.5em;
+  height: 0.5em;
+  border: var(--ab-rule-width-strong) solid var(--ab-ink);
+  transform: translateY(-0.05em);
+}
+
+.md-typeset .attn-flag[data-v="yes"]::before {
+  background: var(--ab-ink);
+}
+
+/* ---- a caption under a table --------------------------------------------- */
+/* What qualifies a number belongs against the number, quietly. This was an
+ * admonition, which on a page with no other filled surface was the loudest
+ * object on it and read as boilerplate for exactly that reason. */
+
+.md-typeset .attn-caveat {
+  max-width: 34rem;
+  margin: calc(-1 * var(--ab-space-2)) 0 var(--ab-space-5);
+  padding-left: var(--ab-space-4);
+  border-left: var(--ab-rule-width) solid var(--ab-rule);
+  font-size: var(--ab-step--1);
+  line-height: 1.55;
+  color: var(--ab-ink-muted);
+}
+
+.md-typeset .attn-caveat code {
+  font-size: 0.95em;
+}
+
+/* ---- the executed output ------------------------------------------------- */
+/* A notebook's convention: input sits in a well, what it printed sits on the
+ * page behind a rule, labelled for what it is. The label is provenance the
+ * generator already states in the colophon, so CSS may say it. */
+
+.md-typeset .attn-out {
+  margin: calc(-1 * var(--ab-space-2)) 0 var(--ab-space-5);
+}
+
+.md-typeset .attn-out::before {
+  content: "output — executed at build time";
+  display: block;
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ab-ink-muted);
+  margin: 0 0 var(--ab-space-1);
+}
+
+.md-typeset .attn-out .highlight {
+  background: none;
+}
+
+.md-typeset .attn-out pre {
+  margin: 0;
+  background: none;
+  border-left: var(--ab-rule-width-strong) solid var(--ab-rule);
+}
+
+/* This is the one block on the page nobody will scroll sideways: it is the
+ * answer, and a `repr` of an AttentionOutput is reliably wider than the column.
+ * Wrapping it means the whole of what the method printed is on the page, which
+ * is the entire point of having executed it. */
+.md-typeset .attn-out pre > code {
+  background: none;
+  box-shadow: none;
+  padding: var(--ab-space-1) var(--ab-space-2) var(--ab-space-1) var(--ab-space-5);
+  font-size: var(--ab-step--1);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+/* copying what a snippet printed back into a clipboard serves nobody */
+.md-typeset .attn-out .md-clipboard,
+.md-typeset .attn-out .md-code__nav {
+  display: none;
+}
+
+/* ---- the docstring body: the monograph's register ------------------------ */
+/* "In the paper's notation" is written against the monograph, so it is set in
+ * the monograph's face. Its display blocks are pseudo-TeX, not runnable code:
+ * they lose the code well and stand as indented displays behind a hairline,
+ * the way the same formulas stand in the paper. */
+
+.md-typeset .attn-notation {
+  font-family: var(--ab-serif);
+  line-height: 1.7;
+}
+
+/* The paper section the passage is written against, lifted out of the first
+ * sentence by the generator and set here as the section's source line. */
+.md-typeset .attn-notation__sec {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  line-height: 1.6;
+  color: var(--ab-ink-muted);
+  margin: 0 0 var(--ab-space-4);
+  max-width: 38rem;
+}
+
+/* Only the word is an overline. The labels keep their own case, because some of
+ * them carry a subsection title in quotes and "BLOCKS AND PAGES" is a shout. */
+.md-typeset .attn-notation__from {
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-right: var(--ab-space-2);
+}
+
+.md-typeset .attn-notation__sec code {
+  font-size: 1em;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* A cross-reference into the monograph is a pointer, not something you type:
+ * it keeps the mono face so it still reads as a label, and loses the code
+ * well so a paragraph of them stops looking like a paragraph of arguments. */
+.md-typeset .attn-notation .attn-ref {
+  font-family: var(--ab-mono);
+  font-size: 0.82em;
+  color: var(--ab-ink-muted);
+  white-space: nowrap;
+}
+
+.md-typeset .attn-notation .highlight {
+  background: none;
+}
+
+.md-typeset .attn-notation pre {
+  background: none;
+  border-left: var(--ab-rule-width) solid var(--ab-rule);
+  margin: var(--ab-space-4) 0;
+}
+
+.md-typeset .attn-notation pre > code {
+  background: none;
+  box-shadow: none;
+  padding: var(--ab-space-1) var(--ab-space-2) var(--ab-space-1) var(--ab-space-5);
+  font-size: var(--ab-step--1);
+  line-height: 1.7;
+}
+
+/* a display formula is selected and read, not shipped to a clipboard */
+.md-typeset .attn-notation .md-clipboard,
+.md-typeset .attn-notation .md-code__nav {
+  display: none;
+}
+
+/* ---- references ---------------------------------------------------------- */
+/* A reference list, not a bullet list: hanging indents, the BibTeX key as
+ * recessed apparatus under each entry. The copy control clip.js appends to
+ * .attn-cite is styled by chrome.css.
+ *
+ * Spaced for the entries as they actually are. Until the bibliography was
+ * repaired every citation rendered as a bare italic title on one line, and at
+ * that length the entries sat comfortably 12px apart; a real entry is authors,
+ * title, venue and an arXiv link over two or three lines, and at that length
+ * 12px ran them together. The separation between entries now has to beat the
+ * leading inside one. */
+
+.md-typeset .attn-refs ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 38rem;
+}
+
+.md-typeset .attn-refs li {
+  margin: 0 0 var(--ab-space-5);
+  padding-left: var(--ab-space-6);
+  text-indent: calc(-1 * var(--ab-space-6));
+  font-size: var(--ab-step--1);
+  line-height: 1.6;
+}
+
+.md-typeset .attn-refs li:last-child {
+  margin-bottom: 0;
+}
+
+.md-typeset .attn-refs .attn-cite {
+  display: inline-block;
+  margin-top: var(--ab-space-1);
+  white-space: nowrap;
+  color: var(--ab-ink-muted);
+}
+
+.md-typeset .attn-refs .attn-cite code {
+  font-size: 0.9em;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  color: var(--ab-ink-muted);
+}
+
+/* the key under a rendered citation elsewhere (kept for the browser) */
+.md-typeset .attn-cite {
+  white-space: nowrap;
+}
+
+/* ---- the bibliography disclosure ----------------------------------------- */
+
+.md-typeset details.attn-bib {
+  margin: var(--ab-space-4) 0;
+  padding: 0;
+  font-size: var(--ab-step--1);
+  border: var(--ab-rule-width) solid var(--ab-rule);
+  border-radius: var(--ab-radius);
+  background: none;
+  box-shadow: none;
+}
+
+.md-typeset details.attn-bib > summary {
+  padding: var(--ab-space-2) var(--ab-space-4) var(--ab-space-2) 1.8rem;
+  font-size: var(--ab-step--1);
+  font-weight: 400;
+  color: var(--ab-ink-muted);
+  background: none;
+  border: none;
+}
+
+.md-typeset details.attn-bib > summary::before {
+  top: 0.45rem;
+  background-color: var(--ab-faint);
+}
+
+.md-typeset details.attn-bib > summary code {
+  font-size: 0.92em;
+}
+
+.attn-bib__entry {
+  position: relative;
+  border-top: var(--ab-rule-width) solid var(--ab-rule-soft);
+}
+
+/* Material gives every <pre> `position: relative`, and the pre is the later
+ * sibling, so the bar needs a layer of its own to stay clickable; the
+ * background keeps a long line from scrolling underneath it. */
+.attn-bib__bar {
+  position: absolute;
+  z-index: 2;
+  top: 0.35rem;
+  right: 0.45rem;
+  padding-left: var(--ab-space-2);
+  background: var(--md-default-bg-color);
+}
+
+.md-typeset pre.attn-bib__src {
+  margin: 0;
+  padding: var(--ab-space-2) 5rem var(--ab-space-3) var(--ab-space-4);
+  overflow-x: auto;
+  background: none;
+}
+
+.md-typeset pre.attn-bib__src > code {
+  padding: 0;
+  font-size: var(--ab-step--1);
+  line-height: 1.55;
+  background: none;
+  box-shadow: none;
+  white-space: pre;
+}
+
+/* ---- colophon ------------------------------------------------------------ */
+
+.md-typeset .attn-colophon {
+  font-size: var(--ab-step--1);
+  line-height: 1.6;
+  color: var(--ab-ink-muted);
+  max-width: 38rem;
+}

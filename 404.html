@@ -43,9 +43,29 @@
     
       <link rel="stylesheet" href="/attnbank/assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="/attnbank/stylesheets/attnbank.css">
+      <link rel="stylesheet" href="/attnbank/stylesheets/tokens.css">
     
-      <link rel="stylesheet" href="/attnbank/stylesheets/bank.css">
+      <link rel="stylesheet" href="/attnbank/stylesheets/base.css">
+    
+      <link rel="stylesheet" href="/attnbank/stylesheets/home.css">
+    
+      <link rel="stylesheet" href="/attnbank/stylesheets/operator.css">
+    
+      <link rel="stylesheet" href="/attnbank/stylesheets/taxonomy.css">
+    
+      <link rel="stylesheet" href="/attnbank/stylesheets/browse.css">
+    
+      <link rel="stylesheet" href="/attnbank/stylesheets/compare.css">
+    
+      <link rel="stylesheet" href="/attnbank/stylesheets/method.css">
+    
+      <link rel="stylesheet" href="/attnbank/stylesheets/gallery.css">
+    
+      <link rel="stylesheet" href="/attnbank/stylesheets/prose.css">
+    
+      <link rel="stylesheet" href="/attnbank/stylesheets/chrome.css">
+    
+      <link rel="stylesheet" href="/attnbank/stylesheets/motion.css">
     
     <script>__md_scope=new URL("/attnbank/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -84,10 +104,15 @@
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="/attnbank/." title="attnbank" class="md-header__button md-logo" aria-label="attnbank" data-md-component="logo">
-      
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
-
+      <svg class="ab-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 24" aria-hidden="true">
+  <rect x="0"    y="5" width="2.6" height="14" style="fill: var(--c-exact)"/>
+  <rect x="4.2"  y="5" width="2.6" height="14" style="fill: var(--c-interaction)"/>
+  <rect x="8.4"  y="5" width="2.6" height="14" style="fill: var(--c-restrict)"/>
+  <rect x="12.6" y="5" width="2.6" height="14" style="fill: var(--c-compress)"/>
+  <rect x="16.8" y="5" width="2.6" height="14" style="fill: var(--c-factorize)"/>
+  <rect x="21"   y="5" width="2.6" height="14" style="fill: var(--c-coupling)"/>
+  <rect x="25.2" y="5" width="2.6" height="14" style="fill: var(--c-recurrent)"/>
+</svg>
     </a>
     <label class="md-header__button md-icon" for="__drawer">
       
@@ -222,10 +247,15 @@
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="/attnbank/." title="attnbank" class="md-nav__button md-logo" aria-label="attnbank" data-md-component="logo">
-      
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
-
+      <svg class="ab-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 24" aria-hidden="true">
+  <rect x="0"    y="5" width="2.6" height="14" style="fill: var(--c-exact)"/>
+  <rect x="4.2"  y="5" width="2.6" height="14" style="fill: var(--c-interaction)"/>
+  <rect x="8.4"  y="5" width="2.6" height="14" style="fill: var(--c-restrict)"/>
+  <rect x="12.6" y="5" width="2.6" height="14" style="fill: var(--c-compress)"/>
+  <rect x="16.8" y="5" width="2.6" height="14" style="fill: var(--c-factorize)"/>
+  <rect x="21"   y="5" width="2.6" height="14" style="fill: var(--c-coupling)"/>
+  <rect x="25.2" y="5" width="2.6" height="14" style="fill: var(--c-recurrent)"/>
+</svg>
     </a>
     attnbank
   </label>
@@ -1264,34 +1294,6 @@
   
   
     <li class="md-nav__item">
-      <a href="/attnbank/methods/topk/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Oracle top-k restriction
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="/attnbank/methods/value_topk/" class="md-nav__link">
         
   
@@ -1552,6 +1554,34 @@
     
   
     Swin-style shifted local windows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/attnbank/methods/topk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Top-k restriction (oracle)
   
 
     
@@ -3955,7 +3985,16 @@
               
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+  <div class="ab-404">
+    <p class="ab-404__code">HTTP 404</p>
+    <h1>Not in the bank</h1>
+    <p class="ab-404__note">There is no page at this address. Three ways back:</p>
+    <nav class="ab-404__links" aria-label="Ways back">
+      <a href="/attnbank/methods/">Browse the bank</a>
+      <a href="/attnbank/taxonomy/">The taxonomy</a>
+      <a href="/attnbank/.">Home</a>
+    </nav>
+  </div>
 
               </article>
             </div>
@@ -3982,12 +4021,7 @@
       Apache-2.0
     </div>
   
-  
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
-  
+  Served entirely from this site &mdash; no third-party requests.
 </div>
       
     </div>
@@ -4014,9 +4048,13 @@
       
         <script src="/attnbank/javascripts/bank.js"></script>
       
-        <script src="/attnbank/javascripts/attnbank.js"></script>
+        <script src="/attnbank/javascripts/operator.js"></script>
+      
+        <script src="/attnbank/javascripts/taxonomy.js"></script>
       
         <script src="/attnbank/javascripts/clip.js"></script>
+      
+        <script src="/attnbank/javascripts/motion.js"></script>
       
     
   </body>

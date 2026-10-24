@@ -106,9 +106,13 @@ CATEGORY_KERNEL = {
                  "program from a masked softmax.",
 }
 
+#: Each of these is read twice: as a table cell on the four methods that declare more
+#: than one backend, and as a clause ("`reference` is ...") on the seventy-four that
+#: declare only the first. They are punctuated to work in both, which is why the
+#: dashes are set rather than left as the ``--`` these would be in a docstring.
 BACKEND_WHAT = {
-    "reference": "plain PyTorch; the correctness anchor and the default",
-    "sdpa": "`torch.nn.functional.scaled_dot_product_attention` -- on CUDA, "
+    "reference": "plain PyTorch — the correctness anchor and the default",
+    "sdpa": "`torch.nn.functional.scaled_dot_product_attention` — on CUDA, "
             "FlashAttention-2 or the memory-efficient kernel",
     "flash_attn": "the `flash-attn` package (CUDA, fp16/bf16)",
 }
@@ -279,10 +283,19 @@ def parse_bib(path: Path) -> dict[str, dict]:
     """
     text = path.read_text(errors="ignore")
     entries: dict[str, dict] = {}
-    for match in re.finditer(r"@(\w+)\s*\{\s*([^,]+),", text):
+    matches = list(re.finditer(r"@(\w+)\s*\{\s*([^,]+),", text))
+    for pos, match in enumerate(matches):
+        # An entry ends where its braces balance -- or at the next ``@entry``, for a
+        # file whose entries never close theirs. The packaged references.bib is
+        # currently such a file (tools/merge_bib.py truncates every entry after its
+        # first field), and without this bound every field in the rest of the file
+        # was read as belonging to the current key, so every entry got the *last*
+        # entry's title. Bounding the scan keeps each field with its own key, and
+        # changes nothing for a well-formed .bib, whose braces balance first.
+        stop = matches[pos + 1].start() if pos + 1 < len(matches) else len(text)
         start = match.end()
         depth, i = 1, start
-        while i < len(text) and depth:
+        while i < stop and depth:
             depth += {"{": 1, "}": -1}.get(text[i], 0)
             i += 1
         body = text[start:i - 1]
@@ -317,17 +330,18 @@ def _surname(author_field: str) -> str:
 
 
 def citation(key: str, entry: dict | None) -> str:
-    """One Markdown list item: ``Surname et al. (year). *Title*. Venue. [arXiv:…]``."""
+    """One Markdown list item: ``Surname et al. (year). *Title*. Venue. [arXiv:…]``.
+
+    Built from whichever fields the packaged entry actually carries, and only
+    those. An entry with no author or year renders title-first — it does not
+    render as ``key (n.d.)``, because "no date" is itself a bibliographic claim
+    and the bibliography did not make it. Nothing on these pages pads a gap.
+    """
     if entry is None:                                       # pragma: no cover - CI gate
         return f"- `{key}` — **not found in `attnbank/references.bib`**"
-    authors = _detex(entry.get("author", "")).split(" and ")
-    who = _surname(entry.get("author", "")) or key
-    if len(authors) == 2:
-        who = f"{who} and {_surname(authors[1])}"
-    elif len(authors) > 2:
-        who = f"{who} et al."
-    year = _detex(entry.get("year", "n.d."))
-    title = _detex(entry.get("title", key))
+    authors = [a for a in _detex(entry.get("author", "")).split(" and ") if a.strip()]
+    year = _detex(entry.get("year", "")).strip()
+    title = _detex(entry.get("title", "")).strip()
     venue = _detex(entry.get("booktitle") or entry.get("journal")
                    or entry.get("howpublished") or "")
     links = []
@@ -337,11 +351,24 @@ def citation(key: str, entry: dict | None) -> str:
     if entry.get("doi"):
         doi = _detex(entry["doi"])
         links.append(f"[doi:{doi}](https://doi.org/{doi})")
-    bits = [f"**{who} ({year}).**", f"*{title}.*"]
+    bits = []
+    if authors:
+        who = _surname(entry.get("author", ""))
+        if len(authors) == 2:
+            who = f"{who} and {_surname(authors[1])}"
+        elif len(authors) > 2:
+            who = f"{who} et al."
+        bits.append(f"**{who} ({year}).**" if year else f"**{who}.**")
+    if title:
+        bits.append(f"*{title}.*")
     if venue and not venue.lower().startswith("arxiv preprint"):
         bits.append(venue + ".")
+    if year and not authors:
+        bits.append(f"{year}.")
     if links:
         bits.append(" ".join(links))
+    if not bits:                                            # pragma: no cover - CI gate
+        bits = [f"`{key}`."]
     return ("- " + " ".join(bits)
             + f'<br><span class="attn-cite" data-bibkey="{key}"><code>{key}</code>'
             + "</span>")
@@ -519,29 +546,46 @@ def cost_block(name: str) -> list[str]:
     here = ab.build(name).cost(**COST_SHAPE)
     ref = ab.build("softmax").cost(**COST_SHAPE)
     shape = ", ".join(f"${key} = {val}$" for key, val in COST_SHAPE.items())
-    rows = ["| quantity | this method | `softmax` | ratio |", "|---|---:|---:|---:|"]
+    # `softmax` is the reference operator, so on its own page the comparison is the
+    # method against itself: two identical columns and a column of 1×. The counts
+    # are still worth stating -- they are what every other page divides by.
+    against = name != "softmax"
+    rows = (["| quantity | this method | `softmax` | ratio |", "|---|---:|---:|---:|"]
+            if against else ["| quantity | count |", "|---|---:|"])
     for key in ("flops", "state_bytes", "bytes_moved"):
         if key not in here:
             continue
         a, b = float(here[key]), float(ref.get(key, 0.0))
         ratio = f"{a / b:.3g}×" if b else "—"
-        rows.append(f"| `{key}` | {a:,.0f} | {b:,.0f} | {ratio} |")
+        rows.append(f"| `{key}` | {a:,.0f} | {b:,.0f} | {ratio} |" if against
+                    else f"| `{key}` | {a:,.0f} |")
     return [
-        "Analytic, per `(batch, head)`, declared by the method itself:",
+        f"Analytic, per `(batch, head)`. At {shape} and `bytes_per_el=2`"
+        + (", against the reference operator at the same shape:" if against else
+           " — and this *is* the reference operator, so these are the counts every "
+           "other page in the bank divides by:"),
+        "",
+        '<div class="attn-tab" markdown="1">',
+        "",
+        *rows,
+        "",
+        "</div>",
+        "",
+        # The caveat sits against the numbers it qualifies rather than at the foot of
+        # the section, and as a caption rather than an admonition: a filled card is
+        # the loudest object this page would own, and what it carries is a footnote.
+        '<p class="attn-caveat" markdown="span">Counted operations and resident '
+        "bytes, not measured time — a cost model is not a benchmark. These are what "
+        "the monograph's capacity arguments are made of; "
+        "`examples/08_cost_and_capacity.py` walks the comparison through "
+        "properly.</p>",
+        "",
+        "The numbers are the method's own `cost()`, evaluated — the declaration, not "
+        "a measurement:",
         "",
         "```python",
         src,
         "```",
-        "",
-        f"At {shape} and `bytes_per_el=2`, against the reference operator at the same "
-        "shape:",
-        "",
-        *rows,
-        "",
-        '!!! note "A cost model is not a benchmark"',
-        "    These are counted operations and resident bytes, not measured time.",
-        "    They are what the monograph's capacity arguments are made of;",
-        "    `examples/08_cost_and_capacity.py` walks through the comparison properly.",
     ]
 
 
@@ -571,7 +615,7 @@ def bibtex_block(keys, bib: dict) -> list[str]:
     ]
     for key, src in entries:
         out += [f'<div class="attn-bib__entry" data-bibkey="{key}">',
-                f'<pre class="attn-bib__src"><code>{_escape(src)}</code></pre>',
+                f'<pre class="attn-bib__src"><code>{_escape(src.rstrip())}</code></pre>',
                 "</div>"]
     return out + ["</div>", "</details>"]
 
@@ -579,10 +623,19 @@ def bibtex_block(keys, bib: dict) -> list[str]:
 def related_block(name: str, oracles: tuple) -> list[str]:
     """Methods related to this one, by the two axes the registry actually has.
 
-    Same `category` is *changes the same object*; same `objective` is *judged the same
-    way*. Both lists are `ab.available(...)` with this method removed, so there is no
+    Same `category` is *changes the same object*, and that is the list worth naming:
+    between three and seventeen methods, every one of them a genuine neighbour.
+
+    Same `objective` is *judged the same way*, and naming those was a mistake. It runs
+    to between sixteen and forty-five methods on seventy-five of the seventy-eight
+    pages -- over half the bank, listed as "related" because it is scored the same
+    way. The count and a filtered link say the same thing and are readable; the wall
+    of links said it in a way nobody could use. No links are lost by this: the nav
+    lists all seventy-eight on every page, and so does the browser.
+
+    Both facts are `ab.available(...)` with this method removed, so there is no
     hand-written "see also" to go stale -- and no third axis, because the registry does
-    not have one. A method in both lists is named once, under the category: the
+    not have one. A method in both sets is named once, under the category: the
     stronger relation of the two.
     """
     cls = ab.get_class(name)
@@ -600,10 +653,6 @@ def related_block(name: str, oracles: tuple) -> list[str]:
     out = [
         "## Related methods",
         "",
-        "Two relations, because the registry declares two axes: what a method changes, "
-        "and what it is trying to be. Both lists are "
-        f"`ab.available(...)` with `{name}` removed.",
-        "",
     ]
     if same_cat:
         out += [
@@ -613,17 +662,21 @@ def related_block(name: str, oracles: tuple) -> list[str]:
             "",
         ]
     if same_obj:
-        beyond = ", beyond the ones above" if same_cat else ""
+        beyond = " besides these" if same_cat else ""
         out += [
-            f"judged the same way — `{obj}`{beyond}",
-            f":   {links(same_obj)}"
-            f" &nbsp;·&nbsp; [browse the bank, {obj} only](index.md?objective={obj})",
+            "judged the same way — "
+            f"`{obj}`",
+            f":   {len(same_obj)} further methods{beyond} declare "
+            f"`objective = {obj}`, which is how they are scored rather than what they "
+            f"do &nbsp;·&nbsp; "
+            f"[browse the bank, {obj} only](index.md?objective={obj})",
             "",
         ]
     out += [
-        f"[Open the browser with `{name}` selected](index.md?compare={name}) and tick up "
-        "to three more to see them in columns. Every row there is one the registry "
-        "declares, and the rows the selected methods agree on fold away.",
+        "Both come from `ab.available(...)` with "
+        f"`{name}` removed — the two axes the registry declares, nothing hand-picked. "
+        f"[Open the browser with `{name}` selected](index.md?compare={name}) to set it "
+        "beside up to three of them; the rows they agree on fold away.",
         "",
     ]
     return out
@@ -637,6 +690,77 @@ def flag(value: bool) -> str:
     return "yes" if value else "no"
 
 
+#: A monograph cross-reference as the docstrings write them: ``sec:kernel-rf``,
+#: ``prop:error-additive``, ``eq:kernel-pos-var``. These are pointers into the paper,
+#: not code, and the eight prefixes below are the ones the 78 docstrings actually use.
+_LABEL = r"(?:sec|eq|prop|thm|lem|cor|def|rem|fig|tab|alg|ex|app):[A-Za-z0-9_.:-]+"
+_INLINE_LABEL = re.compile(rf"`({_LABEL})`")
+
+#: The citation line a docstring body opens with: a run made of nothing but monograph
+#: labels, the subsection titles that qualify them, commas and ``and``, closed by a
+#: full stop. The whitelist is what keeps it from eating prose -- any other word ends
+#: the match, so ``sec:sparse-query ("Blocks and pages"), alongside blocktopk.`` is
+#: left where it stands, because "alongside blocktopk" is an argument and not a
+#: pointer.
+_LEAD_LABELS = re.compile(
+    rf"""\A( `{_LABEL}`
+             (?: \s+ | \s*,\s* | \s+and\s+ | `{_LABEL}`
+               | \([^()]*\) | "[^"]*" )*
+           ) \.(?=\s)\s*""", re.X | re.S)
+
+
+def _split_monograph_labels(body: str) -> tuple[str, str]:
+    """Lift the source line the docstring body opens with out of the prose.
+
+    Seventy-two of the seventy-eight bodies begin with one — ``sec:kernel-rf.``,
+    ``sec:ot, "Doubly stochastic attention in transformers".`` — naming the part of
+    the monograph the passage is written against. Read as the opening words of a
+    sentence it is a dangling fragment (*"sec:kernel-rf. With qt = q / d^{1/4} …"*);
+    read as the section's source line it is exactly the provenance a reader wants.
+
+    Returns ``(lead, rest)`` with the lead as HTML, its labels in code and everything
+    else — the subsection titles in quotes, the parentheticals — verbatim. Nothing is
+    dropped and nothing is reworded; the text is the same text, one line higher up.
+    """
+    match = _LEAD_LABELS.match(body)
+    if not match:
+        return "", body
+    lead = "".join(
+        f"<code>{hit.group(1)}</code>" if (hit := _INLINE_LABEL.fullmatch(part))
+        else _escape(part)
+        for part in re.split(rf"(`{_LABEL}`)", match.group(1)) if part)
+    return " ".join(lead.split()), body[match.end():]
+
+
+def _quiet_labels(text: str) -> str:
+    """Set the remaining monograph cross-references as apparatus, not as code spans.
+
+    There are 247 of them across the 78 docstrings, and `prop:error-additive` in a
+    code chip reads as something you could type into Python. It is a pointer into the
+    paper. Fenced blocks are skipped -- inside a display, a label is part of the
+    display.
+    """
+    out, fenced = [], False
+    for line in text.split("\n"):
+        if line.lstrip().startswith("```"):
+            fenced = not fenced
+        out.append(line if fenced else
+                   _INLINE_LABEL.sub(r'<span class="attn-ref">\1</span>', line))
+    return "\n".join(out)
+
+
+def _declared(value: bool) -> str:
+    """The declared column of the declaration table: the word, plus a tick to scan.
+
+    Both states are full-strength ink. ``no`` is not a missing feature on these
+    pages -- ``supports_causal = False`` is a statement about the operator, and a
+    greyed-out ``no`` would read as a gap where the registry made a claim. The
+    stylesheet draws a filled mark for one and a hollow one for the other, so the
+    middle column can be read down in one pass without reading five words.
+    """
+    return (f'<span class="attn-flag" data-v="{flag(value)}">{flag(value)}</span>')
+
+
 def page(name: str, bib: dict, oracles: tuple) -> str:
     info = ab.describe(name)
     cls = ab.get_class(name)
@@ -644,11 +768,24 @@ def page(name: str, bib: dict, oracles: tuple) -> str:
     extras = extras_keys(name)
     is_oracle = name in oracles
 
-    # H1 is the human name, matching the sidebar and the browser; the registry key
-    # follows immediately, because that is the string you pass to ab.build().
-    out = [f"# {display_name(name)}", "",
-           f'<p class="tx-regkey"><code>{name}</code> &middot; '
-           f'<code>ab.build("{name}")</code></p>', ""]
+    # H1 is the human name, matching the sidebar and the browser. The standfirst is
+    # the rest of the docstring's own lede -- the name itself is not repeated, the H1
+    # just said it -- and the nameplate under it is the registry's identifying facts
+    # at datasheet density: the key you type, the object it changes, how it is judged,
+    # where the code and the monograph section are.
+    shown = re.sub(r"^ORACLE:\s*", "", lede)          # the banner below says it
+    standfirst = shown.partition(":")[2].strip()
+    standfirst = re.sub(r"\s*\(`sec:[^)]*\)\s*\.?$", "", standfirst).strip()
+    if standfirst and standfirst[-1] not in ".!?":
+        standfirst += "."
+    standfirst = standfirst[:1].upper() + standfirst[1:]
+    module_path = cls.__module__.replace(".", "/") + ".py"
+    cat = cls.category.value
+    obj = cls.objective.value
+    out = [
+        f"# {display_name(name)}", "",
+        f'<p class="attn-standfirst" markdown="span">{standfirst}</p>', "",
+    ]
     if is_oracle:
         out += [
             '!!! danger "Oracle — an upper bound, not a method"',
@@ -659,70 +796,74 @@ def page(name: str, bib: dict, oracles: tuple) -> str:
             "never as a baseline you\n    could ship.",
             "",
         ]
-    shown = re.sub(r"^ORACLE:\s*", "", lede)          # the banner already said it
-    out += [f"**{shown[:1].upper() + shown[1:]}**", ""]
-
-    cat = cls.category.value
-    obj = cls.objective.value
     out += [
+        f'<div class="attn-facts" data-cat="{cat}" markdown="1">', "",
+        "key",
+        f':   `{name}` &middot; `ab.build("{name}")`',
+        "",
         "category",
-        f":   [`{cat}`](../taxonomy.md#{cat}) — one of the seven objects in "
-        "$y(q)=\\int v\\,\\mathrm{d}\\pi_q$ a method can change",
+        f":   [`{cat}`](../taxonomy.md#{cat})",
         "",
         "objective",
         f":   `{obj}` — {Objective(obj).description}",
         "",
         "class",
-        f":   `attnbank.{info.class_name}`, "
-        f"[`{cls.__module__.replace('.', '/')}.py`]"
-        f"(https://github.com/Ashkan13776/attnbank/blob/main/"
-        f"{cls.__module__.replace('.', '/')}.py)",
+        f":   `attnbank.{info.class_name}` &middot; "
+        f"[`{module_path}`]"
+        f"(https://github.com/Ashkan13776/attnbank/blob/main/{module_path})",
         "",
         "monograph",
         f":   `{info.paper_section}`",
         "",
+        "</div>", "",
         "## What it changes",
         "",
-        f"Changes {CHANGES[cat]}",
+        # Wrapped so the stylesheet can let the long inline formulas scroll on a
+        # phone instead of pushing the page wide.
+        '<div class="attn-changes" markdown="1">',
+        "",
+        "Every category in the bank changes one object in the reference operator "
+        "$y(q)=\\int v\\,\\mathrm{d}\\pi_q$; this method changes "
+        f"{CHANGES[cat]}",
         "",
         _objective_sentence(obj),
         "",
+        "</div>",
+        "",
     ]
-
-    if body:
-        out += ["## In the paper's notation", "", body, ""]
 
     out += [
         "## What it declares",
         "",
-        "Each row is a commitment the conformance suite tests, not a description.",
+        "Each row is a commitment the [conformance suite](../conformance.md) tests, "
+        "not a description.",
         "",
         '<div class="attn-decl" markdown="1">',
         "",
         "| attribute | declared | what that commits it to |",
         "|---|---|---|",
-        f"| `supports_causal` | **{flag(cls.supports_causal)}** | "
+        f"| `supports_causal` | {_declared(cls.supports_causal)} | "
         + ("`causal=True` masks so query $i$ sees keys $0 \\dots i + (n-m)$."
            if cls.supports_causal else
            "`causal=True` raises `CausalNotSupportedError` — a statement about the "
            "operator, not a missing feature.") + " |",
-        f"| `expresses_weights` | **{flag(cls.expresses_weights)}** | "
+        f"| `expresses_weights` | {_declared(cls.expresses_weights)} | "
         + ("it can name $\\widehat\\pi_q$ on the **original** $n$ positions, so it "
            "enters the error decomposition."
            if cls.expresses_weights else
            "it cannot name $\\widehat\\pi_q$ on the original positions and is excluded "
            "from the error decomposition by declaration.") + " |",
-        f"| `row_stochastic` | **{flag(cls.row_stochastic)}** | "
+        f"| `row_stochastic` | {_declared(cls.row_stochastic)} | "
         + ("those weights are $\\ge 0$ and sum to one: $\\widehat\\pi_q$ is a "
            "probability measure."
            if cls.row_stochastic else
            "the weights are **not** a probability measure — signed, or not summing to "
            "one — so the output can leave the convex hull of the values.") + " |",
-        f"| `head_independent` | **{flag(cls.head_independent)}** | "
+        f"| `head_independent` | {_declared(cls.head_independent)} | "
         + ("each head is computed from its own $K, V$."
            if cls.head_independent else
            "it shares $K$/$V$ across query heads, so heads are not independent.") + " |",
-        f"| `trainable` | **{flag(cls.trainable)}** | "
+        f"| `trainable` | {_declared(cls.trainable)} | "
         + ("it has learned parameters; the reference implementation initialises them "
            "from a seed, so the numbers here are an untrained operator."
            if cls.trainable else
@@ -733,51 +874,41 @@ def page(name: str, bib: dict, oracles: tuple) -> str:
         "",
     ]
 
-    params = {key: val for key, val in info.parameters.items() if key not in ("backend",)}
-    out += ["## Configuration", ""]
-    own_init = "__init__" in cls.__dict__
-    # not ``inspect.getdoc``: that walks the MRO and would print
-    # ``torch.nn.Module.__init__``'s docstring for the methods whose own has none.
-    init_doc = textwrap.dedent(cls.__dict__["__init__"].__doc__ or "").strip() \
-        if own_init else ""
-    if own_init and params:
-        out += ["| parameter | default |", "|---|---|"]
-        out += [f"| `{key}` | `{val!r}` |" for key, val in params.items()]
-        out += [""]
-        if init_doc:
-            out += [rst_to_md(init_doc), ""]
-    else:
-        out += ["This method takes no configuration of its own — only the base class's "
-                "`scale` and `backend`.", ""]
     out += [
-        "```python",
-        f'ab.describe("{name}")     # the same keys, with everything else it declares',
-        "```",
-        "",
         "## Correctness anchor",
         "",
         *anchor_block(name, info),
+        "",
+        "## Cost model",
+        "",
+        *cost_block(name),
         "",
         "## Backends",
         "",
     ]
 
     declared = list(info.backends)
-    out += ["| backend | what it is |", "|---|---|"]
-    out += [f"| `{b}` | {BACKEND_WHAT.get(b, b)} |" for b in declared]
-    out += [""]
     if declared == ["reference"]:
+        # Seventy-four of the seventy-eight declare this and nothing else. A table
+        # with one row in it is a table pretending to be a comparison; the single
+        # fact it carries is a clause, and the interesting half of this section is
+        # the reason underneath it.
         why = backend_reason(name, extras)
         out += [
             "**`reference` only, and that is the correct answer.** "
             + why[0].upper() + why[1:],
             "",
-            "Declaring a backend is a claim that it equals the reference, checked by "
+            f"`reference` is {BACKEND_WHAT['reference']}. Declaring a second backend "
+            "is a claim that it equals the first, checked by "
             "`tests/test_conformance.py::test_backend_equivalence`; declaring `sdpa` "
             "here would be pretending. See [Backends](../backends.md).",
             "",
         ]
     else:
+        out += ['<div class="attn-tab" markdown="1">', "",
+                "| backend | what it is |", "|---|---|"]
+        out += [f"| `{b}` | {BACKEND_WHAT.get(b, b)} |" for b in declared]
+        out += ["", "</div>", ""]
         out += [
             "Each non-`reference` entry is a claim that the path is **equal** to the "
             "reference, and `tests/test_conformance.py::test_backend_equivalence` "
@@ -792,15 +923,56 @@ def page(name: str, bib: dict, oracles: tuple) -> str:
             "",
         ]
 
-    out += ["## Cost model", "", *cost_block(name), "", "## Run it", ""]
+    params = {key: val for key, val in info.parameters.items() if key not in ("backend",)}
+    out += ["## Configuration", ""]
+    own_init = "__init__" in cls.__dict__
+    # not ``inspect.getdoc``: that walks the MRO and would print
+    # ``torch.nn.Module.__init__``'s docstring for the methods whose own has none.
+    init_doc = textwrap.dedent(cls.__dict__["__init__"].__doc__ or "").strip() \
+        if own_init else ""
+    if own_init and params:
+        out += ['<div class="attn-tab" markdown="1">', "",
+                "| parameter | default |", "|---|---|"]
+        out += [f"| `{key}` | `{val!r}` |" for key, val in params.items()]
+        out += ["", "</div>", ""]
+        if init_doc:
+            out += [rst_to_md(init_doc), ""]
+    else:
+        out += ["This method takes no configuration of its own — only the base class's "
+                "`scale` and `backend`.", ""]
+    out += [
+        # A one-line fence carries a code well and a copy button for a call the
+        # nameplate has already shown the shape of; as a clause it costs one line.
+        f'`ab.describe("{name}")` returns the same keys alongside everything else '
+        "this page states.",
+        "",
+        "## Run it",
+        "",
+    ]
     src = example_source(name, info)
-    out += ["```python", src, "```", "", "```text", run_example(src), "```", ""]
+    # The output is wrapped so the stylesheet can set it apart from the code that
+    # produced it -- the convention of a notebook: input in a well, output on the page.
+    out += ["```python", src, "```", "",
+            '<div class="attn-out" markdown="1">', "",
+            "```text", run_example(src), "```", "",
+            "</div>", ""]
+
+    if body:
+        lead, body = _split_monograph_labels(body)
+        out += ["## In the paper's notation", "",
+                '<div class="attn-notation" markdown="1">', ""]
+        if lead:
+            out += ['<p class="attn-notation__sec">'
+                    '<span class="attn-notation__from">monograph</span> '
+                    + lead + "</p>", ""]
+        out += [_quiet_labels(body), "",
+                "</div>", ""]
 
     out += related_block(name, oracles)
 
-    out += ["## References", ""]
+    out += ["## References", "", '<div class="attn-refs" markdown="1">', ""]
     out += [citation(key, bib.get(key)) for key in info.references]
-    out += ["", *bibtex_block(info.references, bib)]
+    out += ["", "</div>", "", *bibtex_block(info.references, bib)]
     module = cls.__module__.replace(".", "/") + ".py"
     out += [
         "",
@@ -809,11 +981,15 @@ def page(name: str, bib: dict, oracles: tuple) -> str:
         "",
         "---",
         "",
-        f"*Generated by `docs/gen_methods.py` from the registry and from the module "
+        '<div class="attn-colophon" markdown="1">',
+        "",
+        f"Generated by `docs/gen_methods.py` from the registry and from the module "
         f"docstring of [`{module}`]"
         f"(https://github.com/Ashkan13776/attnbank/blob/main/{module}); the example "
         f"above was executed to produce its output. Regenerate with "
-        f"`python docs/gen_methods.py`.*",
+        f"`python docs/gen_methods.py`.",
+        "",
+        "</div>",
         "",
     ]
     return "\n".join(out)
@@ -837,11 +1013,25 @@ def _objective_sentence(obj: str) -> str:
 # ---------------------------------------------------------------------------
 # the browser
 # ---------------------------------------------------------------------------
-def _search_text(name: str, info, oracles: tuple) -> str:
+def _search_text(name: str, info, oracles: tuple, bib: dict) -> str:
     words = [name, display_name(name), info.class_name, info.category, info.objective,
              info.paper_section, summary_text(info.summary),
              *info.backends, *info.references,
              *(key for key in info.parameters if key not in _PLUMBING)]
+    # The papers, as people actually type them: "linear attention" is a title, not a
+    # registry field, and the reader who knows the paper should land on the method.
+    # Titles, author surnames and years all come from references.bib; a field the
+    # entry does not carry is simply not searchable, never guessed at. (The BibTeX
+    # key itself -- katharopoulos2020transformers -- is already in the list above.)
+    for key in info.references:
+        entry = bib.get(key) or {}
+        if entry.get("title"):
+            words.append(_detex(entry["title"]))
+        for author in _detex(entry.get("author", "")).split(" and "):
+            if author.strip():
+                words.append(_surname(author))
+        if entry.get("year"):
+            words.append(_detex(entry["year"]))
     if info.supports_causal:
         words.append("causal")
     else:
@@ -928,9 +1118,23 @@ def browser(bib: dict, oracles: tuple) -> str:
     order = [c.value for c in Category]
     infos = [(n, ab.describe(n)) for n in ab.available()]
     infos.sort(key=lambda t: (order.index(t[1].category), t[0]))
+    per_cat = {c: sum(1 for _, i in infos if i.category == c) for c in order}
 
     rows = []
+    seen_cat = None
     for name, info in infos:
+        # The default order is the taxonomy's, so the taxonomy is rendered into the
+        # table as section rows -- present with scripting off, since they are plain
+        # <tr>s; bank.js hides them while a sort other than the default is active and
+        # keeps their counts honest while filters are.
+        if info.category != seen_cat:
+            seen_cat = info.category
+            rows.append(
+                f'<tr class="bank-group" data-cat="{info.category}" '
+                f'data-n="{per_cat[info.category]}"><th colspan="6" scope="colgroup">'
+                f'<span class="bank-group__name">{info.category}</span>'
+                f'<span class="bank-group__n">{per_cat[info.category]} methods</span>'
+                f'</th></tr>')
         oracle = name in oracles
         flags = []
         if oracle:
@@ -942,7 +1146,8 @@ def browser(bib: dict, oracles: tuple) -> str:
         if not info.expresses_weights:
             flags.append('<span class="bank-tag">no weights</span>')
         rows.append(
-            f'<tr data-name="{name}" data-category="{info.category}" '
+            f'<tr data-name="{name}" data-cat="{info.category}" '
+            f'data-category="{info.category}" '
             f'data-objective="{info.objective}" '
             f'data-causal="{flag(info.supports_causal)}" '
             f'data-trainable="{flag(info.trainable)}" '
@@ -951,37 +1156,49 @@ def browser(bib: dict, oracles: tuple) -> str:
             f'data-fused="{flag(len(info.backends) > 1)}" '
             f'data-backends="{" ".join(info.backends)}" '
             f'data-title="{display_name(name).lower()}" '
-            f'data-search="{_search_text(name, info, oracles)}">'
+            f'data-search="{_search_text(name, info, oracles, bib)}">'
             # the name a reader would say, then the key they would type
             f'<th scope="row"><a class="bank-name" href="{name}/">'
             f'{_escape(display_name(name))}</a>'
-            f'<span class="bank-key">{name}</span>'
-            + "".join(flags) + "</th>"
+            f'<span class="bank-meta"><span class="bank-key">{name}</span>'
+            + "".join(flags) + "</span></th>"
             f'<td data-cell="category" data-cat="{info.category}">'
-            f'<code>{info.category}</code></td>'
-            f'<td data-cell="objective"><code>{info.objective}</code></td>'
+            f'{info.category}</td>'
+            f'<td data-cell="objective">{info.objective}</td>'
             f'<td data-cell="causal">{flag(info.supports_causal)}</td>'
             f'<td data-cell="backends">'
-            + ", ".join(f"<code>{b}</code>" for b in info.backends) + "</td>"
+            + ", ".join(info.backends) + "</td>"
             f'<td data-cell="summary">{summary_html(info.summary)}</td></tr>')
 
     def chips(pairs) -> str:
-        return "".join(
-            f'<button type="button" class="bank-chip" data-filter="{field}" '
-            f'data-value="{value}">{label}</button>' for field, value, label in pairs)
+        # Every chip carries the number of rows it would keep -- counted here, from
+        # the same rows, so the number cannot drift from the table.
+        out = []
+        for field, value, label, count in pairs:
+            cat = f' data-cat="{value}"' if field == "category" else ""
+            out.append(
+                f'<button type="button" class="bank-chip" data-filter="{field}" '
+                f'data-value="{value}"{cat}>{label}'
+                f'<span class="bank-chip__n">{count}</span></button>')
+        return "".join(out)
 
     payload = compare_payload(oracles)
-    cats = chips(("category", c, c) for c in order)
-    objs = chips(("objective", o.value, o.value) for o in Objective)
-    only = chips([("causal", "yes", "causal"),
-                  ("trainable", "yes", "trainable"),
-                  ("fused", "yes", "has a fused backend"),
-                  ("oracle", "yes", "oracles"),
-                  ("oracle", "no", "exclude oracles")])
-    placeholder = ("name, summary, category, backend, &quot;causal&quot;, "
-                   "&quot;oracle&quot;…")
+    cats = chips(("category", c, c, per_cat[c]) for c in order)
+    objs = chips(
+        ("objective", o.value, o.value,
+         sum(1 for _, i in infos if i.objective == o.value)) for o in Objective)
+    n_causal = sum(1 for _, i in infos if i.supports_causal)
+    n_train = sum(1 for _, i in infos if i.trainable)
+    n_fused = sum(1 for _, i in infos if len(i.backends) > 1)
+    only = chips([("causal", "yes", "causal", n_causal),
+                  ("trainable", "yes", "trainable", n_train),
+                  ("fused", "yes", "has a fused backend", n_fused),
+                  ("oracle", "yes", "oracles", len(oracles)),
+                  ("oracle", "no", "exclude oracles", len(infos) - len(oracles))])
+    placeholder = "name, key, paper title, author, backend, &quot;causal&quot;…"
     n = len(infos)
 
+    oracle_keys = ", ".join(f"`{o}`" for o in oracles)
     head = f"""---
 hide:
   - toc
@@ -989,38 +1206,29 @@ hide:
 
 # Browse the bank
 
-{n} methods, every one of them introspectable. The table below is the registry —
-`ab.list_methods()` prints the same rows in a terminal, and `ab.method_table()` returns
-them as JSON. Each row leads with the name the method is known by and carries its
-registry key underneath, because the key is what you pass to `ab.build(...)` and what
-the method's own page is filed under.
+The registry, one row per method — {n} rows, grouped by the taxonomy's seven
+categories. A row leads with the name a method is known by; under it, in monospace,
+sits the **registry key** — what you pass to `ab.build(...)`, and where the method's
+own page is filed. Search matches both, and also the summary, the config keys, the
+backends, and the papers a method cites — title, first author, BibTeX key. The view
+you build — search, filters, sort, selection — is held in the URL, so it is a link
+you can paste.
 
-Searching matches both of those, plus the summary, the category, the objective, the
-backends, the config keys, the BibTeX keys, and words you would plausibly type instead
-of a flag — `causal`, `trainable`, `oracle`, `signed`. Press `/` to jump to the
-box. Tick two to four rows to put them **side by side**, and the rows where the
-selected methods declare the same thing fold away, so what is left is the difference.
-Whatever you search, filter, sort or select is in the address bar, so the view you are
-looking at is a link you can paste.
-
-All of that is plain client-side JavaScript over the table that is already on the
-page: with scripting off you get all {n} rows, sorted by category, every column
-filled, which is the whole content — there is nothing here to hydrate and nothing to
-fetch.
-
-!!! warning "Three of these are oracles"
-    `value_topk`, `nmf_oracle` and `svd_oracle` are **upper bounds on what a mechanism
-    can achieve**, not practical methods — you cannot show that top-$k$ selection is
-    suboptimal without computing what the optimal selection would have been. They are
-    tagged `oracle` in the table and carry a banner on their own pages.
+{len(oracles)} of the {n} are **oracles** — {oracle_keys} — upper bounds on what a
+mechanism can achieve, not practical methods: you cannot show that a selection is
+suboptimal without computing what the optimal selection would have been. Each is
+tagged `oracle` below and carries a banner on its own page.
 
 <div class="bank" id="bank">
   <script type="application/json" id="bank-data">{payload}</script>
   <div class="bank-controls" hidden>
     <label class="bank-search">
       <span class="bank-search__label">Search the bank</span>
-      <input type="search" id="bank-q" autocomplete="off" spellcheck="false"
-             placeholder="{placeholder}">
+      <span class="bank-search__wrap">
+        <input type="search" id="bank-q" autocomplete="off" spellcheck="false"
+               placeholder="{placeholder}">
+        <kbd class="bank-search__kbd" aria-hidden="true">/</kbd>
+      </span>
     </label>
     <div class="bank-chips">
       <span class="bank-chips__label">category</span>{cats}
@@ -1040,8 +1248,7 @@ fetch.
     <div class="bank-compare__bar">
       <h2 class="bank-compare__h" id="bank-compare-h">Side by side</h2>
       <p class="bank-compare__hint" id="bank-compare-hint" aria-live="polite"></p>
-      <button type="button" class="bank-chip" id="bank-compare-same"
-              aria-pressed="false" hidden></button>
+      <button type="button" class="bank-reset" id="bank-compare-link">copy link</button>
       <button type="button" class="bank-reset" id="bank-compare-clear">clear</button>
     </div>
     <div class="bank-compare__scroll">

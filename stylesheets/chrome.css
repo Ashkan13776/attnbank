@@ -1,0 +1,513 @@
+/* Site chrome: header, nav, toc, search, footer, 404, states.
+ *
+ * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
+ * Every colour, size and duration in here comes from a token in tokens.css.
+ *
+ * The idea, in one line: the chrome sits on the page's own ground, separated by
+ * hairline rules, and the only colour it ever shows is the accent (state) and
+ * the seven category hues (meaning). A black app bar is what said "template".
+ *
+ * Transition *timing* lives in motion.css; this file declares what states look
+ * like, not how they are reached. The two exceptions (copy controls, the plate's
+ * TeX bar) predate the split and use the motion tokens directly.
+ */
+
+/* ---- header --------------------------------------------------------------
+ * Same ground as the page, one rule below, ink type. The wordmark is mono --
+ * the library is a Python name before it is a brand -- and the mark to its
+ * left is the seven category ticks (overrides/partials/logo.html).
+ */
+
+/* body[data-md-color-primary] matches the server-rendered palette attribute and
+   out-specifies the theme's `[data-md-color-primary=black] .md-header` rule
+   without naming the colour, so a palette change cannot silently re-break it. */
+body[data-md-color-primary] .md-header {
+  background-color: var(--md-default-bg-color);
+  color: var(--ab-ink);
+  border-bottom: var(--ab-rule-width, 1px) solid var(--ab-rule);
+}
+
+/* the rule is the separation; no floating-bar shadow in either state */
+.md-header,
+.md-header--shadow {
+  box-shadow: none;
+}
+
+.md-header__button.md-logo {
+  padding-right: 0;
+}
+
+.md-header__button.md-logo .ab-mark {
+  display: block;
+  width: 1.1rem;
+  height: auto;
+}
+
+/* site name in mono; the scroll-swapped page title in the body face */
+.md-header__topic:first-child {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--1);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.md-header__topic + .md-header__topic {
+  font-size: var(--ab-step--1);
+  font-weight: 500;
+}
+
+.md-header__title {
+  font-size: var(--ab-step--1);
+}
+
+/* the repo link, right of search: mono, quiet */
+.md-source {
+  color: var(--ab-ink-soft);
+}
+
+.md-source:hover {
+  color: var(--ab-ink);
+  opacity: 1;
+}
+
+.md-source__repository {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  letter-spacing: 0.01em;
+}
+
+/* ---- search --------------------------------------------------------------
+ * The theme's one genuinely strong feature, presented like it: a real field
+ * with a rule around it and a visible keyboard route in ("/" focuses it --
+ * a theme default, surfaced rather than added).
+ */
+
+@media screen and (min-width: 60em) {
+  .md-search__form {
+    position: relative;
+    background-color: var(--ab-sunk);
+    border: var(--ab-rule-width, 1px) solid var(--ab-rule);
+    border-radius: var(--ab-radius);
+    box-shadow: none;
+  }
+
+  .md-search__form:hover {
+    background-color: var(--ab-sunk);
+    border-color: var(--ab-ink-muted);
+  }
+
+  .md-search__input,
+  .md-search__suggest {
+    /* the suggest layer paints the ghost completion under the same metrics;
+       sized apart they drift */
+    color: var(--ab-ink);
+    font-size: var(--ab-step--1);
+  }
+
+  .md-search__suggest {
+    color: var(--ab-faint);
+  }
+
+  .md-search__input::placeholder,
+  .md-search__input ~ .md-search__icon,
+  .md-search__options .md-icon {
+    color: var(--ab-ink-muted);
+  }
+
+  /* the keyboard route in; gone the moment the field is focused */
+  .md-search__form::after {
+    content: "/";
+    position: absolute;
+    top: 50%;
+    right: var(--ab-space-2);
+    transform: translateY(-50%);
+    padding: 0 0.35em;
+    font-family: var(--ab-mono);
+    font-size: var(--ab-step--2);
+    line-height: 1.4;
+    color: var(--ab-ink-muted);
+    border: var(--ab-rule-width, 1px) solid var(--ab-rule);
+    border-radius: var(--ab-radius);
+    pointer-events: none;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__form::after {
+    display: none;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__form {
+    background-color: var(--ab-plate);
+    border-color: var(--ab-accent);
+    border-radius: var(--ab-radius) var(--ab-radius) 0 0;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__output {
+    border: var(--ab-rule-width, 1px) solid var(--ab-rule);
+    border-top: none;
+    border-radius: 0 0 var(--ab-radius) var(--ab-radius);
+  }
+}
+
+/* the status line above results: "Initializing search", "No matching
+ * documents", "n matching documents" -- instrument readout, so mono */
+.md-search-result__meta {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  color: var(--ab-ink-muted);
+  background-color: var(--ab-sunk);
+}
+
+/* ---- left nav ------------------------------------------------------------
+ * 78 method pages live here, so the nav earns its keep by being an index,
+ * not a menu: small-caps mono section labels, the seven category groups in
+ * mono with their hue as a tick (data-cat is stamped by motion.js; with
+ * scripting off the tick is simply absent), and the active page marked with
+ * ink plus a 2px rule in its category's hue -- the hues never become text.
+ */
+
+@media screen and (min-width: 76.25em) {
+  /* the site name is in the header a rem away; not again here */
+  .md-nav--primary > .md-nav__title {
+    display: none;
+  }
+
+  /* top-level section labels: BROWSE THE BANK, EXAMPLES GALLERY, ... */
+  .md-nav--primary > .md-nav__list > .md-nav__item--section > .md-nav__link {
+    font-family: var(--ab-mono);
+    font-size: var(--ab-step--2);
+    font-weight: 400;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ab-ink-muted);
+  }
+
+  /* nested groups hang from a hairline */
+  .md-nav--primary .md-nav__item--nested > .md-nav > .md-nav__list {
+    border-left: var(--ab-rule-width, 1px) solid var(--ab-rule-soft);
+    padding-left: var(--ab-space-3);
+    margin-left: var(--ab-space-1);
+  }
+
+  /* the current page: ink, not accent -- and its category's rule beside it */
+  .md-nav--primary .md-nav__link--active,
+  .md-nav--primary .md-nav__link--active code {
+    color: var(--ab-ink);
+    font-weight: 600;
+  }
+
+  .md-nav--primary li[data-cat] > .md-nav .md-nav__link--active {
+    position: relative;
+  }
+
+  .md-nav--primary li[data-cat] > .md-nav .md-nav__link--active::before {
+    content: "";
+    position: absolute;
+    left: calc(-1 * var(--ab-space-3) - var(--ab-rule-width, 1px));
+    top: 0.1em;
+    bottom: 0.1em;
+    width: 2px;
+    background: var(--hl);
+  }
+}
+
+/* the seven category groups: mono, lowercase as in the registry, hue tick.
+ * The tick is positioned, not inline, so it centres on the text regardless of
+ * the label's line metrics. */
+.md-nav--primary li[data-cat] > .md-nav__link {
+  position: relative;
+  padding-inline-start: 1em;
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  letter-spacing: 0.04em;
+}
+
+.md-nav--primary li[data-cat] > .md-nav__link::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: calc(50% - 1px);
+  width: 0.5em;
+  height: 2px;
+  background: var(--hl);
+}
+
+.md-nav--primary li[data-cat] > .md-nav__link:hover::before {
+  width: 0.9em;
+}
+
+/* in the drawer the links carry their own padding; keep the tick inside it */
+@media screen and (max-width: 76.1875em) {
+  .md-nav--primary li[data-cat] > .md-nav__link {
+    padding-inline-start: 1.6em;
+  }
+
+  .md-nav--primary li[data-cat] > .md-nav__link::before {
+    inset-inline-start: 0.75em;
+  }
+}
+
+/* ---- right toc -----------------------------------------------------------
+ * An instrument scale: hairline on the left, labels off it, the current
+ * position in accent (the theme's own toc.follow does the tracking).
+ */
+
+.md-nav--secondary .md-nav__title,
+.md-nav--primary > .md-nav__title {
+  /* the theme paints these with --md-default-bg-color plus a halo shadow for
+     its sticky-title fade; on a body whose ground is a different token that
+     reads as a pale box, so they sit on the page's own ground instead */
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.md-nav--secondary .md-nav__title {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  font-weight: 400;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ab-ink-muted);
+}
+
+@media screen and (min-width: 60em) {
+  .md-nav--secondary > .md-nav__list {
+    border-left: var(--ab-rule-width, 1px) solid var(--ab-rule-soft);
+  }
+
+  .md-nav--secondary .md-nav__link--active {
+    font-weight: 600;
+  }
+}
+
+/* ---- mobile drawer ---------------------------------------------------------
+ * The drawer keeps the desktop identity: page ground, rules, ink -- not the
+ * theme's primary-colour title bars.
+ */
+
+@media screen and (max-width: 76.1875em) {
+  .md-nav--primary .md-nav__title {
+    background-color: var(--md-default-bg-color);
+    color: var(--ab-ink);
+    border-bottom: var(--ab-rule-width, 1px) solid var(--ab-rule);
+  }
+
+  .md-nav--primary .md-nav__title .md-nav__icon {
+    color: var(--ab-ink);
+  }
+
+  body[data-md-color-primary] .md-nav--primary .md-nav__title[for="__drawer"] {
+    background-color: var(--md-default-bg-color);
+    color: var(--ab-ink);
+  }
+
+  .md-nav--primary .md-nav__title .md-logo .ab-mark {
+    display: block;
+    width: 1.1rem;
+    height: auto;
+  }
+
+  /* the active page in the drawer -- and the active trail above it -- follow
+     the site accent, not the theme's palette link colour, so mobile and
+     desktop agree on what "current" means */
+  .md-nav--primary .md-nav__link--active,
+  .md-nav--primary .md-nav__link--active code,
+  .md-nav--primary .md-nav__item--active > .md-nav__link {
+    color: var(--ab-accent);
+  }
+
+  /* the repo link pinned under the drawer */
+  body[data-md-color-primary] .md-nav__source {
+    background-color: var(--ab-sunk);
+    color: var(--ab-ink);
+  }
+}
+
+/* ---- footer ----------------------------------------------------------------
+ * A colophon, not a banner: one rule, one line of mono.
+ */
+
+.md-footer {
+  background-color: var(--md-default-bg-color);
+  color: var(--ab-ink-muted);
+  border-top: var(--ab-rule-width, 1px) solid var(--ab-rule);
+}
+
+.md-footer-meta {
+  background-color: transparent;
+}
+
+.md-copyright {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  letter-spacing: 0.02em;
+  color: var(--ab-ink-muted);
+}
+
+.md-copyright__highlight {
+  color: var(--ab-ink-soft);
+}
+
+/* ---- back to top -----------------------------------------------------------*/
+
+.md-top {
+  background-color: var(--ab-plate);
+  color: var(--ab-ink-soft);
+  border: var(--ab-rule-width, 1px) solid var(--ab-rule);
+  box-shadow: var(--md-shadow-z2);
+}
+
+.md-top:is(:focus, :hover) {
+  background-color: var(--ab-accent);
+  color: var(--md-default-bg-color);
+}
+
+/* ---- 404 (overrides/404.html) ----------------------------------------------*/
+
+.md-typeset .ab-404 {
+  padding: var(--ab-space-8) 0;
+  max-width: 30rem;
+}
+
+.ab-404__code {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ab-ink-muted);
+}
+
+.md-typeset .ab-404 h1 {
+  margin: var(--ab-space-2) 0 var(--ab-space-3);
+}
+
+.ab-404__note {
+  color: var(--ab-ink-soft);
+}
+
+.md-typeset .ab-404__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ab-space-5);
+  margin-top: var(--ab-space-5);
+}
+
+.md-typeset .ab-404__links a {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--1);
+  color: var(--ab-accent);
+  border-bottom: var(--ab-rule-width, 1px) solid var(--ab-rule);
+  padding-bottom: 0.15em;
+}
+
+.md-typeset .ab-404__links a:hover {
+  border-color: var(--ab-accent);
+}
+
+/* ---- states ----------------------------------------------------------------*/
+
+/* With scripting off, controls that would do nothing are not shown: search
+ * (the index never loads) and the palette toggle (the scheme never changes).
+ * The theme swaps no-js -> js before first paint of the header, so there is
+ * no flash. Content and navigation need none of this. */
+.no-js .md-search,
+.no-js form[data-md-component="palette"] {
+  display: none;
+}
+
+/* one focus ring everywhere; :where keeps it overridable by any component
+ * that draws its own. The search input is excluded -- its form's border
+ * turning accent is the focus state. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--ab-accent);
+  outline-offset: 2px;
+}
+
+.md-search__input:focus-visible {
+  outline: none;
+}
+
+/* the skip link, first tab stop on every page */
+.md-skip:focus {
+  background-color: var(--ab-accent);
+  color: var(--md-default-bg-color);
+}
+
+/* ---- copy controls ------------------------------------------------------
+ * docs/javascripts/clip.js inserts every one of these; none of them is in the HTML,
+ * so with scripting off there is no button sitting there doing nothing. What they
+ * copy is on the page either way -- the BibTeX inside its <details>, the LaTeX in
+ * the `data-tex` of the formula (and, with MathJax not running, in the formula
+ * itself).
+ */
+
+.md-typeset .ab-copy {
+  margin-left: 0.45em;
+  padding: 0 0.42em;
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+  vertical-align: 1px;
+  cursor: pointer;
+  color: var(--ab-ink-muted);
+  background: none;
+  border: var(--ab-rule-width, 1px) solid var(--ab-rule);
+  border-radius: var(--ab-radius);
+  transition: color var(--ab-motion-fast) var(--ab-ease),
+              border-color var(--ab-motion-fast) var(--ab-ease);
+}
+
+.md-typeset .ab-copy:hover,
+.md-typeset .ab-copy:focus-visible {
+  color: var(--ab-accent);
+  border-color: var(--ab-accent);
+}
+
+/* the confirmation: the button says what happened, where the eye already is */
+.md-typeset .ab-copy[data-state="done"] {
+  color: var(--c-compress);
+  border-color: var(--c-compress);
+}
+
+.md-typeset .ab-copy[data-state="failed"] {
+  color: var(--c-recurrent);
+  border-color: var(--c-recurrent);
+}
+
+/* ---- the LaTeX source of a formula -------------------------------------- */
+
+.ab-tex-bar {
+  margin: -0.4rem 0 0.9rem;
+  text-align: right;
+}
+
+/* the operator plate is the hero: its control sits back until the plate is hovered
+   or the button itself is focused. Faint rather than invisible, because a tap is not
+   a hover and a control nobody can find on a phone is a control nobody has. */
+.op-plate .ab-tex-bar {
+  /* inside the plate, under the formula; the offsets keep it clear of whatever
+     frame operator.css draws around the formula itself (agent 3's geometry) */
+  margin: 0.95rem 0 -0.45rem;
+  opacity: 0.4;
+  transition: opacity var(--ab-motion-fast) var(--ab-ease);
+}
+
+.op-plate:hover .ab-tex-bar,
+.op-plate:focus-within .ab-tex-bar {
+  opacity: 1;
+}
+
+/* ---- the hidden attribute actually hides ---------------------------------
+ * The UA stylesheet's `[hidden] { display: none }` is a UA rule, so any author
+ * rule that sets `display` on the same element outranks it. Every control on
+ * this site that a script reveals is marked `hidden` in the HTML -- that is
+ * what keeps the pages honest with scripting off -- and styling one of them
+ * with `display: flex` silently un-hides it forever. It had already happened
+ * once: the comparison tray sat over the browse table with nothing selected.
+ *
+ * !important is right here for the same reason it is right on the
+ * reduced-motion rule: this is a site-wide guarantee, not a style argument.
+ */
+[hidden] {
+  display: none !important;
+}

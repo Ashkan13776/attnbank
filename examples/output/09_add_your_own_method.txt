@@ -28,8 +28,8 @@ example_sink_topk: 9 checks passed, 0 failed
   [pass] exact limit -- limit_config={'k': None}, max |y - softmax| = 4.44e-16
 
 It is now a first-class member of the bank:
-   ['blocktopk', 'example_sink_topk', 'lsh_sample', 'sink_window', 'topk', 'value_topk', 'window']
-   {'name': 'example_sink_topk', 'category': 'restrict', 'objective': 'approximate', 'output_error': 0.8912003040313721, 'relative_error': 0.5897670388221741, 'distributional_error': 0.8912004232406616, 'value_error': 0.0, 'tv': 0.36854371428489685, 'matrix_fro': 1.3157376050949097, 'matrix_spectral': 0.5262097120285034, 'matrix_max_entry': 0.2300882637500763, 'matrix_inf_to_inf': 1.3554452657699585, 'matrix_AV_fro': 5.305909156799316}
+   ['bigbird', 'blocktopk', 'example_sink_topk', 'hyperattention', 'longformer', 'lsh_sample', 'oval', 'page_pca', 'reformer', 'routing', 'shifted_window', 'sink_window', 'strided', 'topk', 'value_topk', 'window']
+   {'name': 'example_sink_topk', 'category': 'restrict', 'objective': 'approximate', 'output_error': 0.695753276348114, 'relative_error': 0.5366592407226562, 'distributional_error': 0.6957532167434692, 'value_error': 0.0, 'tv': 0.34178054332733154, 'matrix_fro': 1.238881230354309, 'matrix_spectral': 0.5163847804069519, 'matrix_max_entry': 0.26150578260421753, 'matrix_inf_to_inf': 1.1202658414840698, 'matrix_AV_fro': 4.414449214935303}
 
 The full eleven-point suite runs it automatically, because it is parametrized
 over the registry: `pytest tests/test_conformance.py`.
