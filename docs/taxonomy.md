@@ -241,7 +241,10 @@ All 78 of them, grouped by the object they change. This is the same content as t
 
 <p class="tx-legend" markdown="1">**`declares`** &mdash; <abbr class="tx-dec" title="causal">c</abbr>&#8201;causal, <abbr class="tx-dec" title="names its weights on the original positions">w</abbr>&#8201;names its weights on the original positions, <abbr class="tx-dec" title="row-stochastic">s</abbr>&#8201;row-stochastic. A letter <span class="tx-struck">struck through</span> is the method declaring it does <em>not</em>.</p>
 
-<div class="tx-all-wrap" markdown="1">
+<!-- Not indexed: the same 78 methods are indexed on their own
+     pages, and a second copy here matched nearly every query. -->
+
+<div class="tx-all-wrap" data-search-exclude markdown="1">
 
 | method | what it is | category | objective | declares | backends |
 |---|---|---|---|---|---|

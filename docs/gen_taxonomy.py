@@ -393,7 +393,9 @@ def table(oracles: tuple) -> list[str]:
         "`ab.list_methods()`, and the view that works whatever your browser is "
         "doing.\n",
         LEGEND + "\n",
-        "<div class=\"tx-all-wrap\" markdown=\"1\">\n",
+        "<!-- Not indexed: the same 78 methods are indexed on their own\n"
+        "     pages, and a second copy here matched nearly every query. -->\n",
+        "<div class=\"tx-all-wrap\" data-search-exclude markdown=\"1\">\n",
         "| method | what it is | category | objective | declares | backends |",
         "|---|---|---|---|---|---|",
     ]

@@ -290,9 +290,13 @@
 .tx-sticky .op-line { font-size: clamp(1.15rem, 3.2vw, 1.6rem); }
 .tx-sticky .op-line--sub { font-size: clamp(0.95rem, 2.6vw, 1.26rem); }
 
-@media screen and (min-width: 76.25em) and (prefers-reduced-motion: no-preference) {
-  .tx-sticky { position: sticky; top: var(--md-header-height, 2.4rem); z-index: 1; }
-}
+/* The plate used to pin here, so that a symbol lit by a branch below stayed
+ * visible. It measured 251px -- 28% of a 900px viewport and more like a third
+ * of a laptop's -- and sat over the branches for the whole length of the page,
+ * which is a large permanent cost for feedback that only matters while the
+ * pointer is actually on a branch. It scrolls with the page now. The coupling
+ * is unchanged for the branches near it, which are the ones a reader is
+ * looking at when they first meet the tree. */
 
 /* ---- the full static table under the tree ------------------------------- */
 

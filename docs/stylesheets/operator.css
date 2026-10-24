@@ -228,10 +228,20 @@
  * becomes the loud line below it.
  */
 
-/* recede by inherited colour, not opacity: the glyphs and the fraction bar drop
- * to faint ink while the seven underlines -- the statement that recurrence
- * touches all of it -- keep their full hue */
-.op-formula.is-replaced .op-core { color: var(--ab-faint); transition: color var(--op-fast) var(--op-ease); }
+/* The operator recedes as a whole and the recurrence below becomes the loud
+ * line. No symbol is lit here -- see operator.js: "all of it" is not a list of
+ * parts, and underlining each one collided with the fraction bar.
+ *
+ * Colour alone no longer carries this. --ab-faint was raised to a legible
+ * 4.5:1 once it turned out the rest of the site used it for text, which is
+ * right for text and leaves a receded formula reading at nearly full strength.
+ * So the recede is colour *and* opacity, which dims the fraction bar with it. */
+.op-formula.is-replaced .op-core {
+  color: var(--ab-ink-muted);
+  opacity: 0.38;
+  transition: color var(--op-fast) var(--op-ease),
+              opacity var(--op-fast) var(--op-ease);
+}
 
 .md-typeset .op-replacement {
   /* a plate keeps the full width; the prose measure base.css puts on p is for prose */

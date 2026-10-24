@@ -1257,7 +1257,10 @@ tagged `oracle` below and carries a banner on its own page.
     <p class="bank-compare__note" id="bank-compare-note"></p>
   </section>
   <div class="bank-scroll">
-  <table class="bank-table">
+      <!-- Not indexed: every row here is already indexed on the method's own
+           page, and indexing all 78 again made this page match strongly on
+           essentially every query, so it surfaced as a result for everything. -->
+  <table class="bank-table" data-search-exclude>
     <thead>
       <tr>
         <th scope="col" data-sort="name">method <span class="bank-sub">/ key</span></th>

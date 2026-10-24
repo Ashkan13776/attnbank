@@ -40,8 +40,15 @@
       formula.classList.toggle("is-framed", !!cat && !!frame);
       formula.classList.toggle("is-replaced", !!cat && !!replace);
       formula.setAttribute("data-cat", cat || "");
+      // A replacing category declares every symbol, because it replaces the
+      // whole operator -- and lighting them one by one puts eight underlines
+      // and eight ticks across a two-line fraction, colliding with the
+      // fraction bar. "All of it" is not a list of parts. The operator recedes
+      // as a unit instead, which is the same answer `exact` gets at the other
+      // extreme: a category that touches nothing cannot light a symbol either.
+      var lit = replace ? [] : syms;
       Array.prototype.forEach.call(cells, function (cell) {
-        cell.classList.toggle("is-lit", syms.indexOf(cell.dataset.s) !== -1);
+        cell.classList.toggle("is-lit", lit.indexOf(cell.dataset.s) !== -1);
       });
       if (chip) {
         chip.textContent = cat || "";
