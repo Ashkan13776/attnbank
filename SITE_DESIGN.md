@@ -202,3 +202,42 @@ blank file.
 Finish with: what you studied and what you took from it, what you changed, what
 you deliberately did not change, anything you want from another aspect's owner,
 and anything you believe is wrong with this contract.
+
+---
+
+## Amendment: why the first pass came out grey
+
+The ten-aspect redesign landed and the author's verdict was still "dull". That
+is a fair reading of the result, and two clauses above are why.
+
+**"Colour is never decoration" was too strong.** It was written to stop the
+generic gradient-hero look, and it did. But combined with "hue only as rules,
+ticks and underlines", it left seven category colours appearing as 2px marks
+and nothing else, on 4,700 pixels of grey text on white. The rule stays in
+substance — hue still *means* category, never ornament, and still never sits
+behind text it would make illegible — but a category may now own a visible
+area, not only a line: a filled chip, a tinted well, a band. If a reader cannot
+tell the seven apart at a glance, the colour system is not doing its job.
+
+**The site has no pictures, and that is the bigger miss.** This library exists
+to measure things, and the site shows not one measurement. Error splits,
+convergence, cost against capacity — all of it is computed by code in this
+repository and none of it is drawn anywhere on the site.
+
+Figures are now a first-class surface, under two rules:
+
+1. **The site draws its own.** `figures/` in the monograph repository is the
+   author's unpublished work and does not belong on a public site before the
+   paper. The site's figures are computed from the library at build time, by a
+   generator in `docs/`, so they are reproducible by anyone who clones the
+   public repository and are covered by "nothing is invented" like every other
+   number here.
+2. **They use the house palette.** `attnbank.plotting.style.CATEGORICAL`, the
+   same seven hues as the site and the monograph, so a category is one colour
+   everywhere.
+
+**What is still forbidden** is unchanged and still load-bearing: zero
+third-party requests, works with JavaScript off, generated pages stay
+generated, nothing invented, `--strict` clean, `prefers-reduced-motion`
+respected, and the generic ML-landing-page furniture — gradient hero, floating
+feature cards, icon rows, logo clouds.
