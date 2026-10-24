@@ -118,6 +118,32 @@
   --c-recurrent: #e34948;
 }
 
+/* The same bridge again, at body level.
+ *
+ * Material stamps its palette on <body> -- [data-md-color-accent=indigo]
+ * carries --md-accent-fg-color, [data-md-color-scheme] carries the rest.
+ * A custom property resolves from the nearest ancestor that sets it, so a
+ * stamp on <body> beats :root on <html> no matter what the specificity is.
+ * The slate block below happens to be body-level already, which is why only
+ * the light theme was affected: content links came out Material indigo in
+ * light and instrument cyan in dark, in the same build.
+ */
+[data-md-color-scheme="default"] {
+  --md-text-font-family: var(--ab-sans);
+  --md-code-font-family: var(--ab-mono);
+  --md-default-bg-color: #fcfcfb;
+  --md-default-fg-color: var(--ab-ink);
+  --md-default-fg-color--light: var(--ab-ink-muted);
+  --md-default-fg-color--lighter: var(--ab-faint);
+  --md-default-fg-color--lightest: var(--ab-rule-soft);
+  --md-typeset-color: var(--ab-ink);
+  --md-typeset-a-color: var(--ab-accent);
+  --md-accent-fg-color: #095f6f;
+  --md-accent-fg-color--transparent: color-mix(in srgb, var(--ab-accent) 10%, transparent);
+  --md-code-bg-color: var(--ab-sunk);
+  --md-primary-fg-color: #14181f;
+}
+
 [data-md-color-scheme="slate"] {
   --ab-ink: #e6eaf0;
   --ab-ink-soft: #b6bfcb;

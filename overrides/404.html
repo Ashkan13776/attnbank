@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+
+{#-
+  The theme's 404 is a bare "404 - Not found" heading. GitHub Pages serves this
+  one page for every missing path, and mkdocs renders it with site_url-absolute
+  links, so the ways back below work at any depth. No search prompt: with
+  scripting off there is no search, and the links carry the weight either way.
+  Styled by the "404" section of docs/stylesheets/chrome.css.
+-#}
+
+{% block content %}
+  <div class="ab-404">
+    <p class="ab-404__code">HTTP 404</p>
+    <h1>Not in the bank</h1>
+    <p class="ab-404__note">There is no page at this address. Three ways back:</p>
+    <nav class="ab-404__links" aria-label="Ways back">
+      <a href="{{ 'methods/' | url }}">Browse the bank</a>
+      <a href="{{ 'taxonomy/' | url }}">The taxonomy</a>
+      <a href="{{ config.extra.homepage | d(nav.homepage.url, true) | url }}">Home</a>
+    </nav>
+  </div>
+{% endblock %}

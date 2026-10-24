@@ -1,0 +1,18 @@
+{#-
+  The theme's default mark is Material's generic "library" pictogram -- the single
+  clearest template tell in the header. This mark is the site's own: the seven
+  method categories as seven ticks, in registry order, in the exact hues of
+  `attnbank.plotting.style.CATEGORICAL` (see tokens.css), the same hues every
+  figure in the monograph uses. Inline styles rather than fill attributes because
+  the theme sets `fill` on header svgs; the vars resolve per-theme, so the mark
+  lifts with the dark palette like every other use of the hues.
+-#}
+<svg class="ab-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 24" aria-hidden="true">
+  <rect x="0"    y="5" width="2.6" height="14" style="fill: var(--c-exact)"/>
+  <rect x="4.2"  y="5" width="2.6" height="14" style="fill: var(--c-interaction)"/>
+  <rect x="8.4"  y="5" width="2.6" height="14" style="fill: var(--c-restrict)"/>
+  <rect x="12.6" y="5" width="2.6" height="14" style="fill: var(--c-compress)"/>
+  <rect x="16.8" y="5" width="2.6" height="14" style="fill: var(--c-factorize)"/>
+  <rect x="21"   y="5" width="2.6" height="14" style="fill: var(--c-coupling)"/>
+  <rect x="25.2" y="5" width="2.6" height="14" style="fill: var(--c-recurrent)"/>
+</svg>

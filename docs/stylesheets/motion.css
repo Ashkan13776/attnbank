@@ -2,7 +2,88 @@
  *
  * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
  * Every colour, size and duration in here comes from a token in tokens.css.
+ *
+ * THE SITE'S MOTION VOCABULARY -- the other nine aspects build with this:
+ *
+ *   state changes    color / background / border / opacity,
+ *                    var(--ab-motion-fast) var(--ab-ease)
+ *   things that      opacity 0->1 plus translateY of at most 6px,
+ *   open or enter    var(--ab-motion-slow) var(--ab-ease)
+ *   never            scale, blur, rotation, width/height, anything
+ *                    scroll-linked, anything that loops
+ *
+ * Expressive motion belongs to the two signature moments only (the operator
+ * plate and the taxonomy tree); everywhere else motion is functional -- it
+ * confirms a state change and otherwise stays out of the way.
+ *
+ * Everything in this file is inert under `prefers-reduced-motion: reduce`;
+ * the final block also quiets any animation the other stylesheets or the
+ * theme declare, so the guarantee holds site-wide, not per-aspect.
  */
 
-/* Empty: this aspect is unstarted. Everything here must be inert under
- * `prefers-reduced-motion: reduce`. */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* -- state changes on the chrome's interactive surfaces ---------------- */
+
+  .md-nav__link,
+  .md-header__button,
+  .md-source,
+  .md-top,
+  .md-skip,
+  .md-search__form,
+  .md-search-result__link,
+  .md-footer-meta a,
+  .md-typeset .ab-404__links a,
+  .md-typeset a {
+    transition: color var(--ab-motion-fast) var(--ab-ease),
+                background-color var(--ab-motion-fast) var(--ab-ease),
+                border-color var(--ab-motion-fast) var(--ab-ease),
+                opacity var(--ab-motion-fast) var(--ab-ease);
+  }
+
+  /* the category tick in the left nav stretches toward its label on hover:
+     an affordance, and the one playful pixel in the chrome */
+  .md-nav--primary li[data-cat] > .md-nav__link::before {
+    transition: width var(--ab-motion-fast) var(--ab-ease);
+  }
+
+  /* -- page entrance under navigation.instant ---------------------------- */
+
+  /* motion.js sets .ab-page-enter on <html> when instant navigation swaps the
+     page in -- never on the first render, which is already on screen. The
+     content rises into place; the chrome around it does not move, which is
+     what makes the site feel like one surface rather than a reload. */
+  .ab-page-enter .md-content {
+    animation: ab-page-enter var(--ab-motion-slow) var(--ab-ease) both;
+  }
+}
+
+@keyframes ab-page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* -- reduced motion --------------------------------------------------------
+ * The site must be functional and essentially still. This quiets everything,
+ * including the theme's own transitions and any animation another stylesheet
+ * declares; the !important is this guarantee's job, not a style preference.
+ * Durations are near-zero rather than zero so animation events still fire for
+ * any script that waits on them.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
