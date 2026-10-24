@@ -1,6 +1,13 @@
-# Oracle top-k restriction
+# Top-k restriction
 
 <p class="attn-standfirst" markdown="span">The `k` largest true scores, renormalized.</p>
+
+!!! danger "Oracle — an upper bound, not a method"
+    `topk` is not deployable and is not meant to be. It uses information no
+    inference-time method has, and it is in the bank to answer *how well could this
+    ever work?* — several of the monograph's arguments need that number. Read every
+    result below as a bound on a family of real methods, never as a baseline you
+    could ship.
 
 <div class="attn-facts" data-cat="restrict" markdown="1">
 

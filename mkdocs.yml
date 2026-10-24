@@ -163,7 +163,6 @@ nav:
           - HyperAttention: methods/hyperattention.md
           - Longformer: methods/longformer.md
           - LSH importance sampling: methods/lsh_sample.md
-          - Oracle top-k restriction: methods/topk.md
           - Output-aware selection (oracle): methods/value_topk.md
           - OVAL: methods/oval.md
           - Page-local key PCA: methods/page_pca.md
@@ -174,6 +173,7 @@ nav:
           - Sparse Transformer: methods/strided.md
           - StreamingLLM: methods/sink_window.md
           - Swin-style shifted local windows: methods/shifted_window.md
+          - Top-k restriction (oracle): methods/topk.md
       - compress:
           - Ada-KV: methods/evict_adakv.md
           - Atom: methods/atom.md

@@ -94,9 +94,14 @@ Colour carries meaning only through category and state. It is never decoration,
 and category hues never sit behind text or become text: the amber and the green
 clear 4.5:1 on neither ground. Rules, ticks, and underlines.
 
-**Themes.** Material stamps `data-md-color-scheme` on `<html>` server-side, so
-`:root` and `[data-md-color-scheme="slate"]` are the complete set of states —
-there is no unstamped case to guard against here. Define every colour in both.
+**Themes.** Material stamps `data-md-color-scheme` and `data-md-color-accent`
+on **`<body>`**, not on `<html>`. This matters more than it sounds: a custom
+property resolves from the nearest ancestor that sets it, so Material's
+body-level palette beats anything `tokens.css` declares on `:root`, whatever
+the specificity. Declaring the `--md-*` bridge only on `:root` is how content
+links came out Material indigo in light and instrument cyan in dark in the same
+build — the dark bridge escaped only because its selector happens to be
+body-level too. Declare every colour at body level, in both schemes.
 
 ## Non-negotiable
 

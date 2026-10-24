@@ -1,4 +1,4 @@
-"""Oracle top-k restriction: the ``k`` largest true scores, renormalized.
+"""ORACLE: Top-k restriction: the ``k`` largest true scores, renormalized.
 
 ``sec:sparse-operator``, ``sec:sparse-query``.  ``S_q`` is the set of the ``k`` largest
 exact attention weights, which by ``prop:error-topk`` minimizes the omitted mass
