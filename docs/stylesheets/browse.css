@@ -1,14 +1,274 @@
-/* Browse the bank: the filter chips, the table, the search.
+/* Browse the bank: the search, the filter chips, the grouped table.
  *
  * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
- * Every colour, size and duration in here comes from a token in tokens.css.
+ * Zone: scientific instrument -- dense, typographic, quiet. Colour appears only
+ * through the seven category hues (as rules and ticks, via --hl) and through state;
+ * every colour and face comes from tokens.css or Material's own custom properties.
+ *
+ * The table is server-rendered, grouped by category, complete without JavaScript.
+ * This file styles that table, plus the controls bank.js reveals on top of it.
+ * The comparison panel and the row checkboxes are compare.css (another owner).
  */
 
-/* ---- the method browser: human names, registry keys kept visible -------- */
+/* ---- controls ------------------------------------------------------------ */
+
+.bank-controls {
+  margin: 1.2rem 0 1rem;
+  padding: 0.7rem 0.8rem 0.45rem;
+  border: 1px solid var(--ab-rule);
+  border-radius: 0.15rem;
+  background: var(--ab-sunk);
+}
+
+.bank-search {
+  display: block;
+  margin-bottom: 0.6rem;
+}
+
+.bank-search__label {
+  display: block;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--md-default-fg-color--light);
+  margin-bottom: 0.25rem;
+}
+
+.bank-search__wrap {
+  position: relative;
+  display: block;
+}
+
+.bank-search input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.4rem 2rem 0.4rem 0.55rem;
+  font-size: 0.72rem;
+  font-family: var(--ab-mono);
+  color: var(--md-default-fg-color);
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--ab-rule);
+  border-radius: 0.15rem;
+}
+
+.bank-search input:focus {
+  outline: none;
+  border-color: var(--md-accent-fg-color);
+  box-shadow: 0 0 0 2px var(--md-accent-fg-color--transparent);
+}
+
+/* the "/" shortcut, where a reader will find it: in the box it focuses */
+.bank-search__kbd {
+  position: absolute;
+  right: 0.45rem;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0 0.3rem;
+  font-family: var(--ab-mono);
+  font-size: 0.6rem;
+  line-height: 1.5;
+  color: var(--ab-faint);
+  background: var(--ab-sunk);
+  border: 1px solid var(--ab-rule);
+  border-radius: 0.15rem;
+  pointer-events: none;
+}
+
+.bank-search input:focus + .bank-search__kbd { visibility: hidden; }
+
+.bank-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin-bottom: 0.4rem;
+}
+
+.bank-chips__label {
+  flex: 0 0 4.4rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--md-default-fg-color--light);
+}
+
+.bank-chip,
+.bank-reset {
+  font-family: var(--ab-mono);
+  font-size: 0.62rem;
+  line-height: 1.4;
+  padding: 0.14rem 0.45rem;
+  cursor: pointer;
+  color: var(--md-default-fg-color--light);
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--ab-rule);
+  border-radius: 0.15rem;
+}
+
+/* a category chip carries its hue as a tick, same hue as the table's spine */
+.bank-chip[data-cat]::before {
+  content: "";
+  display: inline-block;
+  width: 0.45em;
+  height: 0.45em;
+  margin-right: 0.4em;
+  background: var(--hl);
+}
+
+.bank-chip__n {
+  margin-left: 0.4em;
+  font-size: 0.9em;
+  color: var(--ab-faint);
+}
+
+.bank-chip:hover,
+.bank-reset:hover {
+  color: var(--md-default-fg-color);
+  border-color: var(--md-default-fg-color--light);
+}
+
+/* pressed is inverse video: unmistakable in both themes, and no category hue
+ * ever sits behind text */
+.bank-chip[aria-pressed="true"] {
+  color: var(--md-default-bg-color);
+  background: var(--md-default-fg-color);
+  border-color: var(--md-default-fg-color);
+}
+
+.bank-chip[aria-pressed="true"] .bank-chip__n {
+  color: inherit;
+  opacity: 0.7;
+}
+
+.bank-reset {
+  border-style: dashed;
+}
+
+.bank-chip:focus-visible,
+.bank-reset:focus-visible,
+.bank-search input:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: 1px;
+}
+
+.bank-count {
+  margin: 0.35rem 0 0;
+  font-size: 0.66rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.bank-empty {
+  font-size: 0.75rem;
+  color: var(--md-default-fg-color--light);
+}
+
+/* ---- the table ----------------------------------------------------------- */
+
+/* horizontal scroll only where it is needed; on wide screens the wrapper must not
+ * become a scroll container, or the sticky header below could not stick */
+.bank-scroll { overflow-x: auto; }
+
+.bank-table {
+  display: table;
+  width: 100%;
+  font-size: 0.68rem;
+  border-collapse: separate;   /* collapse would shear the borders off a sticky head */
+  border-spacing: 0;
+}
+
+.md-typeset .bank-table th,
+.md-typeset .bank-table td {
+  padding: 0.4em 0.65em;
+  vertical-align: top;
+  border-top: 1px solid var(--ab-rule-soft);
+}
+
+.md-typeset .bank-table thead th {
+  border-top: none;
+  border-bottom: 1px solid var(--ab-rule);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+  background: var(--md-default-bg-color);
+  color: var(--md-default-fg-color--light);
+}
+
+@media screen and (min-width: 76.25em) {
+  /* The id carries the specificity on purpose: method.css keeps a pre-split
+   * `.bank-scroll { overflow-x: auto }` and loads later in the cascade. A scroll
+   * container here would adopt the sticky header below and pin it 2.4rem down
+   * *inside the table* instead of under the site header. */
+  #bank .bank-scroll { overflow-x: visible; }
+  .md-typeset .bank-table thead th {
+    position: sticky;
+    top: 2.4rem;               /* the height of Material's fixed header */
+    z-index: 2;
+  }
+}
+
+/* Sort affordances appear only once bank.js has initialised (it stamps
+ * data-ready on #bank): with scripting off the header is a header, not a
+ * control that does nothing. */
+#bank[data-ready="1"] .bank-table thead th[data-sort] {
+  cursor: pointer;
+  user-select: none;
+}
+
+#bank[data-ready="1"] .bank-table thead th[data-sort]:hover {
+  color: var(--md-default-fg-color);
+}
+
+#bank[data-ready="1"] .bank-table thead th[data-sort]:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: -2px;
+}
+
+#bank[data-ready="1"] .bank-table thead th[data-sort]::after {
+  content: "\2195";
+  opacity: 0.3;
+  margin-left: 0.3em;
+}
+
+#bank[data-ready="1"] .bank-table thead th[aria-sort="ascending"]::after { content: "\2191"; opacity: 1; }
+#bank[data-ready="1"] .bank-table thead th[aria-sort="descending"]::after { content: "\2193"; opacity: 1; }
+
+/* ---- the category sections ------------------------------------------------
+ * Rendered by the generator between the rows, so the grouping is the taxonomy's
+ * order made visible -- and present with scripting off. The spine on the left is
+ * the category's hue, the same hue the taxonomy tree and every figure use. */
+
+.md-typeset .bank-table tr.bank-group th {
+  padding: 1.3em 0.65em 0.3em;
+  border-top: none;
+  box-shadow: inset 2px 0 0 var(--hl);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset .bank-table tbody tr.bank-group:first-child th { padding-top: 0.5em; }
+
+.bank-group__name { font-weight: 700; }
+
+.bank-group__n {
+  margin-left: 0.7em;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--ab-faint);
+}
+
+/* ---- rows: human name leading, registry key and flags underneath --------- */
 
 .md-typeset .bank-table th[scope="row"] {
   padding-right: 1.2em;
-  min-width: 12rem;
+  min-width: 11rem;
+  font-weight: 400;
+  text-align: left;
+  box-shadow: inset 2px 0 0 var(--hl);   /* the spine continues through the rows */
 }
 
 .bank-sub {
@@ -20,7 +280,7 @@
 
 a.bank-name {
   display: block;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 500;
   line-height: 1.25;
   color: var(--md-default-fg-color);
@@ -31,211 +291,54 @@ a.bank-name {
 
 .md-typeset a.bank-name:hover { color: var(--md-accent-fg-color); }
 
-.bank-key {
-  display: block;
-  margin-top: 0.1rem;
-  font-family: var(--ab-mono);
-  font-size: 0.64rem;
-  color: var(--ab-faint);
-}
-
-.md-typeset .bank-table td[data-cell="category"] {
-  box-shadow: inset 2px 0 0 var(--hl);
-}
-
-/* flags sit under the key, not beside the name */
-.md-typeset .bank-table th[scope="row"] .bank-tag { margin-top: 0.25rem; }
-
-.md-typeset .bank-table td[data-cell="summary"] { min-width: 15rem; }
-
-@media (prefers-reduced-motion: reduce) {
-  .sym,
-  .op-key,
-  .md-typeset .tx-toggle { transition: none; }
-}
-
-
-/* The method browser on docs/methods/index.md.
- *
- * Everything here is scoped under .bank, uses mkdocs-material's own custom
- * properties so it follows the light/dark toggle, and loads from the site itself --
- * no CDN, no framework. The table is server-rendered; this file styles the controls
- * that JavaScript reveals on top of it.
- */
-
-.bank-controls {
-  margin: 1.2rem 0 1rem;
-  padding: 0.8rem 0.9rem 0.5rem;
-  border: 1px solid var(--md-default-fg-color--lightest);
-  border-radius: 0.3rem;
-  background: var(--md-code-bg-color);
-}
-
-.bank-search {
-  display: block;
-  margin-bottom: 0.7rem;
-}
-
-.bank-search__label {
-  display: block;
-  font-size: 0.62rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--md-default-fg-color--light);
-  margin-bottom: 0.25rem;
-}
-
-.bank-search input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 0.45rem 0.6rem;
-  font-size: 0.78rem;
-  font-family: inherit;
-  color: var(--md-default-fg-color);
-  background: var(--md-default-bg-color);
-  border: 1px solid var(--md-default-fg-color--lighter);
-  border-radius: 0.2rem;
-}
-
-.bank-search input:focus {
-  outline: none;
-  border-color: var(--md-accent-fg-color);
-  box-shadow: 0 0 0 2px var(--md-accent-fg-color--transparent);
-}
-
-.bank-chips {
+.bank-meta {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.3rem;
-  margin-bottom: 0.45rem;
+  gap: 0.45em;
+  margin-top: 0.15rem;
 }
 
-.bank-chips__label {
-  flex: 0 0 4.4rem;
+.bank-key {
+  font-family: var(--ab-mono);
   font-size: 0.62rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--md-default-fg-color--light);
+  color: var(--ab-faint);
 }
 
-.bank-chip,
-.bank-reset {
-  font: inherit;
-  font-size: 0.66rem;
-  line-height: 1.3;
-  padding: 0.18rem 0.5rem;
-  cursor: pointer;
-  color: var(--md-default-fg-color--light);
-  background: var(--md-default-bg-color);
-  border: 1px solid var(--md-default-fg-color--lighter);
-  border-radius: 1rem;
-}
+.md-typeset .bank-table tbody tr:hover { background: var(--ab-sunk); }
 
-.bank-chip:hover,
-.bank-reset:hover {
-  color: var(--md-accent-fg-color);
-  border-color: var(--md-accent-fg-color);
-}
-
-.bank-chip[aria-pressed="true"] {
-  color: var(--md-primary-bg-color);
-  background: var(--md-typeset-a-color);
-  border-color: var(--md-typeset-a-color);
-}
-
-.bank-reset {
-  border-style: dashed;
-  border-radius: 0.2rem;
-}
-
-.bank-count {
-  margin: 0.35rem 0 0.1rem;
-  font-size: 0.66rem;
-  color: var(--md-default-fg-color--light);
-}
-
-.bank-empty {
-  font-size: 0.75rem;
-  color: var(--md-default-fg-color--light);
-}
-
-/* ---- the table ---------------------------------------------------------- */
-
-.bank-table {
-  display: table;
-  width: 100%;
-  font-size: 0.68rem;
-  border-collapse: collapse;
-}
-
-.md-typeset .bank-table th,
-.md-typeset .bank-table td {
-  padding: 0.45em 0.7em;
-  vertical-align: top;
-  border-top: 1px solid var(--md-default-fg-color--lightest);
-}
-
-.md-typeset .bank-table thead th {
-  border-top: none;
-  border-bottom: 1px solid var(--md-default-fg-color--lighter);
+/* the declaration columns are registry strings: monospaced, quiet, no chip chrome */
+.md-typeset .bank-table td[data-cell="category"],
+.md-typeset .bank-table td[data-cell="objective"],
+.md-typeset .bank-table td[data-cell="backends"] {
+  font-family: var(--ab-mono);
   font-size: 0.62rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  text-align: left;
-  white-space: nowrap;
-  background: none;
+  padding-top: 0.55em;
   color: var(--md-default-fg-color--light);
 }
 
-.md-typeset .bank-table thead th[data-sort] {
-  cursor: pointer;
-  user-select: none;
-}
-
-.md-typeset .bank-table thead th[data-sort]:hover {
-  color: var(--md-accent-fg-color);
-}
-
-.md-typeset .bank-table thead th[data-sort]::after {
-  content: "\2195";
-  opacity: 0.3;
-  margin-left: 0.3em;
-}
-
-.md-typeset .bank-table thead th[aria-sort="ascending"]::after { content: "\2191"; opacity: 1; }
-.md-typeset .bank-table thead th[aria-sort="descending"]::after { content: "\2193"; opacity: 1; }
-
-.md-typeset .bank-table tbody th {
-  font-weight: 400;
-  text-align: left;
-  white-space: nowrap;
-}
-
-.md-typeset .bank-table tbody tr:hover {
-  background: var(--md-code-bg-color);
-}
-
-.md-typeset .bank-table code {
-  font-size: 0.92em;
-  padding: 0 0.2em;
-}
-
-/* the declaration columns are short and must not break mid-word */
 .md-typeset .bank-table td[data-cell="category"],
 .md-typeset .bank-table td[data-cell="objective"],
 .md-typeset .bank-table td[data-cell="causal"] {
   white-space: nowrap;
 }
 
-/* backends may wrap between entries, never inside one */
-.md-typeset .bank-table td[data-cell="backends"] code {
-  white-space: nowrap;
+/* "no" recedes so that scanning the column reads as scanning the yeses */
+.md-typeset .bank-table tr[data-causal="no"] td[data-cell="causal"] {
+  color: var(--ab-faint);
 }
+
+.md-typeset .bank-table td[data-cell="summary"] { min-width: 14rem; }
+
+.md-typeset .bank-table td[data-cell="summary"] code {
+  font-size: 0.92em;
+  padding: 0 0.2em;
+}
+
+/* ---- the flags ------------------------------------------------------------ */
 
 .bank-tag {
   display: inline-block;
-  margin: 0.2rem 0.2rem 0 0;
   padding: 0 0.35em;
   font-size: 0.56rem;
   letter-spacing: 0.03em;
@@ -254,4 +357,3 @@ a.bank-name {
 }
 
 [data-md-color-scheme="slate"] .bank-tag--oracle { color: #f0706f; }
-
