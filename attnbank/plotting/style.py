@@ -51,6 +51,45 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
 # Validated categorical palette (light mode; print surface).
+# The taxonomy's seven categories, each pinned to one hue.
+#
+# This mapping is the single source of truth. It did not exist until it was
+# noticed that nothing enforced it: tools/make_taxonomy_figure.py indexed
+# CATEGORICAL positionally, the documentation site's tokens.css carried a
+# different hand-picked mapping, and a third figure indexed CATEGORICAL
+# positionally again but one slot off, because it had a reference column in
+# front. All three disagreed, on all seven categories, and the site's own
+# design contract asserted they matched.
+#
+# The site's assignment is the one kept, for two reasons: `exact` changes
+# nothing, so a neutral grey says more than a hue would, and the remaining six
+# avoid the pink and the mid-green of the general cycle, which read poorly next
+# to each other and badly in print.
+#
+# CATEGORICAL below is still the general-purpose cycle for unrelated series.
+# It is not a category map; do not index it with a category's position.
+CATEGORY = {
+    "exact":       "#52514e",
+    "interaction": "#2a78d6",
+    "restrict":    "#eb6834",
+    "compress":    "#1baf7a",
+    "factorize":   "#4a3aa7",
+    "coupling":    "#eda100",
+    "recurrent":   "#e34948",
+}
+
+# the same seven lifted for a dark ground; same hue, same order
+CATEGORY_DARK = {
+    "exact":       "#9aa3b0",
+    "interaction": "#68a8f2",
+    "restrict":    "#f58a5c",
+    "compress":    "#3fcb97",
+    "factorize":   "#8f80e0",
+    "coupling":    "#f0bb3d",
+    "recurrent":   "#f0706f",
+}
+
+
 CATEGORICAL = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100",
                "#e87ba4", "#008300", "#4a3aa7", "#e34948"]
 SEQ_BLUE = ["#cde2fb", "#b7d3f6", "#9ec5f4", "#86b6ef", "#6da7ec", "#5598e7", "#3987e5",

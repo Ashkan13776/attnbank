@@ -165,7 +165,41 @@ def main() -> int:
                     bad.append(f"{rel}: {m.group(0)!r} != {want}")
         r.check("test counts in prose", bad)
 
-    # ---- 6. paper_section labels exist in the monograph ------------------------
+    # ---- 6. the seven category hues agree everywhere ---------------------------
+    # A category is supposed to be one colour on the site, in every figure of the
+    # monograph, and in the taxonomy figure. Nothing enforced that, and all three
+    # disagreed on all seven: the figures indexed the general CATEGORICAL cycle by
+    # a category's row number, the site carried a different hand-picked mapping,
+    # and a third figure indexed positionally one slot off because it had a
+    # reference column in front. style.CATEGORY is the source of truth now, and
+    # this holds the stylesheet to it.
+    from attnbank.plotting import style as _style
+
+    tokens = LIB / "docs" / "stylesheets" / "tokens.css"
+    if not tokens.exists():
+        r.skipped("category hues agree", "tokens.css not present")
+    else:
+        css = tokens.read_text()
+        light, dark = css.split('[data-md-color-scheme="slate"]', 1)
+        wrong = []
+        for block, hues, where in ((light, _style.CATEGORY, "light"),
+                                   (dark, _style.CATEGORY_DARK, "dark")):
+            found = dict(re.findall(r"--c-(\w+):\s*(#[0-9a-fA-F]{6})", block))
+            for cat, hue in hues.items():
+                got = found.get(cat)
+                if got is None:
+                    wrong.append(f"tokens.css {where} has no --c-{cat}")
+                elif got.lower() != hue.lower():
+                    wrong.append(f"--c-{cat} is {got} in the {where} theme, "
+                                 f"style.CATEGORY says {hue}")
+        # and the registry must not have grown a category nobody assigned a hue
+        for cat in {row["category"] for row in table}:
+            if cat not in _style.CATEGORY:
+                wrong.append(f"registry has category {cat!r} with no hue in "
+                             f"style.CATEGORY")
+        r.check("category hues agree", wrong)
+
+    # ---- 7. paper_section labels exist in the monograph ------------------------
     sections = PAPER / "sections"
     if not sections.is_dir():
         r.skipped("paper_section labels exist", "monograph not present")
@@ -179,7 +213,7 @@ def main() -> int:
                 bad_lbl.append(f"{row['name']} declares {lbl}, which no section defines")
         r.check("paper_section labels exist", bad_lbl)
 
-    # ---- 7. the monograph's own library counts ---------------------------------
+    # ---- 8. the monograph's own library counts ---------------------------------
     if not sections.is_dir():
         r.skipped("monograph counts match the library", "monograph not present")
     else:
