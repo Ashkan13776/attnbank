@@ -60,6 +60,26 @@ metrics.error_decomposition(ref.weights, out.weights, v, out.v_hat)
 # {'distributional': …, 'value': …, 'total': …}
 ```
 
+<figure class="ab-fig" id="fig-error-split">
+<div class="ab-fig-plate">
+--8<-- "docs/figures/error_split.svg"
+--8<-- "docs/figures/error_split.narrow.svg"
+</div>
+<figcaption><b class="ab-fig-n">Figure 1</b><strong>Where the error comes
+from.</strong> That call, run on nine configurations against dense softmax.
+Each bar is one configuration, drawn to the full width and divided at the
+share of the error its <em>distributional</em> term carries; the median
+<code>‖y − ŷ‖</code> over all queries is printed beside it. The four at the top
+keep every value exactly and are wrong only about where to look.
+<code>quantkv</code> appears three times deliberately: at 2-bit keys the error
+is entirely distributional, at 2-bit values entirely value, and at 3 bits each
+it is roughly half of both — one method, totals of the same order, three
+different mechanisms. Reading one number instead of two hides which.
+<span class="ab-fig-src">attnbank.data.synthetic(n=256, d=64, dv=64, heads=4,
+passages=2, seed=0), float64, causal · docs/gen_figures.py ·
+examples/03_error_decomposition.py prints the same split</span></figcaption>
+</figure>
+
 The decomposition is a *measurement* only if `out.weights` and `out.v_hat` really
 reproduce `out.y`. If a method reports weights that are merely plausible — the
 attention matrix it would have used, say, before some later correction — the
@@ -70,6 +90,32 @@ library tests it rather than assuming it.
 It also pins down something softer: it forces a method to say what it *is* in a common
 language. Two methods from different categories, with nothing in common at the level of
 code, become comparable the moment both can write down $\widehat\pi_q$ and $\widehat v$.
+
+And comparable at a matched budget is where the surprises are. Both methods below are
+restriction oracles: they keep $k$ keys per query and the rest of the measure is thrown
+away. One picks the $k$ largest weights. The other picks the $k$ that minimise the
+output error — which is not the same set.
+
+<figure class="ab-fig" id="fig-selection-gap">
+<div class="ab-fig-plate">
+--8<-- "docs/figures/selection_gap.svg"
+--8<-- "docs/figures/selection_gap.narrow.svg"
+</div>
+<figcaption><b class="ab-fig-n">Figure 2</b><strong>Top-k is not
+output-optimal.</strong> Output error against the per-query budget <code>k</code>
+for two selection rules on identical inputs: <code>topk</code>, which keeps the
+largest attention weights, and <code>value_topk</code>, which keeps the keys that
+minimise <code>‖y − ŷ‖</code>. The shaded band is the gap — between 1.28× and 1.44×
+at every budget measured, and it does not close as <code>k</code> grows. Selecting
+the heaviest mass minimises the omitted mass <code>ε_q</code>, not the error; the
+bound is <code>ε_q · osc(v)</code>, and a light token carrying an extreme value
+outweighs a heavy one sitting near the mean. Both curves are oracles that see the
+true scores, so what is being measured here is the rule and not the budget — a
+deployable selector can only do worse than <code>topk</code>.
+<span class="ab-fig-src">attnbank.data.synthetic(n=128, d=32, dv=32, heads=2,
+passages=2, seed=0), float64, causal · docs/gen_figures.py ·
+examples/04_topk_is_not_output_optimal.py</span></figcaption>
+</figure>
 
 ## When a method genuinely cannot
 

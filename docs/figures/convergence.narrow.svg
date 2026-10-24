@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 320" role="img" aria-labelledby="abfig-conv-narrow-t abfig-conv-narrow-d" class="ab-figsvg ab-fig-narrow" font-family="system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Nimbus Sans','Liberation Sans',sans-serif" fill="var(--ab-ink,#171b21)">
+<title id="abfig-conv-narrow-t">Random features converging on dense softmax, and a fixed map that does not</title>
+<desc id="abfig-conv-narrow-d">Mean output error against the number of random features r, on logarithmic axes, with a shaded band over eight seeds. performer and trigrff both fall along a slope close to r to the minus one half. linear_elu uses a fixed feature map and declares a different objective; it is a flat line that no value of r improves.</desc>
+<line x1="48" y1="206.87" x2="348" y2="206.87" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="41" y="206.87" font-size="13" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">0.01</text>
+<line x1="48" y1="164.51" x2="348" y2="164.51" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="41" y="164.51" font-size="13" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">0.03</text>
+<line x1="48" y1="118.09" x2="348" y2="118.09" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="41" y="118.09" font-size="13" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">0.1</text>
+<line x1="48" y1="75.72" x2="348" y2="75.72" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="41" y="75.72" font-size="13" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">0.3</text>
+<line x1="48" y1="29.3" x2="348" y2="29.3" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="41" y="29.3" font-size="13" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">1</text>
+<line x1="48" y1="218" x2="348" y2="218" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<line x1="48" y1="218" x2="48" y2="222" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="48" y="235" font-size="13" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2³</text>
+<line x1="85.5" y1="218" x2="85.5" y2="222" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<line x1="123" y1="218" x2="123" y2="222" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="123" y="235" font-size="13" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2⁵</text>
+<line x1="160.5" y1="218" x2="160.5" y2="222" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<line x1="198" y1="218" x2="198" y2="222" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="198" y="235" font-size="13" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2⁷</text>
+<line x1="235.5" y1="218" x2="235.5" y2="222" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<line x1="273" y1="218" x2="273" y2="222" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="273" y="235" font-size="13" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2⁹</text>
+<line x1="310.5" y1="218" x2="310.5" y2="222" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<line x1="348" y1="218" x2="348" y2="222" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="348" y="235" font-size="13" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2¹¹</text>
+<text x="198" y="252" font-size="13" text-anchor="middle" fill="var(--ab-ink-soft,#40464f)">random features  r</text>
+<text x="41" y="16" font-size="13" fill="var(--ab-ink-soft,#40464f)">mean output error</text>
+<path d="M48 90.71L85.5 104.08L123 117.44L160.5 130.8L198 144.17L235.5 157.53L273 170.9L310.5 184.26L348 197.62" fill="none" stroke="var(--ab-faint,#6f7580)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 3"/>
+<path d="M60.07 162.77L135.07 189.5" fill="none" stroke="var(--ab-faint,#6f7580)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 3"/>
+<text x="141.07" y="190.5" font-size="12.5" fill="var(--ab-faint,#6f7580)" dominant-baseline="central">slope −1/2</text>
+<path d="M48 99.35L85.5 109.74L123 115.28L160.5 125.59L198 135.84L235.5 144.6L273 155.25L310.5 168.98L348 179.29L348 171.69L310.5 160.08L273 149.67L235.5 137.82L198 121.49L160.5 116.42L123 99.31L85.5 81.92L48 81.39Z" fill="var(--c-interaction,#2a78d6)" fill-opacity="0.11"/>
+<path d="M48 87.09L85.5 111.89L123 131.3L160.5 142.06L198 153.1L235.5 166.41L273 180.41L310.5 192.41L348 206.43L348 203.31L310.5 190.85L273 176.4L235.5 162.3L198 149.37L160.5 132.75L123 118.08L85.5 99.76L48 39.57Z" fill="var(--c-interaction,#2a78d6)" fill-opacity="0.11"/>
+<path d="M48 90.71L85.5 98.51L123 111.04L160.5 122.35L198 129.17L235.5 140.65L273 152.71L310.5 164.51L348 175.1" fill="none" stroke="var(--c-interaction,#2a78d6)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="48" cy="90.71" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="85.5" cy="98.51" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="123" cy="111.04" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="160.5" cy="122.35" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="198" cy="129.17" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="235.5" cy="140.65" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="273" cy="152.71" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="310.5" cy="164.51" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="348" cy="175.1" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<path d="M48 72.22L85.5 105.2L123 125.44L160.5 137.97L198 151.17L235.5 164.01L273 177.72L310.5 191.48L348 204.83" fill="none" stroke="var(--c-interaction,#2a78d6)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 3"/>
+<circle cx="48" cy="72.22" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="85.5" cy="105.2" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="123" cy="125.44" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="160.5" cy="137.97" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="198" cy="151.17" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="235.5" cy="164.01" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="273" cy="177.72" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="310.5" cy="191.48" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="348" cy="204.83" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<line x1="48" y1="139.43" x2="348" y2="139.43" stroke="var(--ab-ink,#171b21)" stroke-width="1.7" stroke-dasharray="1 4" stroke-linecap="round"/>
+<line x1="3" y1="266" x2="23" y2="266" stroke="var(--c-interaction,#2a78d6)" stroke-width="1.9"/>
+<text x="29" y="270" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink-soft,#40464f)">performer</text>
+<line x1="3" y1="282" x2="23" y2="282" stroke="var(--c-interaction,#2a78d6)" stroke-width="1.9" stroke-dasharray="5 3"/>
+<text x="29" y="286" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink-soft,#40464f)">trigrff</text>
+<line x1="3" y1="298" x2="23" y2="298" stroke="var(--ab-ink,#171b21)" stroke-width="1.9" stroke-dasharray="1 4"/>
+<text x="29" y="302" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink-soft,#40464f)">linear_elu</text>
+</svg>

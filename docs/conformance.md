@@ -51,6 +51,26 @@ are collected.
 
 </div>
 
+<figure class="ab-fig" id="fig-state-capacity">
+<div class="ab-fig-plate">
+--8<-- "docs/figures/state_capacity.svg"
+--8<-- "docs/figures/state_capacity.narrow.svg"
+</div>
+<figcaption><b class="ab-fig-n">Figure 1</b><strong>Check 9, drawn.</strong>
+<code>cost(1, n, 128, 128)["state_bytes"]</code> for all 78 registered methods at
+their default configuration, against context length; one line per method, coloured
+by taxonomy category, both panels on one scale. Faceted by the property the check
+is about: 34 methods carry resident state proportional to <code>n</code>, 44 do
+not, and dense softmax is drawn in both panels as the reference. That is the whole
+content of <em>finite state</em> — a window or an eviction keeps a fixed number of
+tokens, a recurrence a fixed-size matrix, a factorisation <code>r</code> latents.
+These are the analytic cost models each method declares, not timings of a running
+kernel; check 9 is what stops a method declaring a saving it does not make.
+<span class="ab-fig-src">one decode step, m = 1, d = dv = 128, fp16 ·
+docs/gen_figures.py · examples/08_cost_and_capacity.py prints the table</span>
+</figcaption>
+</figure>
+
 ## Why 6 and 7 are the interesting ones
 
 Checks 1–5 catch bugs. Check 6 catches something else: an implementation that is
@@ -85,6 +105,28 @@ for cfg in cfgs:
 assert all(a > b for a, b in zip(errs, errs[1:])), \
     f"{name}: mean error not monotone along convergence_configs: {errs}"
 ```
+
+<figure class="ab-fig" id="fig-convergence">
+<div class="ab-fig-plate">
+--8<-- "docs/figures/convergence.svg"
+--8<-- "docs/figures/convergence.narrow.svg"
+</div>
+<figcaption><b class="ab-fig-n">Figure 2</b><strong>What converges, and what was
+never trying to.</strong> Mean output error over eight seeds against the number of
+random features <code>r</code>, with the band showing the full spread across those
+seeds. Over the last decade the measured slope is −0.51 for <code>trigrff</code>
+and −0.43 for <code>performer</code>, against the −1/2 a Monte-Carlo rate predicts;
+the dotted guide is that rate. <code>linear_elu</code> is the flat line. It uses a
+fixed feature map, declares <code>objective = modify</code>, and no value of
+<code>r</code> improves it — yet at the small <code>r</code> on the left of the
+plot it is the most accurate of the three, and <code>performer</code> only
+overtakes it past <code>r = 2⁸</code>. Which is exactly why "closest to softmax at
+the setting I tried" is not a correctness anchor, and monotone decrease is.
+<span class="ab-fig-src">attnbank.data.synthetic(n=128, d=32, dv=32, heads=2,
+passages=1, seed=0) scaled by 0.5, float64, non-causal, seeds 0–7 ·
+docs/gen_figures.py · examples/05_random_features_converge.py</span>
+</figcaption>
+</figure>
 
 Methods whose `objective` is `modify` are exempt, and the suite **asserts the
 exemption** rather than silently skipping it:
