@@ -87,7 +87,15 @@
   --ab-ink: #171b21;
   --ab-ink-soft: #40464f;
   --ab-ink-muted: #5d6673;
-  --ab-faint: #8c94a2;
+  /* The lightest ink that is still ink. It was #8c94a2, which is 2.98:1 on
+   * the page -- under even the 3:1 large-text floor -- and the contract
+   * called it decoration-only for that reason. Ten places across three
+   * stylesheets then used it for text anyway, which is the honest signal
+   * that a site needs a fourth *legible* ink level more than it needs a
+   * decorative one. Same hue, walked down to 4.5:1 on the page and 4.6:1
+   * on a plate. Rules and ticks drawn with it sit a shade darker; the
+   * hairline tokens --ab-rule and --ab-rule-soft are unchanged. */
+  --ab-faint: #6f7580;
 
   --ab-accent: #0b7285;        /* 5.4:1 on the page ground                   */
   --ab-accent-soft: #e0f0f3;   /* a wash: selection, hover grounds           */

@@ -196,11 +196,12 @@
 }
 
 @media screen and (min-width: 76.25em) {
-  /* The id carries the specificity on purpose: method.css keeps a pre-split
-   * `.bank-scroll { overflow-x: auto }` and loads later in the cascade. A scroll
-   * container here would adopt the sticky header below and pin it 2.4rem down
-   * *inside the table* instead of under the site header. */
-  #bank .bank-scroll { overflow-x: visible; }
+  /* The wrapper scrolls at narrow widths and must stop doing so here: a scroll
+   * container would adopt the sticky header below and pin it 2.4rem down
+   * *inside the table* rather than under the site header. This used to need
+   * `#bank` to out-specify a copy of the rule that the stylesheet split had
+   * left in method.css; that copy is gone, so plain cascade order is enough. */
+  .bank-scroll { overflow-x: visible; }
   .md-typeset .bank-table thead th {
     position: sticky;
     top: 2.4rem;               /* the height of Material's fixed header */
@@ -357,3 +358,10 @@ a.bank-name {
 }
 
 [data-md-color-scheme="slate"] .bank-tag--oracle { color: #f0706f; }
+
+/* The filter-chip label takes its own line once the row cannot hold it beside
+ * the chips. Adopted from method.css, where the stylesheet split had left it:
+ * it styles this page's chips and belongs with them. */
+@media screen and (max-width: 44.9375em) {
+  .bank-chips__label { flex-basis: 100%; }
+}

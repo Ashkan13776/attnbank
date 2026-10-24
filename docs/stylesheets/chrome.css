@@ -496,3 +496,18 @@ body[data-md-color-primary] .md-header {
 .op-plate:focus-within .ab-tex-bar {
   opacity: 1;
 }
+
+/* ---- the hidden attribute actually hides ---------------------------------
+ * The UA stylesheet's `[hidden] { display: none }` is a UA rule, so any author
+ * rule that sets `display` on the same element outranks it. Every control on
+ * this site that a script reveals is marked `hidden` in the HTML -- that is
+ * what keeps the pages honest with scripting off -- and styling one of them
+ * with `display: flex` silently un-hides it forever. It had already happened
+ * once: the comparison tray sat over the browse table with nothing selected.
+ *
+ * !important is right here for the same reason it is right on the
+ * reduced-motion rule: this is a site-wide guarantee, not a style argument.
+ */
+[hidden] {
+  display: none !important;
+}

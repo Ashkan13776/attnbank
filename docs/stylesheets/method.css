@@ -469,13 +469,3 @@
   color: var(--ab-ink-muted);
   max-width: 38rem;
 }
-
-/* ---- one rule still shared with the browse page -------------------------- */
-/* A pre-split leftover: it styles the browser's filter chips, which the same
- * script generates. `.bank-scroll { overflow-x: auto }` used to sit here too
- * and has been removed -- browse.css owns it now, and because this file loads
- * later it was silently making that wrapper a scroll container. */
-
-@media screen and (max-width: 44.9375em) {
-  .bank-chips__label { flex-basis: 100%; }
-}
