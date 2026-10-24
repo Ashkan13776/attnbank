@@ -63,6 +63,11 @@
   --ab-space-8: 3.2rem;    /* 64 */
 
   /* ---- shape ----------------------------------------------------------- */
+  /* The reading measure, ~75 characters at the body size. base.css applies
+   * it to prose blocks; tables, code, figures and the signature plates keep
+   * the full column. It only ever shrinks, so narrow contexts are unaffected. */
+  --ab-measure: 34rem;
+
   --ab-radius: 0.2rem;         /* 4px: controls, inline code, small chips    */
   --ab-radius-lg: 0.45rem;     /* 9px: plates, cards, code blocks            */
   --ab-rule-width: 1px;        /* hairlines                                  */

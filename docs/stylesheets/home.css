@@ -1,60 +1,202 @@
 /* The landing page.
  *
  * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
- * Every colour, size and duration in here comes from a token in tokens.css.
+ *
+ * Colours, faces and rules come from tokens.css. The type and spacing scale read
+ * agent 1's forthcoming tokens through var(--ab-step-N, fallback) and
+ * var(--ab-space-N, fallback), so the page adopts the scale the moment it lands
+ * and renders sensibly until it does. No raw colour appears below.
  */
 
-/* ---- home: quiet ruled sections ----------------------------------------- */
-
-/* running text stays near 70 characters even when the page is wide */
+/* running text stays near 70 characters even when the page is wide.
+ * Shared: taxonomy.md uses this class too — do not repurpose it. */
 .md-typeset .ab-measure { max-width: 33rem; }
 
-.md-typeset .ab-split {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-  gap: 0 2rem;
+/* ---- the hero: claim, first action, proof ------------------------------- */
+
+.md-typeset .ab-hero {
+  margin: var(--ab-space-5, 1.2rem) 0 var(--ab-space-7, 2.8rem);
 }
 
-.md-typeset .ab-claim {
-  font-family: var(--ab-serif);
-  font-size: 1.12rem;
-  line-height: 1.5;
-  color: var(--md-default-fg-color);
-  max-width: 32rem;
+.md-typeset .ab-hero h1 {
+  font-size: var(--ab-step-5, clamp(1.9rem, 1.1rem + 2.4vw, 2.75rem));
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  max-width: 17em;
+  margin: 0.35em 0 0.5em;
 }
 
-/* the invariant, which the whole library rests on: one rule, one line of code */
+.md-typeset .ab-hero h1 em {
+  font-style: italic;
+}
+
+.md-typeset .ab-lede {
+  font-size: var(--ab-step-1, 0.92rem);
+  line-height: 1.55;
+  color: var(--ab-ink-soft, var(--md-default-fg-color--light));
+  max-width: 36rem;
+  margin: 0;
+}
+
+/* On a phone the display size costs four lines of headline and pushes the one
+ * action below the fold. Step the headline and lede down the same scale rather
+ * than introduce a size that is not on it. */
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .ab-hero h1 { font-size: var(--ab-step-4); }
+  .md-typeset .ab-lede { font-size: var(--ab-step-0); }
+}
+
+/* the first action: the install line, then the one link that follows it */
+.md-typeset .ab-act {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ab-space-3, 0.8rem) var(--ab-space-5, 1.8rem);
+  margin: var(--ab-space-5, 1.5rem) 0 0;
+}
+
+.md-typeset .ab-act .highlight {
+  margin: 0;
+  min-width: 0;        /* let the flex item shrink instead of forcing overflow */
+  max-width: 100%;
+}
+
+.md-typeset .ab-act pre {
+  margin: 0;
+  border: 1px solid var(--ab-rule);
+}
+
+.md-typeset .ab-act pre > code { overflow-x: auto; }
+
+.md-typeset .ab-act pre > code {
+  padding: 0.6rem 2.8rem 0.6rem 0.9rem; /* right padding clears the copy control */
+}
+
+.md-typeset .ab-act-links {
+  margin: 0;
+  font-size: var(--ab-step-0, 0.8rem);
+}
+
+.md-typeset .ab-act-links a { font-weight: 600; }
+
+.md-typeset .ab-arrow {
+  font-family: var(--ab-mono);
+  font-style: normal;
+}
+
+/* the proof, as a tape of figures rather than a line of grey small caps.
+ * Each figure is also the way to the page that substantiates it. */
+.md-typeset .ab-tape {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ab-space-2, 0.5rem) var(--ab-space-6, 2.3rem);
+  margin: var(--ab-space-6, 2rem) 0 0;
+  padding: var(--ab-space-3, 0.85rem) 0;
+  border-top: 1px solid var(--ab-rule-soft);
+}
+
+.md-typeset a.ab-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  color: var(--ab-ink, var(--md-default-fg-color));
+}
+
+.md-typeset a.ab-stat b {
+  font-family: var(--ab-mono);
+  font-weight: 400;
+  font-size: var(--ab-step-3, 1.3rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.md-typeset a.ab-stat span {
+  font-family: var(--ab-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+  transition: color var(--ab-motion-fast, 150ms) var(--ab-ease, ease);
+}
+
+.md-typeset a.ab-stat:hover span,
+.md-typeset a.ab-stat:focus-visible span {
+  color: var(--ab-ink, var(--md-default-fg-color));
+}
+
+/* 78 methods across the seven categories, to scale: the hues are the registry's,
+ * each segment's share is its category's share of the bank. */
+.md-typeset .ab-spectrum {
+  display: flex;
+  gap: 3px;
+  height: 0.3rem;
+  margin: 0;
+}
+
+.md-typeset .ab-spectrum span {
+  background: var(--hl);
+  min-width: 3px;
+}
+
+/* keyboard focus stays visible on everything the hero and footer link */
+.md-typeset .ab-hero a:focus-visible,
+.md-typeset .ab-go a:focus-visible {
+  outline: 2px solid var(--ab-accent, var(--md-accent-fg-color));
+  outline-offset: 3px;
+}
+
+/* ---- the invariant: one rule, one line of code, framed like the plate ---- */
+
 .md-typeset .ab-invariant {
-  margin: 1.2rem 0;
-  padding: 0.9rem 0 0.9rem 1rem;
-  border-left: 2px solid var(--c-interaction);
-  background: var(--ab-sunk);
+  position: relative;
+  margin: var(--ab-space-5, 1.4rem) 0;
+  padding: 1.1rem 1.2rem 0.9rem;
+  background: var(--ab-plate);
+  border: 1px solid var(--ab-rule);
+}
+
+/* the corner label, the same idiom as the operator plate's */
+.md-typeset .ab-invariant::before {
+  content: attr(data-label);
+  position: absolute;
+  top: -0.46rem;
+  left: 1.1rem;
+  padding: 0 0.45rem;
+  background: var(--ab-plate);
+  font-family: var(--ab-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
 }
 
 .md-typeset .ab-invariant code {
   display: block;
   background: none;
+  border: 0;
+  box-shadow: none;
   padding: 0;
-  font-size: 0.86rem;
-  color: var(--md-default-fg-color);
+  font-size: var(--ab-step-1, 0.95rem);
+  color: var(--ab-ink, var(--md-default-fg-color));
   overflow-x: auto;
 }
 
 .md-typeset .ab-invariant p {
-  margin: 0.5rem 0 0;
-  font-size: 0.74rem;
+  margin: 0.55rem 0 0;
+  font-size: var(--ab-step--1, 0.74rem);
   color: var(--ab-faint);
 }
 
-/* the eleven conformance checks: a numbered list, because they are a checklist and
- * the count is the claim */
+/* ---- the eleven conformance checks: a checklist, and the count is the claim */
+
 .md-typeset ol.ab-checks {
   list-style: none;
   margin: 0.8rem 0 0;
   padding: 0;
   columns: 2;
   column-gap: 2rem;
-  font-size: 0.74rem;
+  font-size: var(--ab-step--1, 0.74rem);
+  counter-reset: ab-check;
 }
 
 .md-typeset ol.ab-checks li {
@@ -62,7 +204,7 @@
   margin: 0 0 0.3rem;
   padding-left: 1.6rem;
   text-indent: -1.6rem;
-  color: var(--md-default-fg-color--light);
+  color: var(--ab-ink-soft, var(--md-default-fg-color--light));
 }
 
 .md-typeset ol.ab-checks li::before {
@@ -74,58 +216,265 @@
   color: var(--ab-faint);
 }
 
-.md-typeset ol.ab-checks { counter-reset: ab-check; }
-
 @media screen and (max-width: 44.9375em) {
   .md-typeset ol.ab-checks { columns: 1; }
 }
 
-/* the two ways an approximation can be wrong */
-.md-typeset .ab-split-table table {
-  font-size: 0.74rem;
+/* ---- the error split: the same scalar, two different mechanisms ---------- */
+
+.md-typeset .ab-errwrap {
+  max-width: 42rem;
+  overflow-x: auto;
+}
+
+/* Material styles only table:not([class]), so this table sets its own manners */
+.md-typeset .ab-errsplit {
+  border-collapse: collapse;
+  font-size: var(--ab-step-0, 0.78rem);
   font-variant-numeric: tabular-nums;
 }
 
-.md-typeset .ab-split-table th:not(:first-child),
-.md-typeset .ab-split-table td:not(:first-child) { text-align: right; }
+.md-typeset .ab-errsplit th,
+.md-typeset .ab-errsplit td {
+  padding: 0.5rem 1.6rem 0.5rem 0;
+  text-align: left;
+}
 
-/* the bold cell is the mechanism at fault, which is the whole point of the split */
-.md-typeset .ab-split-table strong {
+.md-typeset .ab-errsplit th:last-child,
+.md-typeset .ab-errsplit td:last-child { padding-right: 0; }
+
+.md-typeset .ab-errsplit th:nth-child(n + 3),
+.md-typeset .ab-errsplit td:nth-child(n + 3) { text-align: right; }
+
+.md-typeset .ab-errsplit thead th {
+  font-family: var(--ab-mono);
+  font-weight: 400;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+  border-bottom: 1px solid var(--ab-rule);
+}
+
+.md-typeset .ab-errsplit tbody td {
+  border-bottom: 1px solid var(--ab-rule-soft);
+}
+
+/* the spanning header that names what columns 4-5 are: the thesis, as structure */
+.md-typeset .ab-errsplit .ab-errsplit-span th {
+  padding-bottom: var(--ab-space-1);
+  border-bottom: 0;
+  text-align: left;
+}
+
+.md-typeset .ab-errsplit .ab-errsplit-span th:last-child {
+  border-bottom: var(--ab-rule-width) solid var(--ab-rule-soft);
+}
+
+/* the gutter that separates the one number from the two it is made of. A rule
+ * here would land on the edge of the box around the two equal figures and read
+ * as one thick line; the gutter plus the spanning header's own rule is enough. */
+.md-typeset .ab-errsplit th:nth-child(4),
+.md-typeset .ab-errsplit td:nth-child(4) {
+  padding-left: var(--ab-space-6);
+}
+
+/* the row keyline is the method's category — the same hue it has on the plate */
+.md-typeset .ab-errsplit td:first-child {
+  box-shadow: inset 3px 0 var(--hl);
+}
+
+.md-typeset .ab-errsplit th:first-child,
+.md-typeset .ab-errsplit td:first-child { padding-left: 0.8rem; }
+
+.md-typeset .ab-errsplit td.ab-cat {
+  font-family: var(--ab-mono);
+  font-size: 0.86em;
+  color: var(--ab-faint);
+}
+
+.md-typeset .ab-errsplit td {
+  color: var(--ab-ink-soft, var(--md-default-fg-color--light));
+}
+
+/* the full-strength cell is the mechanism at fault — the point of the split. The
+ * tick under it is the row's category hue, so the fault and the category agree. */
+.md-typeset .ab-errsplit td.ab-blame {
   font-weight: 600;
-  color: var(--md-default-fg-color);
+  color: var(--ab-ink, var(--md-default-fg-color));
+  background:
+    linear-gradient(var(--hl), var(--hl)) no-repeat right 1.6rem bottom 0.35rem /
+    1.9rem var(--ab-rule-width-strong);
 }
 
-.md-typeset .ab-split-table td { color: var(--md-default-fg-color--light); }
-
-
-/* ---- where to go next: a ruled two-column list, no icons -----------------
- * The sidebar already enumerates every page; this list exists to say why you
- * would open one, so each entry is a destination plus a reason and nothing else.
- */
-.md-typeset .ab-split > dl,
-.md-typeset dl.ab-split {
-  columns: 2;
-  column-gap: 2.4rem;
-  margin: 1rem 0 0;
+.md-typeset .ab-errsplit td.ab-blame:last-child {
+  background-position: right 0 bottom 0.35rem;
 }
 
-.md-typeset .ab-split dt {
-  break-after: avoid;
+/* topk and quantkv are the same number by construction; box them so the eye
+ * cannot miss that the two rows below the box disagree completely. Drawn with
+ * shadows, not borders, because the table collapses its borders. */
+.md-typeset .ab-errsplit td.ab-same {
+  color: var(--ab-ink, var(--md-default-fg-color));
+  padding-right: var(--ab-space-5);
+}
+
+/* the row rule would otherwise run straight through the middle of the box */
+.md-typeset .ab-errsplit td.ab-same--top {
+  border-bottom: 0;
+  box-shadow: inset 0 1px var(--ab-accent), inset 1px 0 var(--ab-accent),
+              inset -1px 0 var(--ab-accent);
+}
+
+.md-typeset .ab-errsplit td.ab-same--bot {
+  box-shadow: inset 0 -1px var(--ab-accent), inset 1px 0 var(--ab-accent),
+              inset -1px 0 var(--ab-accent);
+}
+
+.md-typeset .ab-errnote {
+  margin: var(--ab-space-3) 0 0;
+  color: var(--ab-faint);
+}
+
+/* the two mechanisms, side by side, keyed by the category that exhibits each */
+.md-typeset .ab-mech {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  gap: var(--ab-space-5, 1.6rem);
+  max-width: 42rem;
+  margin: var(--ab-space-5, 1.4rem) 0 0.8rem;
+}
+
+.md-typeset .ab-mech p {
   margin: 0;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--ab-rule-soft);
-  font-weight: 500;
+  padding-top: 0.6rem;
+  border-top: 2px solid var(--hl);
+  font-size: var(--ab-step-0, 0.78rem);
+  color: var(--ab-ink-soft, var(--md-default-fg-color--light));
 }
 
-.md-typeset .ab-split dd {
-  break-inside: avoid;
-  margin: 0.15rem 0 0.9rem;
-  font-size: 0.74rem;
-  color: var(--md-default-fg-color--light);
+.md-typeset .ab-mech strong {
+  display: block;
+  color: var(--ab-ink, var(--md-default-fg-color));
+}
+
+/* ---- where to go next: two destinations first, then the rest ------------- */
+
+/* base.css clamps every .md-typeset dl to the reading measure, which is right for
+ * a definition list and fatal for a grid of destinations: at one column wide the
+ * whole foot stacks. Opt out explicitly rather than rely on the token being unset.
+ *
+ * Two columns, never three: these lists hold two and four items, and auto-fit
+ * gives the four-item list a 3 + 1 orphan the moment the content area is wide
+ * enough (it is, between 960px and 1220px, where Material drops its sidebars). */
+.md-typeset dl.ab-go {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ab-space-2, 0.6rem) var(--ab-space-7, 2.4rem);
+  max-width: none;
+  margin: var(--ab-space-4) 0 0;
 }
 
 @media screen and (max-width: 44.9375em) {
-  .md-typeset .ab-split > dl,
-  .md-typeset dl.ab-split { columns: 1; }
+  .md-typeset dl.ab-go { grid-template-columns: minmax(0, 1fr); }
 }
 
+.md-typeset dl.ab-go > div { min-width: 0; }
+
+.md-typeset dl.ab-go dt {
+  margin: 0;
+  padding-top: 0.7rem;
+  border-top: 2px solid var(--ab-ink, var(--md-default-fg-color));
+  font-size: var(--ab-step-2, 1.05rem);
+  font-weight: 500;
+}
+
+.md-typeset dl.ab-go dt a { color: var(--ab-ink, var(--md-default-fg-color)); }
+
+.md-typeset dl.ab-go dt a:hover,
+.md-typeset dl.ab-go dt a:focus-visible {
+  color: var(--ab-accent, var(--md-accent-fg-color));
+}
+
+.md-typeset dl.ab-go dd {
+  margin: 0.25rem 0 0.6rem;
+  font-size: var(--ab-step--1, 0.74rem);
+  color: var(--ab-ink-soft, var(--md-default-fg-color--light));
+}
+
+/* the four quieter destinations: same grid, lighter rules, body-size titles */
+.md-typeset dl.ab-go--more { margin-top: 0.6rem; }
+
+.md-typeset dl.ab-go--more dt {
+  border-top: 1px solid var(--ab-rule-soft);
+  font-size: var(--ab-step-0, 0.8rem);
+  padding-top: 0.75rem;
+}
+
+.md-typeset dl.ab-go--more dt a { color: var(--md-typeset-a-color); }
+
+/* ---- citing: present, quiet --------------------------------------------- */
+
+.md-typeset .ab-cite { max-width: 36rem; }
+
+.md-typeset .ab-cite h2 {
+  font-size: var(--ab-step-1, 1rem);
+}
+
+.md-typeset .ab-cite p,
+.md-typeset .ab-cite li {
+  font-size: var(--ab-step--1, 0.74rem);
+  color: var(--ab-ink-soft, var(--md-default-fg-color--light));
+}
+
+/* The BibTeX is here to be copied, not read. Syntax colour on it is the loudest
+ * thing on the page and says nothing, so drop it to the ink scale and let the
+ * key and the title keep full strength. */
+.md-typeset .ab-cite .highlight code {
+  font-size: var(--ab-step--1, 0.68rem);
+}
+
+.md-typeset .ab-cite .highlight code span {
+  color: var(--ab-ink-muted);
+}
+
+.md-typeset .ab-cite .highlight code .nl,
+.md-typeset .ab-cite .highlight code .s {
+  color: var(--ab-ink-soft);
+}
+
+/* ---- the colophon: the hero's eyebrow, answered at the foot -------------- */
+
+.md-typeset .ab-colophon {
+  margin: var(--ab-space-7) 0 0;
+  padding-top: var(--ab-space-3);
+  border-top: var(--ab-rule-width) solid var(--ab-rule-soft);
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+}
+
+/* base.css already gives prose links an accent underline, and it outranks this
+ * rule; adding a border here would simply draw a second line under the first.
+ * Only the colour is ours: recessive until the link is wanted. */
+.md-typeset .ab-colophon a {
+  color: inherit;
+  transition: color var(--ab-motion-fast) var(--ab-ease);
+}
+
+.md-typeset .ab-colophon a:hover,
+.md-typeset .ab-colophon a:focus-visible {
+  color: var(--ab-ink);
+}
+
+.md-typeset .ab-colophon a:focus-visible {
+  outline: var(--ab-rule-width-strong) solid var(--ab-accent);
+  outline-offset: 3px;
+}
+
+/* Motion on this page is hover colour only, and every transition above is timed
+ * with --ab-motion-fast, which tokens.css already collapses to 0ms under
+ * prefers-reduced-motion. A second override here would only be one more place
+ * to forget. */

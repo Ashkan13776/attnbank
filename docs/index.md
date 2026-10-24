@@ -205,38 +205,57 @@ A method that cannot pass a check must say so in a declaration attribute, not in
 
 ## What the approximation cost you, and in which of the two ways
 
-```python
-import attnbank as ab
+<div class="ab-measure" markdown="1">
+Output error is one number, and one number cannot say what went wrong. Keeping the
+top 87 keys of 1024 and keeping every key but storing the values in a single bit are
+not comparable mistakes, and here they cost exactly the same:
+</div>
 
-rows = ab.compare(["softmax", "topk", "performer", "quantkv"], query, key, value,
-                  configs={"topk": {"k": 16}, "performer": {"r": 64},
-                           "quantkv": {"bits_k": 16, "bits_v": 2}})
+```python
+import torch, attnbank as ab
+
+torch.manual_seed(0)
+q, k, v = (torch.randn(1, 4, 1024, 64) for _ in range(3))
+
+rows = ab.compare(["topk", "quantkv", "performer"], q, k, v,
+                  configs={"topk":      {"k": 87},
+                           "quantkv":   {"bits_k": 16, "bits_v": 1},
+                           "performer": {"r": 64}})
 ```
 
 <div class="ab-errwrap">
 <table class="ab-errsplit">
 <thead>
+<tr class="ab-errsplit-span">
+<th colspan="3"></th><th colspan="2">decomposes into</th>
+</tr>
 <tr><th>method</th><th>category</th><th>output error</th><th>distributional</th><th>value</th></tr>
 </thead>
 <tbody>
-<tr data-cat="restrict"><td><code>topk</code></td><td class="ab-cat">restrict</td><td>1.03</td><td><strong>1.03</strong></td><td>0.00</td></tr>
-<tr data-cat="interaction"><td><code>performer</code></td><td class="ab-cat">interaction</td><td>2.76</td><td><strong>2.76</strong></td><td>0.00</td></tr>
-<tr data-cat="compress"><td><code>quantkv</code></td><td class="ab-cat">compress</td><td>0.72</td><td>0.00</td><td><strong>0.72</strong></td></tr>
+<tr data-cat="restrict"><td><code>topk</code></td><td class="ab-cat">restrict</td><td class="ab-same ab-same--top">0.66</td><td class="ab-blame">0.66</td><td>0.00</td></tr>
+<tr data-cat="compress"><td><code>quantkv</code></td><td class="ab-cat">compress</td><td class="ab-same ab-same--bot">0.66</td><td>0.00</td><td class="ab-blame">0.66</td></tr>
+<tr data-cat="interaction"><td><code>performer</code></td><td class="ab-cat">interaction</td><td>1.37</td><td class="ab-blame">1.37</td><td>0.00</td></tr>
 </tbody>
 </table>
 </div>
 
+<p class="ab-eyebrow ab-errnote">boxed &mdash; the same number &middot; a different mechanism</p>
+
 <div class="ab-mech">
 <p data-cat="restrict"><strong>Restriction moves mass to the wrong places.</strong>
-The error is distributional; the values are untouched.</p>
+The error is distributional; the values are untouched. Spend more of the budget on
+<i>k</i> and it falls.</p>
 <p data-cat="compress"><strong>Quantisation aggregates the wrong values.</strong>
-The mass is where it should be; the integrand is not.</p>
+The mass is where it should be; the integrand is not. Raising <i>k</i> would not move
+this number at all.</p>
 </div>
 
 <div class="ab-measure" markdown="1">
-Both arrive as "error" in a single number; only the split says which mechanism is at
-fault — and the split is algebra, not a heuristic. It closes to
-8.5&#8201;&times;&#8201;10<sup>&minus;15</sup> over 1.78 million query rows.
+Both arrive as "error" in a single number, and the ranking by that number says nothing
+about which repair would help. Only the split does — and the split is algebra, not a
+heuristic: across 290,816 query rows, and every registered method that can express its
+measure, the two terms reproduce the output error to within
+7&#8201;&times;&#8201;10<sup>&minus;12</sup> in float64.
 </div>
 
 ---
@@ -257,14 +276,14 @@ with tensor conventions and the first comparison, is [the quickstart](quickstart
 
 <p class="ab-eyebrow">where to go next</p>
 
-<dl class="ab-next">
+<dl class="ab-go">
 <div><dt><a href="taxonomy/">The taxonomy <span class="ab-arrow">&rarr;</span></a></dt>
 <dd>The seven categories as a tree you can open, with what each one preserves and which error term it incurs.</dd></div>
 <div><dt><a href="methods/">Browse the bank <span class="ab-arrow">&rarr;</span></a></dt>
 <dd>All 78 methods, searchable by name, category, objective, backend and flag — one generated page each.</dd></div>
 </dl>
 
-<dl class="ab-next ab-next--more">
+<dl class="ab-go ab-go--more">
 <div><dt><a href="invariant/">The invariant</a></dt>
 <dd>Why <code>weights @ v_hat</code> is the property everything else rests on, and what it costs a method to be unable to supply it.</dd></div>
 <div><dt><a href="backends/">Backends</a></dt>
@@ -283,7 +302,7 @@ with tensor conventions and the first comparison, is [the quickstart](quickstart
 
 `attnbank` is the companion code for *What Does Efficient Attention Approximate? A
 Unified View of Interactions, Memory, and Error*. If the library or its taxonomy is
-useful in your work, please cite the monograph:
+useful in your work, please cite the monograph.
 
 ```bibtex
 @article{shahbazi2026attention,
@@ -295,6 +314,6 @@ useful in your work, please cite the monograph:
 }
 ```
 
-Released under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
-
 </div>
+
+<p class="ab-colophon">attnbank 0.2.0 &middot; released under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache&nbsp;License&nbsp;2.0</a></p>
