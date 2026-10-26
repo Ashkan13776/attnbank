@@ -115,14 +115,20 @@
       button.addEventListener("click", function () {
         select(button.getAttribute("data-cat"));
       });
-      // hovering a key previews its reach into the operator without committing:
-      // the formula follows the pointer, the readout below stays with the choice
-      button.addEventListener("mouseenter", function () {
-        show.apply(null, args(panelOf(button.getAttribute("data-cat"))));
-      });
-      button.addEventListener("mouseleave", function () {
-        show.apply(null, args(panelOf(active)));
-      });
+      // There was a hover preview here -- enter a key, the formula showed that
+      // category's reach without committing. It reads well in the abstract and
+      // badly in the hand: `show` is not a cheap repaint but a 340ms animated
+      // transition, so dragging the pointer across the row fired seven of them
+      // over each other -- a staggered underline sweep, the reticle, every
+      // untouched symbol fading to 0.3 and back. Worse, `the operator` toggles
+      // the replacement, which changes the plate's height, so the page moved
+      // under the cursor on the way to the click. Text inside an opacity or
+      // transform layer that is mid-flight also rasterises soft, which is why
+      // the formula looked blurry rather than merely busy. None of it showed on
+      // a phone, because a phone has no hover.
+      //
+      // Clicking is the designed interaction and is unaffected; the keys still
+      // carry their category's hue, so the row is readable without it.
       // a key row is a single widget; arrows walk it, as they do in a toolbar
       button.addEventListener("keydown", function (event) {
         var step = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 1, ArrowUp: -1 }[event.key];
