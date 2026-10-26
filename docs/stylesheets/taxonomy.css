@@ -10,7 +10,95 @@
  * rounded elbow in the category's hue into each of the seven branches, and all 78
  * leaves always visible, hanging off a rail in the same hue. What collapses is the
  * scholarly detail under each branch, never the leaves -- so the collapsed tree is
- * still a tree, not seven closed headings. */
+ * still a tree, not seven closed headings.
+ *
+ * Each branch is a *field* in its category's hue, not a hairline in it. The first
+ * pass drew the seven hues as 2px elbows and 2px rails and the page came out grey:
+ * seven marks totalling a few hundred pixels of colour on a page of several
+ * thousand. A branch now owns a contiguous coloured area -- a solid full-strength
+ * bar down its left edge, a tinted header band, and a wash behind its leaves --
+ * which is the periodic table's trick and the field guide's colour-tabbed edge.
+ *
+ * See the tint ladder below for why the fills are the strengths they are, and
+ * for the contrast each one was measured at. */
+
+/* ---- the category tint ladder -------------------------------------------
+ *
+ * Shared by the three stylesheets that have to make a category visible as an
+ * *area* rather than a line: this one, browse.css and method.css. It is declared
+ * here because taxonomy.css loads first of the three and every stylesheet loads
+ * on every page; the names are prefixed --cat- so they cannot collide with
+ * another aspect's locals. Nothing here is a new colour -- each value is a
+ * `color-mix` of --hl (the category hue, set from [data-cat] in tokens.css) with
+ * a surface token that already exists.
+ *
+ * The one thing chosen here is --cat-w, the weight of hue in the mix, and it is
+ * chosen *per category* rather than once. A flat percentage does not work: the
+ * seven hues differ by 20 points of L*, so one mix strength gives seven fields
+ * of seven different lightnesses -- the amber barely tinted, the violet and the
+ * grey heavy enough to read as "disabled". Worse, the pale ones then sit within
+ * dE 3-4 of each other, which is seven greys again.
+ *
+ * Each weight is instead solved so that the resulting field lands on the same
+ * L*, which is the constant-lightness categorical ramp that Datawrapper and
+ * Observable both recommend and that the better periodic tables use. Hue is
+ * untouched -- only how much of it is mixed in -- so a category is still the
+ * same colour here, in a figure and in the monograph.
+ *
+ * What that buys, measured:
+ *
+ *   light, hue into --ab-plate #ffffff        dark, hue into --ab-sunk #0e1217
+ *     field   L* 87.7-88.2                      field   L* 23.8-24.3
+ *       --ab-ink        12.6:1                    --ab-ink         9.5:1
+ *       --ab-ink-soft    6.9:1                    --ab-ink-soft    6.2:1
+ *       --ab-ink-muted   4.25:1  (misses)         --ab-ink-muted   3.8:1  (misses)
+ *     wash    L* 93.9-94.1                      wash    L* 14.5-14.9
+ *       --ab-ink-muted   4.98:1                   --ab-ink-muted   5.03:1
+ *
+ * So: a field carries --ab-ink and --ab-ink-soft and never --ab-ink-muted or
+ * --ab-faint; a wash carries all of them. Both are the same at worst for all
+ * seven categories, which is the point of solving for L* -- one number to check
+ * instead of seven.
+ *
+ * Separation after the correction: the seven fields are dE 7.4 apart at the
+ * closest in light and dE 8.5 in dark, against dE 3.7 and 3.1 for the flat mix
+ * they replace.
+ *
+ * The dark side mixes into --ab-sunk and not --ab-plate because mixing a lifted
+ * hue into the lighter plate in sRGB washes the chroma straight back out.
+ *
+ * Full-strength --hl stays reserved for areas with no text on them -- bars,
+ * ticks, rails. None of the seven clears 4.5:1 against both light and dark ink,
+ * so nothing is ever set on top of one. */
+
+[data-cat="exact"]       { --cat-w: 20%; }
+[data-cat="interaction"] { --cat-w: 24%; }
+[data-cat="restrict"]    { --cat-w: 28%; }
+[data-cat="compress"]    { --cat-w: 31%; }
+[data-cat="factorize"]   { --cat-w: 19%; }
+[data-cat="coupling"]    { --cat-w: 40%; }
+[data-cat="recurrent"]   { --cat-w: 23%; }
+
+[data-md-color-scheme="slate"] [data-cat="exact"]       { --cat-w: 27%; }
+[data-md-color-scheme="slate"] [data-cat="interaction"] { --cat-w: 27%; }
+[data-md-color-scheme="slate"] [data-cat="restrict"]    { --cat-w: 27%; }
+[data-md-color-scheme="slate"] [data-cat="compress"]    { --cat-w: 25%; }
+[data-md-color-scheme="slate"] [data-cat="factorize"]   { --cat-w: 32%; }
+[data-md-color-scheme="slate"] [data-cat="coupling"]    { --cat-w: 23%; }
+[data-md-color-scheme="slate"] [data-cat="recurrent"]   { --cat-w: 31%; }
+
+/* Declared on the element that carries [data-cat], never on an ancestor of it:
+ * a var() inside a custom property is substituted against *that element's*
+ * --hl and --cat-w, so the same declaration one level up would resolve seven
+ * times to the fallback. */
+[data-cat] {
+  --cat-base: var(--ab-plate);
+  --cat-field: color-mix(in srgb, var(--hl, var(--ab-rule)) var(--cat-w, 24%), var(--cat-base));
+  --cat-wash:  color-mix(in srgb, var(--hl, var(--ab-rule)) calc(var(--cat-w, 24%) * 0.5), var(--cat-base));
+  --cat-edge:  color-mix(in srgb, var(--hl, var(--ab-rule)) calc(var(--cat-w, 24%) * 2.2), var(--cat-base));
+}
+
+[data-md-color-scheme="slate"] [data-cat] { --cat-base: var(--ab-sunk); }
 
 /* the key above the branches: the three objective glyphs and the oracle mark.
  * It lives inside the tree, right of the trunk, so the trunk runs past it from
@@ -53,20 +141,32 @@
   background: var(--ab-rule);
 }
 
-.tx-node { position: relative; padding-bottom: 0.55rem; }
+/* A branch is a field, and the solid bar down its left edge is the branch itself:
+ * the one place on the page where a category hue is at full strength over a real
+ * area. Nothing is ever set on top of it. */
+.tx-node {
+  position: relative;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0;
+  border-left: 0.3rem solid var(--hl);
+  border-radius: 0 var(--ab-radius) var(--ab-radius) 0;
+  background: var(--cat-wash);
+}
 
 /* the elbow out of the trunk, in the category's own colour: down the trunk, a
- * rounded turn, and into the branch header */
+ * rounded turn, and into the branch's bar, which it is the beginning of */
 .tx-node::before {
   content: "";
   position: absolute;
-  left: -2rem;
-  top: 0.1rem;
-  width: 1.5rem;
-  height: 0.92rem;
+  left: -2.3rem;            /* the padding box starts 0.3rem in: this lands on x=0 */
+  top: 0;
+  width: 2.3rem;            /* ...and runs back into the node's own bar, unbroken */
+  height: 1.15rem;
+  /* the trunk's own weight, not the bar's: a branch leaves the trunk thin and
+   * widens into the field, which is what a dendrogram does */
   border-left: 2px solid var(--hl);
   border-bottom: 2px solid var(--hl);
-  border-bottom-left-radius: 0.6rem;
+  border-bottom-left-radius: 0.75rem;
 }
 
 /* below the last elbow there is nothing to reach, so the trunk stops: the last
@@ -74,20 +174,28 @@
 .tx-node:last-child::after {
   content: "";
   position: absolute;
-  left: -2rem;
-  top: 1.1rem;
-  bottom: 0;
+  left: -2.3rem;
+  top: 1.05rem;
+  bottom: -0.6rem;
   width: 2px;
   background: var(--md-default-bg-color);
 }
 
-/* The heading is a row: category, what it changes, how many methods. The control
- * JavaScript builds wraps those three and inherits the same row, so the branch looks
- * the same whether or not it can be clicked. */
+/* The heading is the category's header band: the glyph of the object it changes,
+ * the name, what it changes, how many methods. The control JavaScript builds wraps
+ * those four and inherits the same row, so the branch looks the same whether or not
+ * it can be clicked.
+ *
+ * The band is --cat-field, the branch's wash at twice the strength, so the header
+ * reads as a field and the leaves below it as the same field one step quieter.
+ * Nothing in the band is set at --ab-faint or --ab-ink-muted: those measure
+ * 4.25:1 light / 3.8:1 dark on a field and miss. The secondary text here -- the
+ * "changes ..." phrase and the count -- is lifted to --ab-ink-soft, 6.9:1 light
+ * and 6.2:1 dark. */
 .md-typeset .tx-node > h2,
 .md-typeset .tx-toggle {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.55rem;
   font-size: 1rem;
   font-weight: 400;
@@ -97,7 +205,10 @@
 
 .md-typeset .tx-node > h2 {
   margin: 0;
-  padding: 0.1rem 0 0.4rem;
+  padding: 0;
+  background: var(--cat-field);
+  border-bottom: 1px solid var(--cat-edge);
+  border-radius: 0 var(--ab-radius) 0 0;
 }
 
 .md-typeset .tx-toggle {
@@ -106,25 +217,46 @@
   font: inherit;
   text-align: left;
   padding: 0;
-  margin: -0.1rem 0 -0.4rem;   /* the button takes the heading's own padding back */
-  padding-block: 0.1rem 0.4rem;
+  margin: 0;
   background: none;
   border: 0;
   cursor: pointer;
   color: inherit;
 }
 
-.md-typeset .tx-node > h2 code {
+/* The glyph: the one symbol of the operator this branch reaches for, set large in
+ * the mathematics face so the seven are told apart by shape as well as by hue --
+ * two channels, which is what keeps the grouping legible to a reader who cannot
+ * separate the orange from the red. It is aria-hidden and the same claim is made
+ * in words on the same line. Ink, never hue: it sits on a tinted field. */
+.md-typeset .tx-node .tx-glyph {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  align-self: stretch;
+  min-height: 2.2rem;
+  font-family: var(--ab-serif);
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--ab-ink);
+  background: color-mix(in srgb, var(--hl) 12%, transparent);
+  border-right: 1px solid var(--cat-edge);
+}
+
+.md-typeset .tx-node > h2 code,
+.md-typeset .tx-node > h2 > .tx-glyph + code {
   font-size: 0.86em;
   font-weight: 700;
   background: none;
   padding: 0;
-  color: var(--md-default-fg-color);
+  color: var(--ab-ink);
 }
 
 .md-typeset .tx-node .tx-changes {
   font-size: 0.74rem;
-  color: var(--ab-faint);
+  color: var(--ab-ink-soft);
   flex: 1;
 }
 
@@ -132,13 +264,19 @@
   font-family: var(--ab-mono);
   font-size: 0.62rem;
   font-variant-numeric: tabular-nums;
-  color: var(--ab-faint);
+  color: var(--ab-ink-soft);
   white-space: nowrap;
+  padding-right: 0.7rem;
 }
 
 .md-typeset .tx-toggle:hover .tx-changes,
 .md-typeset .tx-toggle[aria-expanded="true"] .tx-changes {
-  color: var(--md-default-fg-color--light);
+  color: var(--ab-ink);
+}
+
+.md-typeset .tx-toggle:hover .tx-glyph,
+.md-typeset .tx-toggle[aria-expanded="true"] .tx-glyph {
+  background: color-mix(in srgb, var(--hl) 26%, transparent);
 }
 
 .md-typeset .tx-toggle[aria-expanded="true"] code {
@@ -146,8 +284,8 @@
 }
 
 .md-typeset .tx-toggle:focus-visible {
-  outline: 2px solid var(--hl);
-  outline-offset: 0.2rem;
+  outline: 2px solid var(--ab-ink);
+  outline-offset: -3px;
 }
 
 /* ---- the leaves: every method, always on screen --------------------------
@@ -161,19 +299,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem 0.35rem;
-  margin: 0 0 0.35rem;
-  padding-left: 1rem;
-}
-
-.md-typeset .tx-leaves::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.15rem;
-  bottom: 0.15rem;
-  width: 2px;
-  background: var(--hl);
-  opacity: 0.45;
+  margin: 0;
+  padding: 0.55rem 0.7rem;
 }
 
 .md-typeset .tx-leaves li { margin: 0; }
@@ -184,15 +311,20 @@
   text-decoration: none;   /* the chip is the affordance; an underline is noise */
 }
 
+/* A leaf is a tile on the branch's field, the way an element is a tile in its block
+ * of the periodic table: the plate ground lifts it off the wash, and the 2px hue
+ * edge ties it back. Keeping the tiles light and the field coloured -- rather than
+ * the other way round -- is what lets 78 of them sit together without the page
+ * turning into confetti. */
 .md-typeset .tx-leaves a {
   display: inline-block;
   font-family: var(--ab-mono);
   font-size: 0.64rem;
   line-height: 1.5;
   padding: 0.08rem 0.5rem 0.1rem 0.45rem;
-  color: var(--md-default-fg-color--light);
-  background: var(--ab-sunk);
-  border: 1px solid var(--ab-rule-soft);
+  color: var(--ab-ink-soft);
+  background: var(--ab-plate);
+  border: 1px solid var(--cat-edge);
   border-left: 2px solid var(--hl);
   border-radius: 0.15rem;
 }
@@ -200,7 +332,7 @@
 /* the objective glyph: = the same operator, ~ an approximation of it, != a
  * different one. The word itself is on the title and in the table below. */
 .md-typeset .tx-leaves a::before {
-  color: var(--ab-faint);
+  color: var(--ab-ink-muted);
   margin-right: 0.4em;
 }
 
@@ -216,8 +348,9 @@
 
 .md-typeset .tx-leaves a:hover,
 .md-typeset .tx-leaves a:focus-visible {
-  color: var(--md-default-fg-color);
+  color: var(--ab-ink);
   border-color: var(--hl);
+  background: color-mix(in srgb, var(--hl) 10%, var(--ab-plate));
 }
 
 .md-typeset .tx-leaves a:focus-visible {
@@ -227,9 +360,14 @@
 
 /* ---- the detail panel: what folds ---------------------------------------- */
 
+/* The open detail sits on the branch's wash, so an open branch is one unbroken
+ * field of its colour from the bar to the last line of prose. Every ink level
+ * inside it is therefore measured against the wash and not against the page:
+ * --ab-faint misses 4.5:1 there, so the apparatus below is at --ab-ink-muted
+ * (4.62:1 light, 4.53:1 dark, worst category of the seven). */
 .md-typeset .tx-body {
-  padding: 0.25rem 0 0.9rem 1rem;
-  max-width: 38rem;
+  padding: 0.7rem 0.9rem 0.85rem;
+  max-width: 40rem;
 }
 
 .md-typeset .tx-node[data-open="false"] > .tx-body { display: none; }
@@ -248,34 +386,60 @@
   font-size: 0.58rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ab-faint);
+  color: var(--ab-ink-muted);
   padding-top: 0.12rem;
 }
 
 .md-typeset .tx-facts dd {
   margin: 0;
-  color: var(--md-default-fg-color--light);
+  color: var(--ab-ink-soft);
 }
 
+/* the first fact is the one the branch is named for: it gets the plate under it
+ * and the full-strength hue down its edge */
 .md-typeset .tx-facts dd:first-of-type {
-  color: var(--md-default-fg-color);
-  box-shadow: inset 2px 0 0 var(--hl);
-  padding-left: 0.6rem;
+  color: var(--ab-ink);
+  background: var(--ab-plate);
+  box-shadow: inset 3px 0 0 var(--hl);
+  padding: 0.25rem 0.5rem 0.3rem 0.6rem;
   margin-left: -0.6rem;
+  border-radius: 0 var(--ab-radius) var(--ab-radius) 0;
 }
 
 @media screen and (max-width: 44.9375em) {
   .md-typeset .tx-facts > dl { grid-template-columns: 1fr; gap: 0.1rem; }
   .md-typeset .tx-facts dt { padding-top: 0.55rem; }
-  .md-typeset .tx-facts dd:first-of-type { box-shadow: none; padding-left: 0; margin-left: 0; }
+  .md-typeset .tx-facts dd:first-of-type {
+    box-shadow: inset 3px 0 0 var(--hl);
+    padding-left: 0.5rem;
+    margin-left: 0;
+  }
+
+  /* The header wraps to two lines here. The phrase takes the second one and is
+   * indented past the glyph tile so it still reads as hanging off the name
+   * rather than off the bar; the tile keeps its square and the count stays up
+   * on the first line with the name. */
   .md-typeset .tx-node > h2,
-  .md-typeset .tx-toggle { flex-wrap: wrap; gap: 0.2rem 0.5rem; }
-  .md-typeset .tx-node .tx-changes { flex-basis: 100%; }
+  .md-typeset .tx-toggle { flex-wrap: wrap; gap: 0.1rem 0.5rem; }
+  .md-typeset .tx-node .tx-glyph { align-self: flex-start; }
+  /* the count rides up beside the name rather than taking a third line */
+  .md-typeset .tx-node .tx-n { order: 2; margin-left: auto; }
+  .md-typeset .tx-node .tx-changes {
+    order: 3;
+    flex-basis: 100%;
+    margin: -0.15rem 0 0.3rem;
+    padding-left: calc(2.2rem + 0.5rem);
+    padding-right: 0.7rem;
+    line-height: 1.45;
+  }
+
+  /* the trunk moves in, and the elbow with it: -1.4rem is 0.3rem of border plus
+   * the 1.1rem gutter, which lands its left edge back on the trunk */
   .tx-tree { padding-left: 1.1rem; }
-  .tx-node::before { left: -1.1rem; width: 0.7rem; }
-  .tx-node:last-child::after { left: -1.1rem; }
-  .md-typeset .tx-leaves { padding-left: 0.6rem; }
-  .md-typeset .tx-body { padding-left: 0.6rem; }
+  .tx-node::before { left: -1.4rem; width: 1.4rem; height: 1rem; }
+  .tx-node:last-child::after { left: -1.4rem; top: 1rem; }
+  .md-typeset .tx-leaves { padding: 0.45rem 0.5rem; }
+  .md-typeset .tx-body { padding: 0.6rem 0.55rem 0.7rem; }
 }
 
 /* The operator keeps its place while the branches below it are opened -- without

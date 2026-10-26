@@ -60,6 +60,23 @@ SHORT = {
  "recurrent": "the operator itself",
 }
 
+#: The one symbol of the operator that names the branch, set large on the branch
+#: header so the seven categories are told apart by *what they touch* before a word
+#: is read. It is the same claim ``SYMS`` makes to the operator plate, reduced to the
+#: single glyph a reader can hold: ``exact`` lights nothing and so carries the empty
+#: set, ``recurrent`` replaces the operator and so carries the operator's own ``y``.
+#: Mnemonic only -- every one of them is said again in words in ``SHORT`` on the same
+#: line, which is why the span is ``aria-hidden``.
+GLYPH = {
+ "exact": "&#8709;",                      # none: the arithmetic, not the formula
+ "interaction": "<i>g</i>",
+ "restrict": "&#8747;",                   # the domain the integral runs over
+ "compress": "&#956;",
+ "factorize": "&#960;",
+ "coupling": "<i>Z</i>",
+ "recurrent": "<i>y</i>",                 # the operator itself
+}
+
 #: Which symbols of the operator the category reaches for. ``exact`` reaches for none
 #: and asks for the whole operator to be ruled off instead; ``recurrent`` replaces all
 #: of them and shows the recurrence underneath.
@@ -360,7 +377,8 @@ def tree(oracles: tuple) -> list[str]:
         count = f'{len(rows)} method{"s" if len(rows) != 1 else ""}'
         lines += [
             f'<section class="tx-node" {attrs} markdown="1">\n',
-            f'## `{cat}` <span class="tx-changes">changes {SHORT[cat]}</span>'
+            f'## <span class="tx-glyph" aria-hidden="true">{GLYPH[cat]}</span>'
+            f'`{cat}` <span class="tx-changes">changes {SHORT[cat]}</span>'
             f'<span class="tx-n">{count}</span>'
             f' {{: #{cat} data-toc-label="{cat}" }}\n',
             f'<ul class="tx-leaves">{chips}</ul>\n',
