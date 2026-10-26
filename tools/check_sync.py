@@ -309,15 +309,19 @@ def main() -> int:
     from html.parser import HTMLParser
 
     class Links(HTMLParser):
+        """Collect every link, and every id/name a link could target."""
         def __init__(self):
             super().__init__()
             self.out = []
+            self.ids = set()
         def handle_starttag(self, tag, attrs):
-            if tag != "a":
-                return
-            href = dict(attrs).get("href")
-            if href:
-                self.out.append(href)
+            a = dict(attrs)
+            if a.get("id"):
+                self.ids.add(a["id"])
+            if tag == "a" and a.get("name"):
+                self.ids.add(a["name"])
+            if tag == "a" and a.get("href"):
+                self.out.append(a["href"])
 
     site = pathlib.Path(tempfile.mkdtemp(prefix="linkcheck-"))
     build = subprocess.run([sys.executable, "-m", "mkdocs", "build", "--strict",
@@ -326,22 +330,39 @@ def main() -> int:
     if build.returncode != 0:
         r.skipped("internal links resolve", "mkdocs build failed")
     else:
-        dead, checked = [], 0
+        # parse every page once: its links, and the ids anything may link *to*
+        pages, ids = {}, {}
         for html in site.rglob("*.html"):
             parser = Links()
             parser.feed(html.read_text(encoding="utf-8", errors="replace"))
+            pages[html] = parser.out
+            ids[html.resolve()] = parser.ids
+
+        def page_for(target):
+            if target.is_file():
+                return target
+            index = target / "index.html"
+            return index if index.is_file() else None
+
+        dead, checked = [], 0
+        for html, hrefs in pages.items():
             here = html.parent
-            for href in parser.out:
-                if re.match(r"^(https?:|mailto:|#|/|data:)", href) or not href:
-                    continue                       # external, anchor, absolute
-                path = urllib.parse.urlparse(href).path
-                if not path:
-                    continue                       # pure fragment
+            for href in hrefs:
+                if re.match(r"^(https?:|mailto:|data:|/)", href) or not href:
+                    continue                       # external or site-absolute
+                parts = urllib.parse.urlparse(href)
                 checked += 1
-                target = (here / path).resolve()
-                ok = target.exists() or (target / "index.html").exists()
-                if not ok:
-                    dead.append(f"{html.relative_to(site)} -> {href}")
+                if parts.path:
+                    target = page_for((here / parts.path).resolve())
+                    if target is None:
+                        dead.append(f"{html.relative_to(site)} -> {href}")
+                        continue
+                else:
+                    target = html                  # a fragment on this page
+                # a fragment has to name something on the page it lands on
+                frag = urllib.parse.unquote(parts.fragment)
+                if frag and frag not in ids.get(target.resolve(), set()):
+                    dead.append(f"{html.relative_to(site)} -> {href} (no such anchor)")
         # report one example per distinct target shape, not 78 copies of one bug
         seen, trimmed = set(), []
         for d in dead:
