@@ -211,12 +211,20 @@
 }
 
 @media (min-width: 50em) {
-  .ab-hm-grid { grid-template-columns: repeat(3, 1fr); }
+  /* minmax(0, 1fr) rather than 1fr, so a track can never be forced wider than
+   * its share by its content's min-content width. */
+  .ab-hm-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   /* the fallback described above: pan the strip, never the page */
   .ab-hm-grid { overflow-x: auto; }
 }
 
-.ab-hm-panel { margin: 0; }
+/* `width: auto` undoes Material's `figure { width: fit-content }`. Noted, but
+ * not the whole story: the three grid tracks are equal at 296px and the
+ * difference panel fills its track, while the two maps a reader compares sit at
+ * 173px -- about two pixels a cell at n = 80. Legible, and visibly narrower
+ * than their neighbour. The remaining constraint is somewhere in the plot row's
+ * sizing and is not diagnosed; left as it is rather than papered over. */
+.ab-hm-panel { margin: 0; width: auto; }
 
 .ab-hm-cap {
   display: flex;
