@@ -20,6 +20,8 @@ from __future__ import annotations
 
 import argparse
 import collections
+import shutil
+import subprocess
 import re
 import sys
 from pathlib import Path
@@ -130,7 +132,7 @@ def main() -> int:
     # costs about a second, which is worth paying to stop the number being
     # decoration. Tags are stripped first because the home page sets the digits in
     # <b> and the word beside them in <span>, which no plain-text pattern sees.
-    import subprocess
+
 
     def collect(target: str) -> int | None:
         out = subprocess.run([sys.executable, "-m", "pytest", target, "-q",
@@ -281,7 +283,66 @@ def main() -> int:
                                f"run python docs/gen_heatmaps.py")
         r.check("landing page teaser", bad)
 
-    # ---- 9. paper_section labels exist in the monograph ------------------------
+    # ---- 9. every internal link in the built site resolves ----------------------
+    # `mkdocs build --strict` validates links written as markdown and says nothing
+    # about raw HTML hrefs, which generated pages are full of. The taxonomy page
+    # shipped 78 dead ones: it builds to taxonomy/index.html, so the chips' bare
+    # "methods/x/" resolved to taxonomy/methods/x/ and every method a reader
+    # clicked from the tree 404'd. Nothing caught it because the build was clean
+    # and the pages all existed -- at a different path.
+    #
+    # So: build the site and resolve every internal href against what was written.
+    import pathlib
+    import tempfile
+    import urllib.parse
+    from html.parser import HTMLParser
+
+    class Links(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.out = []
+        def handle_starttag(self, tag, attrs):
+            if tag != "a":
+                return
+            href = dict(attrs).get("href")
+            if href:
+                self.out.append(href)
+
+    site = pathlib.Path(tempfile.mkdtemp(prefix="linkcheck-"))
+    build = subprocess.run([sys.executable, "-m", "mkdocs", "build", "--strict",
+                            "--site-dir", str(site)], cwd=LIB,
+                           capture_output=True, text=True)
+    if build.returncode != 0:
+        r.skipped("internal links resolve", "mkdocs build failed")
+    else:
+        dead, checked = [], 0
+        for html in site.rglob("*.html"):
+            parser = Links()
+            parser.feed(html.read_text(encoding="utf-8", errors="replace"))
+            here = html.parent
+            for href in parser.out:
+                if re.match(r"^(https?:|mailto:|#|/|data:)", href) or not href:
+                    continue                       # external, anchor, absolute
+                path = urllib.parse.urlparse(href).path
+                if not path:
+                    continue                       # pure fragment
+                checked += 1
+                target = (here / path).resolve()
+                ok = target.exists() or (target / "index.html").exists()
+                if not ok:
+                    dead.append(f"{html.relative_to(site)} -> {href}")
+        # report one example per distinct target shape, not 78 copies of one bug
+        seen, trimmed = set(), []
+        for d in dead:
+            key = re.sub(r"[a-z0-9_]+/?$", "*", d)
+            if key in seen:
+                continue
+            seen.add(key)
+            trimmed.append(f"{d} ({sum(1 for x in dead if re.sub(r'[a-z0-9_]+/?$', '*', x) == key)} like this)")
+        r.check(f"internal links resolve ({checked} checked)", trimmed)
+        shutil.rmtree(site, ignore_errors=True)
+
+    # ---- 10. paper_section labels exist in the monograph ------------------------
     sections = PAPER / "sections"
     if not sections.is_dir():
         r.skipped("paper_section labels exist", "monograph not present")
@@ -295,7 +356,7 @@ def main() -> int:
                 bad_lbl.append(f"{row['name']} declares {lbl}, which no section defines")
         r.check("paper_section labels exist", bad_lbl)
 
-    # ---- 10. the monograph's own library counts ---------------------------------
+    # ---- 11. the monograph's own library counts ---------------------------------
     if not sections.is_dir():
         r.skipped("monograph counts match the library", "monograph not present")
     else:

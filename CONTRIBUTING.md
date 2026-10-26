@@ -160,7 +160,7 @@ the end-alignment convention that `is_causal=True` gets wrong when `m < n`. Dele
 
 ### 6. Reuse the shared components
 
-Before writing a helper, check [`attnbank/components/`](attnbank/components/):
+Before writing a helper, check [`attnbank/components/`](https://github.com/Ashkan13776/attnbank/tree/main/attnbank/components/):
 
 | module | what lives there |
 |---|---|
@@ -246,4 +246,4 @@ request that also adds a method is not.
 ## Licence
 
 By contributing you agree that your contribution is licensed under the Apache License
-2.0, as in [`LICENSE`](LICENSE).
+2.0, as in [`LICENSE`](https://github.com/Ashkan13776/attnbank/blob/main/LICENSE).

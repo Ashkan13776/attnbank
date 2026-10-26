@@ -354,7 +354,11 @@ def leaf(row: dict, oracles: tuple) -> str:
     tip = html.escape(row["summary"], quote=True)
     if name in oracles:
         tip += " &mdash; an oracle: an upper bound, not a practical method"
-    return (f'<li><a href="methods/{name}/" data-obj="{row["objective"]}"'
+    # `../`: this page builds to taxonomy/index.html, so a bare "methods/x/"
+    # resolves to taxonomy/methods/x/ and 404s. mkdocs rewrites markdown links
+    # for you and leaves raw HTML hrefs alone, which is why the markdown links
+    # elsewhere in this file are fine and these 78 were not.
+    return (f'<li><a href="../methods/{name}/" data-obj="{row["objective"]}"'
             + (' data-oracle=""' if name in oracles else "")
             + f' title="{tip}">{name}</a></li>')
 
