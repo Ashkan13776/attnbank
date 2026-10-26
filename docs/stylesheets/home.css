@@ -2,27 +2,79 @@
  *
  * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
  *
- * Colours, faces and rules come from tokens.css. The type and spacing scale read
- * agent 1's forthcoming tokens through var(--ab-step-N, fallback) and
- * var(--ab-space-N, fallback), so the page adopts the scale the moment it lands
- * and renders sensibly until it does. No raw colour appears below.
+ * Colours, faces, sizes and durations come from tokens.css. No raw colour appears
+ * below; the only values declared here are the two tint strengths, because a tint
+ * of a category hue has to be weaker on white than on the dark ground and there is
+ * no token for "a wash of the current hue".
+ *
+ * The page's problem, before this pass, was that it was one 33rem column of grey
+ * text for 4,700 pixels: every section the same width, the same density and the
+ * same colour, with the seven category hues appearing only as 2px marks. What
+ * follows is a rhythm rather than a set of components -- a tinted cover band, then
+ * the plate, then a wide quiet split, then two dense instrument sections under
+ * heavy rules, then a deliberately spare one, then the foot. Four surface idioms,
+ * used once each, and no fifth:
+ *
+ *   the cover band   .ab-hero      sunk ground, bleeds to the content box
+ *   the plate        .ab-invariant white, ruled, an accent spine
+ *   the hue well     .ab-mech      a wash of one category's hue
+ *   the hue keyline  .ab-errsplit  a 4px bar and a 6% wash per row
+ *
+ * Category hue still means category and nothing else. It now owns area as well as
+ * line -- the amendment to the contract permits that -- but it is never under text
+ * at a strength that could cost legibility: the washes are 6-7% on white and
+ * 14-16% on the dark ground, and every word on them is full ink.
  */
+
+/* Tint strengths, declared at body level in both schemes because Material stamps
+ * its palette on <body> and a :root declaration would lose to it. */
+[data-md-color-scheme="default"] {
+  --home-wash: 7%;      /* a hue well behind running text          */
+  --home-wash-row: 6%;  /* a hue wash behind a table row           */
+}
+
+[data-md-color-scheme="slate"] {
+  --home-wash: 16%;
+  --home-wash-row: 13%;
+}
+
+/* The content box's own gutter. Material gives .md-content__inner a 0.8rem side
+ * margin (1.2rem on the left once the primary sidebar is showing); a band that
+ * cancels 0.8rem reaches the content box on the right and stops 8px short of it on
+ * the left, which is invisible and keeps the band clear of the sticky nav. The
+ * padding puts the text back on the page's single left spine -- nothing on this
+ * page is allowed to start at a different x. */
+.md-typeset .ab-bleed {
+  margin-inline: -0.8rem;
+  padding-inline: 0.8rem;
+}
 
 /* running text stays near 70 characters even when the page is wide.
  * Shared: taxonomy.md uses this class too — do not repurpose it. */
 .md-typeset .ab-measure { max-width: 33rem; }
 
-/* ---- the hero: claim, first action, proof ------------------------------- */
+/* ---- the cover band: claim, first action, proof, and the bank to scale --- */
 
+/* The one change of ground on the page. The negative top margin cancels, exactly,
+ * the three gaps Material puts between the header and the first element -- the
+ * 1.5rem on .md-main__inner, the 0.6rem padding on .md-content__inner and its
+ * 0.4rem ::before spacer, 2.5rem in all -- so the band starts against the header
+ * like the cover of a report rather than floating below it like a card. All three
+ * are unconditional in Material's stylesheet, so one value serves every width. */
 .md-typeset .ab-hero {
-  margin: var(--ab-space-5, 1.2rem) 0 var(--ab-space-7, 2.8rem);
+  /* block only: .ab-bleed owns the inline margin and padding, and a shorthand
+   * here would silently reset them and put the band's text 16px off the spine */
+  margin-block: calc(-1 * (var(--ab-space-7) + var(--ab-space-1))) var(--ab-space-7);
+  padding-block: var(--ab-space-7) var(--ab-space-6);
+  background: var(--ab-sunk);
+  border-bottom: var(--ab-rule-width) solid var(--ab-rule);
 }
 
 .md-typeset .ab-hero h1 {
   font-size: var(--ab-step-5, clamp(1.9rem, 1.1rem + 2.4vw, 2.75rem));
   line-height: 1.12;
   letter-spacing: -0.015em;
-  max-width: 17em;
+  max-width: 19em;
   margin: 0.35em 0 0.5em;
 }
 
@@ -34,7 +86,7 @@
   font-size: var(--ab-step-1, 0.92rem);
   line-height: 1.55;
   color: var(--ab-ink-soft, var(--md-default-fg-color--light));
-  max-width: 36rem;
+  max-width: 38rem;
   margin: 0;
 }
 
@@ -66,9 +118,12 @@
   border: 1px solid var(--ab-rule);
 }
 
-.md-typeset .ab-act pre > code { overflow-x: auto; }
-
+/* The band's ground is --ab-sunk and so is a code block's, which would have made
+ * the one actionable thing on the cover disappear into it. Invert it: the install
+ * line is the only element on the band that sits on the plate colour. */
 .md-typeset .ab-act pre > code {
+  overflow-x: auto;
+  background: var(--ab-plate);
   padding: 0.6rem 2.8rem 0.6rem 0.9rem; /* right padding clears the copy control */
 }
 
@@ -84,15 +139,18 @@
   font-style: normal;
 }
 
-/* the proof, as a tape of figures rather than a line of grey small caps.
- * Each figure is also the way to the page that substantiates it. */
+/* the proof, as a tape of figures rather than a line of grey small caps. Each
+ * figure is also the way to the page that substantiates it. It is set across the
+ * whole band so the four numbers hold both edges of the cover. */
 .md-typeset .ab-tape {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--ab-space-2, 0.5rem) var(--ab-space-6, 2.3rem);
-  margin: var(--ab-space-6, 2rem) 0 0;
-  padding: var(--ab-space-3, 0.85rem) 0;
-  border-top: 1px solid var(--ab-rule-soft);
+  justify-content: space-between;
+  gap: var(--ab-space-3, 0.5rem) var(--ab-space-6, 2.3rem);
+  margin: var(--ab-space-7, 2rem) 0 0;
+  padding: var(--ab-space-4, 0.85rem) 0;
+  border-top: var(--ab-rule-width) solid var(--ab-rule);
+  border-bottom: var(--ab-rule-width) solid var(--ab-rule);
 }
 
 .md-typeset a.ab-stat {
@@ -105,14 +163,14 @@
 .md-typeset a.ab-stat b {
   font-family: var(--ab-mono);
   font-weight: 400;
-  font-size: var(--ab-step-3, 1.3rem);
+  font-size: var(--ab-step-4, 1.3rem);
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
 .md-typeset a.ab-stat span {
   font-family: var(--ab-mono);
-  font-size: 0.6rem;
+  font-size: var(--ab-step--2);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ab-faint);
@@ -124,35 +182,311 @@
   color: var(--ab-ink, var(--md-default-fg-color));
 }
 
-/* 78 methods across the seven categories, to scale: the hues are the registry's,
- * each segment's share is its category's share of the bank. */
-.md-typeset .ab-spectrum {
-  display: flex;
-  gap: 3px;
-  height: 0.3rem;
-  margin: 0;
+/* ---- the bank, to scale -------------------------------------------------
+ * 78 methods partitioned into seven categories, drawn as one bar whose segments
+ * are proportional to the counts and coloured with the registry's own hues. It is
+ * the page's largest piece of colour and it is not decoration: it is the only
+ * place a reader sees the shape of the bank, and every band is a link to that
+ * category in the taxonomy. The previous version of this object was 4px tall.
+ */
+
+.md-typeset .ab-bank {
+  margin: var(--ab-space-6) 0 0;
+  /* the query container is the wrapper, not the list: an element cannot query
+   * itself, and the layout switch below has to change the list's own display */
+  container: ab-bank / inline-size;
 }
 
-.md-typeset .ab-spectrum span {
+.md-typeset .ab-bank-lab {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ab-space-5);
+  margin: 0 0 var(--ab-space-3);
+}
+
+/* the gloss on the right of the label: a sentence, not an overline */
+.md-typeset .ab-bank-lab span {
+  font-family: var(--ab-sans);
+  font-size: var(--ab-step--1);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ab-faint);
+}
+
+/* Two layouts, one markup, chosen by how much room the object itself has rather
+ * than by how wide the window is.
+ *
+ * Narrow -- the base case below -- is a horizontal bar chart: one row per
+ * category, name on the left, bar scaled against the largest count (--nmax, set
+ * in the markup beside the counts it has to agree with), figure on the right.
+ * Every category stays named and the proportions stay true on a phone.
+ *
+ * Wide, inside the container query, is the stacked strip: the seven bands laid
+ * end to end across the whole cover, each as wide as its share of the 78, names
+ * underneath. 43rem is where the narrowest band -- exact, 4 of 78 -- clears the
+ * 40px that EXACT needs at --ab-step--2.
+ */
+
+.md-typeset ol.ab-bars {
+  display: grid;
+  gap: var(--ab-space-2);
+  list-style: none;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.md-typeset ol.ab-bars > li { margin: 0; min-width: 0; }
+
+.md-typeset ol.ab-bars a {
+  display: grid;
+  grid-template-columns: 6.6rem minmax(0, 1fr) 1.8rem;
+  align-items: center;
+  gap: var(--ab-space-4);
+  color: var(--ab-ink);
+  text-decoration: none;
+}
+
+.md-typeset ol.ab-bars .ab-bar {
+  grid-column: 2;
+  grid-row: 1;
+  display: block;
+  height: 0.9rem;
+  width: calc(100% * var(--n) / var(--nmax));
   background: var(--hl);
-  min-width: 3px;
+  transition: opacity var(--ab-motion-fast) var(--ab-ease);
+}
+
+.md-typeset ol.ab-bars b {
+  grid-column: 3;
+  grid-row: 1;
+  font-family: var(--ab-mono);
+  font-weight: 400;
+  font-size: var(--ab-step-0);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-align: right;
+  color: var(--ab-ink);
+}
+
+.md-typeset ol.ab-bars .ab-bar-name {
+  grid-column: 1;
+  grid-row: 1;
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  color: var(--ab-faint);
+  transition: color var(--ab-motion-fast) var(--ab-ease);
+}
+
+.md-typeset ol.ab-bars a:hover .ab-bar-name,
+.md-typeset ol.ab-bars a:focus-visible .ab-bar-name {
+  color: var(--ab-ink);
+}
+
+@container ab-bank (min-width: 43rem) {
+  .md-typeset ol.ab-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+  }
+
+  .md-typeset ol.ab-bars > li { flex: var(--n) 1 0; }
+
+  .md-typeset ol.ab-bars a {
+    display: block;
+    gap: 0;
+  }
+
+  /* the narrow layout places all three children on one grid row; display:block
+   * above makes grid-column/grid-row inert, but reset them so nothing lingers */
+  .md-typeset ol.ab-bars .ab-bar,
+  .md-typeset ol.ab-bars b,
+  .md-typeset ol.ab-bars .ab-bar-name { grid-column: auto; grid-row: auto; }
+
+  /* The band's box is a fixed 2.2rem and the fill is scaled into it from the
+   * baseline, so lighting one under the pointer grows it upward without moving
+   * the figures underneath. --ab-motion-fast is 0ms under prefers-reduced-motion,
+   * which turns the growth into a plain state change. */
+  .md-typeset ol.ab-bars .ab-bar {
+    height: 2.2rem;
+    width: auto;
+    transform: scaleY(0.76);
+    transform-origin: bottom;
+    transition: transform var(--ab-motion-fast) var(--ab-ease);
+  }
+
+  .md-typeset ol.ab-bars a:hover .ab-bar,
+  .md-typeset ol.ab-bars a:focus-visible .ab-bar { transform: scaleY(1); }
+
+  .md-typeset ol.ab-bars b {
+    display: block;
+    margin-top: var(--ab-space-2);
+    font-size: var(--ab-step-1);
+    text-align: left;
+  }
+
+  .md-typeset ol.ab-bars .ab-bar-name {
+    display: block;
+    margin-top: var(--ab-space-1);
+    padding-right: var(--ab-space-1);
+  }
 }
 
 /* keyboard focus stays visible on everything the hero and footer link */
 .md-typeset .ab-hero a:focus-visible,
 .md-typeset .ab-go a:focus-visible {
-  outline: 2px solid var(--ab-accent, var(--md-accent-fg-color));
+  outline: var(--ab-rule-width-strong) solid var(--ab-accent, var(--md-accent-fg-color));
   outline-offset: 3px;
+}
+
+/* ---- the second axis: wide, quiet, and two columns ----------------------
+ * The approximate/modify distinction is a binary, so it is set as one. The prose
+ * holds the reading measure on the left and the two declarations sit in the band
+ * to its right, which is otherwise the emptiest part of the page.
+ */
+
+.md-typeset .ab-axis {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  align-items: start;
+  gap: var(--ab-space-5) var(--ab-space-7);
+  margin: var(--ab-space-7) 0 0;
+}
+
+@media screen and (max-width: 59.9375em) {
+  .md-typeset .ab-axis { grid-template-columns: minmax(0, 1fr); }
+}
+
+.md-typeset .ab-axis-note p {
+  margin: 0;
+  max-width: 33rem;
+}
+
+.md-typeset .ab-axis-keys {
+  padding-left: var(--ab-space-5);
+  border-left: var(--ab-rule-width-strong) solid var(--ab-rule);
+}
+
+.md-typeset .ab-axis-keys .ab-eyebrow { margin: 0 0 var(--ab-space-3); }
+
+.md-typeset .ab-axis-keys dl { max-width: none; margin: 0; }
+
+.md-typeset .ab-axis-keys dt {
+  margin: 0;
+  font-weight: 400;
+}
+
+.md-typeset .ab-axis-keys dt code {
+  font-size: var(--ab-step-0);
+  color: var(--ab-ink);
+}
+
+.md-typeset .ab-axis-keys dd {
+  margin: var(--ab-space-2) 0 var(--ab-space-5);
+  font-size: var(--ab-step--1);
+  line-height: 1.5;
+  color: var(--ab-ink-soft);
+}
+
+.md-typeset .ab-axis-keys dd:last-child { margin-bottom: 0; }
+
+/* ---- section heads ------------------------------------------------------
+ * Not every section wants the same announcement. Three weights:
+ *   --major  a 2px ink rule and a display heading; the page's two arguments
+ *   --minor  a hairline and a mono overline; a sub-head inside an argument
+ *   --quiet  no rule at all, a small heading; the one that is just a code line
+ * All three put the heading on the left and, where there is one, the module or
+ * file that implements the claim on the right, at the column edge. That is both
+ * the use for the empty right band and the most honest caption this site can
+ * give a section.
+ */
+
+.md-typeset .ab-sec {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ab-space-6);
+  /* block only: a margin shorthand here would reset the inline margin that
+   * .ab-bleed sets on the two --major heads and push their text off the spine */
+  margin-block: var(--ab-space-8) var(--ab-space-5);
+  padding-top: var(--ab-space-4);
+  border-top: var(--ab-rule-width) solid var(--ab-rule);
+}
+
+.md-typeset .ab-sec > * { margin: 0; max-width: none; }
+
+.md-typeset .ab-sec-src {
+  flex: 0 0 auto;
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  color: var(--ab-faint);
+  white-space: nowrap;
+}
+
+.md-typeset .ab-sec-src code {
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* The two arguments carry a 2px ink rule, and it is the one rule on the page set
+ * to the cover band's width rather than the column's (via .ab-bleed in the
+ * markup). Distill runs its <hr> to the screen edge for the same reason: a rule
+ * that stops short of everything else reads as timid. The --minor rules stay at
+ * column width, so the two scales of division are told apart by length as well
+ * as by weight. */
+.md-typeset .ab-sec--major {
+  border-top-width: var(--ab-rule-width-strong);
+  border-top-color: var(--ab-ink);
+}
+
+.md-typeset .ab-sec--major h2 {
+  font-size: var(--ab-step-4);
+  line-height: 1.15;
+}
+
+.md-typeset .ab-sec--minor {
+  margin-block: var(--ab-space-7) var(--ab-space-3);
+  padding-top: var(--ab-space-3);
+  border-top-color: var(--ab-rule-soft);
+}
+
+.md-typeset .ab-sec--quiet {
+  margin-block: var(--ab-space-8) var(--ab-space-4);
+  padding-top: 0;
+  border-top: 0;
+}
+
+.md-typeset .ab-sec--quiet h2 { font-size: var(--ab-step-2); }
+
+/* the implementing module is a caption, and the first thing a narrow column
+ * should drop */
+@media screen and (max-width: 59.9375em) {
+  .md-typeset .ab-sec-src { display: none; }
 }
 
 /* ---- the invariant: one rule, one line of code, framed like the plate ---- */
 
 .md-typeset .ab-invariant {
   position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ab-space-3) var(--ab-space-6);
   margin: var(--ab-space-5, 1.4rem) 0;
   padding: 1.1rem 1.2rem 0.9rem;
   background: var(--ab-plate);
-  border: 1px solid var(--ab-rule);
+  border: var(--ab-rule-width) solid var(--ab-rule);
+  /* the one structural accent on the page: this is the property, not a category */
+  box-shadow: inset 3px 0 var(--ab-accent);
 }
 
 /* the corner label, the same idiom as the operator plate's */
@@ -164,11 +498,24 @@
   padding: 0 0.45rem;
   background: var(--ab-plate);
   font-family: var(--ab-mono);
-  font-size: 0.56rem;
+  font-size: var(--ab-step--2);
   letter-spacing: 0.17em;
   text-transform: uppercase;
   color: var(--ab-faint);
 }
+
+.md-typeset .ab-invariant > p {
+  margin: 0;
+  max-width: none;
+}
+
+/* The line is 51 characters at --ab-step-2 and the note is 60 at --ab-step--1;
+ * they do not fit on one row inside this column, and shrinking the statement to
+ * make them fit would be the wrong trade. The statement takes the row; the note
+ * drops below it and is pushed to the right edge, which is the only thing on this
+ * page that is set from the right and is the reason the plate does not read as a
+ * block of code with a caption. */
+.md-typeset .ab-invariant > p:first-of-type { flex: 1 1 100%; }
 
 .md-typeset .ab-invariant code {
   display: block;
@@ -176,13 +523,15 @@
   border: 0;
   box-shadow: none;
   padding: 0;
-  font-size: var(--ab-step-1, 0.95rem);
+  font-size: var(--ab-step-2, 0.95rem);
   color: var(--ab-ink, var(--md-default-fg-color));
   overflow-x: auto;
 }
 
-.md-typeset .ab-invariant p {
-  margin: 0.55rem 0 0;
+.md-typeset .ab-invariant > p.ab-invariant-note {
+  flex: 0 1 auto;
+  margin-left: auto;   /* out-specifies the `> p { margin: 0 }` above */
+  text-align: right;
   font-size: var(--ab-step--1, 0.74rem);
   color: var(--ab-faint);
 }
@@ -191,10 +540,12 @@
 
 .md-typeset ol.ab-checks {
   list-style: none;
-  margin: 0.8rem 0 0;
+  max-width: none;
+  margin: 0;
   padding: 0;
   columns: 2;
-  column-gap: 2rem;
+  column-gap: var(--ab-space-7);
+  column-rule: var(--ab-rule-width) solid var(--ab-rule-soft);
   font-size: var(--ab-step--1, 0.74rem);
   counter-reset: ab-check;
 }
@@ -217,18 +568,21 @@
 }
 
 @media screen and (max-width: 44.9375em) {
-  .md-typeset ol.ab-checks { columns: 1; }
+  .md-typeset ol.ab-checks { columns: 1; column-rule: none; }
 }
 
-/* ---- the error split: the same scalar, two different mechanisms ---------- */
+/* ---- the error split: the same scalar, two different mechanisms ----------
+ * The densest thing on the page, and the one that earns the full column width.
+ */
 
 .md-typeset .ab-errwrap {
-  max-width: 42rem;
+  max-width: none;
   overflow-x: auto;
 }
 
 /* Material styles only table:not([class]), so this table sets its own manners */
 .md-typeset .ab-errsplit {
+  width: 100%;
   border-collapse: collapse;
   font-size: var(--ab-step-0, 0.78rem);
   font-variant-numeric: tabular-nums;
@@ -236,12 +590,12 @@
 
 .md-typeset .ab-errsplit th,
 .md-typeset .ab-errsplit td {
-  padding: 0.5rem 1.6rem 0.5rem 0;
+  padding: 0.55rem 1.6rem 0.55rem 0;
   text-align: left;
 }
 
 .md-typeset .ab-errsplit th:last-child,
-.md-typeset .ab-errsplit td:last-child { padding-right: 0; }
+.md-typeset .ab-errsplit td:last-child { padding-right: 0.8rem; }
 
 .md-typeset .ab-errsplit th:nth-child(n + 3),
 .md-typeset .ab-errsplit td:nth-child(n + 3) { text-align: right; }
@@ -249,15 +603,15 @@
 .md-typeset .ab-errsplit thead th {
   font-family: var(--ab-mono);
   font-weight: 400;
-  font-size: 0.6rem;
+  font-size: var(--ab-step--2);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ab-faint);
-  border-bottom: 1px solid var(--ab-rule);
+  border-bottom: var(--ab-rule-width) solid var(--ab-rule);
 }
 
 .md-typeset .ab-errsplit tbody td {
-  border-bottom: 1px solid var(--ab-rule-soft);
+  border-bottom: var(--ab-rule-width) solid var(--ab-rule-soft);
 }
 
 /* the spanning header that names what columns 4-5 are: the thesis, as structure */
@@ -271,6 +625,21 @@
   border-bottom: var(--ab-rule-width) solid var(--ab-rule-soft);
 }
 
+/* The table takes the whole column, and all of the slack is given to one place:
+ * the category cell. Left to itself the browser spreads it evenly, which pushed
+ * the three figures apart and grew the box around the two equal ones into a 200px
+ * rectangle that shouted louder than the equality it points at. Now the three
+ * numeric columns shrink to their contents and the gap opens where the argument
+ * wants it -- between what the method is and what it cost. */
+.md-typeset .ab-errsplit th:nth-child(2),
+.md-typeset .ab-errsplit td:nth-child(2) { width: 100%; }
+
+.md-typeset .ab-errsplit th:first-child,
+.md-typeset .ab-errsplit td:first-child { white-space: nowrap; }
+
+.md-typeset .ab-errsplit th:nth-child(n + 3),
+.md-typeset .ab-errsplit td:nth-child(n + 3) { width: 1%; white-space: nowrap; }
+
 /* the gutter that separates the one number from the two it is made of. A rule
  * here would land on the edge of the box around the two equal figures and read
  * as one thick line; the gutter plus the spanning header's own rule is enough. */
@@ -279,18 +648,25 @@
   padding-left: var(--ab-space-6);
 }
 
-/* the row keyline is the method's category — the same hue it has on the plate */
+/* A row is a method, a method has a category, and the category is a colour. The
+ * wash is 6% on white and 13% on the dark ground -- enough to tell three rows
+ * apart at a glance, far too weak to touch the contrast of the ink on top of it.
+ * The 4px keyline at the row's head is the same hue at full strength. */
+.md-typeset .ab-errsplit tbody tr {
+  background: color-mix(in srgb, var(--hl) var(--home-wash-row), transparent);
+}
+
 .md-typeset .ab-errsplit td:first-child {
-  box-shadow: inset 3px 0 var(--hl);
+  box-shadow: inset 4px 0 var(--hl);
 }
 
 .md-typeset .ab-errsplit th:first-child,
-.md-typeset .ab-errsplit td:first-child { padding-left: 0.8rem; }
+.md-typeset .ab-errsplit td:first-child { padding-left: 0.9rem; }
 
 .md-typeset .ab-errsplit td.ab-cat {
   font-family: var(--ab-mono);
   font-size: 0.86em;
-  color: var(--ab-faint);
+  color: var(--ab-ink-soft);
 }
 
 .md-typeset .ab-errsplit td {
@@ -308,7 +684,7 @@
 }
 
 .md-typeset .ab-errsplit td.ab-blame:last-child {
-  background-position: right 0 bottom 0.35rem;
+  background-position: right 0.8rem bottom 0.35rem;
 }
 
 /* topk and quantkv are the same number by construction; box them so the eye
@@ -336,25 +712,68 @@
   color: var(--ab-faint);
 }
 
-/* the two mechanisms, side by side, keyed by the category that exhibits each */
-.md-typeset .ab-mech {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
-  gap: var(--ab-space-5, 1.6rem);
-  max-width: 42rem;
-  margin: var(--ab-space-5, 1.4rem) 0 0.8rem;
+/* ---- the evidence row: the figure, and the two mechanisms ----------------
+ * A generated figure belongs here, as the first child. Flex rather than grid so
+ * that the row works in both states without a second rule for each: one child
+ * takes the whole column, two children split it. When the figure is present the
+ * two mechanism notes stack into one column beside it; when it is not, they lie
+ * side by side across the full width, which is what ships today.
+ */
+
+.md-typeset .ab-evidence {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: var(--ab-space-5) var(--ab-space-6);
+  margin: var(--ab-space-5) 0 var(--ab-space-6);
 }
 
-.md-typeset .ab-mech p {
+.md-typeset .ab-evidence > * { flex: 1 1 21rem; min-width: 0; }
+
+.md-typeset .ab-fig { margin: 0; }
+
+.md-typeset .ab-fig img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.md-typeset .ab-fig figcaption {
+  margin: var(--ab-space-3) 0 0;
+  padding-top: var(--ab-space-2);
+  border-top: var(--ab-rule-width) solid var(--ab-rule-soft);
+  font-size: var(--ab-step--1);
+  line-height: 1.45;
+  text-align: left;
+  color: var(--ab-ink-muted);
+}
+
+/* the two mechanisms, keyed by the category that exhibits each. A hue well: the
+ * wash names the category, the 2px cap states it, and every word sits at full
+ * ink strength on a ground that is 93% page. */
+.md-typeset .ab-mech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ab-space-5);
+}
+
+.md-typeset .ab-mech > p {
+  flex: 1 1 15rem;
+  max-width: none;
   margin: 0;
-  padding-top: 0.6rem;
-  border-top: 2px solid var(--hl);
+  padding: var(--ab-space-4) var(--ab-space-5) var(--ab-space-5);
+  background: color-mix(in srgb, var(--hl) var(--home-wash), transparent);
+  border-top: var(--ab-rule-width-strong) solid var(--hl);
   font-size: var(--ab-step-0, 0.78rem);
   color: var(--ab-ink-soft, var(--md-default-fg-color--light));
 }
 
+/* beside a figure the column is half as wide, so the notes stack */
+.md-typeset .ab-evidence:has(.ab-fig) .ab-mech > p { flex: 1 1 100%; }
+
 .md-typeset .ab-mech strong {
   display: block;
+  margin-bottom: 0.15rem;
   color: var(--ab-ink, var(--md-default-fg-color));
 }
 
@@ -384,7 +803,7 @@
 .md-typeset dl.ab-go dt {
   margin: 0;
   padding-top: 0.7rem;
-  border-top: 2px solid var(--ab-ink, var(--md-default-fg-color));
+  border-top: var(--ab-rule-width-strong) solid var(--ab-ink, var(--md-default-fg-color));
   font-size: var(--ab-step-2, 1.05rem);
   font-weight: 500;
 }
@@ -406,7 +825,7 @@
 .md-typeset dl.ab-go--more { margin-top: 0.6rem; }
 
 .md-typeset dl.ab-go--more dt {
-  border-top: 1px solid var(--ab-rule-soft);
+  border-top: var(--ab-rule-width) solid var(--ab-rule-soft);
   font-size: var(--ab-step-0, 0.8rem);
   padding-top: 0.75rem;
 }
@@ -415,9 +834,15 @@
 
 /* ---- citing: present, quiet --------------------------------------------- */
 
-.md-typeset .ab-cite { max-width: 36rem; }
+.md-typeset .ab-cite {
+  max-width: 36rem;
+  margin-top: var(--ab-space-8);
+  padding-top: var(--ab-space-4);
+  border-top: var(--ab-rule-width) solid var(--ab-rule-soft);
+}
 
 .md-typeset .ab-cite h2 {
+  margin-top: 0;
   font-size: var(--ab-step-1, 1rem);
 }
 
@@ -474,7 +899,7 @@
   outline-offset: 3px;
 }
 
-/* Motion on this page is hover colour only, and every transition above is timed
- * with --ab-motion-fast, which tokens.css already collapses to 0ms under
- * prefers-reduced-motion. A second override here would only be one more place
- * to forget. */
+/* Motion on this page is a hover colour and the one band that grows under the
+ * pointer, and both are timed with --ab-motion-fast, which tokens.css already
+ * collapses to 0ms under prefers-reduced-motion. A second override here would
+ * only be one more place to forget. */

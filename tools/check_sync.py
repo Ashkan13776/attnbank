@@ -19,6 +19,7 @@ standalone while the monograph is not.
 from __future__ import annotations
 
 import argparse
+import collections
 import re
 import sys
 from pathlib import Path
@@ -199,7 +200,49 @@ def main() -> int:
                              f"style.CATEGORY")
         r.check("category hues agree", wrong)
 
-    # ---- 7. paper_section labels exist in the monograph ------------------------
+    # ---- 7. the landing page's per-category bar chart ---------------------------
+    # "The bank, to scale" writes each category's count three times -- in the
+    # aria-label, in the --n custom property that sizes the bar, and in the
+    # printed <b> -- plus --nmax for the scale. Twenty-two numbers that must
+    # agree with the registry and with each other, hand-written, on the page a
+    # first-time reader sees. Check 4 does not catch them: it deliberately skips
+    # counts that sit next to a category name, because the generated taxonomy
+    # page legitimately says "18 methods" of compress.
+    index = LIB / "docs" / "index.md"
+    if not index.exists():
+        r.skipped("landing page category counts", "docs/index.md not present")
+    else:
+        text = index.read_text()
+        counts = collections.Counter(row["category"] for row in table)
+        bad = []
+        bars = re.search(r'<ol class="ab-bars"([^>]*)>(.*?)</ol>', text, re.S)
+        if not bars:
+            r.skipped("landing page category counts", "no ab-bars block")
+        else:
+            attrs, body = bars.group(1), bars.group(2)
+            for cat, n in counts.items():
+                li = re.search(rf'data-cat="{cat}"[^>]*style="--n:(\d+)".*?<b>(\d+)</b>',
+                               body, re.S)
+                if not li:
+                    bad.append(f"no bar for category {cat!r}")
+                    continue
+                if int(li.group(1)) != n:
+                    bad.append(f"{cat}: bar is sized --n:{li.group(1)}, registry has {n}")
+                if int(li.group(2)) != n:
+                    bad.append(f"{cat}: bar prints {li.group(2)}, registry has {n}")
+                if not re.search(rf"\b{cat} {n}\b", attrs):
+                    bad.append(f"{cat}: aria-label does not say '{cat} {n}'")
+            nmax = re.search(r"--nmax:(\d+)", attrs)
+            if nmax and int(nmax.group(1)) != max(counts.values()):
+                bad.append(f"--nmax is {nmax.group(1)}, largest category has "
+                           f"{max(counts.values())}")
+            # bars must also be the whole bank, not a subset
+            drawn = [int(m) for m in re.findall(r'style="--n:(\d+)"', body)]
+            if sum(drawn) != len(table):
+                bad.append(f"bars sum to {sum(drawn)}, registry has {len(table)}")
+            r.check("landing page category counts", bad)
+
+    # ---- 8. paper_section labels exist in the monograph ------------------------
     sections = PAPER / "sections"
     if not sections.is_dir():
         r.skipped("paper_section labels exist", "monograph not present")
@@ -213,7 +256,7 @@ def main() -> int:
                 bad_lbl.append(f"{row['name']} declares {lbl}, which no section defines")
         r.check("paper_section labels exist", bad_lbl)
 
-    # ---- 8. the monograph's own library counts ---------------------------------
+    # ---- 9. the monograph's own library counts ---------------------------------
     if not sections.is_dir():
         r.skipped("monograph counts match the library", "monograph not present")
     else:

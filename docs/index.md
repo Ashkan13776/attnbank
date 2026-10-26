@@ -6,10 +6,25 @@ hide:
 <!-- The landing page. Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
      Every number on this page comes from the registry or the test suite:
      tools/check_sync.py guards the method counts written in prose; the version is
-     attnbank.__version__; the per-category counts in the spectrum bar come from
-     ab.method_table() and must be updated together with their aria-label. -->
+     attnbank.__version__; the per-category counts in the bank bar come from
+     ab.method_table() and must be updated together with the bar's aria-label and
+     its --nmax, which is the largest of them; the
+     error-decomposition figures and the closure residual come from
+     tools/landing_figures.py, which recomputes all of them.
 
-<header class="ab-hero" markdown="1">
+     FIGURE SLOT. A generated SVG belongs in .ab-evidence, as the first child,
+     immediately before .ab-mech. docs/gen_figures.py writes it; the markup is
+
+       <figure class="ab-fig">
+       <img src="figures/error_decomposition.svg" alt="...">
+       <figcaption>...</figcaption>
+       </figure>
+
+     and the CSS in home.css already handles both states: with the figure present
+     .ab-evidence is two columns and .ab-mech stacks its two notes; without it,
+     .ab-mech spreads across the full column as it does today. Nothing else moves. -->
+
+<header class="ab-hero ab-bleed" markdown="1">
 
 <p class="ab-eyebrow">attnbank 0.2.0 &middot; efficient attention, side by side</p>
 
@@ -38,14 +53,17 @@ pip install attnbank   # torch + numpy, nothing else
 <a class="ab-stat" href="conformance/"><b>3334</b> <span>tests</span></a>
 </div>
 
-<div class="ab-spectrum" role="img" aria-label="78 methods by category — exact 4, interaction 14, restrict 15, compress 18, factorize 8, coupling 6, recurrent 13">
-<span data-cat="exact" style="flex-grow:4" title="exact &middot; 4 methods"></span>
-<span data-cat="interaction" style="flex-grow:14" title="interaction &middot; 14 methods"></span>
-<span data-cat="restrict" style="flex-grow:15" title="restrict &middot; 15 methods"></span>
-<span data-cat="compress" style="flex-grow:18" title="compress &middot; 18 methods"></span>
-<span data-cat="factorize" style="flex-grow:8" title="factorize &middot; 8 methods"></span>
-<span data-cat="coupling" style="flex-grow:6" title="coupling &middot; 6 methods"></span>
-<span data-cat="recurrent" style="flex-grow:13" title="recurrent &middot; 13 methods"></span>
+<div class="ab-bank">
+<p class="ab-eyebrow ab-bank-lab">the bank, to scale <span>each band is one category's share of the 78</span></p>
+<ol class="ab-bars" style="--nmax:18" aria-label="78 methods by category — exact 4, interaction 14, restrict 15, compress 18, factorize 8, coupling 6, recurrent 13">
+<li data-cat="exact" style="--n:4"><a href="taxonomy/#exact"><span class="ab-bar"></span><b>4</b><span class="ab-bar-name">exact</span></a></li>
+<li data-cat="interaction" style="--n:14"><a href="taxonomy/#interaction"><span class="ab-bar"></span><b>14</b><span class="ab-bar-name">interaction</span></a></li>
+<li data-cat="restrict" style="--n:15"><a href="taxonomy/#restrict"><span class="ab-bar"></span><b>15</b><span class="ab-bar-name">restrict</span></a></li>
+<li data-cat="compress" style="--n:18"><a href="taxonomy/#compress"><span class="ab-bar"></span><b>18</b><span class="ab-bar-name">compress</span></a></li>
+<li data-cat="factorize" style="--n:8"><a href="taxonomy/#factorize"><span class="ab-bar"></span><b>8</b><span class="ab-bar-name">factorize</span></a></li>
+<li data-cat="coupling" style="--n:6"><a href="taxonomy/#coupling"><span class="ab-bar"></span><b>6</b><span class="ab-bar-name">coupling</span></a></li>
+<li data-cat="recurrent" style="--n:13"><a href="taxonomy/#recurrent"><span class="ab-bar"></span><b>13</b><span class="ab-bar-name">recurrent</span></a></li>
+</ol>
 </div>
 
 </header>
@@ -140,17 +158,28 @@ Read on
 </div>
 </div>
 
-<div class="ab-measure" markdown="1">
+<div class="ab-axis">
+<div class="ab-axis-note" markdown="1">
 A second axis cuts across all seven, and it decides how a method should be judged at
-all: an `approximate` method targets dense softmax and is fairly measured by output
-error; a `modify` method is a *different operator*, and fidelity to softmax was never
-its goal. Conflating the two is the most persistent confusion in this literature, so
-every method here declares which it is — and the test suite reads the declaration.
+all. Conflating the two is the most persistent confusion in this literature, so every
+method here declares which it is — in an attribute the test suite reads, not in a
+sentence in a paper.
+</div>
+<div class="ab-axis-keys" markdown="1">
+<p class="ab-eyebrow">objective</p>
+<dl>
+<dt><code>approximate</code></dt>
+<dd>Targets dense softmax, and is fairly measured by output error.</dd>
+<dt><code>modify</code></dt>
+<dd>Is a <i>different operator</i>. Fidelity to softmax was never the goal, so output error is the wrong question to ask of it.</dd>
+</dl>
+</div>
 </div>
 
----
-
+<div class="ab-sec ab-sec--major ab-bleed" markdown="1">
 ## One invariant, held by all 78
+<p class="ab-sec-src"><code>attnbank.conformance.check_invariant</code></p>
+</div>
 
 <div class="ab-measure" markdown="1">
 Every method realises, explicitly or implicitly, a measure &#960;&#770;<sub><i>q</i></sub>
@@ -161,7 +190,7 @@ both.
 <div class="ab-invariant" data-label="invariant W" markdown="1">
 `y == weights @ (v_hat if v_hat is not None else value)`
 
-Checked for every registered method, in float32 and float64.
+<p class="ab-invariant-note">Checked for every registered method, in float32 and float64.</p>
 </div>
 
 <div class="ab-measure" markdown="1">
@@ -180,7 +209,10 @@ output and `1e-6` in the weights. There is nowhere for a transposed index or a d
 scale factor to hide.
 </div>
 
-<p class="ab-eyebrow">the conformance suite, parametrised over every registered method</p>
+<div class="ab-sec ab-sec--minor">
+<p class="ab-eyebrow">eleven checks, parametrised over every registered method</p>
+<p class="ab-sec-src"><code>tests/test_conformance.py</code></p>
+</div>
 
 <ol class="ab-checks">
 <li>Shapes, for every tensor the method returns</li>
@@ -201,9 +233,10 @@ A method that cannot pass a check must say so in a declaration attribute, not in
 `skip`. [How the suite reads those declarations](conformance.md).
 </div>
 
----
-
+<div class="ab-sec ab-sec--major ab-bleed" markdown="1">
 ## What the approximation cost you, and in which of the two ways
+<p class="ab-sec-src"><code>attnbank.metrics.error_decomposition</code></p>
+</div>
 
 <div class="ab-measure" markdown="1">
 Output error is one number, and one number cannot say what went wrong. Keeping the
@@ -241,6 +274,9 @@ rows = ab.compare(["topk", "quantkv", "performer"], q, k, v,
 
 <p class="ab-eyebrow ab-errnote">boxed &mdash; the same number &middot; a different mechanism</p>
 
+<!-- FIGURE SLOT: a generated <figure class="ab-fig"> goes here, as the first
+     child of .ab-evidence. See the note at the head of this file. -->
+<div class="ab-evidence">
 <div class="ab-mech">
 <p data-cat="restrict"><strong>Restriction moves mass to the wrong places.</strong>
 The error is distributional; the values are untouched. Spend more of the budget on
@@ -248,6 +284,7 @@ The error is distributional; the values are untouched. Spend more of the budget 
 <p data-cat="compress"><strong>Quantisation aggregates the wrong values.</strong>
 The mass is where it should be; the integrand is not. Raising <i>k</i> would not move
 this number at all.</p>
+</div>
 </div>
 
 <div class="ab-measure" markdown="1">
@@ -258,9 +295,9 @@ measure, the two terms reproduce the output error to within
 7&#8201;&times;&#8201;10<sup>&minus;12</sup> in float64.
 </div>
 
----
-
+<div class="ab-sec ab-sec--quiet" markdown="1">
 ## The first call
+</div>
 
 ```python
 import attnbank as ab
@@ -274,7 +311,9 @@ the last key, so the same code path serves prefill and decode. The worked versio
 with tensor conventions and the first comparison, is [the quickstart](quickstart.md).
 </div>
 
+<div class="ab-sec ab-sec--minor">
 <p class="ab-eyebrow">where to go next</p>
+</div>
 
 <dl class="ab-go">
 <div><dt><a href="taxonomy/">The taxonomy <span class="ab-arrow">&rarr;</span></a></dt>
@@ -293,8 +332,6 @@ with tensor conventions and the first comparison, is [the quickstart](quickstart
 <div><dt><a href="api/">API reference</a></dt>
 <dd>Every public function, with a runnable example in its docstring.</dd></div>
 </dl>
-
----
 
 <div class="ab-cite" markdown="1">
 
