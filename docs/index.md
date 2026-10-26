@@ -177,6 +177,92 @@ sentence in a paper.
 </div>
 
 <div class="ab-sec ab-sec--major ab-bleed" markdown="1">
+## The same head, six ways
+<p class="ab-sec-src"><code>docs/gen_heatmaps.py</code></p>
+</div>
+
+<div class="ab-measure" markdown="1">
+Invariant W means every method can hand back the measure $\widehat\pi_q$ it puts over
+context positions — so the taxonomy above can be *drawn*. Each square below is that
+measure for one method, over the same 80 tokens, read by the same attention head.
+Rows are queries, columns are keys; brighter is more mass.
+</div>
+
+<ol class="ab-tz">
+<li data-cat="exact">
+<a href="heatmaps/#softmax">
+<img src="assets/heatmaps/teaser-light-softmax.png" class="ab-tz-light" alt=""
+     width="82" height="82" loading="lazy" decoding="async">
+<img src="assets/heatmaps/teaser-dark-softmax.png" class="ab-tz-dark" alt=""
+     width="82" height="82" loading="lazy" decoding="async">
+<b>dense softmax</b><span class="ab-tz-cfg">the reference</span><span class="ab-tz-cat">exact</span>
+</a>
+<p>Everything below approximates this. The bands and bright columns are what this head does.</p>
+</li>
+<li data-cat="interaction">
+<a href="heatmaps/#linear_elu">
+<img src="assets/heatmaps/teaser-light-linear_elu.png" class="ab-tz-light" alt=""
+     width="82" height="82" loading="lazy" decoding="async">
+<img src="assets/heatmaps/teaser-dark-linear_elu.png" class="ab-tz-dark" alt=""
+     width="82" height="82" loading="lazy" decoding="async">
+<b>linear_elu</b><span class="ab-tz-cfg">g &rarr; <i>g&#770;</i></span><span class="ab-tz-cat">interaction</span>
+</a>
+<p>A separable surrogate replaces the interaction, and the measure smears.</p>
+</li>
+<li data-cat="restrict">
+<a href="heatmaps/#window">
+<img src="assets/heatmaps/teaser-light-window.png" class="ab-tz-light" alt=""
+     width="82" height="82" loading="lazy" decoding="async">
+<img src="assets/heatmaps/teaser-dark-window.png" class="ab-tz-dark" alt=""
+     width="82" height="82" loading="lazy" decoding="async">
+<b>window</b><span class="ab-tz-cfg">w = 8</span><span class="ab-tz-cat">restrict</span>
+</a>
+<p>The support shrinks to a band and is renormalised on it.</p>
+</li>
+<li data-cat="factorize">
+<a href="heatmaps/#abc">
+<img src="assets/heatmaps/teaser-light-abc.png" class="ab-tz-light" alt=""
+     width="82" height="82" loading="lazy" decoding="async">
+<img src="assets/heatmaps/teaser-dark-abc.png" class="ab-tz-dark" alt=""
+     width="82" height="82" loading="lazy" decoding="async">
+<b>abc</b><span class="ab-tz-cfg">r = 8</span><span class="ab-tz-cat">factorize</span>
+</a>
+<p>Routed through 8 latents, so the rank is capped and the measure stripes.</p>
+</li>
+<li data-cat="coupling">
+<a href="heatmaps/#sinkhorn">
+<img src="assets/heatmaps/teaser-light-sinkhorn.png" class="ab-tz-light" alt=""
+     width="82" height="82" loading="lazy" decoding="async">
+<img src="assets/heatmaps/teaser-dark-sinkhorn.png" class="ab-tz-dark" alt=""
+     width="82" height="82" loading="lazy" decoding="async">
+<b>sinkhorn</b><span class="ab-tz-cfg">5 iterations</span><span class="ab-tz-cat">coupling</span>
+</a>
+<p>A square, not a triangle: coupling queries makes a causal version impossible.</p>
+</li>
+<li data-cat="recurrent">
+<a href="heatmaps/#mega">
+<img src="assets/heatmaps/teaser-light-mega.png" class="ab-tz-light" alt=""
+     width="82" height="82" loading="lazy" decoding="async">
+<img src="assets/heatmaps/teaser-dark-mega.png" class="ab-tz-dark" alt=""
+     width="82" height="82" loading="lazy" decoding="async">
+<b>mega</b><span class="ab-tz-cfg">chunk = 16</span><span class="ab-tz-cat">recurrent</span>
+</a>
+<p>A finite-state recurrence. Not an approximation of softmax at all.</p>
+</li>
+</ol>
+
+<div class="ab-measure ab-tz-foot" markdown="1">
+Real activations — layer 5, head 3 of GPT-2 reading one passage of `wikitext-103`,
+captured where the model computes attention and checked at capture time to reproduce
+its own output. **Six of the seven categories are here**; `compress` is missing on
+purpose, because its measure looks almost exactly like dense softmax and its error
+lives in the *values* instead — which is the whole reason the library reports two
+numbers rather than one.
+
+[All 78 methods, with the difference map and the numbers](heatmaps.md)
+</div>
+
+<div class="ab-sec ab-sec--major ab-bleed" markdown="1">
 ## One invariant, held by all 78
 <p class="ab-sec-src"><code>attnbank.conformance.check_invariant</code></p>
 </div>

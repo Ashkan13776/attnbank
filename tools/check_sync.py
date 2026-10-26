@@ -242,7 +242,46 @@ def main() -> int:
                 bad.append(f"bars sum to {sum(drawn)}, registry has {len(table)}")
             r.check("landing page category counts", bad)
 
-    # ---- 8. paper_section labels exist in the monograph ------------------------
+    # ---- 8. the landing page's attention-map teaser -----------------------------
+    # The teaser hard-codes six method names, the category of each, and the asset
+    # filenames for both themes. The methods are real registry entries and the
+    # categories are claims about them, so all of it can go stale: a method that
+    # leaves the bank, or is recategorised, leaves a panel asserting something
+    # false right under the fold. gen_heatmaps.TEASER is the source of truth for
+    # which six; this holds the markup to it and to the registry.
+    teaser_src = LIB / "docs" / "gen_heatmaps.py"
+    if not (index.exists() and teaser_src.exists()):
+        r.skipped("landing page teaser", "index.md or gen_heatmaps.py not present")
+    else:
+        src = teaser_src.read_text()
+        block = re.search(r"^TEASER = \[(.*?)^\]", src, re.S | re.M)
+        wanted = re.findall(r'\(\s*"([a-z0-9_]+)"', block.group(1)) if block else []
+        page_txt = index.read_text()
+        cats = {row["name"]: row["category"] for row in table}
+        bad = []
+        if not wanted:
+            bad.append("could not read TEASER from docs/gen_heatmaps.py")
+        shown = re.findall(r'href="heatmaps/#([a-z0-9_]+)"', page_txt)
+        if shown != wanted:
+            bad.append(f"index.md links {shown}, gen_heatmaps.TEASER is {wanted}")
+        for name in shown:
+            if name not in cats:
+                bad.append(f"teaser shows {name!r}, which is not in the registry")
+                continue
+            # the panel states a category; it must be the registry's
+            panel = re.search(rf'data-cat="([a-z]+)"[^>]*>\s*\n\s*<a href="heatmaps/#{name}"',
+                              page_txt)
+            if panel and panel.group(1) != cats[name]:
+                bad.append(f"teaser files {name} under {panel.group(1)!r}, "
+                           f"registry says {cats[name]!r}")
+            for theme in ("light", "dark"):
+                asset = LIB / "docs" / "assets" / "heatmaps" / f"teaser-{theme}-{name}.png"
+                if not asset.exists():
+                    bad.append(f"missing {asset.relative_to(LIB)}; "
+                               f"run python docs/gen_heatmaps.py")
+        r.check("landing page teaser", bad)
+
+    # ---- 9. paper_section labels exist in the monograph ------------------------
     sections = PAPER / "sections"
     if not sections.is_dir():
         r.skipped("paper_section labels exist", "monograph not present")
@@ -256,7 +295,7 @@ def main() -> int:
                 bad_lbl.append(f"{row['name']} declares {lbl}, which no section defines")
         r.check("paper_section labels exist", bad_lbl)
 
-    # ---- 9. the monograph's own library counts ---------------------------------
+    # ---- 10. the monograph's own library counts ---------------------------------
     if not sections.is_dir():
         r.skipped("monograph counts match the library", "monograph not present")
     else:

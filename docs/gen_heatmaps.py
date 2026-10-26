@@ -194,6 +194,23 @@ PROBE = ["retnet", "rwkv", "gla", "hgrn2", "mlstm", "delta_rnn",
 #: quantised to 4 bits in both tensors, and sweeping them apart is a different study.
 MIRROR = {"bits_k": "bits_v"}
 
+#: The strip on the landing page. One panel per category, chosen for a mechanism that
+#: is legible at a glance rather than for being representative: a band, a smear, a set
+#: of low-rank stripes, a full square where every other panel is a triangle, a chunked
+#: decay. Each is (method, frame), and the frame is a rung of that method's own ladder
+#: mild enough that the picture is still an approximation of this head rather than a
+#: degenerate one. ``tools/check_sync.py`` holds the landing page's markup to this list,
+#: so a method leaving the bank cannot leave a dead panel behind.
+TEASER = [
+    ("softmax", 0),        # the reference: dense, with this head's sinks and bands
+    ("linear_elu", 0),     # interaction -- the surrogate smears the measure
+    ("window", 3),         # restrict -- w = 8, the support is a band
+    ("abc", 3),            # factorize -- r = 8 caps the rank, and it stripes
+    ("sinkhorn", 3),       # coupling -- no causal version exists, so it is a square
+    ("mega", 3),           # recurrent -- chunk = 16, a different operator
+]
+
+
 CATEGORY_ORDER = ["exact", "interaction", "restrict", "compress",
                   "factorize", "coupling", "recurrent"]
 
@@ -511,6 +528,7 @@ def build(out_dir: pathlib.Path) -> dict:
 
     static = write_static(out_dir, refs, methods)
     sizes.update(static)
+    sizes.update(write_teaser(out_dir, methods))
 
     manifest = {
         "n": N, "decades": DECADES, "diff_decades": DIFF_DECADES, "provenance": prov,
@@ -532,6 +550,35 @@ def build(out_dir: pathlib.Path) -> dict:
     (out_dir / "manifest.json").write_text(text, encoding="utf-8")
     manifest["bytes"]["manifest.json"] = len(text.encode())
     return manifest
+
+
+def write_teaser(out_dir: pathlib.Path, methods: list) -> dict:
+    """One small pre-coloured panel per entry in ``TEASER``, for the landing page.
+
+    Separate files rather than one strip, so the landing page can lay them out in a
+    grid that wraps on a narrow screen and label each one in real text instead of
+    baking words into an image. Each is the method's own atlas frame, so the panel is
+    the same data the full page draws, at one device pixel per matrix cell.
+    """
+    by_name = {m["name"]: m for m in methods}
+    sizes = {}
+    for theme in ("light", "dark"):
+        seq = np.array(sequential_ramp(theme), dtype=np.uint8)
+        rule = np.array(GROUND["light" if theme == "dark" else "dark"], dtype=np.uint8)
+        for name, frame in TEASER:
+            if name not in by_name:                       # the bank changed under us
+                raise SystemExit(f"TEASER names {name!r}, which is not drawn here")
+            atlas = np.array(Image.open(out_dir / f"m-{name}.png"))
+            cell = atlas[:, frame * N:(frame + 1) * N]
+            panel = np.pad(seq[cell], ((1, 1), (1, 1), (0, 0)), constant_values=0)
+            panel[0, :], panel[-1, :], panel[:, 0], panel[:, -1] = rule, rule, rule, rule
+            buf = io.BytesIO()
+            Image.fromarray(panel, "RGB").save(buf, format="PNG", optimize=True,
+                                               compress_level=9)
+            key = f"teaser-{theme}-{name}.png"
+            (out_dir / key).write_bytes(buf.getvalue())
+            sizes[key] = len(buf.getvalue())
+    return sizes
 
 
 def write_static(out_dir: pathlib.Path, refs: dict, methods: list) -> dict:
@@ -694,7 +741,10 @@ def _exact_sentence(manifest: dict) -> str:
 def page(manifest: dict) -> str:
     prov = manifest["provenance"]
     n = manifest["n"]
-    total = sum(manifest["bytes"].values())
+    # the teaser panels belong to the landing page, not this one, so they are
+    # not part of what this page costs a reader
+    total = sum(v for k, v in manifest["bytes"].items()
+                if not k.startswith("teaser-"))
     spec = next(m for m in manifest["methods"] if m["name"] == DEFAULT_METHOD)
     frame = spec["frames"][DEFAULT_FRAME]
     k = frame["config"]["k"]
@@ -876,7 +926,10 @@ def main(argv: list[str] | None = None) -> int:
     manifest = build(ASSETS)
     PAGE.write_text(page(manifest), encoding="utf-8")
 
-    total = sum(manifest["bytes"].values())
+    # the teaser panels belong to the landing page, not this one, so they are
+    # not part of what this page costs a reader
+    total = sum(v for k, v in manifest["bytes"].items()
+                if not k.startswith("teaser-"))
     biggest = sorted(manifest["bytes"].items(), key=lambda kv: -kv[1])[:5]
     initial = (manifest["bytes"]["manifest.json"]
                + manifest["bytes"][f"m-{DEFAULT_METHOD}.png"]
