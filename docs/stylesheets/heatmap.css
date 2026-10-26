@@ -1,5 +1,422 @@
 /* The interactive attention heat map.
  *
  * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
- * Placeholder registered by the coordinator so the asset slot exists.
+ *
+ * Zone: this page is a signature moment, so the maps get the full column width and
+ * real size, but everything around them is instrument chrome -- hairlines, mono
+ * numerals, no shadow, no card. The pictures are the only thing here that is allowed
+ * to be loud, and they are loud because the data is.
+ *
+ * No colour is declared in this file except through a token. The seven category hues
+ * arrive as --hl, which tokens.css resolves from [data-cat] -- set on the widget root
+ * by heatmap.js as the method changes -- so the chrome around a map carries the
+ * category of the method in it. The two *scales* are not here at all: they are
+ * computed in heatmap.js from stops in the manifest, because a heat map ramp is data,
+ * not decoration, and the same numbers have to produce the static PNGs.
  */
+
+/* ---------------------------------------------------------------- the container */
+
+.ab-hm {
+  /* The maps need the column, not the reading measure. */
+  max-width: none;
+  margin: var(--ab-space-6) 0;
+}
+
+/* This used to pull the widget right by 12rem, then 16rem, on the theory that
+ * `hide: toc` leaves an empty right-hand column for the maps to claim. Measured,
+ * the theory is wrong: with no table of contents Material already gives the
+ * content the full inner width, and the space actually free to the right of it
+ * is 30px at 1280, 110px at 1440 and 129px at 1600 -- against the 192px and
+ * 256px the rule was taking. The page scrolled sideways at every width up to
+ * about 1920, which the contract forbids outright.
+ *
+ * The matrices do want width, and the sanctioned way to give it to them is the
+ * one below: the panel strip scrolls inside itself, so a narrow viewport pans
+ * the maps instead of breaking the page. At the content's own width the three
+ * panels are about 326px each -- four pixels a cell at n = 80 -- so the scroll
+ * is a fallback that normally never engages. */
+
+/* ---------------------------------------------------------------- static fallback
+ *
+ * Present in the HTML, not injected, so the page carries a real heat map with
+ * scripting off and before the manifest lands. heatmap.js hides it only once it has
+ * something real to put in its place. The images are written at one device pixel per
+ * matrix cell and scaled up here, which is both the smallest payload and the only way
+ * to be sure a cell stays a square of one value.
+ */
+
+.ab-hm-static {
+  margin: 0 0 var(--ab-space-5);
+}
+
+.ab-hm-static img {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.ab-hm-static-dark { display: none; }
+
+[data-md-color-scheme="slate"] .ab-hm-static-light { display: none; }
+[data-md-color-scheme="slate"] .ab-hm-static-dark { display: block; }
+
+.ab-hm-static figcaption {
+  margin-top: var(--ab-space-3);
+  font-size: var(--ab-step--1);
+  line-height: 1.5;
+  color: var(--ab-ink-soft);
+  max-width: var(--ab-measure);
+}
+
+/* ---------------------------------------------------------------- controls */
+
+.ab-hm-controls {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ab-space-4);
+  padding: var(--ab-space-4) 0 var(--ab-space-5);
+  border-top: var(--ab-rule-width) solid var(--ab-rule);
+  border-bottom: var(--ab-rule-width) solid var(--ab-rule);
+  margin-bottom: var(--ab-space-5);
+}
+
+@media (min-width: 60em) {
+  .ab-hm-controls {
+    grid-template-columns: auto minmax(14rem, 22rem) minmax(12rem, 1fr) auto;
+    align-items: start;
+    column-gap: var(--ab-space-6);
+  }
+}
+
+.ab-hm-controls label,
+.ab-hm-swlabel {
+  display: block;
+  font-size: var(--ab-step--2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ab-ink-muted);
+  margin-bottom: var(--ab-space-2);
+}
+
+/* -- the seven category chips.
+ *
+ * The amendment to the contract lets a category own a visible area rather than only a
+ * 2px rule, and this is the place it earns it: seven filled chips are how a reader
+ * sees the taxonomy as a set before picking anything out of it. The hue is a *tint*
+ * behind the label with the label in full ink, never hue-as-text, because the amber
+ * and the green clear 4.5:1 on neither ground. Pressed state goes to a solid rule and
+ * full-strength ink rather than to a darker fill, so contrast never depends on hue.
+ */
+
+.ab-hm-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ab-space-2);
+}
+
+.ab-hm-cat {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  line-height: 1;
+  padding: 0.45em 0.7em;
+  color: var(--ab-ink-soft);
+  background: color-mix(in srgb, var(--hl, var(--ab-rule)) 14%, transparent);
+  border: var(--ab-rule-width) solid
+          color-mix(in srgb, var(--hl, var(--ab-rule)) 45%, transparent);
+  border-radius: var(--ab-radius);
+  cursor: pointer;
+  transition: background var(--ab-motion-fast) var(--ab-ease),
+              border-color var(--ab-motion-fast) var(--ab-ease);
+}
+
+.ab-hm-cat:hover {
+  background: color-mix(in srgb, var(--hl, var(--ab-rule)) 26%, transparent);
+}
+
+.ab-hm-cat[aria-pressed="true"] {
+  color: var(--ab-ink);
+  background: color-mix(in srgb, var(--hl, var(--ab-rule)) 26%, transparent);
+  border-color: var(--hl, var(--ab-ink));
+  box-shadow: inset 0 -2px 0 0 var(--hl, var(--ab-ink));
+}
+
+.ab-hm-pick select {
+  width: 100%;
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step-0);
+  padding: 0.35em 0.5em;
+  color: var(--ab-ink);
+  background: var(--ab-plate);
+  border: var(--ab-rule-width) solid var(--ab-rule);
+  border-left: var(--ab-rule-width-strong) solid var(--hl, var(--ab-accent));
+  border-radius: var(--ab-radius);
+}
+
+.ab-hm-summary {
+  margin: var(--ab-space-2) 0 0;
+  font-size: var(--ab-step--1);
+  line-height: 1.45;
+  color: var(--ab-ink-muted);
+}
+
+.ab-hm-knob input[type="range"] {
+  width: 100%;
+  accent-color: var(--hl, var(--ab-accent));
+}
+
+.ab-hm-knob input[type="range"]:disabled { opacity: 0.4; }
+
+#ab-hm-knoblabel::after { content: ""; }
+
+.ab-hm-knob output {
+  display: inline-block;
+  margin-top: var(--ab-space-1);
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step-1);
+  color: var(--ab-ink);
+}
+
+.ab-hm-scaleswitch { display: block; }
+
+.ab-hm-scalerow { display: flex; }
+
+.ab-hm-sw {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  padding: 0.45em 0.6em;
+  color: var(--ab-ink-muted);
+  background: transparent;
+  border: var(--ab-rule-width) solid var(--ab-rule);
+  cursor: pointer;
+}
+
+.ab-hm-sw + .ab-hm-sw { border-left: 0; }
+.ab-hm-sw:first-of-type { border-radius: var(--ab-radius) 0 0 var(--ab-radius); }
+.ab-hm-sw:last-of-type { border-radius: 0 var(--ab-radius) var(--ab-radius) 0; }
+
+.ab-hm-sw[aria-pressed="true"] {
+  color: var(--ab-ink);
+  background: var(--ab-sunk);
+  box-shadow: inset 0 -2px 0 0 var(--ab-accent);
+}
+
+/* ---------------------------------------------------------------- the maps */
+
+.ab-hm-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ab-space-5);
+}
+
+@media (min-width: 50em) {
+  .ab-hm-grid { grid-template-columns: repeat(3, 1fr); }
+  /* the fallback described above: pan the strip, never the page */
+  .ab-hm-grid { overflow-x: auto; }
+}
+
+.ab-hm-panel { margin: 0; }
+
+.ab-hm-cap {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ab-space-2);
+  margin-bottom: var(--ab-space-2);
+  min-height: 2.4em;
+  flex-wrap: wrap;
+}
+
+.ab-hm-captitle {
+  font-family: var(--ab-serif);
+  font-size: var(--ab-step-2);
+  line-height: 1;
+  color: var(--ab-ink);
+}
+
+.ab-hm-capnote {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  color: var(--ab-ink-muted);
+}
+
+.ab-hm-plotrow {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 3px;
+}
+
+/* The difference panel carries the per-row strip; reserve its width here rather than
+ * letting it be a flex item, because a canvas flex item with an intrinsic aspect
+ * ratio resolves its height from its width and blows the row up to 800px. */
+.ab-hm-panel[data-role="diff"] .ab-hm-plotrow { padding-right: 13px; }
+
+.ab-hm-plot {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  border: var(--ab-rule-width) solid var(--ab-rule);
+}
+
+.ab-hm-plot:focus-visible,
+.ab-hm-plot:focus {
+  outline: var(--ab-rule-width-strong) solid var(--ab-accent);
+  outline-offset: 2px;
+}
+
+.ab-hm-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  /* Every cell is one measured number; never let the browser average two of them. */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* The query-row cursor. One hairline, drawn in the accent rather than the category
+ * hue so that it reads as *state* and never as the category of the method. */
+.ab-hm-rowline {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: var(--ab-rule-width-strong) solid var(--ab-accent);
+  pointer-events: none;
+}
+
+/* Total variation for every query row, beside the difference map it belongs to, on
+ * the same vertical scale so a row lines up with its own number. */
+.ab-hm-tvstrip {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 10px;
+  height: 100%;
+  image-rendering: pixelated;
+  border: var(--ab-rule-width) solid var(--ab-rule);
+}
+
+/* ---------------------------------------------------------------- legends */
+
+.ab-hm-legend {
+  margin-top: var(--ab-space-2);
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  color: var(--ab-ink-muted);
+}
+
+.ab-hm-bar {
+  height: 0.5rem;
+  border: var(--ab-rule-width) solid var(--ab-rule);
+}
+
+.ab-hm-ticks {
+  position: relative;
+  height: 1.3em;
+  margin-top: 0.15em;
+}
+
+.ab-hm-tick {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.ab-hm-tick:first-child { transform: none; }
+.ab-hm-tick:last-child { transform: translateX(-100%); }
+
+/* The locked row: a click fixes the readout so the pointer can leave the map without
+ * taking the numbers with it. Borrowed from PySvelte's soft/hard lock -- hover
+ * previews, click locks, clicking the locked row releases it. */
+.ab-hm-rowline.is-locked { border-top-style: solid; border-top-width: 3px; }
+
+.ab-hm-top {
+  margin: var(--ab-space-2) 0 0;
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  color: var(--ab-ink-muted);
+  line-height: 1.6;
+}
+
+.ab-hm-top b { color: var(--ab-ink); font-weight: 400; }
+
+.ab-hm-unit {
+  display: block;
+  color: var(--ab-faint);
+}
+
+/* ---------------------------------------------------------------- row profile */
+
+.ab-hm-profile {
+  margin-top: var(--ab-space-5);
+  padding-top: var(--ab-space-3);
+  border-top: var(--ab-rule-width) solid var(--ab-rule-soft);
+}
+
+.ab-hm-rowread {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--1);
+  color: var(--ab-ink-soft);
+  margin-bottom: var(--ab-space-2);
+  min-height: 1.5em;
+}
+
+.ab-hm-profile-canvas {
+  display: block;
+  width: 100%;
+  height: 96px;
+}
+
+/* ---------------------------------------------------------------- statistics */
+
+.ab-hm-stats {
+  width: 100%;
+  margin-top: var(--ab-space-5);
+  border-collapse: collapse;
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--1);
+}
+
+.ab-hm-stats th {
+  text-align: left;
+  font-weight: 400;
+  font-size: var(--ab-step--2);
+  letter-spacing: 0.04em;
+  color: var(--ab-ink-muted);
+  padding: 0 var(--ab-space-3) var(--ab-space-1) 0;
+  border-bottom: var(--ab-rule-width) solid var(--ab-rule);
+  /* The header carries the definition in a title attribute; mark it as such. */
+  cursor: help;
+}
+
+.ab-hm-stats td {
+  padding: var(--ab-space-2) var(--ab-space-3) 0 0;
+  font-size: var(--ab-step-1);
+  font-variant-numeric: tabular-nums;
+  color: var(--ab-ink);
+}
+
+/* The live region carries the row readout for a screen reader and duplicates what the
+ * profile already says on screen, so it is removed from the visual flow rather than
+ * from the accessibility tree. */
+.ab-hm-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-hm-cat { transition: none; }
+}
