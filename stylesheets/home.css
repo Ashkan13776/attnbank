@@ -145,8 +145,11 @@
 .md-typeset .ab-tape {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--ab-space-3, 0.5rem) var(--ab-space-6, 2.3rem);
+  /* `space-between` pushed four short figures to the far corners of a 1200px
+     rule, so most of the row was gap. They read as one group now, and the rule
+     under them carries the width instead. */
+  justify-content: flex-start;
+  gap: var(--ab-space-3, 0.5rem) var(--ab-space-8, 3.2rem);
   margin: var(--ab-space-7, 2rem) 0 0;
   padding: var(--ab-space-4, 0.85rem) 0;
   border-top: var(--ab-rule-width) solid var(--ab-rule);
@@ -292,7 +295,13 @@
   .md-typeset ol.ab-bars {
     display: flex;
     align-items: flex-end;
-    gap: 3px;
+    /* A band is as wide as its share of the 78; its label is as wide as the
+       word. So the two narrowest -- coupling at 6 and factorize at 8 -- carry
+       the longest names, and at a 3px gap FACTORIZE, COUPLING and RECURRENT
+       ran together into one grey line. The gap is for the labels, not the
+       bands: 0.65rem leaves them legibly apart and costs about 6% of the row,
+       taken evenly, so the proportions still read true. */
+    gap: 0.65rem;
   }
 
   .md-typeset ol.ab-bars > li { flex: var(--n) 1 0; }
@@ -949,7 +958,12 @@
 
 .ab-tz img {
   display: block;
+  /* A teaser should not take a whole viewport. At three columns the maps would
+     be 302px square and the block ran to 897px; capped, the six sit in about
+     two thirds of that and 13rem is still ~2.6 device pixels per matrix cell,
+     which is more than the band, the stripes and the square need to read. */
   width: 100%;
+  max-width: 13rem;
   height: auto;
   image-rendering: pixelated;
   border: var(--ab-rule-width) solid var(--ab-rule);
@@ -1014,6 +1028,12 @@
   .md-typeset ol.ab-tz:not([hidden]) { grid-template-columns: repeat(3, 1fr); }
 }
 
+/* Three, never six. Six panels across the content column gives each about
+   140px at a 1280px laptop, which is the width of the word "approximates": the
+   sentence under each map fragmented into four ragged lines and the row became
+   a long thin band with the deep whitespace of six unequal text blocks beside
+   it. Two rows of three gives each panel ~370px, the maps read larger, and the
+   sentences sit on two lines. */
 @media screen and (min-width: 70em) {
-  .md-typeset ol.ab-tz:not([hidden]) { grid-template-columns: repeat(6, 1fr); }
+  .md-typeset ol.ab-tz:not([hidden]) { grid-template-columns: repeat(3, 1fr); }
 }
