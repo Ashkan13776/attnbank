@@ -903,3 +903,117 @@
  * pointer, and both are timed with --ab-motion-fast, which tokens.css already
  * collapses to 0ms under prefers-reduced-motion. A second override here would
  * only be one more place to forget. */
+
+/* ---- the attention-map teaser ------------------------------------------
+ *
+ * Six measures, one per category, over the same 80 tokens of the same head.
+ * The point of putting it here is that the operator plate above states the
+ * taxonomy abstractly -- seven objects, seven categories -- and this is the
+ * same claim as six pictures that are obviously different from one another.
+ *
+ * One PNG per panel rather than one strip, so the row wraps on a narrow
+ * screen and the labels stay real text. The panels are written at one device
+ * pixel per matrix cell and scaled up here, so `pixelated` is what keeps a
+ * cell a square of one value instead of a smear.
+ */
+
+/* `ol.` and the `:not([hidden])` are both load-bearing. Material sets
+   `.md-typeset ol:not([hidden])` to `display: flow-root` -- specificity (0,2,1) --
+   so a bare `.md-typeset .ab-tz` at (0,2,0) loses and the panels stack full-width
+   in one column. taxonomy.css carries the same defence for `ul`; this is the same
+   trap on the ordered list. */
+.md-typeset ol.ab-tz:not([hidden]) {
+  list-style: none;
+  display: grid;
+  /* Six, so the set reads as one row of six categories rather than five and an
+     orphan. Three and two below, which keeps the pairs meaningful: the two
+     triangles, then the square, then the recurrence. */
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--ab-space-5) var(--ab-space-4);
+  margin: var(--ab-space-6) 0 var(--ab-space-5);
+  padding: 0;
+  max-width: none;
+}
+
+.md-typeset ol.ab-tz > li { margin: 0; }
+
+/* base.css underlines prose links at `.md-typeset :is(p, li, ...) a:not(.md-button)`,
+   which is (0,2,2); the whole panel is a control, not prose, so this has to out-weigh
+   it rather than merely come later. */
+.md-typeset ol.ab-tz li a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-bottom: none;
+}
+
+.ab-tz img {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  border: var(--ab-rule-width) solid var(--ab-rule);
+  /* the category's own hue, as a rule under the map and nothing else */
+  border-bottom: var(--ab-rule-width-strong) solid var(--hl, var(--ab-rule));
+  transition: border-color var(--ab-motion-fast) var(--ab-ease);
+}
+
+/* these have to out-specify `.ab-tz img` above, which is (0,1,1); a bare class
+   is (0,1,0) and loses, which showed both themes' panels at once */
+.ab-tz img.ab-tz-dark { display: none; }
+[data-md-color-scheme="slate"] .ab-tz img.ab-tz-light { display: none; }
+[data-md-color-scheme="slate"] .ab-tz img.ab-tz-dark { display: block; }
+
+.ab-tz b {
+  display: block;
+  margin-top: var(--ab-space-2);
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--1);
+  font-weight: 600;
+  color: var(--ab-ink);
+}
+
+.ab-tz-cfg {
+  display: block;
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  color: var(--ab-ink-muted);
+}
+
+/* the category reads as a label, not as a heading: it is the same word the
+   taxonomy and the browse table use, and it is what the hue above encodes */
+.ab-tz-cat {
+  display: block;
+  margin-top: var(--ab-space-1);
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+}
+
+.ab-tz a:hover img,
+.ab-tz a:focus-visible img { border-color: var(--hl, var(--ab-accent)); }
+
+.ab-tz a:focus-visible {
+  outline: var(--ab-rule-width-strong) solid var(--ab-accent);
+  outline-offset: 3px;
+}
+
+.md-typeset .ab-tz > li > p {
+  max-width: none;
+  margin: var(--ab-space-2) 0 0;
+  font-size: var(--ab-step--1);
+  line-height: 1.45;
+  color: var(--ab-ink-soft);
+}
+
+.ab-tz-foot { margin-top: var(--ab-space-5); }
+
+@media screen and (min-width: 45em) {
+  .md-typeset ol.ab-tz:not([hidden]) { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media screen and (min-width: 70em) {
+  .md-typeset ol.ab-tz:not([hidden]) { grid-template-columns: repeat(6, 1fr); }
+}
