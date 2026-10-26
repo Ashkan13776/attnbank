@@ -190,7 +190,7 @@ Rows are queries, columns are keys; brighter is more mass.
 
 <ol class="ab-tz">
 <li data-cat="exact">
-<a href="heatmaps/#softmax">
+<a href="heatmaps/?m=softmax&amp;c=0">
 <img src="assets/heatmaps/teaser-light-softmax.png" class="ab-tz-light" alt=""
      width="82" height="82" loading="lazy" decoding="async">
 <img src="assets/heatmaps/teaser-dark-softmax.png" class="ab-tz-dark" alt=""
@@ -200,7 +200,7 @@ Rows are queries, columns are keys; brighter is more mass.
 <p>Everything below approximates this. The bands and bright columns are what this head does.</p>
 </li>
 <li data-cat="interaction">
-<a href="heatmaps/#linear_elu">
+<a href="heatmaps/?m=linear_elu&amp;c=0">
 <img src="assets/heatmaps/teaser-light-linear_elu.png" class="ab-tz-light" alt=""
      width="82" height="82" loading="lazy" decoding="async">
 <img src="assets/heatmaps/teaser-dark-linear_elu.png" class="ab-tz-dark" alt=""
@@ -210,7 +210,7 @@ Rows are queries, columns are keys; brighter is more mass.
 <p>A separable surrogate replaces the interaction, and the measure smears.</p>
 </li>
 <li data-cat="restrict">
-<a href="heatmaps/#window">
+<a href="heatmaps/?m=window&amp;c=3">
 <img src="assets/heatmaps/teaser-light-window.png" class="ab-tz-light" alt=""
      width="82" height="82" loading="lazy" decoding="async">
 <img src="assets/heatmaps/teaser-dark-window.png" class="ab-tz-dark" alt=""
@@ -220,7 +220,7 @@ Rows are queries, columns are keys; brighter is more mass.
 <p>The support shrinks to a band and is renormalised on it.</p>
 </li>
 <li data-cat="factorize">
-<a href="heatmaps/#abc">
+<a href="heatmaps/?m=abc&amp;c=3">
 <img src="assets/heatmaps/teaser-light-abc.png" class="ab-tz-light" alt=""
      width="82" height="82" loading="lazy" decoding="async">
 <img src="assets/heatmaps/teaser-dark-abc.png" class="ab-tz-dark" alt=""
@@ -230,7 +230,7 @@ Rows are queries, columns are keys; brighter is more mass.
 <p>Routed through 8 latents, so the rank is capped and the measure stripes.</p>
 </li>
 <li data-cat="coupling">
-<a href="heatmaps/#sinkhorn">
+<a href="heatmaps/?m=sinkhorn&amp;c=3">
 <img src="assets/heatmaps/teaser-light-sinkhorn.png" class="ab-tz-light" alt=""
      width="82" height="82" loading="lazy" decoding="async">
 <img src="assets/heatmaps/teaser-dark-sinkhorn.png" class="ab-tz-dark" alt=""
@@ -240,7 +240,7 @@ Rows are queries, columns are keys; brighter is more mass.
 <p>A square, not a triangle: coupling queries makes a causal version impossible.</p>
 </li>
 <li data-cat="recurrent">
-<a href="heatmaps/#mega">
+<a href="heatmaps/?m=mega&amp;c=3">
 <img src="assets/heatmaps/teaser-light-mega.png" class="ab-tz-light" alt=""
      width="82" height="82" loading="lazy" decoding="async">
 <img src="assets/heatmaps/teaser-dark-mega.png" class="ab-tz-dark" alt=""

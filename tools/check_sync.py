@@ -263,9 +263,20 @@ def main() -> int:
         bad = []
         if not wanted:
             bad.append("could not read TEASER from docs/gen_heatmaps.py")
-        shown = re.findall(r'href="heatmaps/#([a-z0-9_]+)"', page_txt)
+        # ?m=&c= is the heat map page's own URL state, so a panel lands on the
+        # exact configuration it shows. A fragment would have landed on the page
+        # and silently displayed the default method instead -- which is what the
+        # first version of this teaser did, and no link checker can see it,
+        # because the path resolves either way.
+        shown = re.findall(r'href="heatmaps/\?m=([a-z0-9_]+)&amp;c=(\d+)"', page_txt)
+        frames = [int(f) for _, f in shown]
+        shown = [n for n, _ in shown]
+        want_frames = ([int(f) for f in re.findall(r',\s*(\d+)\s*\)', block.group(1))]
+                       if block else [])
         if shown != wanted:
             bad.append(f"index.md links {shown}, gen_heatmaps.TEASER is {wanted}")
+        elif frames != want_frames:
+            bad.append(f"index.md links frames {frames}, TEASER declares {want_frames}")
         for name in shown:
             if name not in cats:
                 bad.append(f"teaser shows {name!r}, which is not in the registry")
