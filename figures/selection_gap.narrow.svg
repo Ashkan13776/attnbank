@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 306" role="img" aria-labelledby="abfig-sel-narrow-t abfig-sel-narrow-d" class="ab-figsvg ab-fig-narrow" font-family="system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Nimbus Sans','Liberation Sans',sans-serif" fill="var(--ab-ink,#171b21)">
+<title id="abfig-sel-narrow-t">Top-k selection against output-optimal selection at a matched budget</title>
+<desc id="abfig-sel-narrow-d">Two curves of output error against the number of keys kept per query, on logarithmic axes. The upper curve is topk, which keeps the largest attention weights; the lower is value_topk, which keeps the keys that minimise output error. The shaded band between them is the cost of selecting on scores alone, and it does not close as the budget grows.</desc>
+<line x1="46" y1="192.6" x2="348" y2="192.6" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="39" y="192.6" font-size="13" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">0.2</text>
+<line x1="46" y1="171.08" x2="348" y2="171.08" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="39" y="171.08" font-size="13" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">0.3</text>
+<line x1="46" y1="143.97" x2="348" y2="143.97" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="39" y="143.97" font-size="13" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">0.5</text>
+<line x1="46" y1="107.18" x2="348" y2="107.18" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="39" y="107.18" font-size="13" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">1</text>
+<line x1="46" y1="70.4" x2="348" y2="70.4" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="39" y="70.4" font-size="13" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">2</text>
+<line x1="46" y1="48.88" x2="348" y2="48.88" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="39" y="48.88" font-size="13" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">3</text>
+<line x1="46" y1="212" x2="348" y2="212" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<line x1="46" y1="212" x2="46" y2="216" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="46" y="229" font-size="13" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2</text>
+<line x1="121.5" y1="212" x2="121.5" y2="216" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="121.5" y="229" font-size="13" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">4</text>
+<line x1="197" y1="212" x2="197" y2="216" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="197" y="229" font-size="13" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">8</text>
+<line x1="272.5" y1="212" x2="272.5" y2="216" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="272.5" y="229" font-size="13" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">16</text>
+<line x1="348" y1="212" x2="348" y2="216" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="348" y="229" font-size="13" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">32</text>
+<text x="197" y="246" font-size="13" text-anchor="middle" fill="var(--ab-ink-soft,#40464f)">keys kept per query  k</text>
+<text x="39" y="16" font-size="13" fill="var(--ab-ink-soft,#40464f)">output error</text>
+<path d="M46 43.93L121.5 66.59L197 92.91L272.5 126.65L348 177.83L348 196.07L272.5 145.94L197 109.32L121.5 81.07L46 56.84Z" fill="var(--c-restrict,#eb6834)" fill-opacity="0.2"/>
+<path d="M46 43.93L121.5 66.59L197 92.91L272.5 126.65L348 177.83" fill="none" stroke="var(--ab-ink,#171b21)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M46 56.84L121.5 81.07L197 109.32L272.5 145.94L348 196.07" fill="none" stroke="var(--c-restrict,#eb6834)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="46" cy="43.93" r="3.2" fill="var(--ab-sunk,#f4f6f9)" stroke="var(--ab-ink,#171b21)" stroke-width="1.7"/>
+<circle cx="46" cy="56.84" r="3.2" fill="var(--ab-sunk,#f4f6f9)" stroke="var(--c-restrict,#eb6834)" stroke-width="1.7"/>
+<circle cx="121.5" cy="66.59" r="3.2" fill="var(--ab-sunk,#f4f6f9)" stroke="var(--ab-ink,#171b21)" stroke-width="1.7"/>
+<circle cx="121.5" cy="81.07" r="3.2" fill="var(--ab-sunk,#f4f6f9)" stroke="var(--c-restrict,#eb6834)" stroke-width="1.7"/>
+<circle cx="197" cy="92.91" r="3.2" fill="var(--ab-sunk,#f4f6f9)" stroke="var(--ab-ink,#171b21)" stroke-width="1.7"/>
+<circle cx="197" cy="109.32" r="3.2" fill="var(--ab-sunk,#f4f6f9)" stroke="var(--c-restrict,#eb6834)" stroke-width="1.7"/>
+<circle cx="272.5" cy="126.65" r="3.2" fill="var(--ab-sunk,#f4f6f9)" stroke="var(--ab-ink,#171b21)" stroke-width="1.7"/>
+<circle cx="272.5" cy="145.94" r="3.2" fill="var(--ab-sunk,#f4f6f9)" stroke="var(--c-restrict,#eb6834)" stroke-width="1.7"/>
+<circle cx="348" cy="177.83" r="3.2" fill="var(--ab-sunk,#f4f6f9)" stroke="var(--ab-ink,#171b21)" stroke-width="1.7"/>
+<circle cx="348" cy="196.07" r="3.2" fill="var(--ab-sunk,#f4f6f9)" stroke="var(--c-restrict,#eb6834)" stroke-width="1.7"/>
+<line x1="3" y1="258" x2="23" y2="258" stroke="var(--ab-ink,#171b21)" stroke-width="1.9"/>
+<circle cx="13" cy="258" r="3.2" fill="var(--ab-sunk,#f4f6f9)" stroke="var(--ab-ink,#171b21)" stroke-width="1.7"/>
+<text x="29" y="262" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink-soft,#40464f)">topk</text>
+<line x1="3" y1="274" x2="23" y2="274" stroke="var(--c-restrict,#eb6834)" stroke-width="1.9"/>
+<circle cx="13" cy="274" r="3.2" fill="var(--ab-sunk,#f4f6f9)" stroke="var(--c-restrict,#eb6834)" stroke-width="1.7"/>
+<text x="29" y="278" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink-soft,#40464f)">value_topk</text>
+<text x="3" y="298" font-size="12.5" fill="var(--ab-ink-soft,#40464f)">1.28–1.44× the error at every budget</text>
+</svg>

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 300" role="img" aria-labelledby="abfig-conv-wide-t abfig-conv-wide-d" class="ab-figsvg ab-fig-wide" font-family="system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Nimbus Sans','Liberation Sans',sans-serif" fill="var(--ab-ink,#171b21)">
+<title id="abfig-conv-wide-t">Random features converging on dense softmax, and a fixed map that does not</title>
+<desc id="abfig-conv-wide-d">Mean output error against the number of random features r, on logarithmic axes, with a shaded band over eight seeds. performer and trigrff both fall along a slope close to r to the minus one half. linear_elu uses a fixed feature map and declares a different objective; it is a flat line that no value of r improves.</desc>
+<line x1="54" y1="241" x2="596" y2="241" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="47" y="241" font-size="12.5" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">0.01</text>
+<line x1="54" y1="191.5" x2="596" y2="191.5" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="47" y="191.5" font-size="12.5" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">0.03</text>
+<line x1="54" y1="137.26" x2="596" y2="137.26" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="47" y="137.26" font-size="12.5" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">0.1</text>
+<line x1="54" y1="87.76" x2="596" y2="87.76" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="47" y="87.76" font-size="12.5" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">0.3</text>
+<line x1="54" y1="33.52" x2="596" y2="33.52" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<text x="47" y="33.52" font-size="12.5" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">1</text>
+<line x1="54" y1="254" x2="596" y2="254" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<line x1="54" y1="254" x2="54" y2="258" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="54" y="271" font-size="12.5" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2³</text>
+<line x1="121.75" y1="254" x2="121.75" y2="258" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="121.75" y="271" font-size="12.5" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2⁴</text>
+<line x1="189.5" y1="254" x2="189.5" y2="258" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="189.5" y="271" font-size="12.5" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2⁵</text>
+<line x1="257.25" y1="254" x2="257.25" y2="258" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="257.25" y="271" font-size="12.5" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2⁶</text>
+<line x1="325" y1="254" x2="325" y2="258" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="325" y="271" font-size="12.5" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2⁷</text>
+<line x1="392.75" y1="254" x2="392.75" y2="258" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="392.75" y="271" font-size="12.5" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2⁸</text>
+<line x1="460.5" y1="254" x2="460.5" y2="258" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="460.5" y="271" font-size="12.5" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2⁹</text>
+<line x1="528.25" y1="254" x2="528.25" y2="258" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="528.25" y="271" font-size="12.5" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2¹⁰</text>
+<line x1="596" y1="254" x2="596" y2="258" stroke="var(--ab-faint,#6f7580)" vector-effect="non-scaling-stroke"/>
+<text x="596" y="271" font-size="12.5" text-anchor="middle" fill="var(--ab-ink-muted,#5d6673)">2¹¹</text>
+<text x="325" y="288" font-size="13" text-anchor="middle" fill="var(--ab-ink-soft,#40464f)">random features  r</text>
+<text x="47" y="20" font-size="13" fill="var(--ab-ink-soft,#40464f)">mean output error</text>
+<path d="M54 105.27L121.75 120.89L189.5 136.5L257.25 152.12L325 167.73L392.75 183.35L460.5 198.96L528.25 214.58L596 230.19" fill="none" stroke="var(--ab-faint,#6f7580)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 3"/>
+<path d="M75.81 189.47L211.31 220.7" fill="none" stroke="var(--ab-faint,#6f7580)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 3"/>
+<text x="217.31" y="221.7" font-size="12.5" fill="var(--ab-faint,#6f7580)" dominant-baseline="central">slope −1/2</text>
+<path d="M54 115.36L121.75 127.5L189.5 133.98L257.25 146.02L325 158L392.75 168.24L460.5 180.68L528.25 196.72L596 208.78L596 199.89L528.25 186.33L460.5 174.16L392.75 160.32L325 141.23L257.25 135.31L189.5 115.32L121.75 95L54 94.38Z" fill="var(--c-interaction,#2a78d6)" fill-opacity="0.11"/>
+<path d="M54 101.04L121.75 130.02L189.5 152.7L257.25 165.27L325 178.17L392.75 193.72L460.5 210.08L528.25 224.1L596 240.48L596 236.84L528.25 222.28L460.5 205.4L392.75 188.92L325 173.81L257.25 154.39L189.5 137.26L121.75 115.85L54 45.52Z" fill="var(--c-interaction,#2a78d6)" fill-opacity="0.11"/>
+<path d="M54 105.27L121.75 114.38L189.5 129.02L257.25 142.24L325 150.21L392.75 163.62L460.5 177.71L528.25 191.5L596 203.87" fill="none" stroke="var(--c-interaction,#2a78d6)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="54" cy="105.27" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="121.75" cy="114.38" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="189.5" cy="129.02" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="257.25" cy="142.24" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="325" cy="150.21" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="392.75" cy="163.62" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="460.5" cy="177.71" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="528.25" cy="191.5" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="596" cy="203.87" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<path d="M54 83.66L121.75 122.2L189.5 145.85L257.25 160.49L325 175.92L392.75 190.91L460.5 206.93L528.25 223.01L596 238.61" fill="none" stroke="var(--c-interaction,#2a78d6)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 3"/>
+<circle cx="54" cy="83.66" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="121.75" cy="122.2" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="189.5" cy="145.85" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="257.25" cy="160.49" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="325" cy="175.92" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="392.75" cy="190.91" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="460.5" cy="206.93" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="528.25" cy="223.01" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<circle cx="596" cy="238.61" r="2.6" fill="var(--c-interaction,#2a78d6)"/>
+<line x1="54" y1="162.19" x2="596" y2="162.19" stroke="var(--ab-ink,#171b21)" stroke-width="1.7" stroke-dasharray="1 4" stroke-linecap="round"/>
+<text x="605" y="203.87" font-size="13.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--c-interaction,#2a78d6)" font-weight="600" dominant-baseline="central">performer</text>
+<text x="605" y="238.61" font-size="13.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--c-interaction,#2a78d6)" font-weight="600" dominant-baseline="central">trigrff</text>
+<text x="605" y="162.19" font-size="13.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)" font-weight="600" dominant-baseline="central">linear_elu</text>
+</svg>

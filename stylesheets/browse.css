@@ -105,7 +105,20 @@
   border-radius: 0.15rem;
 }
 
-/* a category chip carries its hue as a tick, same hue as the table's spine */
+/* A category chip is the band it filters to, in miniature: the same wash, the
+ * same solid bar on the leading edge. ptable's legend entries are literally the
+ * same object as its tiles, and that is why its key needs no explaining --
+ * the chip here is the band, shrunk. The swatch is kept as well, because at
+ * chip size the wash alone is a few arc-minutes of colour and the eye cannot
+ * name a hue that small. */
+.bank-chip[data-cat] {
+  padding-left: 0.5rem;
+  background: var(--cat-wash);
+  border-color: var(--cat-edge);
+  box-shadow: inset 0.16rem 0 0 var(--hl);
+  color: var(--ab-ink-soft);
+}
+
 .bank-chip[data-cat]::before {
   content: "";
   display: inline-block;
@@ -114,6 +127,8 @@
   margin-right: 0.4em;
   background: var(--hl);
 }
+
+.bank-chip[data-cat]:hover { background: var(--cat-field); color: var(--ab-ink); }
 
 .bank-chip__n {
   margin-left: 0.4em;
@@ -127,12 +142,19 @@
   border-color: var(--md-default-fg-color--light);
 }
 
-/* pressed is inverse video: unmistakable in both themes, and no category hue
- * ever sits behind text */
+/* Pressed is inverse video: unmistakable in both themes, and no category hue
+ * ever sits behind text. A category chip keeps its bar when pressed so the
+ * inversion does not cost it its identity -- the bar is the one part of the
+ * chip that has no text on it. */
 .bank-chip[aria-pressed="true"] {
   color: var(--md-default-bg-color);
   background: var(--md-default-fg-color);
   border-color: var(--md-default-fg-color);
+}
+
+.bank-chip[data-cat][aria-pressed="true"] {
+  background: var(--md-default-fg-color);
+  box-shadow: inset 0.16rem 0 0 var(--hl);
 }
 
 .bank-chip[aria-pressed="true"] .bank-chip__n {
@@ -240,18 +262,34 @@
  * order made visible -- and present with scripting off. The spine on the left is
  * the category's hue, the same hue the taxonomy tree and every figure use. */
 
+/* The band. It was a 2px spine and 10px of grey uppercase, which at that size is
+ * roughly three arc-minutes of colour -- below the angle at which the eye can
+ * name a hue at all, so seven categories arrived as seven greys. It is now a
+ * filled field in --cat-field with the full-strength hue as a bar down its
+ * leading edge: the thing a reader's eye lands on before reading a word.
+ *
+ * The ladder (--cat-field, --cat-wash, --cat-edge) and the contrast it was
+ * measured at are documented at the head of taxonomy.css, which declares it;
+ * all three of these stylesheets load on every page. */
 .md-typeset .bank-table tr.bank-group th {
-  padding: 1.3em 0.65em 0.3em;
+  padding: 0.55em 0.65em 0.5em 0.9em;
   border-top: none;
-  box-shadow: inset 2px 0 0 var(--hl);
-  font-size: 0.6rem;
+  background: var(--cat-field);
+  box-shadow: inset 0.25rem 0 0 var(--hl);
+  font-size: 0.68rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-align: left;
-  color: var(--md-default-fg-color);
+  color: var(--ab-ink);
 }
 
-.md-typeset .bank-table tbody tr.bank-group:first-child th { padding-top: 0.5em; }
+/* air above each band, taken from the band rather than added to it, so the
+ * fields stay rectangles */
+.md-typeset .bank-table tr.bank-group > th {
+  border-top: 1.1em solid var(--md-default-bg-color);
+}
+
+.md-typeset .bank-table tbody tr.bank-group:first-child th { border-top-width: 0.4em; }
 
 .bank-group__name { font-weight: 700; }
 
@@ -259,24 +297,35 @@
   margin-left: 0.7em;
   font-weight: 400;
   letter-spacing: 0.04em;
-  color: var(--ab-faint);
+  color: var(--ab-ink-soft);
 }
 
 /* ---- rows: human name leading, registry key and flags underneath --------- */
 
+/* The leading column is the field guide's colour-tabbed page edge: a wash in the
+ * group's hue running unbroken from the band to the last row of the group, with
+ * the solid bar on its edge. A reader scrolling the 78 rows always has the
+ * current category in view, which the 2px spine did not achieve.
+ *
+ * Only this column is tinted. Washing all six would be a second background
+ * system on top of the row-hover one, which is the mistake Datawrapper warns
+ * about for tables that are already grouped. */
 .md-typeset .bank-table th[scope="row"] {
   padding-right: 1.2em;
+  padding-left: 0.9em;
   min-width: 11rem;
   font-weight: 400;
   text-align: left;
-  box-shadow: inset 2px 0 0 var(--hl);   /* the spine continues through the rows */
+  background: var(--cat-wash);
+  box-shadow: inset 0.25rem 0 0 var(--hl);
+  border-top-color: var(--cat-edge);
 }
 
 .bank-sub {
   font-weight: 400;
   text-transform: none;
   letter-spacing: 0;
-  color: var(--ab-faint);
+  color: var(--ab-ink-muted);
 }
 
 a.bank-name {
@@ -300,13 +349,18 @@ a.bank-name {
   margin-top: 0.15rem;
 }
 
+/* on the wash, not on the page: --ab-faint misses 4.5:1 there and --ab-ink-muted
+ * makes it at 4.98:1 (light) / 5.03:1 (dark), worst of the seven */
 .bank-key {
   font-family: var(--ab-mono);
   font-size: 0.62rem;
-  color: var(--ab-faint);
+  color: var(--ab-ink-muted);
 }
 
 .md-typeset .bank-table tbody tr:hover { background: var(--ab-sunk); }
+
+/* hover deepens the tab one step on the ladder rather than losing it */
+.md-typeset .bank-table tbody tr:hover th[scope="row"] { background: var(--cat-field); }
 
 /* the declaration columns are registry strings: monospaced, quiet, no chip chrome */
 .md-typeset .bank-table td[data-cell="category"],

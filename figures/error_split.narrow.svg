@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 392" role="img" aria-labelledby="abfig-split-narrow-t abfig-split-narrow-d" class="ab-figsvg ab-fig-narrow" font-family="system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Nimbus Sans','Liberation Sans',sans-serif" fill="var(--ab-ink,#171b21)">
+<title id="abfig-split-narrow-t">Where each method&#x27;s output error comes from</title>
+<desc id="abfig-split-narrow-d">One horizontal bar per configuration, each drawn to the full width and divided at the share of the output error that the distributional term carries; the remainder is the value term. The median total error is printed beside each bar. Bars are coloured by the method&#x27;s taxonomy category.</desc>
+<text x="3" y="15" font-size="13" fill="var(--ab-ink-soft,#40464f)" font-weight="600">distributional</text>
+<text x="357" y="15" font-size="13" text-anchor="end" fill="var(--ab-ink-soft,#40464f)" font-weight="600">value</text>
+<rect x="3" y="26" width="3" height="29" fill="var(--c-interaction,#2a78d6)"/>
+<text x="12" y="37" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)">performer r=64</text>
+<text x="357" y="37" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)">2.40e+00</text>
+<rect x="3" y="43" width="354" height="12" fill="var(--c-interaction,#2a78d6)" fill-opacity="0.26"/>
+<rect x="3" y="43" width="354" height="12" fill="var(--c-interaction,#2a78d6)"/>
+<rect x="3" y="63" width="3" height="29" fill="var(--c-restrict,#eb6834)"/>
+<text x="12" y="74" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)">topk k=16</text>
+<text x="357" y="74" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)">1.33e+00</text>
+<rect x="3" y="80" width="354" height="12" fill="var(--c-restrict,#eb6834)" fill-opacity="0.26"/>
+<rect x="3" y="80" width="354" height="12" fill="var(--c-restrict,#eb6834)"/>
+<rect x="3" y="100" width="3" height="29" fill="var(--c-restrict,#eb6834)"/>
+<text x="12" y="111" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)">window w=32</text>
+<text x="357" y="111" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)">1.72e+00</text>
+<rect x="3" y="117" width="354" height="12" fill="var(--c-restrict,#eb6834)" fill-opacity="0.26"/>
+<rect x="3" y="117" width="354" height="12" fill="var(--c-restrict,#eb6834)"/>
+<rect x="3" y="137" width="3" height="29" fill="var(--c-compress,#1baf7a)"/>
+<text x="12" y="148" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)">quantkv bits_k=2 bits_v=16</text>
+<text x="357" y="148" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)">4.80e-01</text>
+<rect x="3" y="154" width="354" height="12" fill="var(--c-compress,#1baf7a)" fill-opacity="0.26"/>
+<rect x="3" y="154" width="353.98" height="12" fill="var(--c-compress,#1baf7a)"/>
+<rect x="3" y="174" width="3" height="29" fill="var(--c-exact,#52514e)"/>
+<text x="12" y="185" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)">lowprec</text>
+<text x="357" y="185" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)">1.11e-02</text>
+<rect x="3" y="191" width="354" height="12" fill="var(--c-exact,#52514e)" fill-opacity="0.26"/>
+<rect x="3" y="191" width="200.91" height="12" fill="var(--c-exact,#52514e)"/>
+<line x1="203.91" y1="191" x2="203.91" y2="203" stroke="var(--ab-sunk,#f4f6f9)" stroke-width="1.4"/>
+<rect x="3" y="211" width="3" height="29" fill="var(--c-compress,#1baf7a)"/>
+<text x="12" y="222" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)">mla r=16</text>
+<text x="357" y="222" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)">1.11e+00</text>
+<rect x="3" y="228" width="354" height="12" fill="var(--c-compress,#1baf7a)" fill-opacity="0.26"/>
+<rect x="3" y="228" width="197.1" height="12" fill="var(--c-compress,#1baf7a)"/>
+<line x1="200.1" y1="228" x2="200.1" y2="240" stroke="var(--ab-sunk,#f4f6f9)" stroke-width="1.4"/>
+<rect x="3" y="248" width="3" height="29" fill="var(--c-compress,#1baf7a)"/>
+<text x="12" y="259" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)">quantkv bits_k=3 bits_v=3</text>
+<text x="357" y="259" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)">3.03e-01</text>
+<rect x="3" y="265" width="354" height="12" fill="var(--c-compress,#1baf7a)" fill-opacity="0.26"/>
+<rect x="3" y="265" width="169.41" height="12" fill="var(--c-compress,#1baf7a)"/>
+<line x1="172.41" y1="265" x2="172.41" y2="277" stroke="var(--ab-sunk,#f4f6f9)" stroke-width="1.4"/>
+<rect x="3" y="285" width="3" height="29" fill="var(--c-compress,#1baf7a)"/>
+<text x="12" y="296" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)">kivi bits_k=3 bits_v=3</text>
+<text x="357" y="296" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)">2.41e-01</text>
+<rect x="3" y="302" width="354" height="12" fill="var(--c-compress,#1baf7a)" fill-opacity="0.26"/>
+<rect x="3" y="302" width="107.25" height="12" fill="var(--c-compress,#1baf7a)"/>
+<line x1="110.25" y1="302" x2="110.25" y2="314" stroke="var(--ab-sunk,#f4f6f9)" stroke-width="1.4"/>
+<rect x="3" y="322" width="3" height="29" fill="var(--c-compress,#1baf7a)"/>
+<text x="12" y="333" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)">quantkv bits_k=16 bits_v=2</text>
+<text x="357" y="333" font-size="13" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)">5.03e-01</text>
+<rect x="3" y="339" width="354" height="12" fill="var(--c-compress,#1baf7a)" fill-opacity="0.26"/>
+<rect x="3" y="339" width="0.02" height="12" fill="var(--c-compress,#1baf7a)"/>
+<rect x="3" y="360" width="9" height="9" fill="var(--c-exact,#52514e)" rx="2"/>
+<text x="16" y="367" font-size="13" fill="var(--ab-ink-muted,#5d6673)">exact</text>
+<rect x="66.4" y="360" width="9" height="9" fill="var(--c-interaction,#2a78d6)" rx="2"/>
+<text x="79.4" y="367" font-size="13" fill="var(--ab-ink-muted,#5d6673)">interaction</text>
+<rect x="173.48" y="360" width="9" height="9" fill="var(--c-restrict,#eb6834)" rx="2"/>
+<text x="186.48" y="367" font-size="13" fill="var(--ab-ink-muted,#5d6673)">restrict</text>
+<rect x="3" y="377" width="9" height="9" fill="var(--c-compress,#1baf7a)" rx="2"/>
+<text x="16" y="384" font-size="13" fill="var(--ab-ink-muted,#5d6673)">compress</text>
+</svg>

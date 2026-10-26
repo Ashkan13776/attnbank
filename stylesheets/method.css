@@ -49,16 +49,72 @@
   padding: 0;
 }
 
+/* ---- which of the seven this page is -------------------------------------
+ *
+ * A method page used to say so in one 2px rule beside the nameplate, and for
+ * the `exact` four it said so in grey. Across 78 pages that is no signal: a 2px
+ * mark subtends about three arc-minutes at a normal reading distance, an order
+ * of magnitude under the angle at which the eye can name a hue, so the seven
+ * categories arrived as seven greys whatever the hex said.
+ *
+ * The page now carries the category the way a field guide carries a family --
+ * a coloured mark at a fixed position on every page of the section, plus the
+ * name in words beside it. Two places, both near the top where a reader lands:
+ * a short bar above the title, and the nameplate as a tinted plate with the
+ * hue solid down its edge.
+ *
+ * The hue is read off the nameplate's own [data-cat] with :has(), so this needs
+ * no change to the generator. Where :has() is unsupported the selectors simply
+ * do not match and the page keeps the nameplate rule it had, which is the
+ * progressive-enhancement answer rather than a fallback to maintain.
+ *
+ * --cat-wash and --cat-edge come from the tint ladder declared at the head of
+ * taxonomy.css; every stylesheet loads on every page. On a wash, --ab-ink-muted
+ * measures 4.98:1 in light and 5.03:1 in dark for the worst of the seven, which
+ * is what the apparatus in here is set at. */
+
+.md-content__inner:has(> .attn-facts[data-cat="exact"]),
+.md-content__inner:has(.attn-facts[data-cat="exact"])       { --hl: var(--c-exact); --cat-w: 20%; }
+.md-content__inner:has(.attn-facts[data-cat="interaction"]) { --hl: var(--c-interaction); --cat-w: 24%; }
+.md-content__inner:has(.attn-facts[data-cat="restrict"])    { --hl: var(--c-restrict); --cat-w: 28%; }
+.md-content__inner:has(.attn-facts[data-cat="compress"])    { --hl: var(--c-compress); --cat-w: 31%; }
+.md-content__inner:has(.attn-facts[data-cat="factorize"])   { --hl: var(--c-factorize); --cat-w: 19%; }
+.md-content__inner:has(.attn-facts[data-cat="coupling"])    { --hl: var(--c-coupling); --cat-w: 40%; }
+.md-content__inner:has(.attn-facts[data-cat="recurrent"])   { --hl: var(--c-recurrent); --cat-w: 23%; }
+
+[data-md-color-scheme="slate"] .md-content__inner:has(.attn-facts[data-cat="exact"])       { --cat-w: 27%; }
+[data-md-color-scheme="slate"] .md-content__inner:has(.attn-facts[data-cat="interaction"]) { --cat-w: 27%; }
+[data-md-color-scheme="slate"] .md-content__inner:has(.attn-facts[data-cat="restrict"])    { --cat-w: 27%; }
+[data-md-color-scheme="slate"] .md-content__inner:has(.attn-facts[data-cat="compress"])    { --cat-w: 25%; }
+[data-md-color-scheme="slate"] .md-content__inner:has(.attn-facts[data-cat="factorize"])   { --cat-w: 32%; }
+[data-md-color-scheme="slate"] .md-content__inner:has(.attn-facts[data-cat="coupling"])    { --cat-w: 23%; }
+[data-md-color-scheme="slate"] .md-content__inner:has(.attn-facts[data-cat="recurrent"])   { --cat-w: 31%; }
+
+/* Material already puts an empty 0.4rem block here as a spacer above the title.
+ * On a method page it becomes the running head's colour mark: the same width
+ * and position on all 78, so it registers as a fixed landmark rather than as
+ * decoration. It is the one full-strength use of the hue on the page and it
+ * carries no text. */
+.md-content__inner:has(.attn-facts[data-cat])::before {
+  height: 0.2rem;
+  width: 3.4rem;
+  margin-bottom: 0.4rem;
+  border-radius: 1px;
+  background: var(--hl);
+}
+
 /* ---- the nameplate ------------------------------------------------------- */
-/* The registry's identifying facts at datasheet density. The one piece of
- * colour on the page is its rule: the category hue, resolved from [data-cat]
- * by tokens.css -- the same hue this method carries in the taxonomy, the
- * browser and every figure of the monograph. A rule, never a fill. */
+/* The registry's identifying facts at datasheet density, on a plate washed in
+ * the category's hue with the hue itself solid down the leading edge. The wash
+ * is the area; the bar is the colour at full strength, and nothing is set on
+ * top of it. */
 
 .md-typeset .attn-facts {
   margin: var(--ab-space-6) 0;
-  padding: var(--ab-space-2) 0 var(--ab-space-2) var(--ab-space-5);
-  border-left: var(--ab-rule-width-strong) solid var(--hl, var(--ab-rule));
+  padding: var(--ab-space-4) var(--ab-space-5) var(--ab-space-4) var(--ab-space-5);
+  border-left: 0.3rem solid var(--hl, var(--ab-rule));
+  border-radius: 0 var(--ab-radius) var(--ab-radius) 0;
+  background: var(--cat-wash, transparent);
 }
 
 .md-typeset .attn-facts dl {
@@ -85,8 +141,41 @@
   line-height: 1.55;
 }
 
+/* Inline code sits in a grey well by default. Six of them on a tinted plate is
+ * six grey boxes on a colour, and the plate stops reading as one surface. They
+ * lose the well here and keep only the mono face, which is all the datasheet
+ * needed them to say; the plate is then one field with the hue down its edge
+ * rather than a strip of chips. */
 .md-typeset .attn-facts dd code {
   font-size: 0.95em;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* The category line is set as the chip the browse page filters with and the
+ * band the browse table groups under -- the same object in all three places,
+ * which is what makes a legend unnecessary. Selected by the link it carries
+ * rather than by position, so a reordered nameplate cannot silently move it. */
+.md-typeset .attn-facts dd:has(a[href*="taxonomy"]) a {
+  display: inline-block;
+  padding: 0.1em 0.5em 0.12em 0.45em;
+  background: var(--cat-field);
+  border-radius: var(--ab-radius);
+  box-shadow: inset 0.16rem 0 0 var(--hl);
+  color: var(--ab-ink);
+  text-decoration: none;
+}
+
+.md-typeset .attn-facts dd:has(a[href*="taxonomy"]) a:hover {
+  box-shadow: inset 0.16rem 0 0 var(--hl), 0 0 0 1px var(--cat-edge);
+}
+
+.md-typeset .attn-facts dd:has(a[href*="taxonomy"]) code {
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  color: inherit;
 }
 
 @media screen and (max-width: 37.4375em) {

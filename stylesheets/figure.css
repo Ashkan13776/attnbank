@@ -1,0 +1,162 @@
+/* Figures the site computes for itself, from docs/gen_figures.py.
+ *
+ * Owned by one aspect of the site redesign; see lib/SITE_DESIGN.md.
+ *
+ * The SVGs are *inlined* into the page by pymdownx.snippets rather than loaded
+ * through <img>, for two reasons that both matter here. A referenced image is a
+ * separate document, so the page's custom properties -- the seven category hues,
+ * the ink scale -- would not reach it and a figure could not repaint itself when
+ * the theme changes. And inlined, the labels stay real text: selectable, findable
+ * with the browser's own search, and crisp at any zoom.
+ *
+ * Nothing in the marks is styled from here. Every colour inside an SVG is already
+ * `var(--token, <light value>)` written by the generator, so this file only has to
+ * place the block, set the caption, and choose which of the two widths is on
+ * screen. Rules that reached into the SVG would be a second place where a figure's
+ * appearance is decided, and the first thing to go stale.
+ */
+
+/* ---- the block ----------------------------------------------------------- */
+/* A figure is one of the few things on these pages that is allowed past the
+ * 34rem prose measure, because a plot cannot reflow the way a paragraph can.
+ * It stops at 38rem all the same: the column reaches 853px at the viewport
+ * width where both sidebars have folded away, and a figure stretched to that
+ * sets its own tick labels larger than the running text beside it. */
+
+/* Material ships `.md-typeset figure { width: fit-content; text-align: center;
+ * margin: 1em auto }` and `figcaption { font-style: italic; max-width: 24rem }`.
+ * All four have to be undone here: `fit-content` collapses around an SVG that is
+ * itself `width: 100%`, `auto` margins centre a block that should sit on the text
+ * column's left edge, and an italic 24rem caption is not what a caption carrying
+ * shapes and seeds wants to be. Spacing is asymmetric on purpose -- more air below
+ * the caption than above the plate, so the caption reads as belonging upwards. */
+
+.md-typeset .ab-fig {
+  width: 100%;
+  max-width: 38rem;
+  margin: var(--ab-space-6) 0 var(--ab-space-7);
+  text-align: left;
+}
+
+.md-typeset .ab-fig > .ab-fig-plate {
+  background: var(--ab-sunk);
+  border: var(--ab-rule-width) solid var(--ab-rule-soft);
+  border-radius: var(--ab-radius-lg);
+  padding: var(--ab-space-4) var(--ab-space-4) var(--ab-space-3);
+}
+
+.md-typeset .ab-fig svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: var(--ab-sans);
+  /* The generator writes `fill="var(--ab-ink, ...)"` on the root and lets it
+   * inherit; this is only the backstop for a mark that forgot to say. */
+  color: var(--ab-ink);
+  overflow: visible;
+}
+
+/* The two exceptions to "nothing in the marks is styled from here", both of them
+ * text layout rather than appearance, and both unavailable as SVG presentation
+ * attributes. Tabular figures stop a column of scientific notation from shifting
+ * column to column; `white-space: pre` protects the padded gaps inside a label
+ * such as "keys kept per query  k". Both are Observable Plot defaults. */
+
+.md-typeset .ab-fig svg text {
+  white-space: pre;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- two widths ---------------------------------------------------------- */
+/* One SVG scaled across the site's whole column range would be unreadable at one
+ * end of it. The content column runs from about 256px inside the plate on a
+ * 320px phone to 726px at the viewport width where both sidebars have folded
+ * away, and a tick label scales with everything else: a 12.5-unit label on a
+ * 700-unit canvas lands at 4.6px once that canvas is squeezed to phone width.
+ * So the generator lays each figure out twice, at 700 units and at 360, and the
+ * pair swaps here.
+ *
+ * Measured in the built pages, not derived -- the column is not monotone in the
+ * viewport, because Material drops the table of contents at 76.1875em and the
+ * navigation at 60em, so the widest column of all is at about 900px. Smallest
+ * type actually rendered: 10.3px at the wide variant's narrow end (viewport
+ * 640px), 9.2px at the narrow variant's (viewport 320px).
+ *
+ * The narrow variant is capped below the column it sits in. Left uncapped it
+ * reaches 536px just under the breakpoint, where its 13-unit labels render at
+ * 19px -- larger than the running text beside them, which reads as a mistake.
+ *
+ * `display: none` also takes the hidden copy out of the accessibility tree, so a
+ * screen reader is offered one figure and one description, not two. */
+
+.md-typeset .ab-fig .ab-fig-wide { display: none; }
+.md-typeset .ab-fig .ab-fig-narrow { display: block; max-width: 20rem; }
+
+@media screen and (min-width: 40em) {
+  .md-typeset .ab-fig .ab-fig-wide { display: block; }
+  .md-typeset .ab-fig .ab-fig-narrow { display: none; }
+}
+
+/* ---- the caption --------------------------------------------------------- */
+/* A caption here states what was computed -- the shapes, the seeds, the method
+ * configurations -- so that the figure is a measurement a reader can re-run and
+ * not an illustration they have to trust. That makes captions long, which is why
+ * they are set small, at the prose measure, and separated from the plate by air
+ * rather than by a rule. */
+
+.md-typeset .ab-fig figcaption {
+  margin: var(--ab-space-3) 0 0;
+  max-width: var(--ab-measure);
+  font-size: var(--ab-step--1);
+  font-style: normal;
+  line-height: 1.55;
+  color: var(--ab-ink-muted);
+  text-align: left;
+  text-wrap: pretty;
+}
+
+.md-typeset .ab-fig figcaption .ab-fig-n {
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ab-faint);
+  margin-right: var(--ab-space-2);
+  white-space: nowrap;
+}
+
+.md-typeset .ab-fig figcaption strong {
+  color: var(--ab-ink-soft);
+  font-weight: 600;
+}
+
+.md-typeset .ab-fig figcaption code {
+  font-size: 0.92em;
+  background: none;
+  padding: 0;
+  color: var(--ab-ink-soft);
+}
+
+/* The one line a reader needs to reproduce the figure: where it came from. */
+.md-typeset .ab-fig figcaption .ab-fig-src {
+  display: block;
+  margin-top: var(--ab-space-2);
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--2);
+  color: var(--ab-faint);
+}
+
+/* ---- print --------------------------------------------------------------- */
+/* On paper the viewport query cannot help: the sheet is wide, so take the wide
+ * variant and let the plate go flat. */
+
+@media print {
+  .md-typeset .ab-fig .ab-fig-wide { display: block; }
+  .md-typeset .ab-fig .ab-fig-narrow { display: none; }
+  .md-typeset .ab-fig > .ab-fig-plate {
+    background: none;
+    border-color: var(--ab-rule);
+  }
+  .md-typeset .ab-fig { break-inside: avoid; }
+}

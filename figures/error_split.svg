@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 281" role="img" aria-labelledby="abfig-split-wide-t abfig-split-wide-d" class="ab-figsvg ab-fig-wide" font-family="system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Nimbus Sans','Liberation Sans',sans-serif" fill="var(--ab-ink,#171b21)">
+<title id="abfig-split-wide-t">Where each method&#x27;s output error comes from</title>
+<desc id="abfig-split-wide-d">One horizontal bar per configuration, each drawn to the full width and divided at the share of the output error that the distributional term carries; the remainder is the value term. The median total error is printed beside each bar. Bars are coloured by the method&#x27;s taxonomy category.</desc>
+<line x1="238" y1="29" x2="238" y2="255.5" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<line x1="336.5" y1="29" x2="336.5" y2="255.5" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<line x1="435" y1="29" x2="435" y2="255.5" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<line x1="533.5" y1="29" x2="533.5" y2="255.5" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<line x1="632" y1="29" x2="632" y2="255.5" stroke="var(--ab-rule-soft,#e9edf2)" vector-effect="non-scaling-stroke"/>
+<line x1="238" y1="29" x2="632" y2="29" stroke="var(--ab-rule,#d8dee6)" vector-effect="non-scaling-stroke"/>
+<text x="238" y="22" font-size="13" fill="var(--ab-ink-soft,#40464f)" font-weight="600">distributional  (π − π̂) v</text>
+<text x="632" y="22" font-size="13" text-anchor="end" fill="var(--ab-ink-soft,#40464f)" font-weight="600">value  π̂ (v − v̂)</text>
+<text x="696" y="22" font-size="12.5" text-anchor="end" fill="var(--ab-faint,#6f7580)">‖y − ŷ‖</text>
+<rect x="4" y="36" width="3" height="19.5" fill="var(--c-interaction,#2a78d6)"/>
+<text x="13" y="45.75" font-size="13.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)" dominant-baseline="central">performer r=64</text>
+<rect x="238" y="36" width="394" height="19.5" fill="var(--c-interaction,#2a78d6)" fill-opacity="0.26"/>
+<rect x="238" y="36" width="394" height="19.5" fill="var(--c-interaction,#2a78d6)"/>
+<text x="696" y="45.75" font-size="12.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">2.40e+00</text>
+<rect x="4" y="61" width="3" height="19.5" fill="var(--c-restrict,#eb6834)"/>
+<text x="13" y="70.75" font-size="13.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)" dominant-baseline="central">topk k=16</text>
+<rect x="238" y="61" width="394" height="19.5" fill="var(--c-restrict,#eb6834)" fill-opacity="0.26"/>
+<rect x="238" y="61" width="394" height="19.5" fill="var(--c-restrict,#eb6834)"/>
+<text x="696" y="70.75" font-size="12.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">1.33e+00</text>
+<rect x="4" y="86" width="3" height="19.5" fill="var(--c-restrict,#eb6834)"/>
+<text x="13" y="95.75" font-size="13.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)" dominant-baseline="central">window w=32</text>
+<rect x="238" y="86" width="394" height="19.5" fill="var(--c-restrict,#eb6834)" fill-opacity="0.26"/>
+<rect x="238" y="86" width="394" height="19.5" fill="var(--c-restrict,#eb6834)"/>
+<text x="696" y="95.75" font-size="12.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">1.72e+00</text>
+<rect x="4" y="111" width="3" height="19.5" fill="var(--c-compress,#1baf7a)"/>
+<text x="13" y="120.75" font-size="13.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)" dominant-baseline="central">quantkv bits_k=2 bits_v=16</text>
+<rect x="238" y="111" width="394" height="19.5" fill="var(--c-compress,#1baf7a)" fill-opacity="0.26"/>
+<rect x="238" y="111" width="393.98" height="19.5" fill="var(--c-compress,#1baf7a)"/>
+<text x="696" y="120.75" font-size="12.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">4.80e-01</text>
+<rect x="4" y="136" width="3" height="19.5" fill="var(--c-exact,#52514e)"/>
+<text x="13" y="145.75" font-size="13.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)" dominant-baseline="central">lowprec</text>
+<rect x="238" y="136" width="394" height="19.5" fill="var(--c-exact,#52514e)" fill-opacity="0.26"/>
+<rect x="238" y="136" width="223.62" height="19.5" fill="var(--c-exact,#52514e)"/>
+<line x1="461.62" y1="136" x2="461.62" y2="155.5" stroke="var(--ab-sunk,#f4f6f9)" stroke-width="1.4"/>
+<text x="696" y="145.75" font-size="12.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">1.11e-02</text>
+<rect x="4" y="161" width="3" height="19.5" fill="var(--c-compress,#1baf7a)"/>
+<text x="13" y="170.75" font-size="13.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)" dominant-baseline="central">mla r=16</text>
+<rect x="238" y="161" width="394" height="19.5" fill="var(--c-compress,#1baf7a)" fill-opacity="0.26"/>
+<rect x="238" y="161" width="219.37" height="19.5" fill="var(--c-compress,#1baf7a)"/>
+<line x1="457.37" y1="161" x2="457.37" y2="180.5" stroke="var(--ab-sunk,#f4f6f9)" stroke-width="1.4"/>
+<text x="696" y="170.75" font-size="12.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">1.11e+00</text>
+<rect x="4" y="186" width="3" height="19.5" fill="var(--c-compress,#1baf7a)"/>
+<text x="13" y="195.75" font-size="13.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)" dominant-baseline="central">quantkv bits_k=3 bits_v=3</text>
+<rect x="238" y="186" width="394" height="19.5" fill="var(--c-compress,#1baf7a)" fill-opacity="0.26"/>
+<rect x="238" y="186" width="188.55" height="19.5" fill="var(--c-compress,#1baf7a)"/>
+<line x1="426.55" y1="186" x2="426.55" y2="205.5" stroke="var(--ab-sunk,#f4f6f9)" stroke-width="1.4"/>
+<text x="696" y="195.75" font-size="12.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">3.03e-01</text>
+<rect x="4" y="211" width="3" height="19.5" fill="var(--c-compress,#1baf7a)"/>
+<text x="13" y="220.75" font-size="13.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)" dominant-baseline="central">kivi bits_k=3 bits_v=3</text>
+<rect x="238" y="211" width="394" height="19.5" fill="var(--c-compress,#1baf7a)" fill-opacity="0.26"/>
+<rect x="238" y="211" width="119.37" height="19.5" fill="var(--c-compress,#1baf7a)"/>
+<line x1="357.37" y1="211" x2="357.37" y2="230.5" stroke="var(--ab-sunk,#f4f6f9)" stroke-width="1.4"/>
+<text x="696" y="220.75" font-size="12.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">2.41e-01</text>
+<rect x="4" y="236" width="3" height="19.5" fill="var(--c-compress,#1baf7a)"/>
+<text x="13" y="245.75" font-size="13.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" fill="var(--ab-ink,#171b21)" dominant-baseline="central">quantkv bits_k=16 bits_v=2</text>
+<rect x="238" y="236" width="394" height="19.5" fill="var(--c-compress,#1baf7a)" fill-opacity="0.26"/>
+<rect x="238" y="236" width="0.02" height="19.5" fill="var(--c-compress,#1baf7a)"/>
+<text x="696" y="245.75" font-size="12.5" font-family="ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono',monospace" text-anchor="end" fill="var(--ab-ink-muted,#5d6673)" dominant-baseline="central">5.03e-01</text>
+<rect x="4" y="266" width="9" height="9" fill="var(--c-exact,#52514e)" rx="2"/>
+<text x="17" y="273" font-size="12.5" fill="var(--ab-ink-muted,#5d6673)">exact</text>
+<rect x="66" y="266" width="9" height="9" fill="var(--c-interaction,#2a78d6)" rx="2"/>
+<text x="79" y="273" font-size="12.5" fill="var(--ab-ink-muted,#5d6673)">interaction</text>
+<rect x="170" y="266" width="9" height="9" fill="var(--c-restrict,#eb6834)" rx="2"/>
+<text x="183" y="273" font-size="12.5" fill="var(--ab-ink-muted,#5d6673)">restrict</text>
+<rect x="253" y="266" width="9" height="9" fill="var(--c-compress,#1baf7a)" rx="2"/>
+<text x="266" y="273" font-size="12.5" fill="var(--ab-ink-muted,#5d6673)">compress</text>
+</svg>

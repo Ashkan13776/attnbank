@@ -2,422 +2,426 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/backends/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/changelog/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/conformance/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/contributing/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/design/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
+    </url>
+    <url>
+         <loc>https://Ashkan13776.github.io/attnbank/heatmaps/</loc>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/invariant/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/quickstart/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/taxonomy/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/api/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/api/conformance/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/api/core/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/api/errors/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/api/metrics/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/api/top-level/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/examples/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/examples/01_quickstart/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/examples/02_the_invariant/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/examples/03_error_decomposition/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/examples/04_topk_is_not_output_optimal/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/examples/05_random_features_converge/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/examples/06_matrix_error_is_not_output_error/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/examples/07_browse_the_bank/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/examples/08_cost_and_capacity/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/examples/09_add_your_own_method/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/examples/10_backends/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/abc/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/atom/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/based/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/bigbird/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/blocktopk/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/clustered/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/cosformer/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/decay_rnn/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/delta_rnn/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/dustbin_sinkhorn/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/espformer/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/evict_adakv/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/evict_h2o/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/evict_pyramidkv/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/evict_snapkv/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/evict_tova/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/favorpp/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/favorsharp/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/flash/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/gla/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/gqa/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/hedgehog/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/hgrn2/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/hyena/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/hyperattention/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/isab/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/kivi/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/kvquant/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/latent_stochastic/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/latte/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/linear_elu/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/linear_rnn/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/linformer/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/longformer/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/lowprec/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/lowrank_kv/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/lowrank_logit/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/lowrank_ot/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/lru/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/lsh_sample/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/mega/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/merge_cam/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/merge_kv/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/merge_tome/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/mla/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/mlstm/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/nmf_oracle/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/nystrom/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/otke/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/oval/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/page_pca/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/perceiver/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/performer/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/polaformer/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/polysketch/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/qjl/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/quantkv/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/rebased/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/reformer/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/retnet/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/routing/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/rwkv/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/s4d/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/s5/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/shifted_window/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/sink_window/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/sinkhorn/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/skyformer/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/softmax/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/splitk/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/strided/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/svd_oracle/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/topk/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/trigrff/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/unbalanced_sinkhorn/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/value_topk/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/window/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
     <url>
          <loc>https://Ashkan13776.github.io/attnbank/methods/zipcache/</loc>
-         <lastmod>2026-10-24</lastmod>
+         <lastmod>2026-10-26</lastmod>
     </url>
 </urlset>
