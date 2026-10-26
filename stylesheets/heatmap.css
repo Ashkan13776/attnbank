@@ -428,3 +428,25 @@
 @media (prefers-reduced-motion: reduce) {
   .ab-hm-cat { transition: none; }
 }
+
+/* ---- a difference of exactly zero --------------------------------------
+ * Two methods are exact and one rung of the Sinkhorn ladder has not iterated
+ * yet, so for those the signed difference is zero in every cell. That is a
+ * result, and it was being drawn as an empty white box under a caption that
+ * announced a full scale -- indistinguishable from a figure that failed to
+ * render. The panel says what it is instead.
+ */
+.ab-hm-plot[data-zero]::after {
+  content: attr(data-zero);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--ab-space-4);
+  text-align: center;
+  text-wrap: balance;
+  font-family: var(--ab-mono);
+  font-size: var(--ab-step--1);
+  line-height: 1.5;
+  color: var(--ab-ink-muted);
+}

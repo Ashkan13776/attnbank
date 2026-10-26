@@ -277,7 +277,7 @@
 
       var ctx = canvas.getContext("2d");
       ctx.imageSmoothingEnabled = false;
-      panels[role] = { fig: fig, canvas: canvas, ctx: ctx, line: line,
+      panels[role] = { fig: fig, canvas: canvas, ctx: ctx, line: line, wrap: wrap,
                        note: head.querySelector(".ab-hm-capnote"), legend: legend };
       return fig;
     }
@@ -521,17 +521,44 @@
 
       blitFrame(panels.hat, current.hat, state.frame, R.seq, "seq", dec, state.scale);
       blitFrame(panels.ref, current.ref, 0, R.seq, "seq", dec, state.scale);
-      if (current.diff) {
+      // A difference of exactly zero is a result, not a missing figure. It happens
+      // two ways: a method that is exact, so there is no d- atlas at all; and a
+      // single rung of a ladder that happens to coincide with the reference --
+      // sinkhorn at n_iter = 0 has not iterated yet, so it *is* the reference.
+      // The second is per frame, so `zero_delta` alone does not see it, and that
+      // panel came out blank under a caption reading "±0.483 full scale": empty,
+      // and claiming a range it was not showing. `tv` is zero exactly when the
+      // two measures agree, so it answers both cases.
+      // Not `=== 0`: these are float64 sums, so a measure that agrees with the
+      // reference exactly still reports a tv of about 1e-17 rather than a clean
+      // zero, and the first version of this test missed every case but softmax.
+      // The data leaves an eleven-order gap to aim at -- the largest of the
+      // floating-point zeros is 1.1e-16 and the smallest genuine total variation
+      // in the bank is 3.2e-05 (topk at k = 64) -- so the threshold sits in the
+      // middle of it and is not a tuned number. Nine frames across six methods
+      // land on the zero side: softmax and flash are exact, and sinkhorn,
+      // unbalanced_sinkhorn, strided and reformer each have a rung whose setting
+      // reduces them to the reference.
+      var identical = s.zero_delta || f.tv < 1e-12;
+      if (current.diff && !identical) {
         blitFrame(panels.diff, current.diff, state.frame, R.div, "div", dec, state.scale);
       } else {
         blitFlat(panels.diff, R.div);
+      }
+      if (identical) {
+        panels.diff.wrap.setAttribute("data-zero",
+          s.zero_delta ? "every cell is zero — this method is exact"
+                       : "every cell is zero — identical to the reference here");
+      } else {
+        panels.diff.wrap.removeAttribute("data-zero");
       }
 
       var cfg = s.knob ? s.knob + " = " + f.label : "no knob";
       panels.hat.note.textContent = s.name + ", " + cfg;
       panels.ref.note.textContent = s.mask === "causal" ? "causal" : "no mask";
-      panels.diff.note.textContent = s.zero_delta
-        ? "zero to " + fmt(s.dmax) + ", the floating-point floor"
+      panels.diff.note.textContent = identical
+        ? (s.zero_delta ? "zero to " + fmt(s.dmax) + ", the floating-point floor"
+                        : "zero at this setting")
         : "±" + fmt(s.dmax, 3) + " full scale";
 
       panels.hat.canvas.setAttribute("aria-label",
@@ -540,14 +567,16 @@
         "softmax " + fmt(f.tv) + ".");
       panels.ref.canvas.setAttribute("aria-label",
         "Dense softmax attention on the same head, " + n + " by " + n + " cells.");
-      panels.diff.canvas.setAttribute("aria-label", s.zero_delta
-        ? "The signed difference is zero everywhere to within " + fmt(s.dmax) + "."
+      panels.diff.canvas.setAttribute("aria-label", identical
+        ? "The signed difference is zero everywhere" +
+          (s.zero_delta ? " to within " + fmt(s.dmax) : " at this setting") + "."
         : "Signed difference, " + s.name + " minus dense softmax, full scale plus or " +
           "minus " + fmt(s.dmax, 3) + ".");
 
       seqLegend(panels.hat.legend, R.seq, state.scale, dec);
       seqLegend(panels.ref.legend, R.seq, state.scale, dec);
-      divLegend(panels.diff.legend, R.div, s.dmax);
+      panels.diff.legend.hidden = identical;   // no scale without a range
+      if (!identical) divLegend(panels.diff.legend, R.div, s.dmax);
 
       paintTvStrip(b64bytes(f.tv_rows), R.div);
 
